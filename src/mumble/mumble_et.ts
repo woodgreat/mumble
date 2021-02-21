@@ -1,41 +1,41 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="hi" version="2.1">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="et" version="2.1">
 <context>
     <name>ACLEditor</name>
     <message>
         <source>Deny</source>
-        <translation type="unfinished"/>
+        <translation>Keela</translation>
     </message>
     <message>
         <source>Allow</source>
-        <translation type="unfinished"/>
+        <translation>Luba</translation>
     </message>
     <message>
         <source>Allow %1</source>
-        <translation type="unfinished"/>
+        <translation>Luba %1</translation>
     </message>
     <message>
         <source>Deny %1</source>
-        <translation type="unfinished"/>
+        <translation>Keela %1</translation>
     </message>
     <message>
         <source>Mumble - Add channel</source>
-        <translation type="unfinished"/>
+        <translation>Mumble - Lis akanal</translation>
     </message>
     <message>
         <source>Default server value</source>
-        <translation type="unfinished"/>
+        <translation>Vaikimisi serveri väärtus</translation>
     </message>
     <message>
         <source>Failed: Invalid channel</source>
-        <translation type="unfinished"/>
+        <translation>Ebaõnnestus: vigane kanal</translation>
     </message>
     <message>
         <source>Mumble - Edit %1</source>
-        <translation type="unfinished"/>
+        <translation>Mumble - Muuda %1</translation>
     </message>
     <message>
         <source>ID: %1</source>
-        <translation type="unfinished"/>
+        <translation>ID: %1</translation>
     </message>
     <message>
         <source>This grants the %1 privilege. If a privilege is both allowed and denied, it is denied.&lt;br /&gt;%2</source>
@@ -43,7 +43,7 @@
     </message>
     <message>
         <source>Channel must have a name</source>
-        <translation type="unfinished"/>
+        <translation>Kanalil peab olema nimi</translation>
     </message>
     <message>
         <source>This revokes the %1 privilege. If a privilege is both allowed and denied, it is denied.&lt;br /&gt;%2</source>
@@ -51,35 +51,35 @@
     </message>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished"/>
+        <translation>Dialoogiaken</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished"/>
+        <translation>Nimi</translation>
     </message>
     <message>
         <source>Enter the channel name here.</source>
-        <translation type="unfinished"/>
+        <translation>Sisesta kanali nimi siia.</translation>
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished"/>
+        <translation>Kirjeldus</translation>
     </message>
     <message>
         <source>Password</source>
-        <translation type="unfinished"/>
+        <translation>Parool</translation>
     </message>
     <message>
         <source>Enter the channel password here.</source>
-        <translation type="unfinished"/>
+        <translation>Sisesta kanali parool siia.</translation>
     </message>
     <message>
         <source>Check to create a temporary channel.</source>
-        <translation type="unfinished"/>
+        <translation>Märgi, et luua ajutine kanal.</translation>
     </message>
     <message>
         <source>Temporary</source>
-        <translation type="unfinished"/>
+        <translation>Ajutine</translation>
     </message>
     <message>
         <source>&lt;b&gt;Position&lt;/b&gt;&lt;br/&gt;
@@ -90,27 +90,27 @@ This value enables you to change the way mumble arranges the channels in the tre
     </message>
     <message>
         <source>Position</source>
-        <translation type="unfinished"/>
+        <translation>Paigutus</translation>
     </message>
     <message>
         <source>&amp;Groups</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Grupid</translation>
     </message>
     <message>
         <source>Group</source>
-        <translation type="unfinished"/>
+        <translation>Grupp</translation>
     </message>
     <message>
         <source>List of groups</source>
-        <translation type="unfinished"/>
+        <translation>Gruppide nimekiri</translation>
     </message>
     <message>
         <source>Remove selected group</source>
-        <translation type="unfinished"/>
+        <translation>Eemalda valitud grupid</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished"/>
+        <translation>Eemalda</translation>
     </message>
     <message>
         <source>Inherit group members from parent</source>
@@ -118,39 +118,39 @@ This value enables you to change the way mumble arranges the channels in the tre
     </message>
     <message>
         <source>Inherit</source>
-        <translation type="unfinished"/>
+        <translation>Päri</translation>
     </message>
     <message>
         <source>Make group inheritable to sub-channels</source>
-        <translation type="unfinished"/>
+        <translation>Tee grupp alamkanalite poolt päritavaks</translation>
     </message>
     <message>
         <source>Inheritable</source>
-        <translation type="unfinished"/>
+        <translation>Päritav</translation>
     </message>
     <message>
         <source>Group was inherited from parent channel</source>
-        <translation type="unfinished"/>
+        <translation>Grupp päriti peamisest kanalist</translation>
     </message>
     <message>
         <source>Inherited</source>
-        <translation type="unfinished"/>
+        <translation>Päritud</translation>
     </message>
     <message>
         <source>Members</source>
-        <translation type="unfinished"/>
+        <translation>Liikmed</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation type="unfinished"/>
+        <translation>Lisa</translation>
     </message>
     <message>
         <source>Add member to group</source>
-        <translation type="unfinished"/>
+        <translation>Lisa liige gruppi</translation>
     </message>
     <message>
         <source>Remove member from group</source>
-        <translation type="unfinished"/>
+        <translation>Eemalda liige grupist</translation>
     </message>
     <message>
         <source>&amp;ACL</source>
@@ -162,7 +162,7 @@ This value enables you to change the way mumble arranges the channels in the tre
     </message>
     <message>
         <source>List of entries</source>
-        <translation type="unfinished"/>
+        <translation>Sissekannete nimekiri</translation>
     </message>
     <message>
         <source>Inherit ACL of parent?</source>
@@ -178,7 +178,7 @@ This value enables you to change the way mumble arranges the channels in the tre
     </message>
     <message>
         <source>Move entry up</source>
-        <translation type="unfinished"/>
+        <translation>Liiguta sisselannet üles</translation>
     </message>
     <message>
         <source>This moves the entry up in the list. As entries are evaluated in order, this may change the effective permissions of users. You cannot move an entry above an inherited entry, if you really need that you&apos;ll have to duplicate the inherited entry.</source>
@@ -186,11 +186,11 @@ This value enables you to change the way mumble arranges the channels in the tre
     </message>
     <message>
         <source>&amp;Up</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Üles</translation>
     </message>
     <message>
         <source>Move entry down</source>
-        <translation type="unfinished"/>
+        <translation>Liiguta sissekannet alla</translation>
     </message>
     <message>
         <source>This moves the entry down in the list. As entries are evaluated in order, this may change the effective permissions of users.</source>
@@ -198,11 +198,11 @@ This value enables you to change the way mumble arranges the channels in the tre
     </message>
     <message>
         <source>&amp;Down</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Alla</translation>
     </message>
     <message>
         <source>Add new entry</source>
-        <translation type="unfinished"/>
+        <translation>Lisa uus sissekanne</translation>
     </message>
     <message>
         <source>This adds a new entry, initially set with no permissions and applying to all.</source>
@@ -210,53 +210,54 @@ This value enables you to change the way mumble arranges the channels in the tre
     </message>
     <message>
         <source>&amp;Add</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Lisa</translation>
     </message>
     <message>
         <source>Remove entry</source>
-        <translation type="unfinished"/>
+        <translation>Eemalda sissekanne</translation>
     </message>
     <message>
         <source>This removes the currently selected entry.</source>
-        <translation type="unfinished"/>
+        <translation>See eemaldab praegu valitud sissekande.</translation>
     </message>
     <message>
         <source>&amp;Remove</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Eemalda</translation>
     </message>
     <message>
         <source>Context</source>
-        <translation type="unfinished"/>
+        <translation>Kontekst</translation>
     </message>
     <message>
         <source>Entry should apply to this channel.</source>
         <oldsource>Entry should apply to this channel</oldsource>
-        <translation type="unfinished"/>
+        <translation>Sissekannet peaks rakendama sellele kanalile.</translation>
     </message>
     <message>
         <source>This makes the entry apply to this channel.</source>
-        <translation type="unfinished"/>
+        <translation>See rakendab selle sissekande sellele kanalile.</translation>
     </message>
     <message>
         <source>Applies to this channel</source>
-        <translation type="unfinished"/>
+        <translation>Rakendab sellele kanalile</translation>
     </message>
     <message>
         <source>Entry should apply to sub-channels.</source>
-        <translation type="unfinished"/>
+        <translation>Sissekanne tuleks rakendada alamkanalitele.</translation>
     </message>
     <message>
         <source>Add new group</source>
-        <translation type="unfinished"/>
+        <translation>Lisa uus grupp</translation>
     </message>
     <message>
         <source>&lt;b&gt;Add&lt;/b&gt;&lt;br/&gt;
 Add a new group.</source>
-        <translation type="unfinished"/>
+        <translation>&lt;b&gt;Lisa&lt;/b&gt;&lt;br/&gt;
+Lisa uus grupp.</translation>
     </message>
     <message>
         <source>Inherited members</source>
-        <translation type="unfinished"/>
+        <translation>Päritud liikmed</translation>
     </message>
     <message>
         <source>Contains the list of members added to the group by this channel.</source>
@@ -268,7 +269,7 @@ Add a new group.</source>
     </message>
     <message>
         <source>Contains the list of members inherited by other channels.</source>
-        <translation type="unfinished"/>
+        <translation>Sisaldab nimekirja kasutajatest, kes on päritud teistest kanalitest.</translation>
     </message>
     <message>
         <source>Type in the name of a user you wish to add to the group and click Add.</source>
@@ -280,11 +281,11 @@ Add a new group.</source>
     </message>
     <message>
         <source>Exclude</source>
-        <translation type="unfinished"/>
+        <translation>Jäta välja</translation>
     </message>
     <message>
         <source>Excluded members</source>
-        <translation type="unfinished"/>
+        <translation>Väljajäetud liikmed</translation>
     </message>
     <message>
         <source>This makes the entry apply to sub-channels of this channel.</source>
@@ -292,27 +293,27 @@ Add a new group.</source>
     </message>
     <message>
         <source>Applies to sub-channels</source>
-        <translation type="unfinished"/>
+        <translation>Rakendatakse alamkanalitele</translation>
     </message>
     <message>
         <source>Permissions</source>
-        <translation type="unfinished"/>
+        <translation>Õigused</translation>
     </message>
     <message>
         <source>User/Group</source>
-        <translation type="unfinished"/>
+        <translation>Kasutaja/Grupp</translation>
     </message>
     <message>
         <source>Group this entry applies to</source>
-        <translation type="unfinished"/>
+        <translation>Grupp, millele seda sissekannet rakendatakse</translation>
     </message>
     <message>
         <source>User ID</source>
-        <translation type="unfinished"/>
+        <translation>Kasutaja ID</translation>
     </message>
     <message>
         <source>User this entry applies to</source>
-        <translation type="unfinished"/>
+        <translation>Kasutaja, kellele seda sissekannet rakendatakse</translation>
     </message>
     <message>
         <source>This controls which user this entry applies to. Just type in the user name and hit enter to query the server for a match.</source>
@@ -320,11 +321,11 @@ Add a new group.</source>
     </message>
     <message>
         <source>&amp;Properties</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Omadused</translation>
     </message>
     <message>
         <source>&lt;b&gt;Name&lt;/b&gt;&lt;br /&gt;Enter the channel name in this field. The name has to comply with the restriction imposed by the server you are connected to.</source>
-        <translation type="unfinished"/>
+        <translation>&lt;b&gt;Nimi&lt;/b&gt;&lt;br /&gt;Sisesta sellesse välja kanali nimi. Nimi peab vastama serveri poolt esitatud nõuetele.</translation>
     </message>
     <message>
         <source>&lt;b&gt;Temporary&lt;/b&gt;&lt;br /&gt;
@@ -381,15 +382,15 @@ Contains the list of members inherited by the current channel. Uncheck &lt;i&gt;
     </message>
     <message>
         <source>ID of the channel.</source>
-        <translation type="unfinished"/>
+        <translation>Kanali ID.</translation>
     </message>
     <message>
         <source>Maximum Users</source>
-        <translation type="unfinished"/>
+        <translation>Kasutajaid maksimaalselt</translation>
     </message>
     <message>
         <source>Maximum number of users allowed in the channel</source>
-        <translation type="unfinished"/>
+        <translation>Kanalis lubatud maksimaalsete kasutajate arv</translation>
     </message>
     <message>
         <source>&lt;b&gt;Maximum Users&lt;/b&gt;&lt;br /&gt;
@@ -398,27 +399,27 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>This is the sort order for the channel.</source>
-        <translation type="unfinished"/>
+        <translation>See on kanali sorteerimise järjekord.</translation>
     </message>
     <message>
         <source>Properties</source>
-        <translation type="unfinished"/>
+        <translation>Omadused</translation>
     </message>
     <message>
         <source>Channel password</source>
-        <translation type="unfinished"/>
+        <translation>Kanali parool</translation>
     </message>
     <message>
         <source>Maximum users</source>
-        <translation type="unfinished"/>
+        <translation>Kasutajaid maksimaalselt</translation>
     </message>
     <message>
         <source>Channel name</source>
-        <translation type="unfinished"/>
+        <translation>Kanali nimi</translation>
     </message>
     <message>
         <source>Inherited group members</source>
-        <translation type="unfinished"/>
+        <translation>Päritud grupi liikmed</translation>
     </message>
     <message>
         <source>Foreign group members</source>
@@ -426,11 +427,11 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Inherited channel members</source>
-        <translation type="unfinished"/>
+        <translation>Päritud kanali liikmed</translation>
     </message>
     <message>
         <source>Add members to group</source>
-        <translation type="unfinished"/>
+        <translation>Lise liikmed gruppi</translation>
     </message>
     <message>
         <source>List of ACL entries</source>
@@ -441,29 +442,29 @@ This value allows you to set the maximum number of users allowed in the channel.
     <name>ALSAAudioInput</name>
     <message>
         <source>Default ALSA Card</source>
-        <translation type="unfinished"/>
+        <translation>Vaikimisi ALSA kaart</translation>
     </message>
     <message>
         <source>Opening chosen ALSA Input failed: %1</source>
-        <translation type="unfinished"/>
+        <translation>ALSA sisendi avamine ebaõnnestus: %1</translation>
     </message>
 </context>
 <context>
     <name>ALSAAudioOutput</name>
     <message>
         <source>Default ALSA Card</source>
-        <translation type="unfinished"/>
+        <translation>Vaikimisi ALSA kaart</translation>
     </message>
     <message>
         <source>Opening chosen ALSA Output failed: %1</source>
-        <translation type="unfinished"/>
+        <translation>ALSA väljundi avamine ebaõnnestus: %1</translation>
     </message>
 </context>
 <context>
     <name>ASIOConfig</name>
     <message>
         <source>%1 (version %2)</source>
-        <translation type="unfinished"/>
+        <translation>%1 (versioon %2)</translation>
     </message>
     <message>
         <source>%1 -&gt; %2 samples buffer, with %3 sample resolution (%4 preferred) at %5 Hz</source>
@@ -472,27 +473,27 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>ASIO Initialization failed: %1</source>
-        <translation type="unfinished"/>
+        <translation>ASIO käivitamine ebaõnnestus: %1</translation>
     </message>
     <message>
         <source>Failed to instantiate ASIO driver</source>
-        <translation type="unfinished"/>
+        <translation>ASIO draiveri käivitamine ebaõnnestus</translation>
     </message>
     <message>
         <source>ASIO</source>
-        <translation type="unfinished"/>
+        <translation>ASIO</translation>
     </message>
     <message>
         <source>Device selection</source>
-        <translation type="unfinished"/>
+        <translation>Seadme valimine</translation>
     </message>
     <message>
         <source>Device</source>
-        <translation type="unfinished"/>
+        <translation>Seade</translation>
     </message>
     <message>
         <source>Device to use for microphone</source>
-        <translation type="unfinished"/>
+        <translation>Seade, mida kasutatakse mikrofonina</translation>
     </message>
     <message>
         <source>This chooses what device to query. You still need to actually query the device and select which channels to use.</source>
@@ -500,7 +501,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Query selected device</source>
-        <translation type="unfinished"/>
+        <translation>Järjekorra valitud seade</translation>
     </message>
     <message>
         <source>This queries the selected device for channels. Be aware that many ASIO drivers are buggy to the extreme, and querying them might cause a crash of either the application or the system.</source>
@@ -508,11 +509,11 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>&amp;Query</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Päring</translation>
     </message>
     <message>
         <source>Configure selected device</source>
-        <translation type="unfinished"/>
+        <translation>Seadista valitud seadet</translation>
     </message>
     <message>
         <source>This configures the selected device. Be aware that many ASIO drivers are buggy to the extreme, and querying them might cause a crash of either the application or the system.</source>
@@ -520,19 +521,19 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>&amp;Configure</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Seadista</translation>
     </message>
     <message>
         <source>Capabilities</source>
-        <translation type="unfinished"/>
+        <translation>Võimalused</translation>
     </message>
     <message>
         <source>Driver name</source>
-        <translation type="unfinished"/>
+        <translation>Draiveri nimi</translation>
     </message>
     <message>
         <source>Buffer size</source>
-        <translation type="unfinished"/>
+        <translation>Puhvri suurus</translation>
     </message>
     <message>
         <source>This will configure the input channels for ASIO. Make sure you select at least one channel as microphone and speaker. &lt;i&gt;Microphone&lt;/i&gt; should be where your microphone is attached, and &lt;i&gt;Speaker&lt;/i&gt; should be a channel that samples &apos;&lt;i&gt;What you hear&lt;/i&gt;&apos;.&lt;br /&gt;For example, on the Audigy 2 ZS, a good selection for Microphone would be &apos;&lt;i&gt;Mic L&lt;/i&gt;&apos; while Speaker should be &apos;&lt;i&gt;Mix L&lt;/i&gt;&apos; and &apos;&lt;i&gt;Mix R&lt;/i&gt;&apos;.</source>
@@ -540,39 +541,39 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Configure input channels</source>
-        <translation type="unfinished"/>
+        <translation>Seadista sisendkanalid</translation>
     </message>
     <message>
         <source>Channels</source>
-        <translation type="unfinished"/>
+        <translation>Kanalid</translation>
     </message>
     <message>
         <source>Microphone</source>
-        <translation type="unfinished"/>
+        <translation>Mikrofon</translation>
     </message>
     <message>
         <source>&lt;-</source>
-        <translation type="unfinished"/>
+        <translation>&lt;-</translation>
     </message>
     <message>
         <source>-&gt;</source>
-        <translation type="unfinished"/>
+        <translation>-&gt;</translation>
     </message>
     <message>
         <source>Unused</source>
-        <translation type="unfinished"/>
+        <translation>Kasutamata</translation>
     </message>
     <message>
         <source>Speakers</source>
-        <translation type="unfinished"/>
+        <translation>Kõlarid</translation>
     </message>
     <message>
         <source>List of microphones</source>
-        <translation type="unfinished"/>
+        <translation>Mikrofonide nimekiri</translation>
     </message>
     <message>
         <source>List of speakers</source>
-        <translation type="unfinished"/>
+        <translation>Kõlarite nimekiri</translation>
     </message>
 </context>
 <context>
@@ -590,7 +591,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     <name>AboutDialog</name>
     <message>
         <source>About Mumble</source>
-        <translation type="unfinished"/>
+        <translation>Mumble info</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Mumble (%1)&lt;/h3&gt;&lt;p&gt;%3&lt;/p&gt;&lt;p&gt;&lt;b&gt;A voice-chat utility for gamers&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;tt&gt;&lt;a href=&quot;%2&quot;&gt;%2&lt;/a&gt;&lt;/tt&gt;&lt;/p&gt;</source>
@@ -598,15 +599,15 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>&amp;About Mumble</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Info Mumble kohta</translation>
     </message>
     <message>
         <source>&amp;License</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Litsents</translation>
     </message>
     <message>
         <source>A&amp;uthors</source>
-        <translation type="unfinished"/>
+        <translation>A&amp;utorid</translation>
     </message>
     <message>
         <source>&amp;Third-Party Licenses</source>
@@ -614,15 +615,15 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>OK</source>
-        <translation type="unfinished"/>
+        <translation>OK</translation>
     </message>
     <message>
         <source>License agreement</source>
-        <translation type="unfinished"/>
+        <translation>Litsents</translation>
     </message>
     <message>
         <source>Authors</source>
-        <translation type="unfinished"/>
+        <translation>Autorid</translation>
     </message>
     <message>
         <source>Third-party license agreements</source>
@@ -633,23 +634,23 @@ This value allows you to set the maximum number of users allowed in the channel.
     <name>AudioInput</name>
     <message>
         <source>Interface</source>
-        <translation type="unfinished"/>
+        <translation>Kasutajalidies</translation>
     </message>
     <message>
         <source>System</source>
-        <translation type="unfinished"/>
+        <translation>Süsteem</translation>
     </message>
     <message>
         <source>Input method for audio</source>
-        <translation type="unfinished"/>
+        <translation>Heli sisendmeetod</translation>
     </message>
     <message>
         <source>Device</source>
-        <translation type="unfinished"/>
+        <translation>Seade</translation>
     </message>
     <message>
         <source>Input device for audio</source>
-        <translation type="unfinished"/>
+        <translation>Heli sisendseade</translation>
     </message>
     <message>
         <source>&lt;b&gt;This is the input device to use for audio.&lt;/b&gt;</source>
@@ -657,15 +658,15 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Transmission</source>
-        <translation type="unfinished"/>
+        <translation>Ülekanne</translation>
     </message>
     <message>
         <source>&amp;Transmit</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Kanna üle</translation>
     </message>
     <message>
         <source>When to transmit your speech</source>
-        <translation type="unfinished"/>
+        <translation>Millal sinu kõnet üle kanda</translation>
     </message>
     <message>
         <source>&lt;b&gt;This sets when speech should be transmitted.&lt;/b&gt;&lt;br /&gt;&lt;i&gt;Continuous&lt;/i&gt; - All the time&lt;br /&gt;&lt;i&gt;Voice Activity&lt;/i&gt; - When you are speaking clearly.&lt;br /&gt;&lt;i&gt;Push To Talk&lt;/i&gt; - When you hold down the hotkey set under &lt;i&gt;Shortcuts&lt;/i&gt;.</source>
@@ -693,23 +694,23 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Browse for on audio file</source>
-        <translation type="unfinished"/>
+        <translation>Sirvi, et otsida &apos;sees&apos; helifail</translation>
     </message>
     <message>
         <source>Browse for off audio file</source>
-        <translation type="unfinished"/>
+        <translation>Sirvi, et otsida &apos;väljas&apos; helifail</translation>
     </message>
     <message>
         <source>Off</source>
-        <translation type="unfinished"/>
+        <translation>Väljas</translation>
     </message>
     <message>
         <source>On</source>
-        <translation type="unfinished"/>
+        <translation>Sees</translation>
     </message>
     <message>
         <source>Preview the audio cues</source>
-        <translation type="unfinished"/>
+        <translation>Heli vihjete ülevaatamine</translation>
     </message>
     <message>
         <source>Use SNR based speech detection</source>
@@ -725,11 +726,11 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Amplitude</source>
-        <translation type="unfinished"/>
+        <translation>Amplituut</translation>
     </message>
     <message>
         <source>Voice &amp;Hold</source>
-        <translation type="unfinished"/>
+        <translation>Heli &amp;ootele panek</translation>
     </message>
     <message>
         <source>How long to keep transmitting after silence</source>
@@ -737,7 +738,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Silence Below</source>
-        <translation type="unfinished"/>
+        <translation>Allpool on vaikus</translation>
     </message>
     <message>
         <source>&lt;b&gt;This sets the trigger values for voice detection.&lt;/b&gt;&lt;br /&gt;Use this together with the Audio Statistics window to manually tune the trigger values for detecting speech. Input values below &quot;Silence Below&quot; always count as silence. Values above &quot;Speech Above&quot; always count as voice. Values in between will count as voice if you&apos;re already talking, but will not trigger a new detection.</source>
@@ -745,7 +746,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Speech Above</source>
-        <translation type="unfinished"/>
+        <translation>Ülalpool on kõne</translation>
     </message>
     <message>
         <source>Signal values above this count as voice</source>
@@ -753,11 +754,11 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Compression</source>
-        <translation type="unfinished"/>
+        <translation>Pakkimine</translation>
     </message>
     <message>
         <source>&amp;Quality</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Kvaliteet</translation>
     </message>
     <message>
         <source>Quality of compression (peak bandwidth)</source>
@@ -785,11 +786,11 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Audio Processing</source>
-        <translation type="unfinished"/>
+        <translation>Heli töötlemine</translation>
     </message>
     <message>
         <source>Noise suppression</source>
-        <translation type="unfinished"/>
+        <translation>Mürasummutus</translation>
     </message>
     <message>
         <source>&lt;b&gt;This sets the amount of noise suppression to apply.&lt;/b&gt;&lt;br /&gt;The higher this value, the more aggressively stationary noise will be suppressed.</source>
@@ -849,23 +850,23 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Exclusive</source>
-        <translation type="unfinished"/>
+        <translation>Eksklusiivne</translation>
     </message>
     <message>
         <source>R&amp;eset</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Nulli</translation>
     </message>
     <message>
         <source>&amp;Browse...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Sirvi...</translation>
     </message>
     <message>
         <source>B&amp;rowse...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Sirvi...</translation>
     </message>
     <message>
         <source>&amp;Preview</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Eelvaade</translation>
     </message>
     <message>
         <source>&lt;b&gt;Preview&lt;/b&gt;&lt;br/&gt;Plays the current &lt;i&gt;on&lt;/i&gt; sound followed by the current &lt;i&gt;off&lt;/i&gt; sound.</source>
@@ -881,7 +882,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Misc</source>
-        <translation type="unfinished"/>
+        <translation>Varia</translation>
     </message>
     <message>
         <source>Audible audio cue when starting or stopping to transmit</source>
@@ -917,7 +918,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Max. Amplification</source>
-        <translation type="unfinished"/>
+        <translation>Maks. võimendus</translation>
     </message>
     <message>
         <source>Idle action</source>
@@ -929,7 +930,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>nothing</source>
-        <translation type="unfinished"/>
+        <translation>mitte midagi</translation>
     </message>
     <message>
         <source>deafen</source>
@@ -937,23 +938,15 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>mute</source>
-        <translation type="unfinished"/>
+        <translation>vaigista</translation>
     </message>
     <message>
         <source>after</source>
-        <translation type="unfinished"/>
+        <translation>pärast</translation>
     </message>
     <message>
         <source>Echo Cancellation</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>Mixed echo cancellation</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>Multichannel echo cancellation</source>
-        <translation type="unfinished"/>
+        <translation>Kajaeemaldus</translation>
     </message>
     <message>
         <source>The idle action will be reversed upon any key or mouse button input</source>
@@ -985,7 +978,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Don&apos;t use noise suppression.</source>
-        <translation type="unfinished"/>
+        <translation>Ära kasuta mürasummutust.</translation>
     </message>
     <message>
         <source>Use the noise suppression algorithm provided by Speex.</source>
@@ -1001,54 +994,54 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Both</source>
-        <translation type="unfinished"/>
+        <translation>Mõlemad</translation>
     </message>
     <message>
         <source>This controls the amount by which Speex will suppress noise.</source>
-        <translation type="unfinished"/>
+        <translation>See määrab, kui palju Speex müra summutab.</translation>
     </message>
     <message>
         <source>Speex suppression strength</source>
-        <translation type="unfinished"/>
+        <translation>Speex mürasummutuse tugevus</translation>
     </message>
 </context>
 <context>
     <name>AudioInputDialog</name>
     <message>
         <source>Continuous</source>
-        <translation type="unfinished"/>
+        <translation>Jätkuv</translation>
     </message>
     <message>
         <source>Voice Activity</source>
-        <translation type="unfinished"/>
+        <translation>Heli tegevus</translation>
     </message>
     <message>
         <source>Push To Talk</source>
-        <translation type="unfinished"/>
+        <translation>Rääkimiseks vajuta</translation>
     </message>
     <message>
         <source>Audio Input</source>
-        <translation type="unfinished"/>
+        <translation>Helisisend</translation>
     </message>
     <message>
         <source>%1 ms</source>
-        <translation type="unfinished"/>
+        <translation>%1 ms</translation>
     </message>
     <message>
         <source>Off</source>
-        <translation type="unfinished"/>
+        <translation>Väljas</translation>
     </message>
     <message>
         <source>%1 s</source>
-        <translation type="unfinished"/>
+        <translation>%1 s</translation>
     </message>
     <message>
         <source>%1 kb/s</source>
-        <translation type="unfinished"/>
+        <translation>%1 kb/s</translation>
     </message>
     <message>
         <source>-%1 dB</source>
-        <translation type="unfinished"/>
+        <translation>-%1 dB</translation>
     </message>
     <message>
         <source>%1 kbit/s (Audio %2, Position %4, Overhead %3)</source>
@@ -1056,19 +1049,19 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Audio system</source>
-        <translation type="unfinished"/>
+        <translation>Helisüsteem</translation>
     </message>
     <message>
         <source>Input device</source>
-        <translation type="unfinished"/>
+        <translation>Sisendseade</translation>
     </message>
     <message>
         <source>Echo cancellation mode</source>
-        <translation type="unfinished"/>
+        <translation>Kajaeemaldamise režiim</translation>
     </message>
     <message>
         <source>Transmission mode</source>
-        <translation type="unfinished"/>
+        <translation>Ülekande režiim</translation>
     </message>
     <message>
         <source>PTT lock threshold</source>
@@ -1080,7 +1073,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Silence below</source>
-        <translation type="unfinished"/>
+        <translation>Allpool on vaikus</translation>
     </message>
     <message>
         <source>Current speech detection chance</source>
@@ -1088,11 +1081,11 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Speech above</source>
-        <translation type="unfinished"/>
+        <translation>Ülalpool on kõne</translation>
     </message>
     <message>
         <source>Speech below</source>
-        <translation type="unfinished"/>
+        <translation>Allpool on kõne</translation>
     </message>
     <message>
         <source>Audio per packet</source>
@@ -1104,11 +1097,11 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Noise suppression</source>
-        <translation type="unfinished"/>
+        <translation>Mürasummutus</translation>
     </message>
     <message>
         <source>Maximum amplification</source>
-        <translation type="unfinished"/>
+        <translation>Maksimaalne võimendus</translation>
     </message>
     <message>
         <source>Transmission started sound</source>
@@ -1126,16 +1119,32 @@ This value allows you to set the maximum number of users allowed in the channel.
         <source>Idle action</source>
         <translation type="unfinished"/>
     </message>
+    <message>
+        <source>Access to the microphone was denied. Please allow Mumble to use the microphone by changing the settings in System Preferences -&gt; Security &amp; Privacy -&gt; Privacy -&gt; Microphone.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Access to the microphone was denied. Please check that your operating system&apos;s microphone settings allow Mumble to use the microphone.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Disabled</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Disable echo cancellation.</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>AudioOutput</name>
     <message>
         <source>Interface</source>
-        <translation type="unfinished"/>
+        <translation>Kasutajalidies</translation>
     </message>
     <message>
         <source>System</source>
-        <translation type="unfinished"/>
+        <translation>Süsteem</translation>
     </message>
     <message>
         <source>Output method for audio</source>
@@ -1143,7 +1152,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Device</source>
-        <translation type="unfinished"/>
+        <translation>Seade</translation>
     </message>
     <message>
         <source>Output device for audio</source>
@@ -1159,7 +1168,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Audio Output</source>
-        <translation type="unfinished"/>
+        <translation>Heliväljund</translation>
     </message>
     <message>
         <source>Default &amp;Jitter Buffer</source>
@@ -1191,11 +1200,11 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Volume</source>
-        <translation type="unfinished"/>
+        <translation>Helitugevus</translation>
     </message>
     <message>
         <source>Volume of incoming speech</source>
-        <translation type="unfinished"/>
+        <translation>Sissetuleva kõne helitugevus</translation>
     </message>
     <message>
         <source>&lt;b&gt;This adjusts the volume of incoming speech.&lt;/b&gt;&lt;br /&gt;Note that if you increase this beyond 100%, audio will be distorted.</source>
@@ -1203,7 +1212,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Output Delay</source>
-        <translation type="unfinished"/>
+        <translation>Väljundi viivitus</translation>
     </message>
     <message>
         <source>Amount of data to buffer</source>
@@ -1240,15 +1249,15 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Headphones</source>
-        <translation type="unfinished"/>
+        <translation>Kõrvaklapid</translation>
     </message>
     <message>
         <source>Minimum Distance</source>
-        <translation type="unfinished"/>
+        <translation>Minimaalne vahemaa</translation>
     </message>
     <message>
         <source>Maximum Distance</source>
-        <translation type="unfinished"/>
+        <translation>Maksimaalne vahemaa</translation>
     </message>
     <message>
         <source>Maximum distance, beyond which speech volume won&apos;t decrease</source>
@@ -1256,7 +1265,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Minimum Volume</source>
-        <translation type="unfinished"/>
+        <translation>Minimaalne helitugevus</translation>
     </message>
     <message>
         <source>What should the volume be at the maximum distance?</source>
@@ -1281,7 +1290,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Packet Loss</source>
-        <translation type="unfinished"/>
+        <translation>Paketikadu</translation>
     </message>
     <message>
         <source>Packet loss for loopback mode</source>
@@ -1333,7 +1342,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>while you talk</source>
-        <translation type="unfinished"/>
+        <translation>kui sa räägid</translation>
     </message>
     <message>
         <source>Exclusive mode, not recommended.</source>
@@ -1377,7 +1386,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Audio output</source>
-        <translation type="unfinished"/>
+        <translation>Heliväljund</translation>
     </message>
     <message>
         <source>&lt;b&gt;This is the output method to use for audio.&lt;/b&gt;</source>
@@ -1393,78 +1402,78 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Enable</source>
-        <translation type="unfinished"/>
+        <translation>Luba</translation>
     </message>
     <message>
         <source>Attenuation</source>
-        <translation type="unfinished"/>
+        <translation>Sumbuvus</translation>
     </message>
 </context>
 <context>
     <name>AudioOutputDialog</name>
     <message>
         <source>None</source>
-        <translation type="unfinished"/>
+        <translation>Pole</translation>
     </message>
     <message>
         <source>Local</source>
-        <translation type="unfinished"/>
+        <translation>Kohalik</translation>
     </message>
     <message>
         <source>Server</source>
-        <translation type="unfinished"/>
+        <translation>Server</translation>
     </message>
     <message>
         <source>Audio Output</source>
-        <translation type="unfinished"/>
+        <translation>Heliväljund</translation>
     </message>
     <message>
         <source>%1 ms</source>
-        <translation type="unfinished"/>
+        <translation>%1 ms</translation>
     </message>
     <message>
         <source>%1 %</source>
-        <translation type="unfinished"/>
+        <translation>%1 %</translation>
     </message>
     <message>
         <source>%1 m</source>
-        <translation type="unfinished"/>
+        <translation>%1 m</translation>
     </message>
     <message>
         <source>Output system</source>
-        <translation type="unfinished"/>
+        <translation>Väljundsüsteem</translation>
     </message>
     <message>
         <source>Output device</source>
-        <translation type="unfinished"/>
+        <translation>Väljundseade</translation>
     </message>
     <message>
         <source>Default jitter buffer</source>
-        <translation type="unfinished"/>
+        <translation>Vaikimisi kõikumise puhver</translation>
     </message>
     <message>
         <source>Volume of incoming speech</source>
-        <translation type="unfinished"/>
+        <translation>Sissetuleva kõne helitugevus</translation>
     </message>
     <message>
         <source>Output delay</source>
-        <translation type="unfinished"/>
+        <translation>Väljundi viivitus</translation>
     </message>
     <message>
         <source>Attenuation of other applications during speech</source>
-        <translation type="unfinished"/>
+        <translation>Muude rakenduste heli summutamine kõne ajal</translation>
     </message>
     <message>
         <source>Minimum distance</source>
-        <translation type="unfinished"/>
+        <translation>Minimaalne vahemaa</translation>
     </message>
     <message>
         <source>Maximum distance</source>
-        <translation type="unfinished"/>
+        <translation>Maksimaalne vahemaa</translation>
     </message>
     <message>
         <source>Minimum volume</source>
-        <translation type="unfinished"/>
+        <translation>Minimaalne helitugevus</translation>
     </message>
     <message>
         <source>Bloom</source>
@@ -1472,11 +1481,11 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Delay variance</source>
-        <translation type="unfinished"/>
+        <translation>Viivituse varieerumine</translation>
     </message>
     <message>
         <source>Packet loss</source>
-        <translation type="unfinished"/>
+        <translation>Paketikadu</translation>
     </message>
     <message>
         <source>Loopback</source>
@@ -1487,11 +1496,11 @@ This value allows you to set the maximum number of users allowed in the channel.
     <name>AudioOutputSample</name>
     <message>
         <source>Choose sound file</source>
-        <translation type="unfinished"/>
+        <translation>Vali helifail</translation>
     </message>
     <message>
         <source>Invalid sound file</source>
-        <translation type="unfinished"/>
+        <translation>Vigane helifail</translation>
     </message>
     <message>
         <source>The file &apos;%1&apos; cannot be used by Mumble. Please select a file with a compatible format and encoding.</source>
@@ -1503,11 +1512,11 @@ This value allows you to set the maximum number of users allowed in the channel.
     <message>
         <source>&gt;1000 ms</source>
         <oldsource>&gt;1000ms</oldsource>
-        <translation type="unfinished"/>
+        <translation>&gt;1000 ms</translation>
     </message>
     <message>
         <source>Audio Statistics</source>
-        <translation type="unfinished"/>
+        <translation>Heli statistika</translation>
     </message>
     <message>
         <source>Input Levels</source>
@@ -1544,15 +1553,15 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Signal Analysis</source>
-        <translation type="unfinished"/>
+        <translation>Signaali analüüs</translation>
     </message>
     <message>
         <source>Microphone power</source>
-        <translation type="unfinished"/>
+        <translation>Mikrofoni võimsus</translation>
     </message>
     <message>
         <source>How close the current input level is to ideal</source>
-        <translation type="unfinished"/>
+        <translation>Kui lähedal on praeguse sisendi helitugevus ideaalsele</translation>
     </message>
     <message>
         <source>This shows how close your current input volume is to the ideal. To adjust your microphone level, open whatever program you use to adjust the recording volume, and look at the value here while talking.&lt;br /&gt;&lt;b&gt;Talk loud, as you would when you&apos;re upset over getting fragged by a noob.&lt;/b&gt;&lt;br /&gt;Adjust the volume until this value is close to 100%, but make sure it doesn&apos;t go above. If it does go above, you are likely to get clipping in parts of your speech, which will degrade sound quality.</source>
@@ -1560,11 +1569,11 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Signal-To-Noise ratio</source>
-        <translation type="unfinished"/>
+        <translation>Signaali ja müra suhe</translation>
     </message>
     <message>
         <source>Signal-To-Noise ratio from the microphone</source>
-        <translation type="unfinished"/>
+        <translation>Mikrofoni signaali ja müra suhe</translation>
     </message>
     <message>
         <source>This is the Signal-To-Noise Ratio (SNR) of the microphone in the last frame (20 ms). It shows how much clearer the voice is compared to the noise.&lt;br /&gt;If this value is below 1.0, there&apos;s more noise than voice in the signal, and so quality is reduced.&lt;br /&gt;There is no upper limit to this value, but don&apos;t expect to see much above 40-50 without a sound studio.</source>
@@ -1584,19 +1593,19 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Configuration feedback</source>
-        <translation type="unfinished"/>
+        <translation>Seadistamise tagasiside</translation>
     </message>
     <message>
         <source>Current audio bitrate</source>
-        <translation type="unfinished"/>
+        <translation>Praegune heli bitikiirus</translation>
     </message>
     <message>
         <source>Bitrate of last frame</source>
-        <translation type="unfinished"/>
+        <translation>Viimase kaadri bitikiirus</translation>
     </message>
     <message>
         <source>DoublePush interval</source>
-        <translation type="unfinished"/>
+        <translation>DoublePushi intervall</translation>
     </message>
     <message>
         <source>Time between last two Push-To-Talk presses</source>
@@ -1604,11 +1613,11 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Speech Detection</source>
-        <translation type="unfinished"/>
+        <translation>Kõne tuvastamine</translation>
     </message>
     <message>
         <source>Current speech detection chance</source>
-        <translation type="unfinished"/>
+        <translation>Praegu kõne tuvastamise tõenäosus</translation>
     </message>
     <message>
         <source>&lt;b&gt;This shows the current speech detection settings.&lt;/b&gt;&lt;br /&gt;You can change the settings from the Settings dialog or from the Audio Wizard.</source>
@@ -1628,7 +1637,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Echo Analysis</source>
-        <translation type="unfinished"/>
+        <translation>Kaja analüüs</translation>
     </message>
     <message>
         <source>Weights of the echo canceller</source>
@@ -1647,11 +1656,11 @@ This value allows you to set the maximum number of users allowed in the channel.
     <name>AudioWizard</name>
     <message>
         <source>Audio Tuning Wizard</source>
-        <translation type="unfinished"/>
+        <translation>Heli tuunimise abimees</translation>
     </message>
     <message>
         <source>Introduction</source>
-        <translation type="unfinished"/>
+        <translation>Tutvustus</translation>
     </message>
     <message>
         <source>Welcome to the Mumble Audio Wizard</source>
@@ -1659,7 +1668,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Finished</source>
-        <translation type="unfinished"/>
+        <translation>Lõpetatud</translation>
     </message>
     <message>
         <source>Enjoy using Mumble</source>
@@ -1667,7 +1676,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Device selection</source>
-        <translation type="unfinished"/>
+        <translation>Seadme valimine</translation>
     </message>
     <message>
         <source>Selecting the input and output device to use with Mumble.</source>
@@ -1679,7 +1688,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>System</source>
-        <translation type="unfinished"/>
+        <translation>Süsteem</translation>
     </message>
     <message>
         <source>Input method for audio</source>
@@ -1687,7 +1696,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Device</source>
-        <translation type="unfinished"/>
+        <translation>Seade</translation>
     </message>
     <message>
         <source>Input device to use</source>
@@ -1703,7 +1712,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Use echo cancellation</source>
-        <translation type="unfinished"/>
+        <translation>Kasuta kajaeemaldust</translation>
     </message>
     <message>
         <source>This enables echo cancellation of outgoing audio, which helps both on speakers and on headsets.</source>
@@ -1719,7 +1728,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Output device to use</source>
-        <translation type="unfinished"/>
+        <translation>Kasutatav väljundseade</translation>
     </message>
     <message>
         <source>&lt;b&gt;Selects which sound card to use for audio Output.&lt;/b&gt;</source>
@@ -1736,11 +1745,11 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Input Device</source>
-        <translation type="unfinished"/>
+        <translation>Sisendseade</translation>
     </message>
     <message>
         <source>Output Device</source>
-        <translation type="unfinished"/>
+        <translation>Väljundseade</translation>
     </message>
     <message>
         <source>This allows Mumble to use positional audio to place voices.</source>
@@ -1798,7 +1807,7 @@ Mumble is under continuous development, and the development team wants to focus 
     </message>
     <message>
         <source>Use headphones</source>
-        <translation type="unfinished"/>
+        <translation>Kasuta kõrvaklappe</translation>
     </message>
     <message>
         <source>This ignores the OS speaker configuration and configures the positioning for headphones instead.</source>
@@ -1859,7 +1868,7 @@ Mumble is under continuous development, and the development team wants to focus 
     </message>
     <message>
         <source>Quality &amp; Notifications</source>
-        <translation type="unfinished"/>
+        <translation>Kvaliteet ja teavitused</translation>
     </message>
     <message>
         <source>Adjust quality and notification settings.</source>
@@ -1867,19 +1876,19 @@ Mumble is under continuous development, and the development team wants to focus 
     </message>
     <message>
         <source>Quality settings</source>
-        <translation type="unfinished"/>
+        <translation>Kvaliteedi seaded</translation>
     </message>
     <message>
         <source>Low</source>
-        <translation type="unfinished"/>
+        <translation>Madal</translation>
     </message>
     <message>
         <source>Balanced</source>
-        <translation type="unfinished"/>
+        <translation>Tasakaalus</translation>
     </message>
     <message>
         <source>Notification settings</source>
-        <translation type="unfinished"/>
+        <translation>Teavituste seaded</translation>
     </message>
     <message>
         <source>Use Text-To-Speech to read notifications and messages to you.</source>
@@ -1891,7 +1900,7 @@ Mumble is under continuous development, and the development team wants to focus 
     </message>
     <message>
         <source>%1 ms</source>
-        <translation type="unfinished"/>
+        <translation>%1 ms</translation>
     </message>
     <message>
         <source>Enables attenuation of other applications while users talk to you</source>
@@ -1903,11 +1912,11 @@ Mumble is under continuous development, and the development team wants to focus 
     </message>
     <message>
         <source>High</source>
-        <translation type="unfinished"/>
+        <translation>Kõrge</translation>
     </message>
     <message>
         <source>Custom</source>
-        <translation type="unfinished"/>
+        <translation>Kohandatud</translation>
     </message>
     <message>
         <source>You already set a customized quality configuration in Mumble. Select this setting to keep it.</source>
@@ -1987,34 +1996,38 @@ Speak loudly, as when you are annoyed or excited. Decrease the volume in the sou
     </message>
     <message>
         <source>Input system</source>
-        <translation type="unfinished"/>
+        <translation>Sisendsüsteem</translation>
     </message>
     <message>
         <source>Input device</source>
-        <translation type="unfinished"/>
+        <translation>Sisendseade</translation>
     </message>
     <message>
         <source>Output system</source>
-        <translation type="unfinished"/>
+        <translation>Väljundseade</translation>
     </message>
     <message>
         <source>Output device</source>
-        <translation type="unfinished"/>
+        <translation>Väljundseade</translation>
     </message>
     <message>
         <source>Output delay</source>
-        <translation type="unfinished"/>
+        <translation>Väljundi viivitus</translation>
     </message>
     <message>
         <source>Maximum amplification</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>PTT key</source>
-        <translation type="unfinished"/>
+        <translation>Maksimaalne võimendus</translation>
     </message>
     <message>
         <source>VAD level</source>
+        <translation>VAD tase</translation>
+    </message>
+    <message>
+        <source>PTT shortcut</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>No buttons assigned</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -2022,87 +2035,87 @@ Speak loudly, as when you are annoyed or excited. Decrease the volume in the sou
     <name>BanEditor</name>
     <message>
         <source>Mumble - Edit Bans</source>
-        <translation type="unfinished"/>
+        <translation>Mumble - Muuda bännimisi</translation>
     </message>
     <message>
         <source>&amp;Address</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Aadress</translation>
     </message>
     <message>
         <source>&amp;Mask</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Mask</translation>
     </message>
     <message>
         <source>Reason</source>
-        <translation type="unfinished"/>
+        <translation>Põhjus</translation>
     </message>
     <message>
         <source>Start</source>
-        <translation type="unfinished"/>
+        <translation>Algus</translation>
     </message>
     <message>
         <source>End</source>
-        <translation type="unfinished"/>
+        <translation>Lõpp</translation>
     </message>
     <message>
         <source>User</source>
-        <translation type="unfinished"/>
+        <translation>Kasutaja</translation>
     </message>
     <message>
         <source>Hash</source>
-        <translation type="unfinished"/>
+        <translation>Räsi</translation>
     </message>
     <message>
         <source>&amp;Add</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Lisa</translation>
     </message>
     <message>
         <source>&amp;Update</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Uuenda</translation>
     </message>
     <message>
         <source>&amp;Remove</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Eemalda</translation>
     </message>
     <message>
         <source>Ban List</source>
-        <translation type="unfinished"/>
+        <translation>Bännide nimekiri</translation>
     </message>
     <message>
         <source>Search field</source>
-        <translation type="unfinished"/>
+        <translation>Otsinguväli</translation>
     </message>
     <message>
         <source>This is the search field. Use it to find bans that have this username set in the username field.</source>
-        <translation type="unfinished"/>
+        <translation>See on otsingulahter. Kasuta seda, et leida kasutajaid, kellel on olnud sellised kasutajanimed.</translation>
     </message>
     <message>
         <source>Who are you looking for?</source>
-        <translation type="unfinished"/>
+        <translation>Keda sa otsid?</translation>
     </message>
     <message>
         <source>No nickname</source>
-        <translation type="unfinished"/>
+        <translation>Hüüdnime pole</translation>
     </message>
     <message>
         <source>IP address</source>
-        <translation type="unfinished"/>
+        <translation>IP aadress</translation>
     </message>
     <message>
         <source>No IP address</source>
-        <translation type="unfinished"/>
+        <translation>P aadressi pole</translation>
     </message>
     <message>
         <source>Reason for the ban</source>
-        <translation type="unfinished"/>
+        <translation>Bänni põhjus</translation>
     </message>
     <message>
         <source>No reason</source>
-        <translation type="unfinished"/>
+        <translation>Põhjust pole</translation>
     </message>
     <message>
         <source>Ban end date</source>
-        <translation type="unfinished"/>
+        <translation>Bänni lõpu kuupäev</translation>
     </message>
     <message>
         <source>Ban end date. If you set the same date for start and end, the ban will be permanent (it will not expire).</source>
@@ -2110,43 +2123,43 @@ Speak loudly, as when you are annoyed or excited. Decrease the volume in the sou
     </message>
     <message>
         <source>Certificate hash</source>
-        <translation type="unfinished"/>
+        <translation>Sertifikaadi räsi</translation>
     </message>
     <message>
         <source>No certificate hash</source>
-        <translation type="unfinished"/>
+        <translation>Sertifikaadi räsi pole</translation>
     </message>
     <message>
         <source>Banned users</source>
-        <translation type="unfinished"/>
+        <translation>Bännitud kasutajad</translation>
     </message>
     <message>
         <source>This is a list with banned users.</source>
-        <translation type="unfinished"/>
+        <translation>See on nimekiri bännitud kasutajatest.</translation>
     </message>
     <message>
         <source>Use this button if you want to add a new ban.</source>
-        <translation type="unfinished"/>
+        <translation>Kasuta seda nuppu, kui soovid lisada uue bänni.</translation>
     </message>
     <message>
         <source>Use this button if you want to update ban information.</source>
-        <translation type="unfinished"/>
+        <translation>Kasuta seda nuppu, kui soovid uuendada bänni infot.</translation>
     </message>
     <message>
         <source>Use this button if you want to remove user from the ban list.</source>
-        <translation type="unfinished"/>
+        <translation>Kasuta seda nuppu, kui soovid kasutaja bännide nimekirjast eemaldada.</translation>
     </message>
     <message>
         <source>Clear all fields</source>
-        <translation type="unfinished"/>
+        <translation>Tühjenda kõik väljad</translation>
     </message>
     <message>
         <source>This button clears all fields. Use it if you want to add a new ban.</source>
-        <translation type="unfinished"/>
+        <translation>See nupp tühjendab kõik lahtrid. Kasuta seda, kui soovid lisada uue bänni.</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished"/>
+        <translation>Tühjenda</translation>
     </message>
     <message numerus="yes">
         <source>Ban List - %n Ban(s)</source>
@@ -2154,50 +2167,50 @@ Speak loudly, as when you are annoyed or excited. Decrease the volume in the sou
     </message>
     <message>
         <source>Search</source>
-        <translation type="unfinished"/>
+        <translation>Otsi</translation>
     </message>
     <message>
         <source>IP Address</source>
-        <translation type="unfinished"/>
+        <translation>IP aadress</translation>
     </message>
     <message>
         <source>Mask</source>
-        <translation type="unfinished"/>
+        <translation>Mask</translation>
     </message>
     <message>
         <source>Start date/time</source>
-        <translation type="unfinished"/>
+        <translation>Alguse kuupäev/kellaaeg</translation>
     </message>
     <message>
         <source>End date/time</source>
-        <translation type="unfinished"/>
+        <translation>Lõpu kuupäev/kellaaeg</translation>
     </message>
 </context>
 <context>
     <name>CertView</name>
     <message>
         <source>Name</source>
-        <translation type="unfinished"/>
+        <translation>Nimi</translation>
     </message>
     <message>
         <source>Email</source>
-        <translation type="unfinished"/>
+        <translation>E-post</translation>
     </message>
     <message>
         <source>Issuer</source>
-        <translation type="unfinished"/>
+        <translation>Väljastaja</translation>
     </message>
     <message>
         <source>Expiry Date</source>
-        <translation type="unfinished"/>
+        <translation>Aegumise kuupäev</translation>
     </message>
     <message>
         <source>(none)</source>
-        <translation type="unfinished"/>
+        <translation>(pole)</translation>
     </message>
     <message>
         <source>Self-signed</source>
-        <translation type="unfinished"/>
+        <translation>Ise allkirjastatud</translation>
     </message>
 </context>
 <context>
@@ -2224,31 +2237,31 @@ Speak loudly, as when you are annoyed or excited. Decrease the volume in the sou
     </message>
     <message>
         <source>The file could not be written successfully. Please use another file.</source>
-        <translation type="unfinished"/>
+        <translation>Faili kirjutamine ebaõnnestus. Palun kasuta teist faili.</translation>
     </message>
     <message>
         <source>The file could not be opened for reading. Please use another file.</source>
-        <translation type="unfinished"/>
+        <translation>Faili avamine ebaõnnestus. Palun kasuta teist faili.</translation>
     </message>
     <message>
         <source>The file is empty or could not be read. Please use another file.</source>
-        <translation type="unfinished"/>
+        <translation>Fail on tühi või seda ei saa lugeda. Palun kasuta teist faili.</translation>
     </message>
     <message>
         <source>The file did not contain a valid certificate and key. Please use another file.</source>
-        <translation type="unfinished"/>
+        <translation>Failis pole kehtivat litsentsi ja võtit. Palun kasuta teist faili.</translation>
     </message>
     <message>
         <source>Select file to export certificate to</source>
-        <translation type="unfinished"/>
+        <translation>Vali fail, millesse sertifikaat eksportida</translation>
     </message>
     <message>
         <source>Select file to import certificate from</source>
-        <translation type="unfinished"/>
+        <translation>Vali fail, millest sertifikaat importida</translation>
     </message>
     <message>
         <source>Unable to import. Missing password or incompatible file type.</source>
-        <translation type="unfinished"/>
+        <translation>Importimine pole võimalik. Parool puudub või failitüüp pole ühilduv.</translation>
     </message>
     <message>
         <source>&lt;b&gt;Certificate Expiry:&lt;/b&gt; Your certificate is about to expire. You need to renew it, or you will no longer be able to connect to servers you are registered on.</source>
@@ -2256,102 +2269,102 @@ Speak loudly, as when you are annoyed or excited. Decrease the volume in the sou
     </message>
     <message>
         <source>Current certificate</source>
-        <translation type="unfinished"/>
+        <translation>Praegune sertifikaat</translation>
     </message>
     <message>
         <source>Certificate file to import</source>
-        <translation type="unfinished"/>
+        <translation>Sertifikaadi fail, mida importida</translation>
     </message>
     <message>
         <source>Certificate password</source>
-        <translation type="unfinished"/>
+        <translation>Sertifikaadi parool</translation>
     </message>
     <message>
         <source>Certificate to import</source>
-        <translation type="unfinished"/>
+        <translation>Sertifikaat, mida importida</translation>
     </message>
     <message>
         <source>New certificate</source>
-        <translation type="unfinished"/>
+        <translation>Uus sertifikaat</translation>
     </message>
     <message>
         <source>File to export certificate to</source>
-        <translation type="unfinished"/>
+        <translation>Fail, millesse sertifikaat importida</translation>
     </message>
     <message>
         <source>Email address</source>
-        <translation type="unfinished"/>
+        <translation>E-posti aadress</translation>
     </message>
     <message>
         <source>Your name</source>
-        <translation type="unfinished"/>
+        <translation>Sinu nimi</translation>
     </message>
 </context>
 <context>
     <name>Certificates</name>
     <message>
         <source>Certificate Management</source>
-        <translation type="unfinished"/>
+        <translation>Sertifikaatide haldamine</translation>
     </message>
     <message>
         <source>Certificate Authentication</source>
-        <translation type="unfinished"/>
+        <translation>Sertifikaatide autentimine</translation>
     </message>
     <message>
         <source>Authenticating to servers without using passwords</source>
-        <translation type="unfinished"/>
+        <translation>Serveri autentimine ilma paroole kasutamata</translation>
     </message>
     <message>
         <source>Current certificate</source>
-        <translation type="unfinished"/>
+        <translation>Praegune sertifikaat</translation>
     </message>
     <message>
         <source>This is the certificate Mumble currently uses.</source>
-        <translation type="unfinished"/>
+        <translation>See on sertifikaat, mida Mumble praegu kasutab.</translation>
     </message>
     <message>
         <source>Current Certificate</source>
-        <translation type="unfinished"/>
+        <translation>Praegune sertifikaat</translation>
     </message>
     <message>
         <source>Create a new certificate</source>
-        <translation type="unfinished"/>
+        <translation>Loo uus sertifikaat</translation>
     </message>
     <message>
         <source>This will create a new certificate.</source>
-        <translation type="unfinished"/>
+        <translation>See loob uue sertifikaadi.</translation>
     </message>
     <message>
         <source>Import certificate from file</source>
-        <translation type="unfinished"/>
+        <translation>Impordi sertifikaat failist</translation>
     </message>
     <message>
         <source>This will import a certificate from file.</source>
-        <translation type="unfinished"/>
+        <translation>See impordib sertifikaadi failist.</translation>
     </message>
     <message>
         <source>Import a certificate</source>
-        <translation type="unfinished"/>
+        <translation>Impordi sertifikaat</translation>
     </message>
     <message>
         <source>Export Certificate</source>
-        <translation type="unfinished"/>
+        <translation>Ekspordi sertifikaat</translation>
     </message>
     <message>
         <source>This will export a certificate to file.</source>
-        <translation type="unfinished"/>
+        <translation>See ekspordib sertifikaadi faili.</translation>
     </message>
     <message>
         <source>Export current certificate</source>
-        <translation type="unfinished"/>
+        <translation>Ekspordi praegune sertifikaat</translation>
     </message>
     <message>
         <source>Import Certificate</source>
-        <translation type="unfinished"/>
+        <translation>Impordi sertifikaat</translation>
     </message>
     <message>
         <source>PKCS #12 Certificate import</source>
-        <translation type="unfinished"/>
+        <translation>PKCS #12 sertifikaadi import</translation>
     </message>
     <message>
         <source>&lt;p&gt;Mumble can import certificates stored in PKCS #12 format. This is the format used when exporting a key from Mumble, and also when exporting keys from Firefox, Internet Explorer, Opera etc.&lt;/p&gt;&lt;p&gt;If the file is password protected, you will need the password to import the certificate.&lt;/p&gt;</source>
@@ -2360,11 +2373,11 @@ Speak loudly, as when you are annoyed or excited. Decrease the volume in the sou
     </message>
     <message>
         <source>Import from</source>
-        <translation type="unfinished"/>
+        <translation>Impordi failist</translation>
     </message>
     <message>
         <source>Filename to import from</source>
-        <translation type="unfinished"/>
+        <translation>Failinimi, millest importida</translation>
     </message>
     <message>
         <source>This is the filename you wish to import a certificate from.</source>
@@ -2372,7 +2385,7 @@ Speak loudly, as when you are annoyed or excited. Decrease the volume in the sou
     </message>
     <message>
         <source>Select file to import from</source>
-        <translation type="unfinished"/>
+        <translation>Vali fail, millest importida</translation>
     </message>
     <message>
         <source>This opens a file selection dialog to choose a file to import a certificate from.</source>
@@ -2380,15 +2393,15 @@ Speak loudly, as when you are annoyed or excited. Decrease the volume in the sou
     </message>
     <message>
         <source>Open...</source>
-        <translation type="unfinished"/>
+        <translation>Ava...</translation>
     </message>
     <message>
         <source>Password</source>
-        <translation type="unfinished"/>
+        <translation>Parool</translation>
     </message>
     <message>
         <source>Password for PKCS#12 file</source>
-        <translation type="unfinished"/>
+        <translation>PKCS#12 faili parool</translation>
     </message>
     <message>
         <source>This is the password for the PKCS#12 file containing your certificate.</source>
@@ -2396,19 +2409,19 @@ Speak loudly, as when you are annoyed or excited. Decrease the volume in the sou
     </message>
     <message>
         <source>Certificate to import</source>
-        <translation type="unfinished"/>
+        <translation>Imporditav sertifikaat</translation>
     </message>
     <message>
         <source>This is the certificate you are importing.</source>
-        <translation type="unfinished"/>
+        <translation>See on sertifikaat, mida sa impordid.</translation>
     </message>
     <message>
         <source>Certificate Details</source>
-        <translation type="unfinished"/>
+        <translation>Sertifikaadi üksikasjad</translation>
     </message>
     <message>
         <source>Replace Certificate</source>
-        <translation type="unfinished"/>
+        <translation>Asenda sertifikaat</translation>
     </message>
     <message>
         <source>Replace existing certificate with new certificate?</source>
@@ -2432,7 +2445,7 @@ Are you sure you wish to replace your certificate?
     </message>
     <message>
         <source>New certificate</source>
-        <translation type="unfinished"/>
+        <translation>Uus sertifikaat</translation>
     </message>
     <message>
         <source>This is the new certificate that will replace the old one.</source>
@@ -2440,11 +2453,11 @@ Are you sure you wish to replace your certificate?
     </message>
     <message>
         <source>New Certificate</source>
-        <translation type="unfinished"/>
+        <translation>Uus sertifikaat</translation>
     </message>
     <message>
         <source>Make a backup of your certificate</source>
-        <translation type="unfinished"/>
+        <translation>Tee oma sertifikaadist varukoopia</translation>
     </message>
     <message>
         <source>Export to</source>
@@ -2460,7 +2473,7 @@ Are you sure you wish to replace your certificate?
     </message>
     <message>
         <source>Save As...</source>
-        <translation type="unfinished"/>
+        <translation>Salvesta kui...</translation>
     </message>
     <message>
         <source>This is the certificate Mumble currently uses. It will be exported.</source>
@@ -2476,11 +2489,11 @@ Are you sure you wish to replace your certificate?
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished"/>
+        <translation>Nimi</translation>
     </message>
     <message>
         <source>Email</source>
-        <translation type="unfinished"/>
+        <translation>E-post</translation>
     </message>
     <message>
         <source>Your email address (e.g. johndoe@mumble.info)</source>
@@ -2492,7 +2505,7 @@ Are you sure you wish to replace your certificate?
     </message>
     <message>
         <source>Your name (e.g. John Doe)</source>
-        <translation type="unfinished"/>
+        <translation>Sinu nimi (nt. Taavi Tark)</translation>
     </message>
     <message>
         <source>This is your name, and will be filled out in the certificate. This field is entirely optional.</source>
@@ -2500,7 +2513,7 @@ Are you sure you wish to replace your certificate?
     </message>
     <message>
         <source>Finish</source>
-        <translation type="unfinished"/>
+        <translation>Lõpeta</translation>
     </message>
     <message>
         <source>Certificate-based authentication is ready for use</source>
@@ -2512,7 +2525,7 @@ Are you sure you wish to replace your certificate?
     </message>
     <message>
         <source>Automatic certificate creation</source>
-        <translation type="unfinished"/>
+        <translation>Automaatne sertifikaadi loomine</translation>
     </message>
     <message>
         <source>&lt;p&gt;If you ever lose your current certificate, which will happen if your computer suffers a hardware failure or you reinstall your machine, you will no longer be able to authenticate to any server you are registered on. It is therefore &lt;b&gt;mandatory&lt;/b&gt; that you make a backup of your certificate. We strongly recommend you store this backup on removable storage, such as a USB flash drive.&lt;/p&gt;
@@ -2528,7 +2541,7 @@ Are you sure you wish to replace your certificate?
     <name>ChanACL</name>
     <message>
         <source>None</source>
-        <translation type="unfinished"/>
+        <translation>Pole</translation>
     </message>
     <message>
         <source>Traverse</source>
@@ -2536,11 +2549,11 @@ Are you sure you wish to replace your certificate?
     </message>
     <message>
         <source>Enter</source>
-        <translation type="unfinished"/>
+        <translation>Sisesta</translation>
     </message>
     <message>
         <source>Speak</source>
-        <translation type="unfinished"/>
+        <translation>Räägi</translation>
     </message>
     <message>
         <source>Mute/Deafen</source>
@@ -2548,15 +2561,15 @@ Are you sure you wish to replace your certificate?
     </message>
     <message>
         <source>Make channel</source>
-        <translation type="unfinished"/>
+        <translation>Lo kanal</translation>
     </message>
     <message>
         <source>Make temporary</source>
-        <translation type="unfinished"/>
+        <translation>Tee ajutiseks</translation>
     </message>
     <message>
         <source>Link channel</source>
-        <translation type="unfinished"/>
+        <translation>Kanali link</translation>
     </message>
     <message>
         <source>This represents no privileges.</source>
@@ -2624,15 +2637,15 @@ Are you sure you wish to replace your certificate?
     </message>
     <message>
         <source>Whisper</source>
-        <translation type="unfinished"/>
+        <translation>Sosin</translation>
     </message>
     <message>
         <source>Move</source>
-        <translation type="unfinished"/>
+        <translation>Liiguta</translation>
     </message>
     <message>
         <source>Text message</source>
-        <translation type="unfinished"/>
+        <translation>Tekstisõnum</translation>
     </message>
     <message>
         <source>Kick</source>
@@ -2640,15 +2653,15 @@ Are you sure you wish to replace your certificate?
     </message>
     <message>
         <source>Ban</source>
-        <translation type="unfinished"/>
+        <translation>Bänni</translation>
     </message>
     <message>
         <source>Register User</source>
-        <translation type="unfinished"/>
+        <translation>Registreeri kasutaja</translation>
     </message>
     <message>
         <source>Register Self</source>
-        <translation type="unfinished"/>
+        <translation>Ise registreerumine</translation>
     </message>
     <message>
         <source>Write ACL</source>
@@ -2660,7 +2673,7 @@ Are you sure you wish to replace your certificate?
     </message>
     <message>
         <source>Listen</source>
-        <translation type="unfinished"/>
+        <translation>Kuula</translation>
     </message>
     <message>
         <source>This represents the permission to reset the comment or avatar of a user.</source>
@@ -2668,7 +2681,7 @@ Are you sure you wish to replace your certificate?
     </message>
     <message>
         <source>Reset User Content</source>
-        <translation type="unfinished"/>
+        <translation>Nulli kasutaja sisu</translation>
     </message>
 </context>
 <context>
@@ -2676,7 +2689,7 @@ Are you sure you wish to replace your certificate?
     <message>
         <source>Paste and &amp;Send</source>
         <oldsource>Paste and send</oldsource>
-        <translation type="unfinished"/>
+        <translation>Aseta ja saada</translation>
     </message>
     <message>
         <source>&lt;center&gt;Type chat message here&lt;/center&gt;</source>
@@ -2690,16 +2703,20 @@ Are you sure you wish to replace your certificate?
         <source>Unable to send image %1: too large.</source>
         <translation type="unfinished"/>
     </message>
+    <message>
+        <source>This server does not allow sending images.</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>ClientUser</name>
     <message>
         <source>Friend</source>
-        <translation type="unfinished"/>
+        <translation>Sõber</translation>
     </message>
     <message>
         <source>Authenticated</source>
-        <translation type="unfinished"/>
+        <translation>utenditud</translation>
     </message>
     <message>
         <source>Priority speaker</source>
@@ -2707,11 +2724,11 @@ Are you sure you wish to replace your certificate?
     </message>
     <message>
         <source>Recording</source>
-        <translation type="unfinished"/>
+        <translation>Salvestus</translation>
     </message>
     <message>
         <source>Muted (server)</source>
-        <translation type="unfinished"/>
+        <translation>Vaigistatud (server)</translation>
     </message>
     <message>
         <source>Deafened (server)</source>
@@ -2723,11 +2740,11 @@ Are you sure you wish to replace your certificate?
     </message>
     <message>
         <source>Local Mute</source>
-        <translation type="unfinished"/>
+        <translation>Kohapealne vaigistamine</translation>
     </message>
     <message>
         <source>Muted (self)</source>
-        <translation type="unfinished"/>
+        <translation>Vaigistatud (ise)</translation>
     </message>
     <message>
         <source>Deafened (self)</source>
@@ -2742,7 +2759,7 @@ Are you sure you wish to replace your certificate?
     <name>ConfigDialog</name>
     <message>
         <source>Accept changes</source>
-        <translation type="unfinished"/>
+        <translation>Nõustu muudatustega</translation>
     </message>
     <message>
         <source>This button will accept current settings and return to the application.&lt;br /&gt;The settings will be stored to disk when you leave the application.</source>
@@ -2750,7 +2767,7 @@ Are you sure you wish to replace your certificate?
     </message>
     <message>
         <source>Reject changes</source>
-        <translation type="unfinished"/>
+        <translation>Lükka muudatused tagasi</translation>
     </message>
     <message>
         <source>This button will reject all changes and return to the application.&lt;br /&gt;The settings will be reset to the previous positions.</source>
@@ -2758,15 +2775,15 @@ Are you sure you wish to replace your certificate?
     </message>
     <message>
         <source>Apply changes</source>
-        <translation type="unfinished"/>
+        <translation>Rakenda muudatused</translation>
     </message>
     <message>
         <source>This button will immediately apply all changes.</source>
-        <translation type="unfinished"/>
+        <translation>See nupp rakendab kohe kõik muudatused.</translation>
     </message>
     <message>
         <source>Undo changes for current page</source>
-        <translation type="unfinished"/>
+        <translation>Tühista praeguse lehekülje muudatused</translation>
     </message>
     <message>
         <source>This button will revert any changes done on the current page to the most recent applied settings.</source>
@@ -2774,15 +2791,15 @@ Are you sure you wish to replace your certificate?
     </message>
     <message>
         <source>Restore defaults for current page</source>
-        <translation type="unfinished"/>
+        <translation>Taasta praeguse lehe vaikeväärtused</translation>
     </message>
     <message>
         <source>Mumble Configuration</source>
-        <translation type="unfinished"/>
+        <translation>Mumble seadistamine</translation>
     </message>
     <message>
         <source>Configuration categories</source>
-        <translation type="unfinished"/>
+        <translation>Seadistamise kategooriad</translation>
     </message>
     <message>
         <source>This button will restore the defaults for the settings on the current page. Other pages will not be changed.&lt;br /&gt;To restore all settings to their defaults, you can press the &quot;Defaults (All)&quot; button.</source>
@@ -2790,11 +2807,11 @@ Are you sure you wish to replace your certificate?
     </message>
     <message>
         <source>Restore all defaults</source>
-        <translation type="unfinished"/>
+        <translation>Taasta kõik vaikeväärtused</translation>
     </message>
     <message>
         <source>This button will restore the defaults for all settings.</source>
-        <translation type="unfinished"/>
+        <translation>See nupp taastab kõigi seadete vaikeväärtused.</translation>
     </message>
 </context>
 <context>
@@ -2805,147 +2822,147 @@ Are you sure you wish to replace your certificate?
     </message>
     <message>
         <source>Enter username</source>
-        <translation type="unfinished"/>
+        <translation>Sisesta kasutajanimi</translation>
     </message>
     <message>
         <source>Adding host %1</source>
-        <translation type="unfinished"/>
+        <translation>Hosti %1 lisamine</translation>
     </message>
     <message>
         <source>Servername</source>
-        <translation type="unfinished"/>
+        <translation>Serverinimi</translation>
     </message>
     <message>
         <source>Hostname</source>
-        <translation type="unfinished"/>
+        <translation>Hostinimi</translation>
     </message>
     <message>
         <source>Bonjour name</source>
-        <translation type="unfinished"/>
+        <translation>Bonjouri nimi</translation>
     </message>
     <message>
         <source>Port</source>
-        <translation type="unfinished"/>
+        <translation>Port</translation>
     </message>
     <message>
         <source>Addresses</source>
-        <translation type="unfinished"/>
+        <translation>Aadressid</translation>
     </message>
     <message>
         <source>Website</source>
-        <translation type="unfinished"/>
+        <translation>Veebisait</translation>
     </message>
     <message>
         <source>Packet loss</source>
-        <translation type="unfinished"/>
+        <translation>Paketikadu</translation>
     </message>
     <message>
         <source>Ping (80%)</source>
-        <translation type="unfinished"/>
+        <translation>Ping (80%)</translation>
     </message>
     <message>
         <source>%1 ms</source>
-        <translation type="unfinished"/>
+        <translation>%1 ms</translation>
     </message>
     <message>
         <source>Ping (95%)</source>
-        <translation type="unfinished"/>
+        <translation>Ping (95%)</translation>
     </message>
     <message>
         <source>Bandwidth</source>
-        <translation type="unfinished"/>
+        <translation>Ribalaius</translation>
     </message>
     <message>
         <source>%1 kbit/s</source>
-        <translation type="unfinished"/>
+        <translation>%1 kbit/s</translation>
     </message>
     <message>
         <source>&amp;Connect</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Ühenda</translation>
     </message>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"/>
+        <translation>Tundmatu</translation>
     </message>
     <message>
         <source>Users</source>
-        <translation type="unfinished"/>
+        <translation>Kasutajad</translation>
     </message>
     <message>
         <source>Version</source>
-        <translation type="unfinished"/>
+        <translation>Versioon</translation>
     </message>
     <message>
         <source>Failed to fetch server list</source>
-        <translation type="unfinished"/>
+        <translation>Serverite nimekirja tmbamine ebaõnnestus</translation>
     </message>
     <message>
         <source>Mumble Server Connect</source>
-        <translation type="unfinished"/>
+        <translation>Mumble serveriga ühendumine</translation>
     </message>
     <message>
         <source>Ping</source>
-        <translation type="unfinished"/>
+        <translation>Ping</translation>
     </message>
     <message>
         <source>Remove from Favorites</source>
-        <translation type="unfinished"/>
+        <translation>Eemalda lemmikutest</translation>
     </message>
     <message>
         <source>Add custom server</source>
-        <translation type="unfinished"/>
+        <translation>Lisa kohandatud server</translation>
     </message>
     <message>
         <source>&amp;Copy</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Kopeeri</translation>
     </message>
     <message>
         <source>Copy favorite link to clipboard</source>
-        <translation type="unfinished"/>
+        <translation>Kopeeri lemmikute link lõikelauale</translation>
     </message>
     <message>
         <source>&amp;Paste</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Aseta</translation>
     </message>
     <message>
         <source>Paste favorite from clipboard</source>
-        <translation type="unfinished"/>
+        <translation>Aseta lemmik lõikelaualt</translation>
     </message>
     <message>
         <source>&amp;Edit...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Muuda...</translation>
     </message>
     <message>
         <source>&amp;Add New...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Lisa uus...</translation>
     </message>
     <message>
         <source>Add to &amp;Favorites</source>
-        <translation type="unfinished"/>
+        <translation>Lisa &amp;lemmikutesse</translation>
     </message>
     <message>
         <source>Open &amp;Webpage</source>
-        <translation type="unfinished"/>
+        <translation>Ava &amp;veebisait</translation>
     </message>
     <message>
         <source>Server list</source>
-        <translation type="unfinished"/>
+        <translation>Serverite nimekiri</translation>
     </message>
     <message>
         <source>Search</source>
-        <translation type="unfinished"/>
+        <translation>Otsi</translation>
     </message>
     <message>
         <source>Location</source>
-        <translation type="unfinished"/>
+        <translation>Asukoht</translation>
     </message>
     <message>
         <source>Filter</source>
-        <translation type="unfinished"/>
+        <translation>Filter</translation>
     </message>
     <message>
         <source>Show All</source>
-        <translation type="unfinished"/>
+        <translation>Näita kõiki</translation>
     </message>
     <message>
         <source>Show Populated</source>
@@ -2957,31 +2974,31 @@ Are you sure you wish to replace your certificate?
     </message>
     <message>
         <source>All</source>
-        <translation type="unfinished"/>
+        <translation>Kõik</translation>
     </message>
     <message>
         <source>Africa</source>
-        <translation type="unfinished"/>
+        <translation>Aafrika</translation>
     </message>
     <message>
         <source>Asia</source>
-        <translation type="unfinished"/>
+        <translation>Aasia</translation>
     </message>
     <message>
         <source>Europe</source>
-        <translation type="unfinished"/>
+        <translation>Euroopa</translation>
     </message>
     <message>
         <source>North America</source>
-        <translation type="unfinished"/>
+        <translation>Põhja-Ameerika</translation>
     </message>
     <message>
         <source>Oceania</source>
-        <translation type="unfinished"/>
+        <translation>Okeaania</translation>
     </message>
     <message>
         <source>South America</source>
-        <translation type="unfinished"/>
+        <translation>Lõuna-Ameerika</translation>
     </message>
     <message>
         <source>Consent to the transmission of private data</source>
@@ -2996,20 +3013,20 @@ Are you sure you wish to replace your certificate?
     <name>ConnectDialogEdit</name>
     <message>
         <source>Edit Server</source>
-        <translation type="unfinished"/>
+        <translation>Muuda serverit</translation>
     </message>
     <message>
         <source>Name of the server</source>
-        <translation type="unfinished"/>
+        <translation>Serveri nimi</translation>
     </message>
     <message>
         <source>A&amp;ddress</source>
-        <translation type="unfinished"/>
+        <translation>Aa&amp;dress</translation>
     </message>
     <message>
         <source>Internet address of the server.</source>
         <oldsource>Internet address of the server. </oldsource>
-        <translation type="unfinished"/>
+        <translation>Serveri internetiaadress.</translation>
     </message>
     <message>
         <source>&lt;b&gt;Address&lt;/b&gt;&lt;br/&gt;
@@ -3020,11 +3037,11 @@ Internet address of the server. This can be a normal hostname, an ipv4/6 address
     </message>
     <message>
         <source>&amp;Port</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Port</translation>
     </message>
     <message>
         <source>Port on which the server is listening</source>
-        <translation type="unfinished"/>
+        <translation>Port, mida server kuulab</translation>
     </message>
     <message>
         <source>&lt;b&gt;Port&lt;/b&gt;&lt;br/&gt;
@@ -3033,11 +3050,11 @@ Port on which the server is listening. If the server is identified by a Bonjour 
     </message>
     <message>
         <source>&amp;Username</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Kasutajanimi</translation>
     </message>
     <message>
         <source>Username to send to the server</source>
-        <translation type="unfinished"/>
+        <translation>Kasutajanimi, mis saadetakse serverile</translation>
     </message>
     <message>
         <source>&lt;b&gt;Username&lt;/b&gt;&lt;br/&gt;
@@ -3046,11 +3063,11 @@ Username to send to the server. Be aware that the server can impose restrictions
     </message>
     <message>
         <source>Label</source>
-        <translation type="unfinished"/>
+        <translation>Silt</translation>
     </message>
     <message>
         <source>Add Server</source>
-        <translation type="unfinished"/>
+        <translation>Lisa server</translation>
     </message>
     <message>
         <source>You are currently connected to a server.
@@ -3066,11 +3083,11 @@ Host: %1 Port: %2</source>
     </message>
     <message>
         <source>Password</source>
-        <translation type="unfinished"/>
+        <translation>Parool</translation>
     </message>
     <message>
         <source>Password to send to the server</source>
-        <translation type="unfinished"/>
+        <translation>Parool, mis saadetakse serverile</translation>
     </message>
     <message>
         <source>&lt;b&gt;Password&lt;/b&gt;&lt;br/&gt;
@@ -3079,7 +3096,7 @@ Password to be sent to the server on connect. This password is needed when conne
     </message>
     <message>
         <source>Show password</source>
-        <translation type="unfinished"/>
+        <translation>Näita parooli</translation>
     </message>
     <message>
         <source>&lt;b&gt;Label&lt;/b&gt;&lt;br/&gt;
@@ -3088,38 +3105,31 @@ Label of the server. This is what the server will be named like in your server l
     </message>
     <message>
         <source>Local server label</source>
-        <translation type="unfinished"/>
+        <translation>Kohaliku serveri silt</translation>
     </message>
     <message>
         <source>127.0.0.1</source>
-        <translation type="unfinished"/>
+        <translation>127.0.0.1</translation>
     </message>
     <message>
         <source>64738</source>
-        <translation type="unfinished"/>
+        <translation>64738</translation>
     </message>
     <message>
         <source>Your username</source>
-        <translation type="unfinished"/>
+        <translation>Sinu kasutajanimi</translation>
     </message>
     <message>
         <source>Your password</source>
-        <translation type="unfinished"/>
+        <translation>Sinu parool</translation>
     </message>
     <message>
         <source>&amp;Fill</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Täida</translation>
     </message>
     <message>
         <source>&amp;Ignore</source>
-        <translation type="unfinished"/>
-    </message>
-</context>
-<context>
-    <name>CoreAudioSystem</name>
-    <message>
-        <source>Default Device</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Ignoreeri</translation>
     </message>
 </context>
 <context>
@@ -3134,7 +3144,7 @@ Label of the server. This is what the server will be named like in your server l
     </message>
     <message>
         <source>Email address (optional)</source>
-        <translation type="unfinished"/>
+        <translation>E-posti aadress (valikuline)</translation>
     </message>
     <message>
         <source>Please describe briefly, in English, what you were doing at the time of the crash</source>
@@ -3143,11 +3153,11 @@ Label of the server. This is what the server will be named like in your server l
     </message>
     <message>
         <source>Send Report</source>
-        <translation type="unfinished"/>
+        <translation>Saada aruanne</translation>
     </message>
     <message>
         <source>Don&apos;t send report</source>
-        <translation type="unfinished"/>
+        <translation>Ära saada aruannet</translation>
     </message>
     <message>
         <source>Crash upload successful</source>
@@ -3175,7 +3185,7 @@ Label of the server. This is what the server will be named like in your server l
     </message>
     <message>
         <source>Abort upload</source>
-        <translation type="unfinished"/>
+        <translation>Katkesta üleslaadimine</translation>
     </message>
 </context>
 <context>
@@ -3198,65 +3208,65 @@ Label of the server. This is what the server will be named like in your server l
     <name>DeveloperConsole</name>
     <message>
         <source>Developer Console</source>
-        <translation type="unfinished"/>
+        <translation>Arendaja konsool</translation>
     </message>
 </context>
 <context>
     <name>DockTitleBar</name>
     <message>
         <source>Drag here</source>
-        <translation type="unfinished"/>
+        <translation>Lohista siia</translation>
     </message>
 </context>
 <context>
     <name>GlobalShortcut</name>
     <message>
         <source>Shortcuts</source>
-        <translation type="unfinished"/>
+        <translation>Otseteed</translation>
     </message>
     <message>
         <source>List of configured shortcuts</source>
-        <translation type="unfinished"/>
+        <translation>Seadistatud otseteede nimekiri</translation>
     </message>
     <message>
         <source>Function</source>
-        <translation type="unfinished"/>
+        <translation>Funktsioon</translation>
     </message>
     <message>
         <source>Data</source>
-        <translation type="unfinished"/>
+        <translation>Andmed</translation>
     </message>
     <message>
         <source>Shortcut</source>
-        <translation type="unfinished"/>
+        <translation>Otsetee</translation>
     </message>
     <message>
         <source>Suppress</source>
-        <translation type="unfinished"/>
+        <translation>Suru alla</translation>
     </message>
     <message>
         <source>Add new shortcut</source>
-        <translation type="unfinished"/>
+        <translation>Lisa uus otsetee</translation>
     </message>
     <message>
         <source>This will add a new global shortcut</source>
-        <translation type="unfinished"/>
+        <translation>See lisab uue üldise otsetee</translation>
     </message>
     <message>
         <source>&amp;Add</source>
-        <translation type="unfinished"/>
+        <translation>Lis&amp;a</translation>
     </message>
     <message>
         <source>Remove selected shortcut</source>
-        <translation type="unfinished"/>
+        <translation>Eemalda valitud otsetee</translation>
     </message>
     <message>
         <source>This will permanently remove a selected shortcut.</source>
-        <translation type="unfinished"/>
+        <translation>See eemaldab jäädavalt valitud otsetee.</translation>
     </message>
     <message>
         <source>&amp;Remove</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Eemalda</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mumble can currently only use mouse buttons and keyboard modifier keys (Alt, Ctrl, Cmd, etc.) for global shortcuts.&lt;/p&gt;&lt;p&gt;If you want more flexibility, you can enable &lt;span style=&quot; font-style:italic;&quot;&gt;Access for assistive devices&lt;/span&gt; in the system&apos;s Accessibility preferences. However, please note that this change also potentially allows malicious programs to read what is typed on your keyboard.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -3268,11 +3278,11 @@ Label of the server. This is what the server will be named like in your server l
     </message>
     <message>
         <source>Skip</source>
-        <translation type="unfinished"/>
+        <translation>Jäta vahele</translation>
     </message>
     <message>
         <source>Enable Global Shortcuts</source>
-        <translation type="unfinished"/>
+        <translation>Luba üldised otseteed</translation>
     </message>
     <message>
         <source>&lt;b&gt;Additional Shortcut Engines&lt;/b&gt;&lt;br /&gt;This section allows you to configure the use of additional GlobalShortcut engines.</source>
@@ -3296,7 +3306,7 @@ Label of the server. This is what the server will be named like in your server l
     </message>
     <message>
         <source>Enable GKey</source>
-        <translation type="unfinished"/>
+        <translation>Luba GKey kasutamine</translation>
     </message>
     <message>
         <source>&lt;b&gt;Enable XInput&lt;/b&gt;&lt;br /&gt;This setting enables support for the XInput shortcut engine, for Xbox compatible controllers.</source>
@@ -3304,7 +3314,7 @@ Label of the server. This is what the server will be named like in your server l
     </message>
     <message>
         <source>Enable XInput</source>
-        <translation type="unfinished"/>
+        <translation>Luba XInput kasutamine</translation>
     </message>
     <message>
         <source>&lt;b&gt;Enable shortcuts in privileged applications&lt;/b&gt;.&lt;br /&gt;Also known as &quot;UIAccess&quot;. This allows Mumble to receive global shortcut events from programs running at high privilege levels, such as an Admin Command Prompt or older games that run with admin privileges.
@@ -3314,6 +3324,33 @@ Without this option enabled, using Mumble&apos;s global shortcuts in privileged 
     </message>
     <message>
         <source>Enable shortcuts in privileged applications</source>
+        <translation>Luba otseteed priviligeeritud rakendustest</translation>
+    </message>
+</context>
+<context>
+    <name>GlobalShortcutButtons</name>
+    <message>
+        <source>Edit shortcut</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Start capture process</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Starts the capture process: all buttons you press will be added to the tree.&lt;/p&gt;&lt;p&gt;Once all buttons are released, the capture process stops automatically.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Remove the currently selected items</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Remove</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -3325,7 +3362,7 @@ Without this option enabled, using Mumble&apos;s global shortcuts in privileged 
     </message>
     <message>
         <source>Shortcuts</source>
-        <translation type="unfinished"/>
+        <translation>Otseteed</translation>
     </message>
     <message>
         <source>&lt;b&gt;This is the global shortcut key combination.&lt;/b&gt;&lt;br /&gt;Click this field and then press the desired key/button combo to rebind. Double-click to clear.</source>
@@ -3342,6 +3379,24 @@ Without this option enabled, using Mumble&apos;s global shortcuts in privileged 
     </message>
     <message>
         <source>Configured shortcuts</source>
+        <translation>Seadistatud otseteed</translation>
+    </message>
+</context>
+<context>
+    <name>GlobalShortcutEngine</name>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>GlobalShortcutMac</name>
+    <message>
+        <source>Mouse</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Keyboard</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -3353,11 +3408,11 @@ Without this option enabled, using Mumble&apos;s global shortcuts in privileged 
     </message>
     <message>
         <source>Channel Target</source>
-        <translation type="unfinished"/>
+        <translation>Kanali sihtkoht</translation>
     </message>
     <message>
         <source>Restrict to Group</source>
-        <translation type="unfinished"/>
+        <translation>Piira grupile</translation>
     </message>
     <message>
         <source>If specified, only members of this group will receive the whisper.</source>
@@ -3365,19 +3420,19 @@ Without this option enabled, using Mumble&apos;s global shortcuts in privileged 
     </message>
     <message>
         <source>List of users</source>
-        <translation type="unfinished"/>
+        <translation>Kasutajate nimekiri</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation type="unfinished"/>
+        <translation>Lisa</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished"/>
+        <translation>Eemalda</translation>
     </message>
     <message>
         <source>Modifiers</source>
-        <translation type="unfinished"/>
+        <translation>Muutujad</translation>
     </message>
     <message>
         <source>Do not send positional audio information when using this whisper shortcut.</source>
@@ -3389,11 +3444,11 @@ Without this option enabled, using Mumble&apos;s global shortcuts in privileged 
     </message>
     <message>
         <source>Shout to Linked channels</source>
-        <translation type="unfinished"/>
+        <translation>Hõika lingitud kanalitesse</translation>
     </message>
     <message>
         <source>Shout to subchannels</source>
-        <translation type="unfinished"/>
+        <translation>Hõika alamkanalitesse</translation>
     </message>
     <message>
         <source>The whisper will also be transmitted to linked channels.</source>
@@ -3409,25 +3464,40 @@ Without this option enabled, using Mumble&apos;s global shortcuts in privileged 
     </message>
     <message>
         <source>Current selection</source>
-        <translation type="unfinished"/>
+        <translation>Praegune valik</translation>
     </message>
     <message>
         <source>When shouting to channel:</source>
-        <translation type="unfinished"/>
+        <translation>Kui hõikad kanalisse:</translation>
     </message>
     <message>
         <source>Shout to linked channels</source>
-        <translation type="unfinished"/>
+        <translation>Hõika lingitud kanalitesse</translation>
     </message>
     <message>
         <source>Channel</source>
+        <translation>Kanal</translation>
+    </message>
+</context>
+<context>
+    <name>GlobalShortcutWin</name>
+    <message>
+        <source>Mouse</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Keyboard</source>
         <translation type="unfinished"/>
     </message>
 </context>
 <context>
     <name>GlobalShortcutX</name>
     <message>
-        <source>Mouse %1</source>
+        <source>Keyboard</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Mouse</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -3435,41 +3505,41 @@ Without this option enabled, using Mumble&apos;s global shortcuts in privileged 
     <name>JackAudioSystem</name>
     <message>
         <source>Hardware Ports</source>
-        <translation type="unfinished"/>
+        <translation>Riistvaralised pordid</translation>
     </message>
     <message>
         <source>Mono</source>
-        <translation type="unfinished"/>
+        <translation>Mono</translation>
     </message>
     <message>
         <source>Stereo</source>
-        <translation type="unfinished"/>
+        <translation>Stereo</translation>
     </message>
 </context>
 <context>
     <name>LCD</name>
     <message>
         <source>Not connected</source>
-        <translation type="unfinished"/>
+        <translation>Pole ühendatud</translation>
     </message>
 </context>
 <context>
     <name>LCDConfig</name>
     <message>
         <source>Enable this device</source>
-        <translation type="unfinished"/>
+        <translation>Luba see seade</translation>
     </message>
     <message>
         <source>LCD</source>
-        <translation type="unfinished"/>
+        <translation>LCD</translation>
     </message>
     <message>
         <source>Devices</source>
-        <translation type="unfinished"/>
+        <translation>Seadmed</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished"/>
+        <translation>Nimi</translation>
     </message>
     <message>
         <source>&lt;p&gt;This is the list of available LCD devices on your system.  It lists devices by name, but also includes the size of the display. Mumble supports outputting to several LCD devices at a time.&lt;/p&gt;
@@ -3482,19 +3552,19 @@ This field describes the size of an LCD device. The size is given either in pixe
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished"/>
+        <translation>Suurus</translation>
     </message>
     <message>
         <source>Enabled</source>
-        <translation type="unfinished"/>
+        <translation>Lubatud</translation>
     </message>
     <message>
         <source>Views</source>
-        <translation type="unfinished"/>
+        <translation>Vaatamisi</translation>
     </message>
     <message>
         <source>Minimum Column Width</source>
-        <translation type="unfinished"/>
+        <translation>Minimaalne veeru laius</translation>
     </message>
     <message>
         <source>&lt;p&gt;This option decides the minimum width a column in the User View.&lt;/p&gt;
@@ -3512,7 +3582,7 @@ This field describes the size of an LCD device. The size is given either in pixe
     </message>
     <message>
         <source>Minimum column width</source>
-        <translation type="unfinished"/>
+        <translation>Minimaalne veeru laius</translation>
     </message>
     <message>
         <source>Splitter width</source>
@@ -3530,19 +3600,19 @@ This field describes the size of an LCD device. The size is given either in pixe
     <name>Log</name>
     <message>
         <source>Debug</source>
-        <translation type="unfinished"/>
+        <translation>Veatuvastus</translation>
     </message>
     <message>
         <source>Critical</source>
-        <translation type="unfinished"/>
+        <translation>Kriitiline</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished"/>
+        <translation>Hoiatus</translation>
     </message>
     <message>
         <source>Information</source>
-        <translation type="unfinished"/>
+        <translation>Informatsioon</translation>
     </message>
     <message>
         <source>Other self-muted/deafened</source>
@@ -3562,23 +3632,23 @@ This field describes the size of an LCD device. The size is given either in pixe
     </message>
     <message>
         <source>You self-muted</source>
-        <translation type="unfinished"/>
+        <translation>Manid end ise vaikseks</translation>
     </message>
     <message>
         <source>User muted (you)</source>
-        <translation type="unfinished"/>
+        <translation>Kasutaja on vaigistatud (sina)</translation>
     </message>
     <message>
         <source>User muted (by you)</source>
-        <translation type="unfinished"/>
+        <translation>Kasutaja on vaigistatud (sinu poolt)</translation>
     </message>
     <message>
         <source>User muted (other)</source>
-        <translation type="unfinished"/>
+        <translation>Kasutaja on vaigistatud (muu)</translation>
     </message>
     <message>
         <source>You self-unmuted</source>
-        <translation type="unfinished"/>
+        <translation>Eemaldasid ise vaigistuse</translation>
     </message>
     <message>
         <source>You self-deafened</source>
@@ -3590,7 +3660,7 @@ This field describes the size of an LCD device. The size is given either in pixe
     </message>
     <message>
         <source>User renamed</source>
-        <translation type="unfinished"/>
+        <translation>Kasutaja nimii on muudetud</translation>
     </message>
     <message>
         <source>User connected and entered channel</source>
@@ -3602,15 +3672,15 @@ This field describes the size of an LCD device. The size is given either in pixe
     </message>
     <message>
         <source>Private text message</source>
-        <translation type="unfinished"/>
+        <translation>Privaatne tekstisõnum</translation>
     </message>
     <message>
         <source>the server</source>
-        <translation type="unfinished"/>
+        <translation>server</translation>
     </message>
     <message>
         <source>[[ Invalid size ]]</source>
-        <translation type="unfinished"/>
+        <translation>[[ Vigane suurus ]]</translation>
     </message>
     <message>
         <source>[[ Text object too large to display ]]</source>
@@ -3623,63 +3693,63 @@ This field describes the size of an LCD device. The size is given either in pixe
     </message>
     <message>
         <source>link to %1</source>
-        <translation type="unfinished"/>
+        <translation>link %1</translation>
     </message>
     <message>
         <source>FTP link to %1</source>
-        <translation type="unfinished"/>
+        <translation>FTP link %1</translation>
     </message>
     <message>
         <source>player link</source>
-        <translation type="unfinished"/>
+        <translation>esitaja link</translation>
     </message>
     <message>
         <source>channel link</source>
-        <translation type="unfinished"/>
+        <translation>kanali link</translation>
     </message>
     <message>
         <source>%1 link</source>
-        <translation type="unfinished"/>
+        <translation>%1 link</translation>
     </message>
     <message>
         <source>Server connected</source>
-        <translation type="unfinished"/>
+        <translation>Server on ühendatud</translation>
     </message>
     <message>
         <source>Server disconnected</source>
-        <translation type="unfinished"/>
+        <translation>Server on lahti ühendatud</translation>
     </message>
     <message>
         <source>User joined server</source>
-        <translation type="unfinished"/>
+        <translation>Kasutaja liitus serveriga</translation>
     </message>
     <message>
         <source>User left server</source>
-        <translation type="unfinished"/>
+        <translation>Kasutaja lahkus serverist</translation>
     </message>
     <message>
         <source>User joined channel</source>
-        <translation type="unfinished"/>
+        <translation>Kasutaja liitus kanaliga</translation>
     </message>
     <message>
         <source>User left channel</source>
-        <translation type="unfinished"/>
+        <translation>Kasutaja lahkus kanalist</translation>
     </message>
     <message>
         <source>Permission denied</source>
-        <translation type="unfinished"/>
+        <translation>Ligipääs on keelatud</translation>
     </message>
     <message>
         <source>Text message</source>
-        <translation type="unfinished"/>
+        <translation>Tekstisõnum</translation>
     </message>
     <message>
         <source>You joined channel</source>
-        <translation type="unfinished"/>
+        <translation>Liitusid kanaliga</translation>
     </message>
     <message>
         <source>You joined channel (moved)</source>
-        <translation type="unfinished"/>
+        <translation>Liitusid kanaliga (liigutatud)</translation>
     </message>
     <message>
         <source>User started listening to channel</source>
@@ -3745,43 +3815,43 @@ This field describes the size of an LCD device. The size is given either in pixe
     </message>
     <message>
         <source>Messages</source>
-        <translation type="unfinished"/>
+        <translation>Sõnumid</translation>
     </message>
     <message>
         <source>Message</source>
-        <translation type="unfinished"/>
+        <translation>Sõnum</translation>
     </message>
     <message>
         <source>Console</source>
-        <translation type="unfinished"/>
+        <translation>Konsool</translation>
     </message>
     <message>
         <source>Notification</source>
-        <translation type="unfinished"/>
+        <translation>Teavitus</translation>
     </message>
     <message>
         <source>Text-To-Speech</source>
-        <translation type="unfinished"/>
+        <translation>Tekst kõneks</translation>
     </message>
     <message>
         <source>Soundfile</source>
-        <translation type="unfinished"/>
+        <translation>Helifail</translation>
     </message>
     <message>
         <source>Path</source>
-        <translation type="unfinished"/>
+        <translation>Asukoht</translation>
     </message>
     <message>
         <source>Text To Speech</source>
-        <translation type="unfinished"/>
+        <translation>Tekst kõneks</translation>
     </message>
     <message>
         <source>Volume</source>
-        <translation type="unfinished"/>
+        <translation>Helitugevus</translation>
     </message>
     <message>
         <source>Volume of Text-To-Speech Engine</source>
-        <translation type="unfinished"/>
+        <translation>Teksti kõneks tegemise mootor</translation>
     </message>
     <message>
         <source>&lt;b&gt;This is the volume used for the speech synthesis.&lt;/b&gt;</source>
@@ -3789,11 +3859,11 @@ This field describes the size of an LCD device. The size is given either in pixe
     </message>
     <message>
         <source>Length threshold</source>
-        <translation type="unfinished"/>
+        <translation>Lävi pikkus</translation>
     </message>
     <message>
         <source>Message length threshold for Text-To-Speech Engine</source>
-        <translation type="unfinished"/>
+        <translation>Tekst kõneks mootori sõnumi pikkuse lävi</translation>
     </message>
     <message>
         <source>&lt;b&gt;This is the length threshold used for the Text-To-Speech Engine.&lt;/b&gt;&lt;br /&gt;Messages longer than this limit will not be read aloud in their full length.</source>
@@ -3801,11 +3871,11 @@ This field describes the size of an LCD device. The size is given either in pixe
     </message>
     <message>
         <source> Characters</source>
-        <translation type="unfinished"/>
+        <translation>Märke</translation>
     </message>
     <message>
         <source>Whisper</source>
-        <translation type="unfinished"/>
+        <translation>Sosin</translation>
     </message>
     <message>
         <source>If checked you will only hear whispers from users you added to your friend list.</source>
@@ -3813,7 +3883,7 @@ This field describes the size of an LCD device. The size is given either in pixe
     </message>
     <message>
         <source>Only accept whispers from friends</source>
-        <translation type="unfinished"/>
+        <translation>Võta vastu sosinaid ainult sõpradelt</translation>
     </message>
     <message>
         <source>If enabled text messages you send will be read back to you with TTS</source>
@@ -3821,7 +3891,7 @@ This field describes the size of an LCD device. The size is given either in pixe
     </message>
     <message>
         <source>Read back own messages</source>
-        <translation type="unfinished"/>
+        <translation>Loe ette omaenda sõnumid</translation>
     </message>
     <message>
         <source>Chat Log</source>
@@ -3833,15 +3903,15 @@ This field describes the size of an LCD device. The size is given either in pixe
     </message>
     <message>
         <source>Unlimited</source>
-        <translation type="unfinished"/>
+        <translation>Piiramatu</translation>
     </message>
     <message>
         <source> Lines</source>
-        <translation type="unfinished"/>
+        <translation>Ridasid</translation>
     </message>
     <message>
         <source>Highlight</source>
-        <translation type="unfinished"/>
+        <translation>Esiletõstmine</translation>
     </message>
     <message>
         <source>If enabled, TTS will not dictate the message scope.</source>
@@ -3867,7 +3937,7 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Use 24-hour clock</source>
-        <translation type="unfinished"/>
+        <translation>Kasuta 24-tunnist kella</translation>
     </message>
     <message>
         <source>How far individual messages are spaced out from one another.</source>
@@ -3875,59 +3945,59 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Message margins</source>
-        <translation type="unfinished"/>
+        <translation>Sõnumi veerised</translation>
     </message>
     <message>
         <source>Log messages</source>
-        <translation type="unfinished"/>
+        <translation>Logi sõnumid</translation>
     </message>
     <message>
         <source>TTS engine volume</source>
-        <translation type="unfinished"/>
+        <translation>TTS mootori helitugevus</translation>
     </message>
     <message>
         <source>Chat message margins</source>
-        <translation type="unfinished"/>
+        <translation>Vesluse sõnumi veerused</translation>
     </message>
 </context>
 <context>
     <name>LookConfig</name>
     <message>
         <source>System default</source>
-        <translation type="unfinished"/>
+        <translation>Süsteemi vaikeväärtus</translation>
     </message>
     <message>
         <source>None</source>
-        <translation type="unfinished"/>
+        <translation>Pole</translation>
     </message>
     <message>
         <source>Only with users</source>
-        <translation type="unfinished"/>
+        <translation>Ainult kasutajatele</translation>
     </message>
     <message>
         <source>All</source>
-        <translation type="unfinished"/>
+        <translation>Kõik</translation>
     </message>
     <message>
         <source>Ask</source>
-        <translation type="unfinished"/>
+        <translation>Küsi</translation>
     </message>
     <message>
         <source>Do Nothing</source>
-        <translation type="unfinished"/>
+        <translation>Ära tee midagi</translation>
     </message>
     <message>
         <source>Move</source>
-        <translation type="unfinished"/>
+        <translation>Liiguta</translation>
     </message>
     <message>
         <source>&lt;a href=&quot;%1&quot;&gt;Browse&lt;/a&gt;</source>
         <extracomment>This link is located next to the theme heading in the ui config and opens the user theme directory</extracomment>
-        <translation type="unfinished"/>
+        <translation>&lt;a href=&quot;%1&quot;&gt;Sirvi&lt;/a&gt;</translation>
     </message>
     <message>
         <source>User Interface</source>
-        <translation type="unfinished"/>
+        <translation>Kasutaja kasutajaliides</translation>
     </message>
     <message>
         <source>This sets which channels to automatically expand. &lt;i&gt;None&lt;/i&gt; and &lt;i&gt;All&lt;/i&gt; will expand no or all channels, while &lt;i&gt;Only with users&lt;/i&gt; will expand and collapse channels as users join and leave them.</source>
@@ -3943,7 +4013,7 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Users above Channels</source>
-        <translation type="unfinished"/>
+        <translation>Kasutjad kanalist kõrgemal</translation>
     </message>
     <message>
         <source>&lt;b&gt;If set, will verify you want to quit if connected.&lt;/b&gt;</source>
@@ -3955,15 +4025,15 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Show channel user count</source>
-        <translation type="unfinished"/>
+        <translation>Näita kanali kasutajate arvu</translation>
     </message>
     <message>
         <source>Language</source>
-        <translation type="unfinished"/>
+        <translation>Keel</translation>
     </message>
     <message>
         <source>Language to use (requires restart)</source>
-        <translation type="unfinished"/>
+        <translation>Kasutatav keel (vajab taaskäivitamist)</translation>
     </message>
     <message>
         <source>&lt;b&gt;This sets which language Mumble should use.&lt;/b&gt;&lt;br /&gt;You have to restart Mumble to use the new language.</source>
@@ -3971,15 +4041,15 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Look and Feel</source>
-        <translation type="unfinished"/>
+        <translation>Välimus ja paigutus</translation>
     </message>
     <message>
         <source>Layout</source>
-        <translation type="unfinished"/>
+        <translation>Paigutus</translation>
     </message>
     <message>
         <source>Classic</source>
-        <translation type="unfinished"/>
+        <translation>Klassikaline</translation>
     </message>
     <message>
         <source>Stacked</source>
@@ -3987,15 +4057,15 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Hybrid</source>
-        <translation type="unfinished"/>
+        <translation>Hübriid</translation>
     </message>
     <message>
         <source>Custom</source>
-        <translation type="unfinished"/>
+        <translation>Kohandatud</translation>
     </message>
     <message>
         <source>This changes the behavior when moving channels.</source>
-        <translation type="unfinished"/>
+        <translation>See muudab kanalite liigutamise käitumist.</translation>
     </message>
     <message>
         <source>This sets the behavior of channel drags; it can be used to prevent accidental dragging. &lt;i&gt;Move&lt;/i&gt; moves the channel without prompting. &lt;i&gt;Do Nothing&lt;/i&gt; does nothing and prints an error message. &lt;i&gt;Ask&lt;/i&gt; uses a message box to confirm if you really wanted to move the channel.</source>
@@ -4004,7 +4074,7 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Expand</source>
-        <translation type="unfinished"/>
+        <translation>Laienda</translation>
     </message>
     <message>
         <source>When to automatically expand channels</source>
@@ -4012,7 +4082,7 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Channel Dragging</source>
-        <translation type="unfinished"/>
+        <translation>Kanali lohistamine</translation>
     </message>
     <message>
         <source>Ask whether to close or minimize when quitting Mumble.</source>
@@ -4024,7 +4094,7 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Always On Top</source>
-        <translation type="unfinished"/>
+        <translation>Alati kõige pealmine</translation>
     </message>
     <message>
         <source>&lt;b&gt;If set, minimizing the Mumble main window will cause it to be hidden and accessible only from the tray. Otherwise, it will be minimized as a window normally would.&lt;/b&gt;</source>
@@ -4032,7 +4102,7 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Hide in tray when minimized</source>
-        <translation type="unfinished"/>
+        <translation>Kui on minimeeritud, siis peida süsteemisalve</translation>
     </message>
     <message>
         <source>Hide the main Mumble window in the tray when it is minimized.</source>
@@ -4044,27 +4114,27 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Never</source>
-        <translation type="unfinished"/>
+        <translation>Mitte kunagi</translation>
     </message>
     <message>
         <source>Always</source>
-        <translation type="unfinished"/>
+        <translation>Alati</translation>
     </message>
     <message>
         <source>In minimal view</source>
-        <translation type="unfinished"/>
+        <translation>Minimaalses vaates</translation>
     </message>
     <message>
         <source>In normal view</source>
-        <translation type="unfinished"/>
+        <translation>Tavavaates</translation>
     </message>
     <message>
         <source>Displays talking status in system tray</source>
-        <translation type="unfinished"/>
+        <translation>Näitab kõnelemise staatust süsteemisalve ikoonil</translation>
     </message>
     <message>
         <source>Show talking status in tray icon</source>
-        <translation type="unfinished"/>
+        <translation>Näita kõnelemise staatust süsteemisalve ikoonil</translation>
     </message>
     <message>
         <source>This setting controls in which situations the application will stay always on top. If you select &lt;i&gt;Never&lt;/i&gt; the application will not stay on top. &lt;i&gt;Always&lt;/i&gt; will always keep the application on top. &lt;i&gt;In minimal view&lt;/i&gt; / &lt;i&gt;In normal view&lt;/i&gt; will only keep the application always on top when minimal view is activated / deactivated.</source>
@@ -4084,7 +4154,7 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Application</source>
-        <translation type="unfinished"/>
+        <translation>Rakendus</translation>
     </message>
     <message>
         <source>Adds user and channel context menus into the menu bar</source>
@@ -4092,11 +4162,11 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Tray Icon</source>
-        <translation type="unfinished"/>
+        <translation>Süsteemisalve ikoon</translation>
     </message>
     <message>
         <source>Channel Tree</source>
-        <translation type="unfinished"/>
+        <translation>Kanalite puu</translation>
     </message>
     <message>
         <source>Use selected item as the chat bar target</source>
@@ -4112,7 +4182,7 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Theme</source>
-        <translation type="unfinished"/>
+        <translation>Teema</translation>
     </message>
     <message>
         <source>Theme to use to style the user interface</source>
@@ -4124,11 +4194,11 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>User Dragging</source>
-        <translation type="unfinished"/>
+        <translation>Kasutaja lohistamine</translation>
     </message>
     <message>
         <source>This changes the behavior when moving users.</source>
-        <translation type="unfinished"/>
+        <translation>See muudab kasutajate liigutamise käitumist.</translation>
     </message>
     <message>
         <source>This sets the behavior of user drags; it can be used to prevent accidental dragging. &lt;i&gt;Move&lt;/i&gt; moves the user without prompting. &lt;i&gt;Do Nothing&lt;/i&gt; does nothing and prints an error message. &lt;i&gt;Ask&lt;/i&gt; uses a message box to confirm if you really wanted to move the user.</source>
@@ -4148,11 +4218,11 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Lock layout</source>
-        <translation type="unfinished"/>
+        <translation>Lukusta paigutus</translation>
     </message>
     <message>
         <source>Talking UI</source>
-        <translation type="unfinished"/>
+        <translation>Kõnelemise kasutajaliides</translation>
     </message>
     <message>
         <source>A user that is silent for the given amount of seconds will be removed from the Talkin UI.</source>
@@ -4160,7 +4230,7 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Remove silent user after</source>
-        <translation type="unfinished"/>
+        <translation>Eemalda vaikne kasutaja pärast</translation>
     </message>
     <message>
         <source>If this is checked, the local user (yourself) will always be visible in the TalkingUI (regardless of talking state).</source>
@@ -4168,7 +4238,7 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Always keep local user visible</source>
-        <translation type="unfinished"/>
+        <translation>Hoia kohalik aktiivne kõneleja alati nähtaval</translation>
     </message>
     <message>
         <source>How many characters from the original name to display at the beginning of an abbreviated name.</source>
@@ -4180,11 +4250,11 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Channel separator</source>
-        <translation type="unfinished"/>
+        <translation>Kanalite eraldaja</translation>
     </message>
     <message>
         <source>Abbreviated prefix characters</source>
-        <translation type="unfinished"/>
+        <translation>Lühendatud eesliidese märgid</translation>
     </message>
     <message>
         <source>The names of how many parent channels should be included in the channel&apos;s name when displaying it in the TalkingUI?</source>
@@ -4208,11 +4278,11 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Channel hierarchy depth</source>
-        <translation type="unfinished"/>
+        <translation>Kanali hierarhia sügavus</translation>
     </message>
     <message>
         <source>Abbreviation replacement</source>
-        <translation type="unfinished"/>
+        <translation>Lühendi asendus</translation>
     </message>
     <message>
         <source>Whether the channel (hierarchy) name should be abbreviated, if it exceeds the specified maximum length.</source>
@@ -4220,7 +4290,7 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Abbreviate channel names</source>
-        <translation type="unfinished"/>
+        <translation>Lühenda kanali nimesid</translation>
     </message>
     <message>
         <source>The preferred maximum length of a channel (hierarchy) name in the Talking UI. Note that this is not a hard limit though.</source>
@@ -4228,7 +4298,7 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Max. channel name length</source>
-        <translation type="unfinished"/>
+        <translation>Maks. kanali nime pikkus</translation>
     </message>
     <message>
         <source>Relative font size to use in the Talking UI in percent.</source>
@@ -4236,7 +4306,7 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Rel. font size (%)</source>
-        <translation type="unfinished"/>
+        <translation>Suhteline teksti suurus (%)</translation>
     </message>
     <message>
         <source>String that gets used instead of the cut-out part of an abbreviated name.</source>
@@ -4244,7 +4314,7 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Prefix character count</source>
-        <translation type="unfinished"/>
+        <translation>Eesliite märkide arv</translation>
     </message>
     <message>
         <source>Postfix character count</source>
@@ -4252,11 +4322,11 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Maximum name length</source>
-        <translation type="unfinished"/>
+        <translation>Maksimaalne nime pikkus</translation>
     </message>
     <message>
         <source>Relative font size</source>
-        <translation type="unfinished"/>
+        <translation>Suhteline teksti suurus</translation>
     </message>
     <message>
         <source>Always on top</source>
@@ -4264,19 +4334,19 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Channel dragging</source>
-        <translation type="unfinished"/>
+        <translation>Kanali lohistamine</translation>
     </message>
     <message>
         <source>Automatically expand channels when</source>
-        <translation type="unfinished"/>
+        <translation>Laienda kanaleid automaatselt kui</translation>
     </message>
     <message>
         <source>User dragging behavior</source>
-        <translation type="unfinished"/>
+        <translation>Kasutaja lohistamise käitumine</translation>
     </message>
     <message>
         <source>Silent user lifetime</source>
-        <translation type="unfinished"/>
+        <translation>Vaikse kasutaja elupikkus</translation>
     </message>
     <message>
         <source>Show the local volume adjustment for each user (if any).</source>
@@ -4294,6 +4364,14 @@ The setting only applies for new messages, the already shown ones will retain th
         <source>Show local user&apos;s listeners (ears)</source>
         <translation type="unfinished"/>
     </message>
+    <message>
+        <source>Hide the username for each user if they have a nickname.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Show nicknames only</source>
+        <translation>Näita ainult hüüdnimesid</translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -4304,7 +4382,7 @@ The setting only applies for new messages, the already shown ones will retain th
     <message>
         <source>Push-to-Talk</source>
         <comment>Global Shortcut</comment>
-        <translation type="unfinished"/>
+        <translation>Rääkimiseks vajuta</translation>
     </message>
     <message>
         <source>Push and hold this button to send voice.</source>
@@ -4329,17 +4407,17 @@ The setting only applies for new messages, the already shown ones will retain th
     <message>
         <source>Push-to-Mute</source>
         <comment>Global Shortcut</comment>
-        <translation type="unfinished"/>
+        <translation>Vaigistamiseks vajuta</translation>
     </message>
     <message>
         <source>Join Channel</source>
         <comment>Global Shortcut</comment>
-        <translation type="unfinished"/>
+        <translation>Liitu kanaliga</translation>
     </message>
     <message>
         <source>Toggle Overlay</source>
         <comment>Global Shortcut</comment>
-        <translation type="unfinished"/>
+        <translation>Ülepaigutuse lülitamine</translation>
     </message>
     <message>
         <source>Toggle state of in-game overlay.</source>
@@ -4349,41 +4427,41 @@ The setting only applies for new messages, the already shown ones will retain th
     <message>
         <source>Toggle Minimal</source>
         <comment>Global Shortcut</comment>
-        <translation type="unfinished"/>
+        <translation>Minimaalse lülitamine</translation>
     </message>
     <message>
         <source>Volume Up (+10%)</source>
         <comment>Global Shortcut</comment>
-        <translation type="unfinished"/>
+        <translation>Heli valjemaks (+10%)</translation>
     </message>
     <message>
         <source>Volume Down (-10%)</source>
         <comment>Global Shortcut</comment>
-        <translation type="unfinished"/>
+        <translation>Heli vaiksemaks (-10%)</translation>
     </message>
     <message>
         <source>Mumble</source>
-        <translation type="unfinished"/>
+        <translation>Mumble</translation>
     </message>
     <message>
         <source>Mumble -- %1</source>
-        <translation type="unfinished"/>
+        <translation>Mumble -- %1</translation>
     </message>
     <message>
         <source>&amp;Window</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Aken</translation>
     </message>
     <message>
         <source>Minimize</source>
-        <translation type="unfinished"/>
+        <translation>Minimeeri</translation>
     </message>
     <message>
         <source>Ctrl+M</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+M</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished"/>
+        <translation>Sulge</translation>
     </message>
     <message>
         <source>Mumble is currently connected to a server. Do you want to Close or Minimize it?</source>
@@ -4427,11 +4505,11 @@ The setting only applies for new messages, the already shown ones will retain th
     <message>
         <source>&lt;center&gt;Not connected&lt;/center&gt;</source>
         <oldsource>Not connected</oldsource>
-        <translation type="unfinished"/>
+        <translation>&lt;center&gt;Pole ühendatud&lt;/center&gt;</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished"/>
+        <translation>Tühjenda</translation>
     </message>
     <message>
         <source>Opening URL %1</source>
@@ -4463,15 +4541,15 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Enter username</source>
-        <translation type="unfinished"/>
+        <translation>Sisesta kasutajanimi</translation>
     </message>
     <message>
         <source>Connecting to server %1.</source>
-        <translation type="unfinished"/>
+        <translation>Serveriga %1 ühendumine.</translation>
     </message>
     <message>
         <source>Reconnecting.</source>
-        <translation type="unfinished"/>
+        <translation>Taasühendamine.</translation>
     </message>
     <message>
         <source>Transmit Mode set to Continuous</source>
@@ -4479,7 +4557,7 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>&lt;p&gt;%1 (%2)&lt;br /&gt;%3&lt;/p&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;p&gt;%1 (%2)&lt;br /&gt;%3&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Voice channel&lt;/h2&gt;&lt;p&gt;Encrypted with 128 bit OCB-AES128&lt;br /&gt;%1 ms average latency (%4 deviation)&lt;/p&gt;</source>
@@ -4495,7 +4573,7 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>&lt;h2&gt;Version&lt;/h2&gt;&lt;p&gt;Protocol %1&lt;/p&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;h2&gt;Versioon&lt;/h2&gt;&lt;p&gt;Protokol %1&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;No build information or OS version available&lt;/p&gt;</source>
@@ -4551,11 +4629,11 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Message to channel %1</source>
-        <translation type="unfinished"/>
+        <translation>Sõnum kanalisse %1</translation>
     </message>
     <message>
         <source>Connected.</source>
-        <translation type="unfinished"/>
+        <translation>Ühendatud.</translation>
     </message>
     <message>
         <source>&lt;li&gt;Expected certificate digest (SHA-1):	%1&lt;/li&gt;</source>
@@ -4571,11 +4649,11 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>SSL Version mismatch</source>
-        <translation type="unfinished"/>
+        <translation>SSL versioonid ei kattu</translation>
     </message>
     <message>
         <source>Server connection failed.</source>
-        <translation type="unfinished"/>
+        <translation>Ühendumine serveriga ebaõnnestus.</translation>
     </message>
     <message>
         <source>&lt;center&gt;Type message to channel &apos;%1&apos; here&lt;/center&gt;</source>
@@ -4589,27 +4667,27 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Choose image file</source>
-        <translation type="unfinished"/>
+        <translation> pildifail</translation>
     </message>
     <message>
         <source>Failed to load image</source>
-        <translation type="unfinished"/>
+        <translation>Pildi laadimine ebaõnnestus</translation>
     </message>
     <message>
         <source>Could not open file for reading.</source>
-        <translation type="unfinished"/>
+        <translation>Faili lugemine ebaõnnestus.</translation>
     </message>
     <message>
         <source>Image format not recognized.</source>
-        <translation type="unfinished"/>
+        <translation>Pildivormingut ei tuvastatud.</translation>
     </message>
     <message>
         <source>&amp;User</source>
-        <translation type="unfinished"/>
+        <translation>K&amp;asutaja</translation>
     </message>
     <message>
         <source>&amp;Channel</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Kanal</translation>
     </message>
     <message>
         <source>Use in conjunction with Whisper to.</source>
@@ -4624,7 +4702,7 @@ The setting only applies for new messages, the already shown ones will retain th
     <message>
         <source>Link Channel</source>
         <comment>Global Shortcut</comment>
-        <translation type="unfinished"/>
+        <translation>Kanali link</translation>
     </message>
     <message>
         <source>Cycle Transmit Mode</source>
@@ -4649,7 +4727,7 @@ The setting only applies for new messages, the already shown ones will retain th
     <message>
         <source>Send Text Message</source>
         <comment>Global Shortcut</comment>
-        <translation type="unfinished"/>
+        <translation>Saada tekstisõnum</translation>
     </message>
     <message>
         <source>Send Clipboard Text Message</source>
@@ -4663,39 +4741,39 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Continuous</source>
-        <translation type="unfinished"/>
+        <translation>Jätkuv</translation>
     </message>
     <message>
         <source>Voice Activity</source>
-        <translation type="unfinished"/>
+        <translation>Kõne tegevus</translation>
     </message>
     <message>
         <source>Push-to-Talk</source>
-        <translation type="unfinished"/>
+        <translation>Rääkimiseks vajuta</translation>
     </message>
     <message>
         <source>Mumble - Minimal View -- %1</source>
-        <translation type="unfinished"/>
+        <translation>Mumble - Minimaalne vaade -- %1</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished"/>
+        <translation>Loobu</translation>
     </message>
     <message>
         <source>Save Image As...</source>
-        <translation type="unfinished"/>
+        <translation>Salvesta pilt kui...</translation>
     </message>
     <message>
         <source>Save Image File</source>
-        <translation type="unfinished"/>
+        <translation>Salvesta pildifail</translation>
     </message>
     <message>
         <source>Could not save image: %1</source>
-        <translation type="unfinished"/>
+        <translation>Pildi avamine ebaõnnestus: %1</translation>
     </message>
     <message>
         <source>Change your comment</source>
-        <translation type="unfinished"/>
+        <translation>Muuda oma kommentaari</translation>
     </message>
     <message>
         <source>Transmit Mode set to Voice Activity</source>
@@ -4711,27 +4789,27 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>UDP Statistics</source>
-        <translation type="unfinished"/>
+        <translation>UDP statistika</translation>
     </message>
     <message>
         <source>To Server</source>
-        <translation type="unfinished"/>
+        <translation>Serverisse</translation>
     </message>
     <message>
         <source>From Server</source>
-        <translation type="unfinished"/>
+        <translation>Serverist</translation>
     </message>
     <message>
         <source>Good</source>
-        <translation type="unfinished"/>
+        <translation>Hea</translation>
     </message>
     <message>
         <source>Late</source>
-        <translation type="unfinished"/>
+        <translation>Hilines</translation>
     </message>
     <message>
         <source>Lost</source>
-        <translation type="unfinished"/>
+        <translation>Kadunud</translation>
     </message>
     <message>
         <source>Resync</source>
@@ -4743,19 +4821,19 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Mumble Server Information</source>
-        <translation type="unfinished"/>
+        <translation>Mumble Serveri info</translation>
     </message>
     <message>
         <source>&amp;View Certificate</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Vaata sertifikaati</translation>
     </message>
     <message>
         <source>Enter reason</source>
-        <translation type="unfinished"/>
+        <translation>Sisesta põhjus</translation>
     </message>
     <message>
         <source>Sending message to %1</source>
-        <translation type="unfinished"/>
+        <translation>Sõnumi saatmine: %1</translation>
     </message>
     <message>
         <source>To %1: %2</source>
@@ -4763,7 +4841,7 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Message to %1</source>
-        <translation type="unfinished"/>
+        <translation>Sõnum kasutajale %1</translation>
     </message>
     <message>
         <source>Are you sure you want to reset the comment of user %1?</source>
@@ -4800,7 +4878,7 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Muted.</source>
-        <translation type="unfinished"/>
+        <translation>Vaigistatud.</translation>
     </message>
     <message>
         <source>Muted and deafened.</source>
@@ -4824,7 +4902,7 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>About Qt</source>
-        <translation type="unfinished"/>
+        <translation>Qt info</translation>
     </message>
     <message>
         <source>SSL Verification failed: %1</source>
@@ -4848,11 +4926,11 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Disconnected from server.</source>
-        <translation type="unfinished"/>
+        <translation>Serverist lahti ühendamine.</translation>
     </message>
     <message>
         <source>Invalid username</source>
-        <translation type="unfinished"/>
+        <translation>Vigane kasutajanimi</translation>
     </message>
     <message>
         <source>You connected with an invalid username, please try another one.</source>
@@ -4860,7 +4938,7 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Username in use</source>
-        <translation type="unfinished"/>
+        <translation>Kasutajanimi on juba kasutuses</translation>
     </message>
     <message>
         <source>That username is already in use, please try another username.</source>
@@ -4868,7 +4946,7 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Wrong certificate or password</source>
-        <translation type="unfinished"/>
+        <translation>Vale sertifikaat või parool</translation>
     </message>
     <message>
         <source>Wrong certificate or password for registered user. If you are
@@ -4878,7 +4956,7 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>Wrong password</source>
-        <translation type="unfinished"/>
+        <translation>Vale parool</translation>
     </message>
     <message>
         <source>Wrong server password for unregistered user account, please try again.</source>
@@ -4890,15 +4968,15 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>C&amp;onfigure</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Seadista</translation>
     </message>
     <message>
         <source>&amp;Help</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Abiinfo</translation>
     </message>
     <message>
         <source>Log</source>
-        <translation type="unfinished"/>
+        <translation>Logi</translation>
     </message>
     <message>
         <source>This shows all recent activity. Connecting to servers, errors and information messages all show up here.&lt;br /&gt;To configure exactly which messages show up here, use the &lt;b&gt;Settings&lt;/b&gt; command from the menu.</source>
@@ -4906,39 +4984,39 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>&amp;Quit Mumble</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Sulge Mumble</translation>
     </message>
     <message>
         <source>Closes the program</source>
-        <translation type="unfinished"/>
+        <translation>Sulgeb programmi</translation>
     </message>
     <message>
         <source>Exits the application.</source>
-        <translation type="unfinished"/>
+        <translation>Väljub rakendusest.</translation>
     </message>
     <message>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <source>Open the server connection dialog</source>
-        <translation type="unfinished"/>
+        <translation>Ava serveri ühenduse dialoogi</translation>
     </message>
     <message>
         <source>&amp;Disconnect</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Ühenda lahti</translation>
     </message>
     <message>
         <source>Disconnect from server</source>
-        <translation type="unfinished"/>
+        <translation>Serverist lahti ühendatud</translation>
     </message>
     <message>
         <source>Disconnects you from the server.</source>
-        <translation type="unfinished"/>
+        <translation>Ühendab sind serverist lahti.</translation>
     </message>
     <message>
         <source>Show information about the server connection</source>
-        <translation type="unfinished"/>
+        <translation>Näitab infot serveri ühenduse kohta</translation>
     </message>
     <message>
         <source>This will show extended information about the connection to the server.</source>
@@ -4946,7 +5024,7 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>&amp;Mute</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Vaigista</translation>
     </message>
     <message>
         <source>&amp;Deafen</source>
@@ -4954,31 +5032,31 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>&amp;Local Mute</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Kohalik vaigistamine</translation>
     </message>
     <message>
         <source>Send a Text Message</source>
-        <translation type="unfinished"/>
+        <translation>Saada tekstisõnum</translation>
     </message>
     <message>
         <source>Sends a text message to another user.</source>
-        <translation type="unfinished"/>
+        <translation>Saadab tekstisõnumi teisele kasutajale.</translation>
     </message>
     <message>
         <source>Add new channel</source>
-        <translation type="unfinished"/>
+        <translation>Lisa uus kanal</translation>
     </message>
     <message>
         <source>This adds a new sub-channel to the currently selected channel.</source>
-        <translation type="unfinished"/>
+        <translation>See lisab praegu valitud kanalile alamkanali.</translation>
     </message>
     <message>
         <source>Remove channel</source>
-        <translation type="unfinished"/>
+        <translation>Eemalda kanal</translation>
     </message>
     <message>
         <source>This removes a channel and all sub-channels.</source>
-        <translation type="unfinished"/>
+        <translation>See eemaldab kanali ja kõik selle alamkanalid.</translation>
     </message>
     <message>
         <source>Edit Groups and ACL for channel</source>
@@ -4990,7 +5068,7 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>&amp;Link</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Link</translation>
     </message>
     <message>
         <source>Link your channel to another channel</source>
@@ -5002,7 +5080,7 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>Chatbar</source>
-        <translation type="unfinished"/>
+        <translation>Vestluse riba</translation>
     </message>
     <message>
         <source>Shows a dialog of registered servers, and also allows quick-connect.</source>
@@ -5018,7 +5096,7 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>Mute user</source>
-        <translation type="unfinished"/>
+        <translation>Vaigista kasutaja</translation>
     </message>
     <message>
         <source>Mute or unmute user on server. Unmuting a deafened user will also undeafen them.</source>
@@ -5056,7 +5134,7 @@ Otherwise abort and check your certificate and username.</source>
     <message>
         <source>&amp;Unlink</source>
         <comment>Channel</comment>
-        <translation type="unfinished"/>
+        <translation>&amp;Eemalda link</translation>
     </message>
     <message>
         <source>Unlink your channel from another channel</source>
@@ -5076,7 +5154,7 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>&amp;Reset</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Nulli</translation>
     </message>
     <message>
         <source>Reset audio preprocessor</source>
@@ -5140,7 +5218,7 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>Configure Mumble</source>
-        <translation type="unfinished"/>
+        <translation>Mumble seadistamine</translation>
     </message>
     <message>
         <source>Allows you to change most settings for Mumble.</source>
@@ -5156,11 +5234,11 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>&amp;What&apos;s This?</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Mis see on?</translation>
     </message>
     <message>
         <source>Enter What&apos;s This? mode</source>
-        <translation type="unfinished"/>
+        <translation>Sisene Mis see on? režiimi</translation>
     </message>
     <message>
         <source>Click this to enter &quot;What&apos;s This?&quot; mode. Your cursor will turn into a question mark. Click on any button, menu choice or area to show a description of what it is.</source>
@@ -5168,7 +5246,7 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>Information about Mumble</source>
-        <translation type="unfinished"/>
+        <translation>Info Mumble kohta</translation>
     </message>
     <message>
         <source>Shows a small dialog with information and license for Mumble.</source>
@@ -5176,7 +5254,7 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>Information about Speex</source>
-        <translation type="unfinished"/>
+        <translation>Info Speexi kohta</translation>
     </message>
     <message>
         <source>Shows a small dialog with information about Speex.</source>
@@ -5184,7 +5262,7 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>Information about Qt</source>
-        <translation type="unfinished"/>
+        <translation>Info Qt kohta</translation>
     </message>
     <message>
         <source>Shows a small dialog with information about Qt.</source>
@@ -5192,7 +5270,7 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>Check for &amp;Updates</source>
-        <translation type="unfinished"/>
+        <translation>Otsi värskendusi</translation>
     </message>
     <message>
         <source>Check for new version of Mumble</source>
@@ -5216,7 +5294,7 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>Register user on server</source>
-        <translation type="unfinished"/>
+        <translation>Registreeri kasutaja serveris</translation>
     </message>
     <message>
         <source>This will permanently register the user on the server.</source>
@@ -5224,11 +5302,11 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>Add &amp;Friend</source>
-        <translation type="unfinished"/>
+        <translation>Lisa &amp;sõber</translation>
     </message>
     <message>
         <source>Adds a user as your friend.</source>
-        <translation type="unfinished"/>
+        <translation>Lisab kasutaja sinu sõbraks.</translation>
     </message>
     <message>
         <source>This will add the user as a friend, so you can recognize him on this and other servers.</source>
@@ -5236,11 +5314,11 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>&amp;Remove Friend</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Eemalda sõber</translation>
     </message>
     <message>
         <source>Removes a user from your friends.</source>
-        <translation type="unfinished"/>
+        <translation>Eemaldab kasutaja sinu sõprade hulgast.</translation>
     </message>
     <message>
         <source>This will remove a user from your friends list.</source>
@@ -5248,11 +5326,11 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>&amp;Update Friend</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Uuenda sõpra</translation>
     </message>
     <message>
         <source>Update name of your friend.</source>
-        <translation type="unfinished"/>
+        <translation>Uuenda oma sõbra nime.</translation>
     </message>
     <message>
         <source>Your friend uses a different name than what is in your database. This will update the name.</source>
@@ -5272,7 +5350,7 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>&amp;Minimal View</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Minimaalne vaade</translation>
     </message>
     <message>
         <source>Toggle minimal window modes</source>
@@ -5336,11 +5414,11 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>Welcome message: %1</source>
-        <translation type="unfinished"/>
+        <translation>Teretulemast sõnum: %1</translation>
     </message>
     <message>
         <source>Mumble: %1</source>
-        <translation type="unfinished"/>
+        <translation>Mumble: %1</translation>
     </message>
     <message>
         <source>You were denied %1 privileges in %2.</source>
@@ -5368,23 +5446,23 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>You need a certificate to perform this operation.</source>
-        <translation type="unfinished"/>
+        <translation>Selle tegevuse sooritamiseks vajad sertifikaati.</translation>
     </message>
     <message>
         <source>%1 does not have a certificate.</source>
-        <translation type="unfinished"/>
+        <translation>Kasutajal %1 pole sertifikaati.</translation>
     </message>
     <message>
         <source>Invalid username: %1.</source>
-        <translation type="unfinished"/>
+        <translation>Vigane kasutajanimi: %1.</translation>
     </message>
     <message>
         <source>Invalid username.</source>
-        <translation type="unfinished"/>
+        <translation>Vigane kasutajanimi.</translation>
     </message>
     <message>
         <source>Channel is full.</source>
-        <translation type="unfinished"/>
+        <translation>Kanal on täis.</translation>
     </message>
     <message>
         <source>Channel nesting limit reached.</source>
@@ -5396,7 +5474,7 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>Permission denied.</source>
-        <translation type="unfinished"/>
+        <translation>Ligipääs on keelatud.</translation>
     </message>
     <message>
         <source>%1 connected and entered channel.</source>
@@ -5404,23 +5482,23 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>%1 connected.</source>
-        <translation type="unfinished"/>
+        <translation>%1 ühendatud.</translation>
     </message>
     <message>
         <source>%1 is now muted.</source>
-        <translation type="unfinished"/>
+        <translation>%1 on nüüd vaigistatud.</translation>
     </message>
     <message>
         <source>%1 is now unmuted.</source>
-        <translation type="unfinished"/>
+        <translation>%1 pole enam vaigistatud.</translation>
     </message>
     <message>
         <source>Recording started</source>
-        <translation type="unfinished"/>
+        <translation>Alustati salvestamist</translation>
     </message>
     <message>
         <source>Recording stopped</source>
-        <translation type="unfinished"/>
+        <translation>Salvestamine peatati</translation>
     </message>
     <message>
         <source>%1 started recording.</source>
@@ -5518,7 +5596,7 @@ Otherwise abort and check your certificate and username.</source>
     <message>
         <source>Server</source>
         <comment>message from</comment>
-        <translation type="unfinished"/>
+        <translation>Server</translation>
     </message>
     <message>
         <source>Failed to load Opus, it will not be available for audio encoding/decoding.</source>
@@ -5603,11 +5681,11 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>%1 entered channel.</source>
-        <translation type="unfinished"/>
+        <translation>%1 sisenes kanalisse.</translation>
     </message>
     <message>
         <source>Server connection rejected: %1.</source>
-        <translation type="unfinished"/>
+        <translation>Serveri ühendusest keelduti: %1.</translation>
     </message>
     <message>
         <source>Denied: %1.</source>
@@ -5623,7 +5701,7 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>Message from %1</source>
-        <translation type="unfinished"/>
+        <translation>Sõnum kasutajalt %1</translation>
     </message>
     <message>
         <source>You have User Dragging set to &quot;Do Nothing&quot; so the user wasn&apos;t moved.</source>
@@ -5639,29 +5717,6 @@ Otherwise abort and check your certificate and username.</source>
     </message>
     <message>
         <source>Remote controlling Mumble:
-
-</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>Usage: mumble rpc &lt;action&gt; [options]
-
-It is possible to remote control a running instance of Mumble by using
-the 'mumble rpc' command.
-
-Valid actions are:
-  mute
-                Mute self
-  unmute
-                Unmute self
-  togglemute
-                Toggle self-mute status
-  deaf
-                Deafen self
-  undeaf
-                Undeafen self
-  toggledeaf
-                Toggle self-deafen status
 
 </source>
         <translation type="unfinished"/>
@@ -5720,7 +5775,7 @@ Valid actions are:
     </message>
     <message>
         <source>S&amp;erver</source>
-        <translation type="unfinished"/>
+        <translation>S&amp;erver</translation>
     </message>
     <message>
         <source>&amp;Self</source>
@@ -5732,39 +5787,39 @@ Valid actions are:
     </message>
     <message>
         <source>Register yourself on the server</source>
-        <translation type="unfinished"/>
+        <translation>Registreeri end serveris</translation>
     </message>
     <message>
         <source>Change your avatar image on this server</source>
-        <translation type="unfinished"/>
+        <translation>Muuda oma avatari selles serveris</translation>
     </message>
     <message>
         <source>&amp;Remove Avatar</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Eemalda avatar</translation>
     </message>
     <message>
         <source>Remove currently defined avatar image.</source>
-        <translation type="unfinished"/>
+        <translation>Eemalda praegune avatari pilt.</translation>
     </message>
     <message>
         <source>Icon Toolbar</source>
-        <translation type="unfinished"/>
+        <translation>Ikooni tööriistariba</translation>
     </message>
     <message>
         <source>Change your own comment</source>
-        <translation type="unfinished"/>
+        <translation>Muuda oma kommentaari</translation>
     </message>
     <message>
         <source>Recording</source>
-        <translation type="unfinished"/>
+        <translation>Salvestamine</translation>
     </message>
     <message>
         <source>Priority Speaker</source>
-        <translation type="unfinished"/>
+        <translation>Esiletõstetud kasutaja</translation>
     </message>
     <message>
         <source>&amp;Copy URL</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Kopeeri URL</translation>
     </message>
     <message>
         <source>Copies a link to this channel to the clipboard.</source>
@@ -5772,7 +5827,7 @@ Valid actions are:
     </message>
     <message>
         <source>Ignore Messages</source>
-        <translation type="unfinished"/>
+        <translation>Ignoreeri sõnumeid</translation>
     </message>
     <message>
         <source>Locally ignore user&apos;s text chat messages.</source>
@@ -5792,7 +5847,7 @@ Valid actions are:
     </message>
     <message>
         <source>&amp;Filter on/off</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Filter sees/väljas</translation>
     </message>
     <message>
         <source>Toggle the channel filter (Ctrl+F)</source>
@@ -5807,7 +5862,7 @@ the channel&apos;s context menu.</source>
     </message>
     <message>
         <source>Ctrl+F</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+F</translation>
     </message>
     <message>
         <source>&amp;Hide Channel when Filtering</source>
@@ -5827,7 +5882,7 @@ the channel&apos;s context menu.</source>
     </message>
     <message>
         <source>&amp;Developer</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Arendaja</translation>
     </message>
     <message>
         <source>&amp;Hide Mumble</source>
@@ -5851,7 +5906,7 @@ the channel&apos;s context menu.</source>
     </message>
     <message>
         <source>&amp;Connect...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Ühenda...</translation>
     </message>
     <message>
         <source>&amp;Ban list...</source>
@@ -5859,7 +5914,7 @@ the channel&apos;s context menu.</source>
     </message>
     <message>
         <source>&amp;Information...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Info...</translation>
     </message>
     <message>
         <source>&amp;Kick...</source>
@@ -5867,7 +5922,7 @@ the channel&apos;s context menu.</source>
     </message>
     <message>
         <source>&amp;Ban...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Bänni...</translation>
     </message>
     <message>
         <source>Local Volume Adjustment...</source>
@@ -5875,27 +5930,27 @@ the channel&apos;s context menu.</source>
     </message>
     <message>
         <source>Send &amp;Message...</source>
-        <translation type="unfinished"/>
+        <translation>Saada sõnu&amp;m...</translation>
     </message>
     <message>
         <source>&amp;Add...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Lisa...</translation>
     </message>
     <message>
         <source>&amp;Remove...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Eemalda...</translation>
     </message>
     <message>
         <source>&amp;Edit...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Muuda...</translation>
     </message>
     <message>
         <source>Audio S&amp;tatistics...</source>
-        <translation type="unfinished"/>
+        <translation>Heli s&amp;tatistika...</translation>
     </message>
     <message>
         <source>&amp;Settings...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Seaded...</translation>
     </message>
     <message>
         <source>&amp;Audio Wizard...</source>
@@ -5903,35 +5958,35 @@ the channel&apos;s context menu.</source>
     </message>
     <message>
         <source>Developer &amp;Console...</source>
-        <translation type="unfinished"/>
+        <translation>Arendaja &amp;konsool...</translation>
     </message>
     <message>
         <source>&amp;About...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Info...</translation>
     </message>
     <message>
         <source>About &amp;Speex...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Speexi info...</translation>
     </message>
     <message>
         <source>About &amp;Qt...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Qt info...</translation>
     </message>
     <message>
         <source>&amp;Certificate Wizard...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Sertifikaadi abimees...</translation>
     </message>
     <message>
         <source>&amp;Register...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Registreeru...</translation>
     </message>
     <message>
         <source>Registered &amp;Users...</source>
-        <translation type="unfinished"/>
+        <translation>Registreerunud &amp;kasutajad...</translation>
     </message>
     <message>
         <source>Change &amp;Avatar...</source>
-        <translation type="unfinished"/>
+        <translation>Muuda &amp;avatari...</translation>
     </message>
     <message>
         <source>&amp;Access Tokens...</source>
@@ -5939,31 +5994,31 @@ the channel&apos;s context menu.</source>
     </message>
     <message>
         <source>Reset &amp;Comment...</source>
-        <translation type="unfinished"/>
+        <translation>Nulli &amp;kommentaar...</translation>
     </message>
     <message>
         <source>Reset &amp;Avatar...</source>
-        <translation type="unfinished"/>
+        <translation>Nulli &amp;avatar...</translation>
     </message>
     <message>
         <source>View Comment...</source>
-        <translation type="unfinished"/>
+        <translation>Vaata kommentaari...</translation>
     </message>
     <message>
         <source>&amp;Change Comment...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Muuda kommentaari...</translation>
     </message>
     <message>
         <source>R&amp;egister...</source>
-        <translation type="unfinished"/>
+        <translation>R&amp;egistreeru...</translation>
     </message>
     <message>
         <source>Show</source>
-        <translation type="unfinished"/>
+        <translation>Näita</translation>
     </message>
     <message>
         <source>Shows the main Mumble window.</source>
-        <translation type="unfinished"/>
+        <translation>Näitab peamist Mumble akent.</translation>
     </message>
     <message>
         <source>Server sync protocol violation. No user profile received.</source>
@@ -5975,7 +6030,7 @@ the channel&apos;s context menu.</source>
     </message>
     <message>
         <source>Listen to channel</source>
-        <translation type="unfinished"/>
+        <translation>Luula kanalit</translation>
     </message>
     <message>
         <source>Listen to this channel without joining it</source>
@@ -5987,11 +6042,11 @@ the channel&apos;s context menu.</source>
     </message>
     <message>
         <source>&amp;Listener</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Kuulaja</translation>
     </message>
     <message>
         <source>No action available...</source>
-        <translation type="unfinished"/>
+        <translation>Ühtegi tegevust pole saadaval...</translation>
     </message>
     <message>
         <source>Unable to %1 into %2 - Adding the respective access (password) token might grant you access.</source>
@@ -6023,7 +6078,7 @@ the channel&apos;s context menu.</source>
     </message>
     <message>
         <source>Talking UI</source>
-        <translation type="unfinished"/>
+        <translation>Kõnelemise kasutajaliides</translation>
     </message>
     <message>
         <source>Toggles the visibility of the TalkingUI.</source>
@@ -6039,15 +6094,15 @@ the channel&apos;s context menu.</source>
     </message>
     <message>
         <source>Channels and users</source>
-        <translation type="unfinished"/>
+        <translation>Kanalid ja kasutajad</translation>
     </message>
     <message>
         <source>Activity log</source>
-        <translation type="unfinished"/>
+        <translation>Tegevuse logi</translation>
     </message>
     <message>
         <source>Chat message</source>
-        <translation type="unfinished"/>
+        <translation>Vestluse sõnum</translation>
     </message>
     <message>
         <source>Disable Text-To-Speech</source>
@@ -6063,23 +6118,23 @@ the channel&apos;s context menu.</source>
     </message>
     <message>
         <source>Tree</source>
-        <translation type="unfinished"/>
+        <translation>Puu</translation>
     </message>
     <message>
         <source>Channel</source>
-        <translation type="unfinished"/>
+        <translation>Kanal</translation>
     </message>
     <message>
         <source>Private</source>
-        <translation type="unfinished"/>
+        <translation>Privaatne</translation>
     </message>
     <message>
         <source>%1: %2</source>
-        <translation type="unfinished"/>
+        <translation>%1: %2</translation>
     </message>
     <message>
         <source>(%1) %2</source>
-        <translation type="unfinished"/>
+        <translation>(%1) %2</translation>
     </message>
     <message>
         <source>Configuration file %1 does not exist or is not writable.
@@ -6132,6 +6187,45 @@ Valid options are:
     <message>
         <source>Hide/show main window</source>
         <comment>Global Shortcut</comment>
+        <translation>Peida/Näita peaakent</translation>
+    </message>
+    <message>
+        <source>&amp;Set Nickname...</source>
+        <translation>&amp;Määra hüüdnimi...</translation>
+    </message>
+    <message>
+        <source>Set a local nickname</source>
+        <translation>Määra kohalik hüüdnimi</translation>
+    </message>
+    <message>
+        <source>Sets a local nickname for another user.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Usage: mumble rpc &lt;action&gt; [options]
+
+It is possible to remote control a running instance of Mumble by using
+the 'mumble rpc' command.
+
+Valid actions are:
+  mute
+                Mute self
+  unmute
+                Unmute self
+  togglemute
+                Toggle self-mute status
+  deaf
+                Deafen self
+  undeaf
+                Undeafen self
+  toggledeaf
+                Toggle self-deafen status
+  starttalking
+                Start talking
+  stoptalking
+                Stop talking
+
+</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -6143,59 +6237,59 @@ Valid options are:
     </message>
     <message>
         <source>Position</source>
-        <translation type="unfinished"/>
+        <translation>Asukoht</translation>
     </message>
     <message>
         <source>X</source>
-        <translation type="unfinished"/>
+        <translation>X</translation>
     </message>
     <message>
         <source>Y</source>
-        <translation type="unfinished"/>
+        <translation>Y</translation>
     </message>
     <message>
         <source>Z</source>
-        <translation type="unfinished"/>
+        <translation>Z</translation>
     </message>
     <message>
         <source>m</source>
-        <translation type="unfinished"/>
+        <translation>m</translation>
     </message>
     <message>
         <source>Heading</source>
-        <translation type="unfinished"/>
+        <translation>Päis</translation>
     </message>
     <message>
         <source>Azimuth</source>
-        <translation type="unfinished"/>
+        <translation>Asimuut</translation>
     </message>
     <message>
         <source>Elevation</source>
-        <translation type="unfinished"/>
+        <translation>Kõrgus</translation>
     </message>
     <message>
         <source>°</source>
-        <translation type="unfinished"/>
+        <translation>°</translation>
     </message>
     <message>
         <source>Meta data</source>
-        <translation type="unfinished"/>
+        <translation>Metaandmed</translation>
     </message>
     <message>
         <source>Context</source>
-        <translation type="unfinished"/>
+        <translation>Kontekst</translation>
     </message>
     <message>
         <source>Identity</source>
-        <translation type="unfinished"/>
+        <translation>Identiteet</translation>
     </message>
     <message>
         <source>Set</source>
-        <translation type="unfinished"/>
+        <translation>Määra</translation>
     </message>
     <message>
         <source>State</source>
-        <translation type="unfinished"/>
+        <translation>Staatus</translation>
     </message>
     <message>
         <source>Unhinge</source>
@@ -6203,15 +6297,15 @@ Valid options are:
     </message>
     <message>
         <source>Link</source>
-        <translation type="unfinished"/>
+        <translation>Link</translation>
     </message>
     <message>
         <source>Activate</source>
-        <translation type="unfinished"/>
+        <translation>Aktiveeri</translation>
     </message>
     <message>
         <source>Display</source>
-        <translation type="unfinished"/>
+        <translation>Vaade</translation>
     </message>
     <message>
         <source>How long silent user&apos;s positions should stay marked after they have stopped talking (in seconds).</source>
@@ -6226,16 +6320,16 @@ Valid options are:
     <name>NetworkConfig</name>
     <message>
         <source>Network</source>
-        <translation type="unfinished"/>
+        <translation>Võrk</translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation type="unfinished"/>
+        <translation>Ühendus</translation>
     </message>
     <message>
         <source>Use TCP compatibility mode</source>
         <oldsource>Use TCP compatability mode</oldsource>
-        <translation type="unfinished"/>
+        <translation>Kasuta TCP ühilduvuse težiimi</translation>
     </message>
     <message>
         <source>&lt;b&gt;Enable TCP compatibility mode&lt;/b&gt;.&lt;br /&gt;This will make Mumble use only TCP when communicating with the server. This will increase overhead and cause lost packets to produce noticeable pauses in communication, so this should only be used if you are unable to use the default (which uses UDP for voice and TCP for control).</source>
@@ -6251,39 +6345,39 @@ Valid options are:
     </message>
     <message>
         <source>Reconnect automatically</source>
-        <translation type="unfinished"/>
+        <translation>Ühenda uuesti automaatselt</translation>
     </message>
     <message>
         <source>Proxy</source>
-        <translation type="unfinished"/>
+        <translation>Proksi</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished"/>
+        <translation>Liik</translation>
     </message>
     <message>
         <source>Type of proxy to connect through</source>
-        <translation type="unfinished"/>
+        <translation>Proksi liik, mille kaudu ühendada</translation>
     </message>
     <message>
         <source>Direct connection</source>
-        <translation type="unfinished"/>
+        <translation>Otseühendus</translation>
     </message>
     <message>
         <source>HTTP(S) proxy</source>
-        <translation type="unfinished"/>
+        <translation>HTTP(S) proksi</translation>
     </message>
     <message>
         <source>SOCKS5 proxy</source>
-        <translation type="unfinished"/>
+        <translation>SOCKS5 proksi</translation>
     </message>
     <message>
         <source>Hostname</source>
-        <translation type="unfinished"/>
+        <translation>Hostinimi</translation>
     </message>
     <message>
         <source>Hostname of the proxy</source>
-        <translation type="unfinished"/>
+        <translation>Proksi hostinimi</translation>
     </message>
     <message>
         <source>Force TCP mode</source>
@@ -6323,11 +6417,11 @@ Valid options are:
     </message>
     <message>
         <source>Port</source>
-        <translation type="unfinished"/>
+        <translation>Port</translation>
     </message>
     <message>
         <source>Port number of the proxy</source>
-        <translation type="unfinished"/>
+        <translation>Proksi pordi number</translation>
     </message>
     <message>
         <source>&lt;b&gt;Port number of the proxy.&lt;/b&gt;&lt;br /&gt;This field specifies the port number that the proxy expects connections on.</source>
@@ -6335,11 +6429,11 @@ Valid options are:
     </message>
     <message>
         <source>Username</source>
-        <translation type="unfinished"/>
+        <translation>Kasutajanimi</translation>
     </message>
     <message>
         <source>Username for proxy authentication</source>
-        <translation type="unfinished"/>
+        <translation>Proksi autentimise kasutajanimi</translation>
     </message>
     <message>
         <source>&lt;b&gt;Username for proxy authentication.&lt;/b&gt;&lt;br /&gt;This specifies the username you use for authenticating yourself with the proxy. In case the proxy does not use authentication, or you want to connect anonymously, simply leave this field blank.</source>
@@ -6347,11 +6441,11 @@ Valid options are:
     </message>
     <message>
         <source>Password</source>
-        <translation type="unfinished"/>
+        <translation>Parool</translation>
     </message>
     <message>
         <source>Password for proxy authentication</source>
-        <translation type="unfinished"/>
+        <translation>Proksi autentimise parool</translation>
     </message>
     <message>
         <source>&lt;b&gt;Password for proxy authentication.&lt;/b&gt;&lt;br /&gt;This specifies the password you use for authenticating yourself with the proxy. In case the proxy does not use authentication, or you want to connect anonymously, simply leave this field blank.</source>
@@ -6359,7 +6453,7 @@ Valid options are:
     </message>
     <message>
         <source>Mumble services</source>
-        <translation type="unfinished"/>
+        <translation>Mumble teenused</translation>
     </message>
     <message>
         <source>Check for new releases of Mumble automatically.</source>
@@ -6391,7 +6485,7 @@ Valid options are:
     </message>
     <message>
         <source>Submit anonymous statistics</source>
-        <translation type="unfinished"/>
+        <translation>Saada anonüümset statistikat</translation>
     </message>
     <message>
         <source>Reconnect to last used server when starting Mumble</source>
@@ -6407,7 +6501,7 @@ Valid options are:
     </message>
     <message>
         <source>Privacy</source>
-        <translation type="unfinished"/>
+        <translation>Privaatsus</translation>
     </message>
     <message>
         <source>Prevent OS information being sent to Mumble servers and web servers</source>
@@ -6435,23 +6529,23 @@ Prevents the client from sending potentially identifying information about the o
     <name>Overlay</name>
     <message>
         <source>Silent</source>
-        <translation type="unfinished"/>
+        <translation>Vaikne</translation>
     </message>
     <message>
         <source>Talking</source>
-        <translation type="unfinished"/>
+        <translation>Rääkimine</translation>
     </message>
     <message>
         <source>Whisper</source>
-        <translation type="unfinished"/>
+        <translation>Sosistamine</translation>
     </message>
     <message>
         <source>Shout</source>
-        <translation type="unfinished"/>
+        <translation>Hõikamine</translation>
     </message>
     <message>
         <source>Channel</source>
-        <translation type="unfinished"/>
+        <translation>Kanal</translation>
     </message>
     <message>
         <source>Failed to create communication with overlay at %2: %1. No overlay will be available.</source>
@@ -6462,27 +6556,27 @@ Prevents the client from sending potentially identifying information about the o
     <name>OverlayClient</name>
     <message>
         <source>Filter</source>
-        <translation type="unfinished"/>
+        <translation>Filter</translation>
     </message>
     <message>
         <source>Only talking</source>
-        <translation type="unfinished"/>
+        <translation>Ainult rääkimine</translation>
     </message>
     <message>
         <source>Talking and recently active</source>
-        <translation type="unfinished"/>
+        <translation>Rääkimine ja hiljutine tegevus</translation>
     </message>
     <message>
         <source>All in current channel</source>
-        <translation type="unfinished"/>
+        <translation>Kõik praegused kanalid</translation>
     </message>
     <message>
         <source>All in linked channels</source>
-        <translation type="unfinished"/>
+        <translation>Kõik lingitud kanalid</translation>
     </message>
     <message>
         <source>Always show yourself</source>
-        <translation type="unfinished"/>
+        <translation>Näita ennast alati</translation>
     </message>
     <message>
         <source>Configure recently active time (%1 seconds)...</source>
@@ -6490,27 +6584,27 @@ Prevents the client from sending potentially identifying information about the o
     </message>
     <message>
         <source>Columns</source>
-        <translation type="unfinished"/>
+        <translation>Veerud</translation>
     </message>
     <message>
         <source>Sort</source>
-        <translation type="unfinished"/>
+        <translation>Sorteeri</translation>
     </message>
     <message>
         <source>Alphabetically</source>
-        <translation type="unfinished"/>
+        <translation>Tähestiku järgi</translation>
     </message>
     <message>
         <source>Last state change</source>
-        <translation type="unfinished"/>
+        <translation>Viimase staatuse muudatuse järgi</translation>
     </message>
     <message>
         <source>Edit...</source>
-        <translation type="unfinished"/>
+        <translation>Muuda...</translation>
     </message>
     <message>
         <source>Reset Zoom</source>
-        <translation type="unfinished"/>
+        <translation>Nulli suurendus</translation>
     </message>
     <message>
         <source>Configure recently active time</source>
@@ -6547,15 +6641,15 @@ Prevents the client from sending potentially identifying information about the o
     </message>
     <message>
         <source>Choose executable</source>
-        <translation type="unfinished"/>
+        <translation>Vali programm</translation>
     </message>
     <message>
         <source>Choose application</source>
-        <translation type="unfinished"/>
+        <translation>Vali rakendus</translation>
     </message>
     <message>
         <source>Choose path</source>
-        <translation type="unfinished"/>
+        <translation>Vali asukoht</translation>
     </message>
     <message>
         <source>Load Overlay Presets</source>
@@ -6571,15 +6665,15 @@ Prevents the client from sending potentially identifying information about the o
     </message>
     <message>
         <source>Options</source>
-        <translation type="unfinished"/>
+        <translation>Valikud</translation>
     </message>
     <message>
         <source>Enable overlay.</source>
-        <translation type="unfinished"/>
+        <translation>Luba ülepaigutus.</translation>
     </message>
     <message>
         <source>Enable Overlay</source>
-        <translation type="unfinished"/>
+        <translation>Luba ülepaigutus</translation>
     </message>
     <message>
         <source>This sets whether the overlay is enabled or not. This setting is only checked when applications are started, so make sure Mumble is running and this option is on before you start the application.&lt;br /&gt;Please note that if you start Mumble after starting the application, or if you disable the overlay while the application is running, there is no safe way to restart the overlay without also restarting the application.</source>
@@ -6588,23 +6682,23 @@ Prevents the client from sending potentially identifying information about the o
     </message>
     <message>
         <source>Layout</source>
-        <translation type="unfinished"/>
+        <translation>Paigutus</translation>
     </message>
     <message>
         <source>Blacklist</source>
-        <translation type="unfinished"/>
+        <translation>Must nimekiri</translation>
     </message>
     <message>
         <source>Whitelist</source>
-        <translation type="unfinished"/>
+        <translation>Valge nimekiri</translation>
     </message>
     <message>
         <source>Uninstall Overlay</source>
-        <translation type="unfinished"/>
+        <translation>lda ülepaigutus</translation>
     </message>
     <message>
         <source>Overlay Installation</source>
-        <translation type="unfinished"/>
+        <translation>lepaigutuse paigaldamine</translation>
     </message>
     <message>
         <source>Mumble has detected that you do not have the Mumble Overlay installed.
@@ -6618,7 +6712,7 @@ Click the button below to install the overlay.</source>
     </message>
     <message>
         <source>Overlay Upgrade</source>
-        <translation type="unfinished"/>
+        <translation>Ülepaigutuse uuendamine</translation>
     </message>
     <message>
         <source>Mumble has detected an old version of the overlay support files installed on your computer.
@@ -6636,7 +6730,7 @@ To upgrade these files to their latest versions, click the button below.</source
     </message>
     <message>
         <source>Show FPS counter</source>
-        <translation type="unfinished"/>
+        <translation>Näita FPS loendurit</translation>
     </message>
     <message>
         <source>Load an overlay preset from file</source>
@@ -6644,7 +6738,7 @@ To upgrade these files to their latest versions, click the button below.</source
     </message>
     <message>
         <source>Load…</source>
-        <translation type="unfinished"/>
+        <translation>Laadi...</translation>
     </message>
     <message>
         <source>Save your overlay settings to file</source>
@@ -6652,7 +6746,7 @@ To upgrade these files to their latest versions, click the button below.</source
     </message>
     <message>
         <source>Save…</source>
-        <translation type="unfinished"/>
+        <translation>Salvesta...</translation>
     </message>
     <message>
         <source>Set the overlay font.</source>
@@ -6664,15 +6758,15 @@ To upgrade these files to their latest versions, click the button below.</source
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished"/>
+        <translation>Värv</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished"/>
+        <translation>Eemalda</translation>
     </message>
     <message>
         <source>Font</source>
-        <translation type="unfinished"/>
+        <translation>Font</translation>
     </message>
     <message>
         <source>FPS and Clock Display</source>
@@ -6684,7 +6778,7 @@ To upgrade these files to their latest versions, click the button below.</source
     </message>
     <message>
         <source>Show Clock</source>
-        <translation type="unfinished"/>
+        <translation>Näita kella</translation>
     </message>
     <message>
         <source>Overlay Exceptions</source>
@@ -6696,38 +6790,38 @@ To upgrade these files to their latest versions, click the button below.</source
     </message>
     <message>
         <source>Allowed launchers</source>
-        <translation type="unfinished"/>
+        <translation>Lubatud käivitajad</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation type="unfinished"/>
+        <translation>Lisa</translation>
     </message>
     <message>
         <source>Allowed programs</source>
-        <translation type="unfinished"/>
+        <translation>Lubatud programmid</translation>
     </message>
     <message>
         <source>Allowed paths</source>
-        <translation type="unfinished"/>
+        <translation>Lubatud asukohad</translation>
     </message>
     <message>
         <source>Blacklisted programs</source>
-        <translation type="unfinished"/>
+        <translation>Mustas nimekirjas programmid</translation>
     </message>
 </context>
 <context>
     <name>OverlayEditor</name>
     <message>
         <source>State</source>
-        <translation type="unfinished"/>
+        <translation>Staatus</translation>
     </message>
     <message>
         <source>User is not talking</source>
-        <translation type="unfinished"/>
+        <translation>Kasutaja ei räägi</translation>
     </message>
     <message>
         <source>Passive</source>
-        <translation type="unfinished"/>
+        <translation>Passiivne</translation>
     </message>
     <message>
         <source>User is talking in your channel or a linked channel</source>
@@ -6735,7 +6829,7 @@ To upgrade these files to their latest versions, click the button below.</source
     </message>
     <message>
         <source>Talking</source>
-        <translation type="unfinished"/>
+        <translation>Kõneleb</translation>
     </message>
     <message>
         <source>User is whispering to you privately</source>
@@ -6743,7 +6837,7 @@ To upgrade these files to their latest versions, click the button below.</source
     </message>
     <message>
         <source>Private Whisper</source>
-        <translation type="unfinished"/>
+        <translation>Privaatne sosistamine</translation>
     </message>
     <message>
         <source>User is shouting to your channel</source>
@@ -6751,35 +6845,35 @@ To upgrade these files to their latest versions, click the button below.</source
     </message>
     <message>
         <source>Channel Whisper</source>
-        <translation type="unfinished"/>
+        <translation>Kanali sosistamine</translation>
     </message>
     <message>
         <source>Zoom</source>
-        <translation type="unfinished"/>
+        <translation>Suurendus</translation>
     </message>
     <message>
         <source>Zoom Factor</source>
-        <translation type="unfinished"/>
+        <translation>Suurenduse faktor</translation>
     </message>
     <message>
         <source>Enabled Elements</source>
-        <translation type="unfinished"/>
+        <translation>Lubatud elemendid</translation>
     </message>
     <message>
         <source>User avatar, chosen by each user</source>
-        <translation type="unfinished"/>
+        <translation>Kasutaja avatar, mille iga kasutaja on omale valinud</translation>
     </message>
     <message>
         <source>Avatar</source>
-        <translation type="unfinished"/>
+        <translation>Avatar</translation>
     </message>
     <message>
         <source>User&apos;s name</source>
-        <translation type="unfinished"/>
+        <translation>Kasutaja nimi</translation>
     </message>
     <message>
         <source>Username</source>
-        <translation type="unfinished"/>
+        <translation>Kasutajanimi</translation>
     </message>
     <message>
         <source>Name of user&apos;s channel, if outside your current channel</source>
@@ -6787,7 +6881,7 @@ To upgrade these files to their latest versions, click the button below.</source
     </message>
     <message>
         <source>Channel</source>
-        <translation type="unfinished"/>
+        <translation>Kanal</translation>
     </message>
     <message>
         <source>Muted or deafened</source>
@@ -6811,14 +6905,14 @@ To upgrade these files to their latest versions, click the button below.</source
     </message>
     <message>
         <source>Zoom level</source>
-        <translation type="unfinished"/>
+        <translation>Suurenduse tase</translation>
     </message>
 </context>
 <context>
     <name>OverlayEditorScene</name>
     <message>
         <source>Layout preset</source>
-        <translation type="unfinished"/>
+        <translation>Paigutuse eelseadistus</translation>
     </message>
     <message>
         <source>Large square avatar</source>
@@ -6826,51 +6920,51 @@ To upgrade these files to their latest versions, click the button below.</source
     </message>
     <message>
         <source>Avatar and Name</source>
-        <translation type="unfinished"/>
+        <translation>Avatar ja nimi</translation>
     </message>
     <message>
         <source>User Opacity</source>
-        <translation type="unfinished"/>
+        <translation>Kasutaja läbipaistvus</translation>
     </message>
     <message>
         <source>%1%</source>
-        <translation type="unfinished"/>
+        <translation>%1%</translation>
     </message>
     <message>
         <source>Object Opacity</source>
-        <translation type="unfinished"/>
+        <translation>Objekti läbipaistvus</translation>
     </message>
     <message>
         <source>Alignment</source>
-        <translation type="unfinished"/>
+        <translation>Joondus</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished"/>
+        <translation>Vasakule</translation>
     </message>
     <message>
         <source>Center</source>
-        <translation type="unfinished"/>
+        <translation>Keskele</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished"/>
+        <translation>Paremale</translation>
     </message>
     <message>
         <source>Top</source>
-        <translation type="unfinished"/>
+        <translation>Üles</translation>
     </message>
     <message>
         <source>Bottom</source>
-        <translation type="unfinished"/>
+        <translation>Alla</translation>
     </message>
     <message>
         <source>Color...</source>
-        <translation type="unfinished"/>
+        <translation>Värv...</translation>
     </message>
     <message>
         <source>Font...</source>
-        <translation type="unfinished"/>
+        <translation>Font...</translation>
     </message>
     <message>
         <source>Bounding box</source>
@@ -6878,7 +6972,7 @@ To upgrade these files to their latest versions, click the button below.</source
     </message>
     <message>
         <source>Pen width</source>
-        <translation type="unfinished"/>
+        <translation>Pliiatsi laius</translation>
     </message>
     <message>
         <source>Padding</source>
@@ -6886,34 +6980,34 @@ To upgrade these files to their latest versions, click the button below.</source
     </message>
     <message>
         <source>Pen color</source>
-        <translation type="unfinished"/>
+        <translation>Pliiatsi värv</translation>
     </message>
     <message>
         <source>Fill color</source>
-        <translation type="unfinished"/>
+        <translation>Täite värv</translation>
     </message>
     <message>
         <source>Pick pen color</source>
-        <translation type="unfinished"/>
+        <translation>Vali pliiatsi värv</translation>
     </message>
     <message>
         <source>Pick fill color</source>
-        <translation type="unfinished"/>
+        <translation>Vali täite värv</translation>
     </message>
     <message>
         <source>Pick color</source>
-        <translation type="unfinished"/>
+        <translation>Vali värv</translation>
     </message>
     <message>
         <source>Pick font</source>
-        <translation type="unfinished"/>
+        <translation>Vali font</translation>
     </message>
 </context>
 <context>
     <name>PluginConfig</name>
     <message>
         <source>Plugins</source>
-        <translation type="unfinished"/>
+        <translation>Pluginad</translation>
     </message>
     <message>
         <source>Plugin has no configure function.</source>
@@ -6925,7 +7019,7 @@ To upgrade these files to their latest versions, click the button below.</source
     </message>
     <message>
         <source>Options</source>
-        <translation type="unfinished"/>
+        <translation>Valikud</translation>
     </message>
     <message>
         <source>Enable plugins and transmit positional information</source>
@@ -6953,7 +7047,7 @@ To upgrade these files to their latest versions, click the button below.</source
     </message>
     <message>
         <source>Information about plugin</source>
-        <translation type="unfinished"/>
+        <translation>Info plugina kohta</translation>
     </message>
     <message>
         <source>This shows a small information message about the plugin.</source>
@@ -6961,7 +7055,7 @@ To upgrade these files to their latest versions, click the button below.</source
     </message>
     <message>
         <source>&amp;About</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Info</translation>
     </message>
     <message>
         <source>Show configuration page of plugin</source>
@@ -6973,15 +7067,15 @@ To upgrade these files to their latest versions, click the button below.</source
     </message>
     <message>
         <source>&amp;Configure</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Seadista</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished"/>
+        <translation>Nimi</translation>
     </message>
     <message>
         <source>Enabled</source>
-        <translation type="unfinished"/>
+        <translation>Lubatud</translation>
     </message>
 </context>
 <context>
@@ -7004,25 +7098,25 @@ To upgrade these files to their latest versions, click the button below.</source
     </message>
     <message>
         <source>%1 linked.</source>
-        <translation type="unfinished"/>
+        <translation>%1 lingitud.</translation>
     </message>
 </context>
 <context>
     <name>PortAudioSystem</name>
     <message>
         <source>Default device</source>
-        <translation type="unfinished"/>
+        <translation>Vaikimisi seade</translation>
     </message>
 </context>
 <context>
     <name>PulseAudioSystem</name>
     <message>
         <source>Default Input</source>
-        <translation type="unfinished"/>
+        <translation>Vaikimisi sisend</translation>
     </message>
     <message>
         <source>Default Output</source>
-        <translation type="unfinished"/>
+        <translation>Vaikimisi väljund</translation>
     </message>
 </context>
 <context>
@@ -7033,6 +7127,10 @@ To upgrade these files to their latest versions, click the button below.</source
     </message>
     <message>
         <source>Mumble failed to restart itself. Please restart it manually.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Mumble is currently connected to a server</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -7051,12 +7149,6 @@ To upgrade these files to their latest versions, click the button below.</source
         <translation type="unfinished"/>
     </message>
     <message>
-        <source>If enabled this tries to cancel out echo from the audio stream.
-Mixed echo cancellation mixes all speaker outputs in one mono stream and passes that stream to the echo canceller, while multichannel echo cancellation passes all audio channels to the echo canceller directly.
-Multichannel echo cancellation requires more CPU, so you should try mixed first</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>&lt;p&gt;If you're using Linux this is most likely because you are using a version from your distribution's package repository that have their own update cycles.&lt;/p&gt;&lt;p&gt;If you want to always have the most recent Mumble version, you should consider using a different method of installation.
 See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;the Mumble wiki&lt;/a&gt; for what alternatives there are.&lt;/p&gt;</source>
         <translation type="unfinished"/>
@@ -7067,7 +7159,7 @@ See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;th
     </message>
     <message>
         <source>Ignore Messages</source>
-        <translation type="unfinished"/>
+        <translation>Ignoreeri sõnumeid</translation>
     </message>
     <message>
         <source>Disable Text-To-Speech</source>
@@ -7091,7 +7183,7 @@ See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;th
     </message>
     <message>
         <source>All messages</source>
-        <translation type="unfinished"/>
+        <translation>Kõik sõnumid</translation>
     </message>
     <message>
         <source>Toggle console for all events</source>
@@ -7125,12 +7217,76 @@ See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;th
         <source>Do you really want to reset all settings (not only the ones currently visible) to their default value?</source>
         <translation type="unfinished"/>
     </message>
+    <message>
+        <source>Local Nickname Adjustment...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>&lt;b&gt;Blocked URL scheme &quot;%1&quot;&lt;/b&gt;</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>The URL uses a scheme that has been blocked for security reasons.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Blocked URL: &quot;%1&quot;</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Default Device</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>This option works best when using built-in microphone and speaker.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Access to the microphone was denied. Please allow Mumble to use the microphone by changing the settings in System Preferences -&gt; Security &amp; Privacy -&gt; Privacy -&gt; Microphone.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Access to the microphone was denied due to system restrictions. You will not be ableto use the microphone in this session.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>If enabled this tries to cancel out echo from the audio stream.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Disabled</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Echo cancellation is disabled.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Mixed echo cancellation (speex)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Mixed has low CPU impact, but only works well if your speakers are equally loud and equidistant from the microphone.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Multichannel echo cancellation (speex)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Multichannel echo cancellation provides much better echo cancellation, but at a higher CPU cost. Multichannel echo cancellation requires more CPU, so you should try mixed first.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Acoustic echo cancellation provided by Apple.</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>RichTextEditor</name>
     <message>
         <source>Failed to load image</source>
-        <translation type="unfinished"/>
+        <translation>Pildi laadimine ebaõnnestus</translation>
     </message>
     <message>
         <source>Image file too large to embed in document. Please use images smaller than %1 kB.</source>
@@ -7138,11 +7294,11 @@ See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;th
     </message>
     <message>
         <source>Message is too long.</source>
-        <translation type="unfinished"/>
+        <translation>Sõnum on liiga pikk.</translation>
     </message>
     <message>
         <source>Display</source>
-        <translation type="unfinished"/>
+        <translation>Vaade</translation>
     </message>
     <message>
         <source>Source Text</source>
@@ -7150,62 +7306,62 @@ See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;th
     </message>
     <message>
         <source>&amp;Bold</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Rasvane</translation>
     </message>
     <message>
         <source>Ctrl+B</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+B</translation>
     </message>
     <message>
         <source>&amp;Italic</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Kaldkiri</translation>
     </message>
     <message>
         <source>Italic</source>
-        <translation type="unfinished"/>
+        <translation>Kaldkiri</translation>
     </message>
     <message>
         <source>Ctrl+I</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+I</translation>
     </message>
     <message>
         <source>Underline</source>
-        <translation type="unfinished"/>
+        <translation>Allajoonitud</translation>
     </message>
     <message>
         <source>Ctrl+U</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+U</translation>
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished"/>
+        <translation>Värv</translation>
     </message>
     <message>
         <source>Insert Link</source>
-        <translation type="unfinished"/>
+        <translation>Sisesta link</translation>
     </message>
     <message>
         <source>Ctrl+L</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+L</translation>
     </message>
     <message>
         <source>Insert Image</source>
-        <translation type="unfinished"/>
+        <translation>Sisesta pilt</translation>
     </message>
 </context>
 <context>
     <name>RichTextEditorLink</name>
     <message>
         <source>Add Link</source>
-        <translation type="unfinished"/>
+        <translation>Lisa link</translation>
     </message>
     <message>
         <source>URL</source>
-        <translation type="unfinished"/>
+        <translation>URL</translation>
     </message>
     <message>
         <source>Text</source>
-        <translation type="unfinished"/>
+        <translation>Tekst</translation>
     </message>
 </context>
 <context>
@@ -7236,58 +7392,55 @@ See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;th
     </message>
     <message>
         <source>Connection timed out</source>
-        <translation type="unfinished"/>
+        <translation>Ühendus aegus</translation>
     </message>
 </context>
 <context>
     <name>ServerView</name>
     <message>
         <source>Favorite</source>
-        <translation type="unfinished"/>
+        <translation>Lemmik</translation>
     </message>
     <message>
         <source>LAN</source>
-        <translation type="unfinished"/>
+        <translation>LAN</translation>
     </message>
     <message>
         <source>Public Internet</source>
-        <translation type="unfinished"/>
+        <translation>Avalik internet</translation>
     </message>
 </context>
 <context>
     <name>ShortcutActionWidget</name>
     <message>
         <source>Unassigned</source>
-        <translation type="unfinished"/>
+        <translation>Määramata</translation>
     </message>
 </context>
 <context>
     <name>ShortcutDelegate</name>
     <message>
         <source>On</source>
-        <translation type="unfinished"/>
+        <translation>Sees</translation>
     </message>
     <message>
         <source>Off</source>
-        <translation type="unfinished"/>
+        <translation>Väljas</translation>
     </message>
     <message>
         <source>Toggle</source>
-        <translation type="unfinished"/>
+        <translation>Lülita</translation>
     </message>
     <message>
         <source>Unassigned</source>
+        <translation>Määramata</translation>
+    </message>
+    <message>
+        <source>No buttons assigned</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <source>Shortcut button combination:</source>
-        <translation type="unfinished"/>
-    </message>
-</context>
-<context>
-    <name>ShortcutKeyWidget</name>
-    <message>
-        <source>Press Shortcut</source>
+        <source>Press to show button combination</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -7299,26 +7452,26 @@ See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;th
     </message>
     <message>
         <source>Parent</source>
-        <translation type="unfinished"/>
+        <translation>Peamine</translation>
     </message>
     <message>
         <source>Current</source>
-        <translation type="unfinished"/>
+        <translation>Praegune</translation>
     </message>
     <message>
         <source>Subchannel #%1</source>
-        <translation type="unfinished"/>
+        <translation>Alamkanal #%1</translation>
     </message>
 </context>
 <context>
     <name>ShortcutTargetWidget</name>
     <message>
         <source>...</source>
-        <translation type="unfinished"/>
+        <translation>...</translation>
     </message>
     <message>
         <source>, </source>
-        <translation type="unfinished"/>
+        <translation>, </translation>
     </message>
     <message>
         <source>Root</source>
@@ -7330,46 +7483,46 @@ See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;th
     </message>
     <message>
         <source>Current</source>
-        <translation type="unfinished"/>
+        <translation>Praegune</translation>
     </message>
     <message>
         <source>Subchannel #%1</source>
-        <translation type="unfinished"/>
+        <translation>Alamkanal #%1</translation>
     </message>
     <message>
         <source>Invalid</source>
-        <translation type="unfinished"/>
+        <translation>Vigane</translation>
     </message>
     <message>
         <source>Empty</source>
         <oldsource>&lt;Empty&gt;</oldsource>
-        <translation type="unfinished"/>
+        <translation>Tühi</translation>
     </message>
     <message>
         <source>Current selection</source>
-        <translation type="unfinished"/>
+        <translation>Praegune valik</translation>
     </message>
 </context>
 <context>
     <name>ShortcutToggleWidget</name>
     <message>
         <source>Off</source>
-        <translation type="unfinished"/>
+        <translation>Väljas</translation>
     </message>
     <message>
         <source>Toggle</source>
-        <translation type="unfinished"/>
+        <translation>Lülita</translation>
     </message>
     <message>
         <source>On</source>
-        <translation type="unfinished"/>
+        <translation>Sees</translation>
     </message>
 </context>
 <context>
     <name>TextMessage</name>
     <message>
         <source>Enter text</source>
-        <translation type="unfinished"/>
+        <translation>Sisesta tekst</translation>
     </message>
     <message>
         <source>If checked the message is recursively sent to all subchannels</source>
@@ -7381,7 +7534,7 @@ See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;th
     </message>
     <message>
         <source>Message</source>
-        <translation type="unfinished"/>
+        <translation>Sõnum</translation>
     </message>
 </context>
 <context>
@@ -7411,7 +7564,7 @@ An access token is a text string, which can be used as a password for very simpl
     </message>
     <message>
         <source>&amp;Add</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Lisa</translation>
     </message>
     <message>
         <source>Remove a token</source>
@@ -7419,7 +7572,7 @@ An access token is a text string, which can be used as a password for very simpl
     </message>
     <message>
         <source>&amp;Remove</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Eemalda</translation>
     </message>
     <message>
         <source>Tokens</source>
@@ -7430,39 +7583,39 @@ An access token is a text string, which can be used as a password for very simpl
     <name>UserEdit</name>
     <message>
         <source>Registered Users</source>
-        <translation type="unfinished"/>
+        <translation>Registreerunud kasutajad</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished"/>
+        <translation>Eemalda</translation>
     </message>
     <message>
         <source>Rename</source>
-        <translation type="unfinished"/>
+        <translation>Nimeta ümber</translation>
     </message>
     <message>
         <source>Who are you looking for?</source>
-        <translation type="unfinished"/>
+        <translation>Keda sa otsid?</translation>
     </message>
     <message>
         <source>Days</source>
-        <translation type="unfinished"/>
+        <translation>Päeva</translation>
     </message>
     <message>
         <source>Weeks</source>
-        <translation type="unfinished"/>
+        <translation>Nädalat</translation>
     </message>
     <message>
         <source>Months</source>
-        <translation type="unfinished"/>
+        <translation>uud</translation>
     </message>
     <message>
         <source>Years</source>
-        <translation type="unfinished"/>
+        <translation>Aastat</translation>
     </message>
     <message>
         <source>Inactive for</source>
-        <translation type="unfinished"/>
+        <translation>Mitteaktiivne</translation>
     </message>
     <message numerus="yes">
         <source>Registered users: %n account(s)</source>
@@ -7470,66 +7623,66 @@ An access token is a text string, which can be used as a password for very simpl
     </message>
     <message>
         <source>Search</source>
-        <translation type="unfinished"/>
+        <translation>Otsi</translation>
     </message>
     <message>
         <source>User list</source>
-        <translation type="unfinished"/>
+        <translation>Kasutajate nimekiri</translation>
     </message>
 </context>
 <context>
     <name>UserInformation</name>
     <message>
         <source>User Information</source>
-        <translation type="unfinished"/>
+        <translation>Kasutaja info</translation>
     </message>
     <message>
         <source>Connection Information</source>
-        <translation type="unfinished"/>
+        <translation>Ühenduse info</translation>
     </message>
     <message>
         <source>Version</source>
-        <translation type="unfinished"/>
+        <translation>Versioon</translation>
     </message>
     <message>
         <source>OS</source>
-        <translation type="unfinished"/>
+        <translation>OS</translation>
     </message>
     <message>
         <source>Certificate</source>
-        <translation type="unfinished"/>
+        <translation>Sertifikaat</translation>
     </message>
     <message>
         <source>IP Address</source>
-        <translation type="unfinished"/>
+        <translation>IP aadress</translation>
     </message>
     <message>
         <source>CELT Versions</source>
-        <translation type="unfinished"/>
+        <translation>CELT versioonid</translation>
     </message>
     <message>
         <source>Details...</source>
-        <translation type="unfinished"/>
+        <translation>Üksikasjad...</translation>
     </message>
     <message>
         <source>Ping Statistics</source>
-        <translation type="unfinished"/>
+        <translation>Pingi statistika</translation>
     </message>
     <message>
         <source>Pings received</source>
-        <translation type="unfinished"/>
+        <translation>Saadud pinge</translation>
     </message>
     <message>
         <source>Average ping</source>
-        <translation type="unfinished"/>
+        <translation>Keskmine ping</translation>
     </message>
     <message>
         <source>TCP (Control)</source>
-        <translation type="unfinished"/>
+        <translation>TCP (Kontroll)</translation>
     </message>
     <message>
         <source>UDP (Voice)</source>
-        <translation type="unfinished"/>
+        <translation>UDP (hääl)</translation>
     </message>
     <message>
         <source>UDP Network statistics</source>
@@ -7537,68 +7690,68 @@ An access token is a text string, which can be used as a password for very simpl
     </message>
     <message>
         <source>Good</source>
-        <translation type="unfinished"/>
+        <translation>Hea</translation>
     </message>
     <message>
         <source>Late</source>
-        <translation type="unfinished"/>
+        <translation>Hilinenud</translation>
     </message>
     <message>
         <source>Lost</source>
-        <translation type="unfinished"/>
+        <translation>Kadunud</translation>
     </message>
     <message>
         <source>Resync</source>
-        <translation type="unfinished"/>
+        <translation>Sünkrooni uuesti</translation>
     </message>
     <message>
         <source>From Client</source>
-        <translation type="unfinished"/>
+        <translation>Kliendilt</translation>
     </message>
     <message>
         <source>To Client</source>
-        <translation type="unfinished"/>
+        <translation>Kliendile</translation>
     </message>
     <message>
         <source>Connection time</source>
-        <translation type="unfinished"/>
+        <translation>Ühenduse aeg</translation>
     </message>
     <message>
         <source>%1w</source>
-        <translation type="unfinished"/>
+        <translation>%1n</translation>
     </message>
     <message>
         <source>%1d</source>
-        <translation type="unfinished"/>
+        <translation>%1p</translation>
     </message>
     <message>
         <source>%1h</source>
-        <translation type="unfinished"/>
+        <translation>%1h</translation>
     </message>
     <message>
         <source>%1m</source>
-        <translation type="unfinished"/>
+        <translation>%1m</translation>
     </message>
     <message>
         <source>%1s</source>
-        <translation type="unfinished"/>
+        <translation>%1s</translation>
     </message>
     <message>
         <source>, </source>
-        <translation type="unfinished"/>
+        <translation>, </translation>
     </message>
     <message>
         <source>%1 (%2)</source>
         <oldsource>%1.%2.%3 (%4)</oldsource>
-        <translation type="unfinished"/>
+        <translation>%1 (%2)</translation>
     </message>
     <message>
         <source>Supported</source>
-        <translation type="unfinished"/>
+        <translation>Toetatud</translation>
     </message>
     <message>
         <source>Not Supported</source>
-        <translation type="unfinished"/>
+        <translation>Pole toetatud</translation>
     </message>
     <message>
         <source>Not Reported</source>
@@ -7614,17 +7767,17 @@ An access token is a text string, which can be used as a password for very simpl
     </message>
     <message>
         <source>%1 kbit/s</source>
-        <translation type="unfinished"/>
+        <translation>%1 kbit/s</translation>
     </message>
     <message>
         <source>Bandwidth</source>
         <comment>GroupBox</comment>
-        <translation type="unfinished"/>
+        <translation>Ribalaius</translation>
     </message>
     <message>
         <source>Bandwidth</source>
         <comment>Label</comment>
-        <translation type="unfinished"/>
+        <translation>Ribalaius</translation>
     </message>
     <message>
         <source>Ping deviation</source>
@@ -7643,18 +7796,37 @@ An access token is a text string, which can be used as a password for very simpl
     </message>
     <message>
         <source>Last channel</source>
-        <translation type="unfinished"/>
+        <translation>Viimane kanal</translation>
     </message>
     <message>
         <source>Last seen: %1</source>
-        <translation type="unfinished"/>
+        <translation>Viimati nähtud: %1</translation>
     </message>
     <message>
         <source>Never</source>
-        <translation type="unfinished"/>
+        <translation>Mitte kunagi</translation>
     </message>
     <message>
         <source>Channel ID: %1</source>
+        <translation>Kanali ID: %1</translation>
+    </message>
+</context>
+<context>
+    <name>UserLocalNicknameDialog</name>
+    <message>
+        <source>Local nickname for other users</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>&lt;b&gt;Adjust the nickname of other users locally&lt;/b&gt;&lt;br /&gt;</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>User nickname</source>
+        <translation>Kasutaja hüüdnimi</translation>
+    </message>
+    <message>
+        <source>Adjusting local nickname for %1</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -7674,7 +7846,7 @@ An access token is a text string, which can be used as a password for very simpl
     </message>
     <message>
         <source> dB</source>
-        <translation type="unfinished"/>
+        <translation> dB</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use the slider or the text box to change the volume of the user.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-weight:600;&quot;&gt;Attention!&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Increasing the volume of a user too much can permanently damage your hearing. It may also increase the background noise of the user.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
@@ -7714,7 +7886,7 @@ An access token is a text string, which can be used as a password for very simpl
     </message>
     <message>
         <source>Your current channel.</source>
-        <translation type="unfinished"/>
+        <translation>Sinu praegune kanal</translation>
     </message>
     <message>
         <source>A channel that is linked with your channel. Linked channels can talk to each other.</source>
@@ -7730,11 +7902,11 @@ An access token is a text string, which can be used as a password for very simpl
     </message>
     <message>
         <source>On your friend list</source>
-        <translation type="unfinished"/>
+        <translation>Sinu sõprade nimekirjas</translation>
     </message>
     <message>
         <source>Authenticated user</source>
-        <translation type="unfinished"/>
+        <translation>Autenditud kaustaja</translation>
     </message>
     <message>
         <source>Muted (manually muted by self)</source>
@@ -7794,22 +7966,38 @@ An access token is a text string, which can be used as a password for very simpl
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished"/>
+        <translation>Nimi</translation>
     </message>
     <message>
         <source>Flags</source>
-        <translation type="unfinished"/>
+        <translation>Lipud</translation>
     </message>
     <message>
         <source>Are you sure you want to drag this user?</source>
-        <translation type="unfinished"/>
+        <translation>Oled sa kindel, et soovid seda kasutajat lohistada?</translation>
     </message>
     <message>
         <source>Are you sure you want to drag this channel?</source>
-        <translation type="unfinished"/>
+        <translation>Oled sa kindel, et sa soovid seda kanalit lohistada?</translation>
     </message>
     <message>
         <source>Cannot perform this movement automatically, please reset the numeric sorting indicators or adjust it manually.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Talking while being muted on your end</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>This is a channel listener. The corresponding user hears everything you say in this channel.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Channel has access restrictions so that you can&apos;t enter it</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Channel has access restrictions but you can enter nonetheless</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -7865,15 +8053,15 @@ An access token is a text string, which can be used as a password for very simpl
     </message>
     <message>
         <source>Organization</source>
-        <translation type="unfinished"/>
+        <translation>Organisatsioon</translation>
     </message>
     <message>
         <source>Subunit</source>
-        <translation type="unfinished"/>
+        <translation>Alamüksus</translation>
     </message>
     <message>
         <source>Country</source>
-        <translation type="unfinished"/>
+        <translation>Riik</translation>
     </message>
     <message>
         <source>Locality</source>
@@ -7881,15 +8069,15 @@ An access token is a text string, which can be used as a password for very simpl
     </message>
     <message>
         <source>State</source>
-        <translation type="unfinished"/>
+        <translation>Maakond</translation>
     </message>
     <message>
         <source>Valid from: %1</source>
-        <translation type="unfinished"/>
+        <translation>Kehtib alates: %1</translation>
     </message>
     <message>
         <source>Valid to: %1</source>
-        <translation type="unfinished"/>
+        <translation>Kehtib kuni: %1</translation>
     </message>
     <message>
         <source>Serial: %1</source>
@@ -7901,11 +8089,11 @@ An access token is a text string, which can be used as a password for very simpl
     </message>
     <message>
         <source>RSA</source>
-        <translation type="unfinished"/>
+        <translation>RSA</translation>
     </message>
     <message>
         <source>DSA</source>
-        <translation type="unfinished"/>
+        <translation>DSA</translation>
     </message>
     <message>
         <source>Digest (SHA-1): %1</source>
@@ -7917,11 +8105,11 @@ An access token is a text string, which can be used as a password for very simpl
     </message>
     <message>
         <source>Email: %1</source>
-        <translation type="unfinished"/>
+        <translation>E-post: %1</translation>
     </message>
     <message>
         <source>DNS: %1</source>
-        <translation type="unfinished"/>
+        <translation>DNS: %1</translation>
     </message>
     <message>
         <source>Issued by:</source>
@@ -7929,7 +8117,7 @@ An access token is a text string, which can be used as a password for very simpl
     </message>
     <message>
         <source>Unit Name</source>
-        <translation type="unfinished"/>
+        <translation>Üksuse nimi</translation>
     </message>
 </context>
 <context>
@@ -7944,15 +8132,15 @@ An access token is a text string, which can be used as a password for very simpl
     </message>
     <message>
         <source>.wav - Uncompressed</source>
-        <translation type="unfinished"/>
+        <translation>.wav - pakkimata</translation>
     </message>
     <message>
         <source>.ogg (Vorbis) - Compressed</source>
-        <translation type="unfinished"/>
+        <translation>.ogg (Vorbis) - Pakkimata</translation>
     </message>
     <message>
         <source>.au - Uncompressed</source>
-        <translation type="unfinished"/>
+        <translation>.au - Pakkimata</translation>
     </message>
     <message>
         <source>.flac - Lossless compressed</source>
@@ -7963,7 +8151,7 @@ An access token is a text string, which can be used as a password for very simpl
     <name>VoiceRecorderDialog</name>
     <message>
         <source>Recorder</source>
-        <translation type="unfinished"/>
+        <translation>Salvestaja</translation>
     </message>
     <message>
         <source>Control</source>
@@ -7971,19 +8159,19 @@ An access token is a text string, which can be used as a password for very simpl
     </message>
     <message>
         <source>00:00:00</source>
-        <translation type="unfinished"/>
+        <translation>00:00:00</translation>
     </message>
     <message>
         <source>&amp;Start</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Alusta</translation>
     </message>
     <message>
         <source>S&amp;top</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Peata</translation>
     </message>
     <message>
         <source>Mode</source>
-        <translation type="unfinished"/>
+        <translation>Režiim</translation>
     </message>
     <message>
         <source>Multichannel</source>
@@ -7991,47 +8179,47 @@ An access token is a text string, which can be used as a password for very simpl
     </message>
     <message>
         <source>Output</source>
-        <translation type="unfinished"/>
+        <translation>Väljund</translation>
     </message>
     <message>
         <source>Output format</source>
-        <translation type="unfinished"/>
+        <translation>Väljundi vorming</translation>
     </message>
     <message>
         <source>Target directory</source>
-        <translation type="unfinished"/>
+        <translation>Sihtkaust</translation>
     </message>
     <message>
         <source>Filename</source>
-        <translation type="unfinished"/>
+        <translation>Failinimi</translation>
     </message>
     <message>
         <source>&amp;Browse...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Sirvi...</translation>
     </message>
     <message>
         <source>Valid variables are:</source>
-        <translation type="unfinished"/>
+        <translation>Sobivad muutujad on:</translation>
     </message>
     <message>
         <source>Inserts the user&apos;s name</source>
-        <translation type="unfinished"/>
+        <translation>Sisestab kasutaja nime</translation>
     </message>
     <message>
         <source>Inserts the current date</source>
-        <translation type="unfinished"/>
+        <translation>Sisestab praeguse kuupeäva</translation>
     </message>
     <message>
         <source>Inserts the current time</source>
-        <translation type="unfinished"/>
+        <translation>Sisestab praeguse kellaaja</translation>
     </message>
     <message>
         <source>Inserts the hostname</source>
-        <translation type="unfinished"/>
+        <translation>Sisestab hostinime</translation>
     </message>
     <message>
         <source>Recorder still running</source>
-        <translation type="unfinished"/>
+        <translation>Salvestaja on veel käimas</translation>
     </message>
     <message>
         <source>Closing the recorder without stopping it will discard unwritten audio. Do you really want to close the recorder?</source>
@@ -8056,11 +8244,11 @@ Please contact your server administrator for further information.</source>
     </message>
     <message>
         <source>Stopping</source>
-        <translation type="unfinished"/>
+        <translation>Peatamine</translation>
     </message>
     <message>
         <source>Select target directory</source>
-        <translation type="unfinished"/>
+        <translation>Vali sihtkaust</translation>
     </message>
     <message>
         <source>Downmix</source>
@@ -8078,18 +8266,18 @@ Please contact your server administrator for further information.</source>
     <name>WASAPISystem</name>
     <message>
         <source>Default Device</source>
-        <translation type="unfinished"/>
+        <translation>Vaikimisi seade</translation>
     </message>
 </context>
 <context>
     <name>qwPTTButtonWidget</name>
     <message>
         <source>Mumble PTT</source>
-        <translation type="unfinished"/>
+        <translation>Mumble PTT</translation>
     </message>
     <message>
         <source>Push to talk</source>
-        <translation type="unfinished"/>
+        <translation>Rääkimiseks vaja</translation>
     </message>
 </context>
 </TS>

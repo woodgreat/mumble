@@ -129,12 +129,16 @@ set(MUMBLE_SOURCES
 	"Database.h"
 	"DeveloperConsole.cpp"
 	"DeveloperConsole.h"
+	"EchoCancelOption.h"
 	"Global.cpp"
 	"Global.h"
 	"GlobalShortcut.cpp"
 	"GlobalShortcut.h"
-	"GlobalShortcutTarget.ui"
 	"GlobalShortcut.ui"
+	"GlobalShortcutButtons.cpp"
+	"GlobalShortcutButtons.h"
+	"GlobalShortcutButtons.ui"
+	"GlobalShortcutTarget.ui"
 	"LCD.cpp"
 	"LCD.h"
 	"LCD.ui"
@@ -340,10 +344,13 @@ target_include_directories(mumble
 		"${3RDPARTY_DIR}/smallft"
 )
 
-find_pkg("LibSndFile;sndfile" REQUIRED)
+find_pkg("SndFile;LibSndFile;sndfile" REQUIRED)
 
+# Look for various targets as they are named differently on different platforms
 if(static AND TARGET sndfile-static)
 	target_link_libraries(mumble PRIVATE sndfile-static)
+elseif(TARGET SndFile::sndfile)
+	target_link_libraries(mumble PRIVATE SndFile::sndfile)
 elseif(TARGET sndfile)
 	target_link_libraries(mumble PRIVATE sndfile)
 else()
@@ -691,16 +698,13 @@ endif()
 if(translations)
 	set(ts_files
 		"mumble_ar.ts"
-		"mumble_be.ts"
 		"mumble_bg.ts"
 		"mumble_br.ts"
-		"mumble_ca_ES.ts"
 		"mumble_ca.ts"
 		"mumble_cs.ts"
 		"mumble_cy.ts"
 		"mumble_da.ts"
 		"mumble_de.ts"
-		"mumble_el_GR.ts"
 		"mumble_el.ts"
 		"mumble_en_GB.ts"
 		"mumble_en.ts"
@@ -712,14 +716,11 @@ if(translations)
 		"mumble_fr.ts"
 		"mumble_gl.ts"
 		"mumble_he.ts"
-		"mumble_hi.ts"
 		"mumble_hu.ts"
 		"mumble_it.ts"
 		"mumble_ja.ts"
 		"mumble_ko.ts"
 		"mumble_lt.ts"
-		"mumble_nb_NO.ts"
-		"mumble_nl_BE.ts"
 		"mumble_nl.ts"
 		"mumble_no.ts"
 		"mumble_pl.ts"
@@ -727,13 +728,11 @@ if(translations)
 		"mumble_pt_PT.ts"
 		"mumble_ro.ts"
 		"mumble_ru.ts"
-		"mumble_sk.ts"
 		"mumble_sv.ts"
 		"mumble_te.ts"
 		"mumble_th.ts"
 		"mumble_tr.ts"
 		"mumble_uk.ts"
-		"mumble_vi.ts"
 		"mumble_zh_CN.ts"
 		"mumble_zh_HK.ts"
 		"mumble_zh_TW.ts"

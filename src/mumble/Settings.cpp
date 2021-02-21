@@ -170,7 +170,7 @@ OverlaySettings::OverlaySettings() {
 	fY    = 0.0f;
 	fZoom = 0.875f;
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
 	qsStyle = QLatin1String("Cleanlooks");
 #endif
 
@@ -211,7 +211,7 @@ void OverlaySettings::setPreset(const OverlayPresets preset) {
 			fMutedDeafened = 0.5f;
 			fAvatar        = 1.0f;
 
-#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
+#if defined(Q_OS_WIN) || defined(Q_OS_MACOS)
 			qfUserName = QFont(QLatin1String("Verdana"), 20);
 #else
 			qfUserName = QFont(QLatin1String("Arial"), 20);
@@ -251,7 +251,7 @@ void OverlaySettings::setPreset(const OverlayPresets preset) {
 			fMutedDeafened = (7.0f / 8.0f);
 			fAvatar        = 1.0f;
 
-#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
+#if defined(Q_OS_WIN) || defined(Q_OS_MACOS)
 			qfUserName = QFont(QLatin1String("Verdana"), 20);
 #else
 			qfUserName = QFont(QLatin1String("Arial"), 20);
@@ -401,14 +401,16 @@ Settings::Settings() {
 	bJackStartServer  = false;
 	bJackAutoConnect  = true;
 
-#ifndef Q_OS_MAC
-	// Enable echo cancellation by default everywhere except for Macs as we currently
-	// on't support echo cancelling on Macs
-	bEcho = true;
+#ifdef Q_OS_MACOS
+	// On macOS Speex can't be used, so we default to Apple's custom echo cancellation mode
+	// Note that this only seems to work with when using the built-in microphone and the built-in speakers. It
+	// doesn't make it worse for other combinations of input and output devices though. Thus it should be
+	// safe to enable this by default.
+	echoOption = EchoCancelOptionID::APPLE_AEC;
 #else
-	bEcho = false;
+	// Everywhere else Speex works and thus we default to using that
+	echoOption = EchoCancelOptionID::SPEEX_MIXED;
 #endif
-	bEchoMulti = false;
 
 	bExclusiveInput  = false;
 	bExclusiveOutput = false;
@@ -552,13 +554,11 @@ Settings::Settings() {
 }
 
 bool Settings::doEcho() const {
-	if (!bEcho)
-		return false;
-
 	if (AudioInputRegistrar::qmNew) {
 		AudioInputRegistrar *air = AudioInputRegistrar::qmNew->value(qsAudioInput);
 		if (air) {
-			if (air->canEcho(qsAudioOutput))
+			if ((g.s.echoOption != EchoCancelOptionID::DISABLED)
+			    && air->canEcho(g.s.echoOption, qsAudioOutput))
 				return true;
 		}
 	}
@@ -590,6 +590,7 @@ BOOST_TYPEOF_REGISTER_TYPE(QByteArray)
 BOOST_TYPEOF_REGISTER_TYPE(QColor)
 BOOST_TYPEOF_REGISTER_TYPE(QVariant)
 BOOST_TYPEOF_REGISTER_TYPE(QFont)
+BOOST_TYPEOF_REGISTER_TYPE(EchoCancelOptionID)
 BOOST_TYPEOF_REGISTER_TEMPLATE(QList, 1)
 
 #define SAVELOAD(var, name) var = qvariant_cast< BOOST_TYPEOF(var) >(settings_ptr->value(QLatin1String(name), var))
@@ -614,7 +615,7 @@ BOOST_TYPEOF_REGISTER_TEMPLATE(QList, 1)
 // it. This causes such settings to fall back
 // to their defaults, instead of being set to
 // a zero value.
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
 #	undef SAVELOAD
 #	define SAVELOAD(var, name)                                                                          \
 		do {                                                                                             \
@@ -759,8 +760,8 @@ void Settings::load(QSettings *settings_ptr) {
 	SAVELOAD(fAudioMaxDistance, "audio/maxdistance");
 	SAVELOAD(fAudioMaxDistVolume, "audio/maxdistancevolume");
 	SAVELOAD(fAudioBloom, "audio/bloom");
-	SAVELOAD(bEcho, "audio/echo");
-	SAVELOAD(bEchoMulti, "audio/echomulti");
+	DEPRECATED("audio/echo");
+	DEPRECATED("audio/echomulti");
 	SAVELOAD(bExclusiveInput, "audio/exclusiveinput");
 	SAVELOAD(bExclusiveOutput, "audio/exclusiveoutput");
 	SAVELOAD(bPositionalAudio, "audio/positional");
@@ -769,6 +770,35 @@ void Settings::load(QSettings *settings_ptr) {
 	SAVELOAD(qsAudioOutput, "audio/output");
 	SAVELOAD(bWhisperFriends, "audio/whisperfriends");
 	SAVELOAD(bTransmitPosition, "audio/postransmit");
+
+	if (settings_ptr->contains("audio/echooptionid")) {
+		// Load the new echo cancel option instead
+		LOADFLAG(echoOption, "audio/echooptionid");
+	} else {
+#ifndef Q_OS_MACOS
+		// Compatibility layer for overtaking the old (now deprecated) settings
+		// This block should only be called once at the first start of the new Mumble version
+		// As echo cancellation was not available on macOS before, we don't have to run this compatibility
+		// code on macOS (instead simply use the new default as set in the constructor).
+		if (settings_ptr->contains("audio/echo")) {
+			bool deprecatedEcho      = false;
+			bool deprecatedEchoMulti = false;
+
+			SAVELOAD(deprecatedEcho, "audio/echo");
+			SAVELOAD(deprecatedEchoMulti, "audio/echomulti");
+
+			if (deprecatedEcho) {
+				if (deprecatedEchoMulti) {
+					echoOption = EchoCancelOptionID::SPEEX_MULTICHANNEL;
+				} else {
+					echoOption = EchoCancelOptionID::SPEEX_MIXED;
+				}
+			} else {
+				echoOption = EchoCancelOptionID::DISABLED;
+			}
+		}
+#endif
+	}
 
 	SAVELOAD(iJitterBufferSize, "net/jitterbuffer");
 	SAVELOAD(iFramesPerPacket, "net/framesperpacket");
@@ -985,6 +1015,8 @@ void Settings::load(QSettings *settings_ptr) {
 	settings_ptr->beginGroup(QLatin1String("overlay"));
 	os.load(settings_ptr);
 	settings_ptr->endGroup();
+
+	qDebug() << "Echo option loaded to" << static_cast<int>(echoOption);
 }
 
 #undef SAVELOAD
@@ -1011,7 +1043,7 @@ void OverlaySettings::save(QSettings *settings_ptr) {
 	settings_ptr->setValue(QLatin1String("version"), QLatin1String(MUMTEXT(MUMBLE_VERSION)));
 	settings_ptr->sync();
 
-#if defined(Q_OS_WIN) || defined(Q_OS_MAC)
+#if defined(Q_OS_WIN) || defined(Q_OS_MACOS)
 	if (settings_ptr->format() == QSettings::IniFormat)
 #endif
 	{
@@ -1133,8 +1165,8 @@ void Settings::save() {
 	SAVELOAD(fAudioMaxDistance, "audio/maxdistance");
 	SAVELOAD(fAudioMaxDistVolume, "audio/maxdistancevolume");
 	SAVELOAD(fAudioBloom, "audio/bloom");
-	SAVELOAD(bEcho, "audio/echo");
-	SAVELOAD(bEchoMulti, "audio/echomulti");
+	DEPRECATED("audio/echo");
+	DEPRECATED("audio/echomulti");
 	SAVELOAD(bExclusiveInput, "audio/exclusiveinput");
 	SAVELOAD(bExclusiveOutput, "audio/exclusiveoutput");
 	SAVELOAD(bPositionalAudio, "audio/positional");
@@ -1143,6 +1175,7 @@ void Settings::save() {
 	SAVELOAD(qsAudioOutput, "audio/output");
 	SAVELOAD(bWhisperFriends, "audio/whisperfriends");
 	SAVELOAD(bTransmitPosition, "audio/postransmit");
+	SAVEFLAG(echoOption, "audio/echooptionid");
 
 	SAVELOAD(iJitterBufferSize, "net/jitterbuffer");
 	SAVELOAD(iFramesPerPacket, "net/framesperpacket");

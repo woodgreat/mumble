@@ -8,16 +8,23 @@
 
 #include "ui_AudioWizard.h"
 
+#include "AudioInput.h"
 #include "AudioOutput.h"
 #include "AudioStats.h"
 #include "Settings.h"
-#include "GlobalShortcut.h"
 
 class AudioWizard : public QWizard, public Ui::AudioWizard {
 private:
 	Q_OBJECT
 	Q_DISABLE_COPY(AudioWizard)
+
+	/// Which echo cancellation is usable depends on the audio backend and the device combination.
+	/// This function will iterate through the list of available echo cancellation in the audio backend and check with
+	/// the backend whether this echo cancellation option works for current device combination.
+	EchoCancelOptionID firstUsableEchoCancellation(AudioInputRegistrar *air, QString outputSys);
+
 protected:
+	QList< QVariant > pttButtons;
 	bool bTransmitChanged;
 
 	QGraphicsScene *qgsScene;
@@ -55,12 +62,12 @@ public slots:
 	void on_qrAmplitude_clicked(bool);
 	void on_qrSNR_clicked(bool);
 	void on_qrPTT_clicked(bool);
+	void on_qpbPTT_clicked();
 	void on_qcbEcho_clicked(bool);
 	void on_qcbHeadphone_clicked(bool);
 	void on_qcbPositional_clicked(bool);
 	void on_qcbAttenuateOthers_clicked(bool);
 	void on_qcbHighContrast_clicked(bool);
-	void on_skwPTT_keySet(bool, bool);
 	void on_qrbQualityUltra_clicked();
 	void on_qrbQualityBalanced_clicked();
 	void on_qrbQualityLow_clicked();

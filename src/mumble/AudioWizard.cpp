@@ -10,6 +10,8 @@
 #include "Log.h"
 #include "MainWindow.h"
 #include "Utils.h"
+#include "GlobalShortcut.h"
+#include "GlobalShortcutButtons.h"
 
 #include <QtGui/QMouseEvent>
 #include <QtWidgets/QGraphicsEllipseItem>
@@ -36,7 +38,6 @@ AudioWizard::AudioWizard(QWidget *p) : QWizard(p) {
 	qcbOutputDevice->setAccessibleName(tr("Output device"));
 	qsOutputDelay->setAccessibleName(tr("Output delay"));
 	qsMaxAmp->setAccessibleName(tr("Maximum amplification"));
-	skwPTT->setAccessibleName(tr("PTT key"));
 	qsVAD->setAccessibleName(tr("VAD level"));
 
 	// Done
@@ -48,7 +49,11 @@ AudioWizard::AudioWizard(QWidget *p) : QWizard(p) {
 			qcbInput->addItem(air->name);
 			if (air->name == AudioInputRegistrar::current) {
 				qcbInput->setCurrentIndex(qcbInput->count() - 1);
-				qcbEcho->setEnabled(air->canEcho(qcbOutput->currentText()));
+				EchoCancelOptionID echoCancelOptionId = firstUsableEchoCancellation(air, qcbOutput->currentText());
+				if (echoCancelOptionId != EchoCancelOptionID::DISABLED) {
+					qcbEcho->setEnabled(true);
+					qcbEcho->setChecked(g.s.echoOption != EchoCancelOptionID::DISABLED);
+				}
 			}
 			QList< audioDevice > ql = air->getDeviceChoices();
 		}
@@ -56,8 +61,6 @@ AudioWizard::AudioWizard(QWidget *p) : QWizard(p) {
 	if (qcbInput->count() < 2) {
 		qcbInput->setEnabled(false);
 	}
-
-	qcbEcho->setChecked(g.s.bEcho);
 
 	if (AudioOutputRegistrar::qmNew) {
 		foreach (AudioOutputRegistrar *aor, *AudioOutputRegistrar::qmNew) {
@@ -126,10 +129,9 @@ AudioWizard::AudioWizard(QWidget *p) : QWizard(p) {
 	abAmplify->qcInside = Qt::green;
 	abAmplify->qcAbove  = Qt::red;
 
-	// Trigger
-	foreach (const Shortcut &s, g.s.qlShortcuts) {
-		if (s.iIndex == g.mw->gsPushTalk->idx) {
-			skwPTT->setShortcut(s.qlButtons);
+	for (const auto &shortcut : g.s.qlShortcuts) {
+		if (shortcut.iIndex == g.mw->gsPushTalk->idx) {
+			pttButtons = shortcut.qlButtons;
 			break;
 		}
 	}
@@ -239,7 +241,8 @@ void AudioWizard::on_qcbInputDevice_activated(int) {
 		air->setDeviceChoice(qcbInputDevice->itemData(idx), g.s);
 	}
 
-	qcbEcho->setEnabled(air->canEcho(qcbOutput->currentText()));
+	EchoCancelOptionID echoCancelOptionId = firstUsableEchoCancellation(air, qcbOutput->currentText());
+	qcbEcho->setEnabled(echoCancelOptionId != EchoCancelOptionID::DISABLED);
 
 	g.ai = AudioInputPtr(air->create());
 	g.ai->start(QThread::HighestPriority);
@@ -279,8 +282,9 @@ void AudioWizard::on_qcbOutputDevice_activated(int) {
 		bDelay = aor->usesOutputDelay();
 	}
 
-	AudioInputRegistrar *air = AudioInputRegistrar::qmNew->value(qcbInput->currentText());
-	qcbEcho->setEnabled(air->canEcho(qcbOutput->currentText()));
+	AudioInputRegistrar *air              = AudioInputRegistrar::qmNew->value(qcbInput->currentText());
+	EchoCancelOptionID echoCancelOptionId = firstUsableEchoCancellation(air, qcbOutput->currentText());
+	qcbEcho->setEnabled(echoCancelOptionId != EchoCancelOptionID::DISABLED);
 
 	g.ao = AudioOutputPtr(aor->create());
 	g.ao->start(QThread::HighPriority);
@@ -600,44 +604,63 @@ void AudioWizard::on_qrPTT_clicked(bool on) {
 	}
 }
 
-void AudioWizard::on_skwPTT_keySet(bool valid, bool last) {
-	if (valid)
+void AudioWizard::on_qpbPTT_clicked() {
+	GlobalShortcutButtons dialog;
+	dialog.setButtons(pttButtons);
+
+	const auto ret = dialog.exec();
+	if (ret != Accepted) {
+		return;
+	}
+
+	pttButtons = dialog.buttons();
+	if (!pttButtons.isEmpty()) {
 		qrPTT->setChecked(true);
-	else if (qrPTT->isChecked())
+		updateTriggerWidgets(true);
+	} else if (qrPTT->isChecked()) {
 		qrAmplitude->setChecked(true);
-	updateTriggerWidgets(valid);
+		updateTriggerWidgets(false);
+	}
+
 	bTransmitChanged = true;
 
-	if (last) {
-		const QList< QVariant > &buttons = skwPTT->getShortcut();
-		QList< Shortcut > ql;
-		bool found = false;
-		foreach (Shortcut s, g.s.qlShortcuts) {
-			if (s.iIndex == g.mw->gsPushTalk->idx) {
-				if (buttons.isEmpty())
-					continue;
-				else if (!found) {
-					s.qlButtons = buttons;
-					found       = true;
-				}
+	QList< Shortcut > shortcuts;
+	bool found = false;
+	for (auto &shortcut : g.s.qlShortcuts) {
+		if (shortcut.iIndex == g.mw->gsPushTalk->idx) {
+			if (pttButtons.isEmpty()) {
+				continue;
 			}
-			ql << s;
+
+			if (!found) {
+				found              = true;
+				shortcut.qlButtons = pttButtons;
+			}
 		}
-		if (!found && !buttons.isEmpty()) {
-			Shortcut s;
-			s.iIndex    = g.mw->gsPushTalk->idx;
-			s.bSuppress = false;
-			s.qlButtons = buttons;
-			ql << s;
-		}
-		g.s.qlShortcuts                          = ql;
-		GlobalShortcutEngine::engine->bNeedRemap = true;
-		GlobalShortcutEngine::engine->needRemap();
+
+		shortcuts << shortcut;
 	}
+
+	if (!found && !pttButtons.isEmpty()) {
+		Shortcut shortcut;
+		shortcut.iIndex    = g.mw->gsPushTalk->idx;
+		shortcut.qlButtons = pttButtons;
+		shortcut.bSuppress = false;
+		shortcuts << shortcut;
+	}
+
+	g.s.qlShortcuts                          = shortcuts;
+	GlobalShortcutEngine::engine->bNeedRemap = true;
+	GlobalShortcutEngine::engine->needRemap();
 }
 
 void AudioWizard::on_qcbEcho_clicked(bool on) {
-	g.s.bEcho = on;
+	if (on) {
+		AudioInputRegistrar *air = AudioInputRegistrar::qmNew->value(qcbInput->currentText());
+		g.s.echoOption           = firstUsableEchoCancellation(air, qcbOutput->currentText());
+	} else {
+		g.s.echoOption = EchoCancelOptionID::DISABLED;
+	}
 	restartAudio();
 }
 
@@ -654,7 +677,24 @@ void AudioWizard::on_qcbPositional_clicked(bool on) {
 
 void AudioWizard::updateTriggerWidgets(bool ptt) {
 	qwVAD->setEnabled(!ptt);
-	qwpTrigger->setComplete(!ptt || (skwPTT->qlButtons.count() > 0));
+
+	if (pttButtons.count() > 0) {
+		QString text;
+		for (const auto &button : pttButtons) {
+			if (!text.isEmpty()) {
+				text += ' ';
+			}
+
+			const auto info = GlobalShortcutEngine::engine->buttonInfo(button);
+			text += QString("'%1%2'").arg(info.devicePrefix, info.name);
+		}
+
+		qpbPTT->setText(text);
+		qwpTrigger->setComplete(true);
+	} else {
+		qpbPTT->setText(tr("No buttons assigned"));
+		qwpTrigger->setComplete(!ptt);
+	}
 }
 
 void AudioWizard::on_qcbAttenuateOthers_clicked(bool checked) {
@@ -696,4 +736,14 @@ void AudioWizard::on_qrbQualityCustom_clicked() {
 	g.s.iQuality         = sOldSettings.iQuality;
 	g.s.iFramesPerPacket = sOldSettings.iFramesPerPacket;
 	restartAudio();
+}
+
+EchoCancelOptionID AudioWizard::firstUsableEchoCancellation(AudioInputRegistrar *air, const QString outputSys) {
+	for (EchoCancelOptionID ecoid : air->echoOptions) {
+		if (air->canEcho(ecoid, outputSys)) {
+			return ecoid;
+		}
+	}
+
+	return EchoCancelOptionID::DISABLED;
 }
