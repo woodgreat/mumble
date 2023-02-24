@@ -1,32 +1,25 @@
-// Copyright 2020 The Mumble Developers. All rights reserved.
+// Copyright 2020-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
 
 #include "MultiStyleWidgetWrapper.h"
 
-#include <QWidget>
 #include <QFont>
 #include <QFontMetrics>
+#include <QWidget>
 
 const uint32_t MultiStyleWidgetWrapper::UNSET_FONTSIZE = 0;
-const QString MultiStyleWidgetWrapper::UNSET_COLOR = "";
-const QString MultiStyleWidgetWrapper::UNSET_SELECTOR = "*";
+const QString MultiStyleWidgetWrapper::UNSET_COLOR     = "";
+const QString MultiStyleWidgetWrapper::UNSET_SELECTOR  = "*";
 
 MultiStyleWidgetWrapper::MultiStyleWidgetWrapper(QWidget *widget) : m_widget(widget) {
 }
 
 void MultiStyleWidgetWrapper::setFontSize(uint32_t fontSize, bool isPixels) {
-	if (!isPixels) {
-		// Convert the font size to pixels
-		QFont font;
-		font.setPixelSize(fontSize);
-
-		fontSize = QFontMetrics(font).height();
-	}
-
-	if (fontSize != m_fontSize) {
-		m_fontSize = fontSize;
+	if (fontSize != m_fontSize || m_fontSizeInPixels != isPixels) {
+		m_fontSize         = fontSize;
+		m_fontSizeInPixels = isPixels;
 
 		updateStyleSheet();
 	}
@@ -76,7 +69,10 @@ void MultiStyleWidgetWrapper::updateStyleSheet() {
 	QString styleSheet;
 
 	if (m_fontSize != UNSET_FONTSIZE) {
-		styleSheet += QString(" %1 { font-size: %2px; }").arg(m_fontSizeSelector).arg(m_fontSize);
+		styleSheet += QString(" %1 { font-size: %2%3; }")
+						  .arg(m_fontSizeSelector)
+						  .arg(m_fontSize)
+						  .arg(m_fontSizeInPixels ? QStringLiteral("px") : QStringLiteral("pt"));
 	}
 	if (m_backgroundColor != UNSET_COLOR) {
 		styleSheet += QString(" %1 { background-color: %2; }").arg(m_backgroundColorSelector).arg(m_backgroundColor);

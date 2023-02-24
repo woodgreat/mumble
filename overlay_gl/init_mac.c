@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2015-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -124,9 +124,8 @@ __attribute__((constructor)) static void initializeLibrary() {
 
 	ods("!");
 
-	void *nsgl = NULL, *cgl = NULL;
-	nsgl = dlsym(RTLD_DEFAULT, "NSClassFromString");
-	cgl  = dlsym(RTLD_DEFAULT, "CGLFlushDrawable");
+	void *nsgl = NULL;
+	nsgl       = dlsym(RTLD_DEFAULT, "NSClassFromString");
 
 	/* Check for GL symbol availability */
 	if (!(AVAIL_ALL_GLSYM)) {

@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2017-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -7,7 +7,9 @@
 
 #include <QByteArray>
 
-QString EnvUtils::getenv(QString name) {
+namespace EnvUtils {
+
+QString getenv(QString name) {
 #ifdef Q_OS_WIN
 	QByteArray buf;
 	size_t requiredSize = 0;
@@ -43,7 +45,7 @@ QString EnvUtils::getenv(QString name) {
 #endif
 }
 
-bool EnvUtils::setenv(QString name, QString value) {
+bool setenv(QString name, QString value) {
 #ifdef Q_OS_WIN
 	return _wputenv_s(reinterpret_cast< const wchar_t * >(name.utf16()),
 					  reinterpret_cast< const wchar_t * >(value.utf16()))
@@ -53,3 +55,10 @@ bool EnvUtils::setenv(QString name, QString value) {
 	return ::setenv(name.toLocal8Bit().constData(), value.toLocal8Bit().constData(), OVERWRITE) == 0;
 #endif
 }
+
+bool waylandIsUsed() {
+	// If wayland is used, this environment variable is expected to be set
+	return getenv(QStringLiteral("WAYLAND_DISPLAY")) != "";
+}
+
+}; // namespace EnvUtils

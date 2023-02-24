@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -9,7 +9,10 @@
 #include "Channel.h"
 #include "ClientUser.h"
 #include "Database.h"
+#include "EnvUtils.h"
 #include "MainWindow.h"
+#include "ServerHandler.h"
+#include "Global.h"
 #include "GlobalShortcutButtons.h"
 
 #include <QtCore/QProcess>
@@ -23,9 +26,7 @@
 #	include <QtCore/QOperatingSystemVersion>
 #endif
 
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name
-// (like protobuf 3.7 does). As such, for now, we have to make this our last include.
-#include "Global.h"
+#include <cassert>
 
 const QString GlobalShortcutConfig::name = QLatin1String("GlobalShortcutConfig");
 
@@ -38,7 +39,7 @@ static ConfigWidget *GlobalShortcutConfigDialogNew(Settings &st) {
 	return new GlobalShortcutConfig(st);
 }
 
-static ConfigRegistrar registrar(1200, GlobalShortcutConfigDialogNew);
+static ConfigRegistrar registrarGlobalShortcut(1200, GlobalShortcutConfigDialogNew);
 
 static const QString UPARROW = QString::fromUtf8("\xE2\x86\x91 ");
 
@@ -105,6 +106,31 @@ int ShortcutToggleWidget::index() const {
 	return itemData(currentIndex()).toInt();
 }
 
+ChannelSelectWidget::ChannelSelectWidget(QWidget *parent) : MUComboBox(parent) {
+	QReadLocker lock(&Channel::c_qrwlChannels);
+
+	int index = 0;
+
+	for (const Channel *currentChannel : Channel::c_qhChannels) {
+		assert(currentChannel);
+
+		insertItem(index, currentChannel->qsName);
+		setItemData(index, currentChannel->iId);
+
+		index++;
+	}
+
+	model()->sort(0);
+}
+
+void ChannelSelectWidget::setCurrentChannel(const ChannelTarget &target) {
+	setCurrentIndex(findData(target.channelID));
+}
+
+ChannelTarget ChannelSelectWidget::currentChannel() const {
+	return itemData(currentIndex()).toInt();
+}
+
 void iterateChannelChildren(QTreeWidgetItem *root, Channel *chan, QMap< int, QTreeWidgetItem * > &map) {
 	foreach (Channel *c, chan->qlChannels) {
 		QTreeWidgetItem *sub = new QTreeWidgetItem(root, QStringList(c->qsName));
@@ -140,7 +166,7 @@ ShortcutTargetDialog::ShortcutTargetDialog(const ShortcutTarget &st, QWidget *pw
 	qcbShoutSubchans->setChecked(st.bChildren);
 
 	// Insert all known friends into the possible targets list
-	const QMap< QString, QString > &friends = g.db->getFriends();
+	const QMap< QString, QString > &friends = Global::get().db->getFriends();
 	if (!friends.isEmpty()) {
 		QMap< QString, QString >::const_iterator i;
 		for (i = friends.constBegin(); i != friends.constEnd(); ++i) {
@@ -151,13 +177,13 @@ ShortcutTargetDialog::ShortcutTargetDialog(const ShortcutTarget &st, QWidget *pw
 	}
 
 	// If we are connected to a server also add all connected players with certificates to the list
-	if (g.uiSession) {
+	if (Global::get().uiSession) {
 		QMap< QString, QString > others;
 		QMap< QString, QString >::const_iterator i;
 
 		QReadLocker lock(&ClientUser::c_qrwlUsers);
 		foreach (ClientUser *p, ClientUser::c_qmUsers) {
-			if ((p->uiSession != g.uiSession) && p->qsFriendName.isEmpty() && !p->qsHash.isEmpty()) {
+			if ((p->uiSession != Global::get().uiSession) && p->qsFriendName.isEmpty() && !p->qsHash.isEmpty()) {
 				others.insert(p->qsName, p->qsHash);
 				qmHashNames.insert(p->qsHash, p->qsName);
 			}
@@ -217,8 +243,8 @@ ShortcutTargetDialog::ShortcutTargetDialog(const ShortcutTarget &st, QWidget *pw
 	}
 
 	// And if we are connected add the channels on the current server
-	if (g.uiSession) {
-		Channel *c             = Channel::get(0);
+	if (Global::get().uiSession) {
+		Channel *c             = Channel::get(Channel::ROOT_ID);
 		QTreeWidgetItem *sroot = new QTreeWidgetItem(qtwChannels, QStringList(c->qsName));
 		qmTree.insert(0, sroot);
 		iterateChannelChildren(sroot, c, qmTree);
@@ -227,8 +253,8 @@ ShortcutTargetDialog::ShortcutTargetDialog(const ShortcutTarget &st, QWidget *pw
 	qtwChannels->sortByColumn(0, Qt::AscendingOrder);
 
 	QTreeWidgetItem *qtwi;
-	if (g.uiSession) {
-		qtwi = qmTree.value(ClientUser::get(g.uiSession)->cChannel->iId);
+	if (Global::get().uiSession) {
+		qtwi = qmTree.value(ClientUser::get(Global::get().uiSession)->cChannel->iId);
 		if (qtwi)
 			qtwChannels->scrollToItem(qtwi);
 	}
@@ -355,7 +381,7 @@ QString ShortcutTargetWidget::targetString(const ShortcutTarget &st) {
 				if (hashes.contains(hash)) {
 					name = hashes.value(hash);
 				} else {
-					name = g.db->getFriend(hash);
+					name = Global::get().db->getFriend(hash);
 					if (name.isEmpty())
 						name = QString::fromLatin1("#%1").arg(hash);
 				}
@@ -433,6 +459,8 @@ ShortcutDelegate::ShortcutDelegate(QObject *p) : QStyledItemDelegate(p) {
 	factory->registerEditor(QVariant::Int, new QStandardItemEditorCreator< ShortcutToggleWidget >());
 	factory->registerEditor(static_cast< QVariant::Type >(QVariant::fromValue(ShortcutTarget()).userType()),
 							new QStandardItemEditorCreator< ShortcutTargetWidget >());
+	factory->registerEditor(static_cast< QVariant::Type >(QVariant::fromValue(ChannelTarget()).userType()),
+							new QStandardItemEditorCreator< ChannelSelectWidget >());
 	factory->registerEditor(QVariant::String, new QStandardItemEditorCreator< QLineEdit >());
 	factory->registerEditor(QVariant::Invalid, new QStandardItemEditorCreator< QWidget >());
 	setItemEditorFactory(factory);
@@ -449,6 +477,15 @@ ShortcutDelegate::~ShortcutDelegate() {
 QString ShortcutDelegate::displayText(const QVariant &item, const QLocale &loc) const {
 	if (item.userType() == QVariant::fromValue(ShortcutTarget()).userType()) {
 		return ShortcutTargetWidget::targetString(item.value< ShortcutTarget >());
+	} else if (item.userType() == QVariant::fromValue(ChannelTarget()).userType()) {
+		ChannelTarget target = item.value< ChannelTarget >();
+
+		const Channel *c = Channel::get(target.channelID);
+		if (c) {
+			return c->qsName;
+		} else {
+			return tr("< Unknown Channel >");
+		}
 	}
 
 	switch (item.type()) {
@@ -528,6 +565,14 @@ GlobalShortcutConfig::GlobalShortcutConfig(Settings &st) : ConfigWidget(st) {
 
 	qcbEnableGlobalShortcuts->setVisible(canDisable);
 
+	qlWaylandNote->setVisible(false);
+#ifdef Q_OS_LINUX
+	if (EnvUtils::waylandIsUsed()) {
+		// Our global shortcut system doesn't work properly with Wayland
+		qlWaylandNote->setVisible(true);
+	}
+#endif
+
 #ifdef Q_OS_MAC
 	// Help Mac users enable accessibility access for Mumble...
 #	if QT_VERSION >= QT_VERSION_CHECK(5, 9, 0)
@@ -559,7 +604,7 @@ GlobalShortcutConfig::GlobalShortcutConfig(Settings &st) : ConfigWidget(st) {
 bool GlobalShortcutConfig::eventFilter(QObject * /*object*/, QEvent *e) {
 #ifdef Q_OS_MAC
 	if (e->type() == QEvent::WindowActivate) {
-		if (!g.s.bSuppressMacEventTapWarning) {
+		if (!Global::get().s.bSuppressMacEventTapWarning) {
 			qwWarningContainer->setVisible(showWarning());
 		}
 	}
@@ -598,7 +643,7 @@ void GlobalShortcutConfig::on_qpbOpenAccessibilityPrefs_clicked() {
 void GlobalShortcutConfig::on_qpbSkipWarning_clicked() {
 	// Store to both global and local settings.  The 'Skip' is live, as in
 	// we don't expect the user to click Apply for their choice to work.
-	g.s.bSuppressMacEventTapWarning = s.bSuppressMacEventTapWarning = true;
+	Global::get().s.bSuppressMacEventTapWarning = s.bSuppressMacEventTapWarning = true;
 	qwWarningContainer->setVisible(false);
 }
 
@@ -658,7 +703,7 @@ void GlobalShortcutConfig::on_qtwShortcuts_itemChanged(QTreeWidgetItem *item, in
 	sc.bSuppress = item->checkState(3) == Qt::Checked;
 
 	const ::GlobalShortcut *gs = GlobalShortcutEngine::engine->qmShortcuts.value(sc.iIndex);
-	if (gs && sc.qvData.type() != gs->qvDefault.type()) {
+	if (gs && sc.qvData.userType() != gs->qvDefault.userType()) {
 		item->setData(1, Qt::DisplayRole, gs->qvDefault);
 	}
 }
@@ -683,13 +728,12 @@ void GlobalShortcutConfig::load(const Settings &r) {
 	//
 	// To make this work well, we set the setting on load. This is to make 'Reset' and 'Restore Defaults'
 	// work as expected.
-	g.s.bSuppressMacEventTapWarning = s.bSuppressMacEventTapWarning = r.bSuppressMacEventTapWarning;
-	if (!g.s.bSuppressMacEventTapWarning) {
+	Global::get().s.bSuppressMacEventTapWarning = s.bSuppressMacEventTapWarning = r.bSuppressMacEventTapWarning;
+	if (!Global::get().s.bSuppressMacEventTapWarning) {
 		qwWarningContainer->setVisible(showWarning());
 	}
 
 	qcbEnableUIAccess->setChecked(r.bEnableUIAccess);
-	qcbEnableWinHooks->setChecked(r.bEnableWinHooks);
 	qcbEnableGKey->setChecked(r.bEnableGKey);
 	qcbEnableXboxInput->setChecked(r.bEnableXboxInput);
 
@@ -705,18 +749,24 @@ void GlobalShortcutConfig::save() const {
 	bool oldUIAccess  = s.bEnableUIAccess;
 	s.bEnableUIAccess = qcbEnableUIAccess->checkState() == Qt::Checked;
 
-	bool oldWinHooks  = s.bEnableWinHooks;
-	s.bEnableWinHooks = qcbEnableWinHooks->checkState() == Qt::Checked;
-
 	bool oldGKey  = s.bEnableGKey;
 	s.bEnableGKey = qcbEnableGKey->checkState() == Qt::Checked;
 
 	bool oldXboxInput  = s.bEnableXboxInput;
 	s.bEnableXboxInput = qcbEnableXboxInput->checkState() == Qt::Checked;
 
-	if (s.bEnableUIAccess != oldUIAccess || s.bEnableWinHooks != oldWinHooks || s.bEnableGKey != oldGKey
-		|| s.bEnableXboxInput != oldXboxInput) {
+	if (s.bEnableUIAccess != oldUIAccess || s.bEnableGKey != oldGKey || s.bEnableXboxInput != oldXboxInput) {
 		s.requireRestartToApply = true;
+	}
+
+	if (Global::get().sh && Global::get().sh->hasSynchronized()) {
+		// If we are connected to a server (that has finished synchronizing) there is the change, the user has
+		// configured server-specific shortcuts, which we save in the DB instead of in the regular settings. Thus we
+		// have to explicitly save them here.
+		// Note that the server needs to have finished synchronizing, since only then did we load any previously
+		// configured shortcuts from the DB in the first place. Otherwise, "saving" the shortcuts (which are not
+		// loaded yet) would effectively delete them.
+		Global::get().db->setShortcuts(Global::get().sh->qbaDigest, s.qlShortcuts);
 	}
 }
 
@@ -758,12 +808,13 @@ QTreeWidgetItem *GlobalShortcutConfig::itemForShortcut(const Shortcut &sc) const
 void GlobalShortcutConfig::reload() {
 	std::stable_sort(qlShortcuts.begin(), qlShortcuts.end());
 	qtwShortcuts->clear();
+
 	foreach (const Shortcut &sc, qlShortcuts) {
 		QTreeWidgetItem *item = itemForShortcut(sc);
 		qtwShortcuts->addTopLevelItem(item);
 	}
 #ifdef Q_OS_MAC
-	if (!g.s.bSuppressMacEventTapWarning) {
+	if (!Global::get().s.bSuppressMacEventTapWarning) {
 		qwWarningContainer->setVisible(showWarning());
 	} else {
 		qwWarningContainer->setVisible(false);
@@ -774,7 +825,7 @@ void GlobalShortcutConfig::reload() {
 void GlobalShortcutConfig::accept() const {
 	GlobalShortcutEngine::engine->bNeedRemap = true;
 	GlobalShortcutEngine::engine->needRemap();
-	GlobalShortcutEngine::engine->setEnabled(g.s.bShortcutEnable);
+	GlobalShortcutEngine::engine->setEnabled(Global::get().s.bShortcutEnable);
 }
 
 
@@ -818,7 +869,7 @@ void GlobalShortcutEngine::remap() {
 	qlShortcutList.clear();
 	qlDownButtons.clear();
 
-	foreach (const Shortcut &sc, g.s.qlShortcuts) {
+	foreach (const Shortcut &sc, Global::get().s.qlShortcuts) {
 		GlobalShortcut *gs = qmShortcuts.value(sc.iIndex);
 		if (gs && !sc.qlButtons.isEmpty()) {
 			ShortcutKey *sk = new ShortcutKey;
@@ -889,7 +940,7 @@ bool GlobalShortcutEngine::handleButton(const QVariant &button, bool down) {
 	}
 
 	if (down) {
-		AudioInputPtr ai = g.ai;
+		AudioInputPtr ai = Global::get().ai;
 		if (ai.get()) {
 			// XXX: This is a data race: we write to ai->activityState
 			// (accessed by the AudioInput thread) from the main thread.
@@ -946,7 +997,7 @@ bool GlobalShortcutEngine::handleButton(const QVariant &button, bool down) {
 void GlobalShortcutEngine::add(GlobalShortcut *gs) {
 	if (!GlobalShortcutEngine::engine) {
 		GlobalShortcutEngine::engine = GlobalShortcutEngine::platformInit();
-		GlobalShortcutEngine::engine->setEnabled(g.s.bShortcutEnable);
+		GlobalShortcutEngine::engine->setEnabled(Global::get().s.bShortcutEnable);
 	}
 
 	GlobalShortcutEngine::engine->qmShortcuts.insert(gs->idx, gs);

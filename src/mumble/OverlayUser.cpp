@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2010-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -9,19 +9,15 @@
 #include "ClientUser.h"
 #include "Database.h"
 #include "MainWindow.h"
-#include "Message.h"
 #include "NetworkConfig.h"
 #include "OverlayText.h"
 #include "ServerHandler.h"
 #include "User.h"
 #include "Utils.h"
+#include "Global.h"
 #include "GlobalShortcut.h"
 
 #include <QtGui/QImageReader>
-
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name
-// (like protobuf 3.7 does). As such, for now, we have to make this our last include.
-#include "Global.h"
 
 OverlayUser::OverlayUser(ClientUser *cu, unsigned int height, OverlaySettings *osptr)
 	: OverlayGroup(), os(osptr), uiSize(height), cuUser(cu), tsColor(Settings::Passive) {
@@ -194,7 +190,7 @@ void OverlayUser::updateUser() {
 		QImage img;
 
 		if (!qbaAvatar.isNull() && cuUser->qbaTexture.isEmpty()) {
-			g.o->requestTexture(cuUser);
+			Global::get().o->requestTexture(cuUser);
 		} else if (qbaAvatar.isNull()) {
 			QImageReader qir(QLatin1String("skin:default_avatar.svg"));
 			QSize sz = qir.size();
@@ -220,7 +216,7 @@ void OverlayUser::updateUser() {
 	qgpiAvatar->setVisible(os->bAvatar);
 
 	if (cuUser) {
-		ClientUser *self = ClientUser::get(g.uiSession);
+		ClientUser *self = ClientUser::get(Global::get().uiSession);
 
 		if (os->bMutedDeafened) {
 			if (cuUser->bDeaf || cuUser->bSelfDeaf) {
@@ -289,3 +285,5 @@ QPointF OverlayUser::alignedPosition(const QRectF &box, const QRectF &item, Qt::
 
 	return QPointF(iroundf(xofs + 0.5f), iroundf(yofs + 0.5f));
 }
+
+#undef SCALESIZE

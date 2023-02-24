@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -9,14 +9,12 @@
 #include "AudioInput.h"
 #include "AudioOutput.h"
 #include "MainWindow.h"
+#include "SearchDialog.h"
+#include "Global.h"
 
 #include <QtCore/QFileSystemWatcher>
 #include <QtCore/QStack>
 #include <QtCore/QTimer>
-
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name
-// (like protobuf 3.7 does). As such, for now, we have to make this our last include.
-#include "Global.h"
 
 const QString LookConfig::name = QLatin1String("LookConfig");
 
@@ -101,6 +99,19 @@ LookConfig::LookConfig(Settings &st) : ConfigWidget(st) {
 		qlThemesDirectory->setText(tr("<a href=\"%1\">Browse</a>").arg(userThemeDirectoryUrl.toString()));
 		qlThemesDirectory->setOpenExternalLinks(true);
 	}
+
+#define ADD_SEARCH_USERACTION(name)                                                                      \
+	qcbSearchUserAction->addItem(Search::SearchDialog::toString(Search::SearchDialog::UserAction::name), \
+								 static_cast< int >(Search::SearchDialog::UserAction::name))
+	ADD_SEARCH_USERACTION(NONE);
+	ADD_SEARCH_USERACTION(JOIN);
+#undef ADD_SEARCH_USERACTION
+#define ADD_SEARCH_CHANNELACTION(name)                                                                         \
+	qcbSearchChannelAction->addItem(Search::SearchDialog::toString(Search::SearchDialog::ChannelAction::name), \
+									static_cast< int >(Search::SearchDialog::ChannelAction::name))
+	ADD_SEARCH_CHANNELACTION(NONE);
+	ADD_SEARCH_CHANNELACTION(JOIN);
+#undef ADD_SEARCH_CHANNELACTION
 }
 
 QString LookConfig::title() const {
@@ -175,7 +186,9 @@ void LookConfig::load(const Settings &r) {
 	loadComboBox(qcbChannelDrag, r.ceChannelDrag);
 	loadComboBox(qcbUserDrag, r.ceUserDrag);
 	loadCheckBox(qcbUsersTop, r.bUserTop);
-	loadCheckBox(qcbAskOnQuit, r.bAskOnQuit);
+
+	loadComboBox(qcbQuitBehavior, static_cast< int >(r.quitBehavior));
+
 	loadCheckBox(qcbEnableDeveloperMenu, r.bEnableDeveloperMenu);
 	loadCheckBox(qcbLockLayout, (r.wlWindowLayout == Settings::LayoutCustom) && r.bLockLayout);
 	loadCheckBox(qcbHideTray, r.bHideInTray);
@@ -202,8 +215,12 @@ void LookConfig::load(const Settings &r) {
 	qsbMaxNameLength->setValue(r.iTalkingUI_MaxChannelNameLength);
 	qsbPrefixCharCount->setValue(r.iTalkingUI_PrefixCharCount);
 	qsbPostfixCharCount->setValue(r.iTalkingUI_PostfixCharCount);
-	qleChannelSeparator->setText(r.qsTalkingUI_ChannelSeparator);
 	qleAbbreviationReplacement->setText(r.qsTalkingUI_AbbreviationReplacement);
+
+	qleChannelSeparator->setText(r.qsHierarchyChannelSeparator);
+
+	loadComboBox(qcbSearchUserAction, static_cast< int >(r.searchUserAction));
+	loadComboBox(qcbSearchChannelAction, static_cast< int >(r.searchChannelAction));
 }
 
 void LookConfig::save() const {
@@ -238,7 +255,7 @@ void LookConfig::save() const {
 	}
 
 	s.aotbAlwaysOnTop           = static_cast< Settings::AlwaysOnTopBehaviour >(qcbAlwaysOnTop->currentIndex());
-	s.bAskOnQuit                = qcbAskOnQuit->isChecked();
+	s.quitBehavior              = static_cast< QuitBehavior >(qcbQuitBehavior->currentIndex());
 	s.bEnableDeveloperMenu      = qcbEnableDeveloperMenu->isChecked();
 	s.bLockLayout               = qcbLockLayout->isChecked();
 	s.bHideInTray               = qcbHideTray->isChecked();
@@ -269,12 +286,18 @@ void LookConfig::save() const {
 	s.iTalkingUI_MaxChannelNameLength     = qsbMaxNameLength->value();
 	s.iTalkingUI_PrefixCharCount          = qsbPrefixCharCount->value();
 	s.iTalkingUI_PostfixCharCount         = qsbPostfixCharCount->value();
-	s.qsTalkingUI_ChannelSeparator        = qleChannelSeparator->text();
 	s.qsTalkingUI_AbbreviationReplacement = qleAbbreviationReplacement->text();
+
+	s.qsHierarchyChannelSeparator = qleChannelSeparator->text();
+
+	s.searchUserAction = static_cast< Search::SearchDialog::UserAction >(qcbSearchUserAction->currentData().toInt());
+	s.searchChannelAction =
+		static_cast< Search::SearchDialog::ChannelAction >(qcbSearchChannelAction->currentData().toInt());
 }
 
 void LookConfig::accept() const {
-	g.mw->setShowDockTitleBars((g.s.wlWindowLayout == Settings::LayoutCustom) && !g.s.bLockLayout);
+	Global::get().mw->setShowDockTitleBars((Global::get().s.wlWindowLayout == Settings::LayoutCustom)
+										   && !Global::get().s.bLockLayout);
 }
 
 void LookConfig::themeDirectoryChanged() {
@@ -296,6 +319,5 @@ void LookConfig::on_qcbAbbreviateChannelNames_stateChanged(int state) {
 	qsbMaxNameLength->setEnabled(abbreviateNames);
 	qsbPrefixCharCount->setEnabled(abbreviateNames);
 	qsbPostfixCharCount->setEnabled(abbreviateNames);
-	qleChannelSeparator->setEnabled(abbreviateNames);
 	qleAbbreviationReplacement->setEnabled(abbreviateNames);
 }

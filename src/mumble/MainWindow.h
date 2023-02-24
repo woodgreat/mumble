@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -14,10 +14,10 @@
 
 #include "CustomElements.h"
 #include "MUComboBox.h"
-#include "Message.h"
 #include "Mumble.pb.h"
+#include "MumbleProtocol.h"
+#include "QtUtils.h"
 #include "Usage.h"
-#include "UserLocalVolumeDialog.h"
 #include "UserLocalNicknameDialog.h"
 
 #include "ui_MainWindow.h"
@@ -36,9 +36,23 @@ class Tokens;
 class Channel;
 class UserInformation;
 class VoiceRecorderDialog;
+class PositionalAudioViewer;
 class PTTButtonWidget;
 
+namespace Search {
+class SearchDialog;
+};
+
+class MenuLabel;
+class ListenerVolumeSlider;
+class UserLocalVolumeSlider;
+
 struct ShortcutTarget;
+
+struct ContextMenuTarget {
+	ClientUser *user = nullptr;
+	Channel *channel = nullptr;
+};
 
 class MessageBoxEvent : public QEvent {
 public:
@@ -52,7 +66,7 @@ public:
 	OpenURLEvent(QUrl url);
 };
 
-class MainWindow : public QMainWindow, public MessageHandler, public Ui::MainWindow {
+class MainWindow : public QMainWindow, public Ui::MainWindow {
 	friend class UserModel;
 
 private:
@@ -69,8 +83,7 @@ public:
 	QIcon qiIcon, qiIconMutePushToMute, qiIconMuteSelf, qiIconMuteServer, qiIconDeafSelf, qiIconDeafServer,
 		qiIconMuteSuppressed;
 	QIcon qiTalkingOn, qiTalkingWhisper, qiTalkingShout, qiTalkingOff;
-	QMap< unsigned int, UserLocalVolumeDialog * > qmUserVolTracker;
-	std::unordered_map< unsigned int, NicknameDialogPtr > qmUserNicknameTracker;
+	std::unordered_map< unsigned int, qt_unique_ptr< UserLocalNicknameDialog > > qmUserNicknameTracker;
 
 	/// "Action" for when there are no actions available
 	QAction *qaEmpty;
@@ -80,9 +93,13 @@ public:
 #ifdef USE_OVERLAY
 	GlobalShortcut *gsToggleOverlay;
 #endif
-	GlobalShortcut *gsMinimal, *gsVolumeUp, *gsVolumeDown, *gsWhisper, *gsLinkChannel;
-	GlobalShortcut *gsCycleTransmitMode, *gsToggleMainWindowVisibility, *gsTransmitModePushToTalk, *gsTransmitModeContinuous, *gsTransmitModeVAD;
+	GlobalShortcut *gsMinimal, *gsVolumeUp, *gsVolumeDown, *gsWhisper, *gsLinkChannel, *gsListenChannel;
+	GlobalShortcut *gsCycleTransmitMode, *gsToggleMainWindowVisibility, *gsTransmitModePushToTalk,
+		*gsTransmitModeContinuous, *gsTransmitModeVAD;
 	GlobalShortcut *gsSendTextMessage, *gsSendClipboardTextMessage;
+	GlobalShortcut *gsToggleTalkingUI;
+	GlobalShortcut *gsToggleSearch;
+
 	DockTitleBar *dtbLogDockTitle, *dtbChatDockTitle;
 
 	ACLEditor *aclEdit;
@@ -96,7 +113,7 @@ public:
 	bool bRetryServer;
 	QString qsDesiredChannel;
 
-	bool bSuppressAskOnQuit;
+	bool forceQuit;
 	/// Restart the client after shutdown
 	bool restartOnQuit;
 	bool bAutoUnmute;
@@ -114,6 +131,7 @@ public:
 	void msgBox(QString msg);
 	void setOnTop(bool top);
 	void setShowDockTitleBars(bool doShow);
+	void updateAudioToolTips();
 	void updateTrayIcon();
 	void updateUserModel();
 	void focusNextMainWidget();
@@ -122,7 +140,6 @@ public:
 	void updateChatBar();
 	void openTextMessageDialog(ClientUser *p);
 	void openUserLocalNicknameDialog(const ClientUser &p);
-	void openUserLocalVolumeDialog(ClientUser *p);
 
 #ifdef Q_OS_WIN
 	bool nativeEvent(const QByteArray &eventType, void *message, long *result) Q_DECL_OVERRIDE;
@@ -154,11 +171,19 @@ protected:
 	int iTargetCounter;
 	QMap< unsigned int, UserInformation * > qmUserInformations;
 
+	std::unique_ptr< PositionalAudioViewer > m_paViewer;
+
 	PTTButtonWidget *qwPTTButtonWidget;
 
 	MUComboBox *qcbTransmitMode;
 	QAction *qaTransmitMode;
 	QAction *qaTransmitModeSeparator;
+
+	Search::SearchDialog *m_searchDialog = nullptr;
+
+	qt_unique_ptr< MenuLabel > m_localVolumeLabel;
+	qt_unique_ptr< UserLocalVolumeSlider > m_userLocalVolumeSlider;
+	qt_unique_ptr< ListenerVolumeSlider > m_listenerVolumeSlider;
 
 	void createActions();
 	void setupGui();
@@ -183,6 +208,7 @@ protected:
 	bool handleSpecialContextMenu(const QUrl &url, const QPoint &pos_, bool focus = false);
 	Channel *getContextMenuChannel();
 	ClientUser *getContextMenuUser();
+	ContextMenuTarget getContextMenuTargets();
 
 public slots:
 	void on_qmServer_aboutToShow();
@@ -198,7 +224,7 @@ public slots:
 	void on_qaSelfComment_triggered();
 	void on_qaSelfRegister_triggered();
 	void qcbTransmitMode_activated(int index);
-	void updateTransmitModeComboBox();
+	void updateTransmitModeComboBox(Settings::AudioTransmit newMode);
 	void qmUser_aboutToShow();
 	void qmListener_aboutToShow();
 	void on_qaUserCommentReset_triggered();
@@ -214,7 +240,6 @@ public slots:
 	void on_qaUserLocalIgnoreTTS_triggered();
 	void on_qaUserLocalMute_triggered();
 	void on_qaUserLocalNickname_triggered();
-	void on_qaUserLocalVolume_triggered();
 	void on_qaUserTextMessage_triggered();
 	void on_qaUserRegister_triggered();
 	void on_qaUserInformation_triggered();
@@ -232,9 +257,9 @@ public slots:
 	void on_qaChannelUnlink_triggered();
 	void on_qaChannelUnlinkAll_triggered();
 	void on_qaChannelSendMessage_triggered();
-	void on_qaChannelFilter_triggered();
+	void on_qaChannelHide_triggered();
+	void on_qaChannelPin_triggered();
 	void on_qaChannelCopyURL_triggered();
-	void on_qaListenerLocalVolume_triggered();
 	void on_qaAudioReset_triggered();
 	void on_qaAudioMute_triggered();
 	void on_qaAudioDeaf_triggered();
@@ -249,6 +274,7 @@ public slots:
 	void on_qaConfigCert_triggered();
 	void on_qaAudioWizard_triggered();
 	void on_qaDeveloperConsole_triggered();
+	void on_qaPositionalAudioViewer_triggered();
 	void on_qaHelpWhatsThis_triggered();
 	void on_qaHelpAbout_triggered();
 	void on_qaHelpAboutQt_triggered();
@@ -271,6 +297,7 @@ public slots:
 	void on_gsWhisper_triggered(bool, QVariant);
 	void addTarget(ShortcutTarget *);
 	void removeTarget(ShortcutTarget *);
+	void on_gsListenChannel_triggered(bool, QVariant);
 	void on_gsCycleTransmitMode_triggered(bool, QVariant);
 	void on_gsToggleMainWindowVisibility_triggered(bool, QVariant);
 	void on_gsTransmitModePushToTalk_triggered(bool, QVariant);
@@ -278,6 +305,8 @@ public slots:
 	void on_gsTransmitModeVAD_triggered(bool, QVariant);
 	void on_gsSendTextMessage_triggered(bool, QVariant);
 	void on_gsSendClipboardTextMessage_triggered(bool, QVariant);
+	void on_gsToggleTalkingUI_triggered(bool, QVariant);
+	void on_gsToggleSearch_triggered(bool, QVariant);
 	void on_Reconnect_timeout();
 	void on_Icon_activated(QSystemTrayIcon::ActivationReason);
 	void on_qaTalkingUIToggle_triggered();
@@ -297,7 +326,7 @@ public slots:
 	void destroyUserInformation();
 	void trayAboutToShow();
 	void sendChatbarMessage(QString msg);
-	void sendChatbarText(QString msg);
+	void sendChatbarText(QString msg, bool plainText = false);
 	void pttReleased();
 	void whisperReleased(QVariant scdata);
 	void onResetAudio();
@@ -311,6 +340,20 @@ public slots:
 	/// Updates the user's image directory to the given path (any included
 	/// filename is discarded).
 	void updateImagePath(QString filepath) const;
+	void setTransmissionMode(Settings::AudioTransmit mode);
+	/// Sets the local user's mute state
+	///
+	/// @param mute Whether to mute the user
+	void setAudioMute(bool mute);
+	/// Sets the local user's deaf state
+	///
+	/// @param deaf Whether to deafen the user
+	void setAudioDeaf(bool deaf);
+	// Callback the search action being triggered
+	void on_qaSearch_triggered();
+	void toggleSearchDialogVisibility();
+	/// Enables or disables the recording feature
+	void enableRecording(bool recordingAllowed);
 signals:
 	/// Signal emitted when the server and the client have finished
 	/// synchronizing (after a new connection).
@@ -319,15 +362,16 @@ signals:
 	void userAddedChannelListener(ClientUser *user, Channel *channel);
 	/// Signal emitted whenever a user removes a ChannelListener
 	void userRemovedChannelListener(ClientUser *user, Channel *channel);
+	void transmissionModeChanged(Settings::AudioTransmit newMode);
 
 public:
 	MainWindow(QWidget *parent);
 	~MainWindow() Q_DECL_OVERRIDE;
 
-	// From msgHandler. Implementation in Messages.cpp
-#define MUMBLE_MH_MSG(x) void msg##x(const MumbleProto::x &);
-	MUMBLE_MH_ALL
-#undef MUMBLE_MH_MSG
+	// Implementation in Messages.cpp
+#define PROCESS_MUMBLE_TCP_MESSAGE(name, value) void msg##name(const MumbleProto::name &);
+	MUMBLE_ALL_TCP_MESSAGES
+#undef PROCESS_MUMBLE_TCP_MESSAGE
 	void removeContextAction(const MumbleProto::ContextActionModify &msg);
 	/// Logs a message that an action could not be saved permanently because
 	/// the user has no certificate and can't be reliably identified.

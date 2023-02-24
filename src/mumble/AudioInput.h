@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -6,29 +6,31 @@
 #ifndef MUMBLE_MUMBLE_AUDIOINPUT_H_
 #define MUMBLE_MUMBLE_AUDIOINPUT_H_
 
-#include <QtCore/QObject>
-#include <QtCore/QThread>
+#include <QElapsedTimer>
+#include <QObject>
+#include <QThread>
+
 #include <boost/array.hpp>
 #include <boost/shared_ptr.hpp>
+
 #include <fstream>
 #include <list>
+#include <memory>
 #include <mutex>
-#include <speex/speex.h>
+#include <vector>
+
 #include <speex/speex_echo.h>
 #include <speex/speex_preprocess.h>
 #include <speex/speex_resampler.h>
-#include <vector>
 
 #include "Audio.h"
+#include "AudioOutputToken.h"
 #include "EchoCancelOption.h"
-#include "Message.h"
+#include "MumbleProtocol.h"
 #include "Settings.h"
 #include "Timer.h"
 
 class AudioInput;
-class CELTCodec;
-class OpusCodec;
-struct CELTEncoder;
 struct OpusEncoder;
 struct DenoiseState;
 typedef boost::shared_ptr< AudioInput > AudioInputPtr;
@@ -137,6 +139,7 @@ public:
 	AudioInputRegistrar(const QString &n, int priority = 0);
 	virtual ~AudioInputRegistrar();
 	virtual AudioInput *create()                               = 0;
+	virtual const QVariant getDeviceChoice()                   = 0;
 	virtual const QList< audioDevice > getDeviceChoices()      = 0;
 	virtual void setDeviceChoice(const QVariant &, Settings &) = 0;
 
@@ -167,7 +170,6 @@ private:
 	Q_OBJECT
 	Q_DISABLE_COPY(AudioInput)
 protected:
-	typedef enum { CodecCELT, CodecSpeex } CodecFormat;
 	typedef enum { SampleShort, SampleFloat } SampleFormat;
 	typedef void (*inMixerFunc)(float *RESTRICT, const void *RESTRICT, unsigned int, unsigned int, quint64);
 
@@ -177,12 +179,14 @@ private:
 
 	SpeexResamplerState *srsMic, *srsEcho;
 
+	std::unique_ptr< Mumble::Protocol::byte[] > m_legacyBuffer;
+	Mumble::Protocol::UDPAudioEncoder< Mumble::Protocol::Role::Client > m_udpEncoder;
+
 	unsigned int iMicFilled, iEchoFilled;
 	inMixerFunc imfMic, imfEcho;
 	inMixerFunc chooseMixer(const unsigned int nchan, SampleFormat sf, quint64 mask);
 	void resetAudioProcessor();
 
-	OpusCodec *oCodec;
 	OpusEncoder *opusState;
 	DenoiseState *denoiseState;
 	bool selectCodec();
@@ -191,10 +195,13 @@ private:
 	typedef boost::array< unsigned char, 960 > EncodingOutputBuffer;
 
 	int encodeOpusFrame(short *source, int size, EncodingOutputBuffer &buffer);
-	int encodeCELTFrame(short *pSource, EncodingOutputBuffer &buffer);
+
+	QElapsedTimer qetLastMuteCue;
+
+	AudioOutputToken m_activeAudioCue;
 
 protected:
-	MessageHandler::UDPMessageType umtType;
+	Mumble::Protocol::AudioCodec m_codec;
 	SampleFormat eMicFormat, eEchoFormat;
 
 	unsigned int iMicChannels, iEchoChannels;
@@ -206,15 +213,16 @@ protected:
 
 	bool bEchoMulti;
 	Settings::NoiseCancel noiseCancel;
+	// Standard microphone sample rate (samples/s)
 	static const unsigned int iSampleRate = SAMPLE_RATE;
-	static const int iFrameSize           = SAMPLE_RATE / 100;
+	/// Based the sample rate, 48,000 samples/s = 48 samples/ms.
+	/// For each 10 ms, this yields 480 samples. This corresponds numerically with the calculation:
+	/// iFrameSize = 48000 / 100 = 480 samples, allowing a consistent 10ms of audio data per frame.
+	static const int iFrameSize = SAMPLE_RATE / 100;
 
 	QMutex qmSpeex;
 	SpeexPreprocessState *sppPreprocess;
 	SpeexEchoState *sesEcho;
-
-	CELTCodec *cCodec;
-	CELTEncoder *ceEncoder;
 
 	/// bResetEncoder is a flag that notifies
 	/// our encoder functions that the encoder
@@ -226,6 +234,9 @@ protected:
 	bool bAllowLowDelay;
 	/// Number of 10ms audio "frames" per packet (!= frames in packet)
 	int iAudioFrames;
+
+	/// The minimum time in ms that has to pass between the playback of two consecutive mute cues.
+	static constexpr unsigned int MUTE_CUE_DELAY = 5000;
 
 	float *pfMicInput;
 	float *pfEchoInput;
@@ -239,6 +250,7 @@ protected:
 
 	volatile bool bRunning;
 	volatile bool bPreviousVoice;
+	volatile bool previousPTT;
 
 	int iFrameCounter;
 	int iSilentFrames;
@@ -254,6 +266,15 @@ protected:
 signals:
 	void doDeaf();
 	void doMute();
+	/// A signal emitted if audio input is being encountered
+	///
+	/// @param inputPCM The encountered input PCM
+	/// @param sampleCount The amount of samples in the input
+	/// @param channelCount The amount of channels in the input
+	/// @param sampleRate The used sample rate in Hz
+	/// @param isSpeech Whether Mumble considers the input to be speech
+	void audioInputEncountered(short *inputPCM, unsigned int sampleCount, unsigned int channelCount,
+							   unsigned int sampleRate, bool isSpeech);
 
 public:
 	typedef enum { ActivityStateIdle, ActivityStateReturnedFromIdle, ActivityStateActive } ActivityState;

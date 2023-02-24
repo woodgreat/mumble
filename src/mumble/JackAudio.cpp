@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2018-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -6,9 +6,6 @@
 #include "JackAudio.h"
 
 #include "Utils.h"
-
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name
-// (like protobuf 3.7 does). As such, for now, we have to make this our last include.
 #include "Global.h"
 
 #ifdef Q_CC_GNU
@@ -80,6 +77,7 @@ static QStringList jackStatusToStringList(const jack_status_t &status) {
 class JackAudioInputRegistrar : public AudioInputRegistrar {
 private:
 	AudioInput *create() Q_DECL_OVERRIDE;
+	const QVariant getDeviceChoice() Q_DECL_OVERRIDE;
 	const QList< audioDevice > getDeviceChoices() Q_DECL_OVERRIDE;
 	void setDeviceChoice(const QVariant &, Settings &) Q_DECL_OVERRIDE;
 	bool canEcho(EchoCancelOptionID echoCancelID, const QString &outputSystem) const Q_DECL_OVERRIDE;
@@ -92,6 +90,7 @@ public:
 class JackAudioOutputRegistrar : public AudioOutputRegistrar {
 private:
 	AudioOutput *create() Q_DECL_OVERRIDE;
+	const QVariant getDeviceChoice() Q_DECL_OVERRIDE;
 	const QList< audioDevice > getDeviceChoices() Q_DECL_OVERRIDE;
 	void setDeviceChoice(const QVariant &, Settings &) Q_DECL_OVERRIDE;
 	bool usesOutputDelay() const Q_DECL_OVERRIDE;
@@ -115,17 +114,21 @@ AudioInput *JackAudioInputRegistrar::create() {
 	return new JackAudioInput();
 }
 
+const QVariant JackAudioInputRegistrar::getDeviceChoice() {
+	return {};
+}
+
 const QList< audioDevice > JackAudioInputRegistrar::getDeviceChoices() {
-	QList< audioDevice > qlReturn;
+	QList< audioDevice > choices;
 
-	auto qlInputDevs = jas->qhInput.keys();
-	std::sort(qlInputDevs.begin(), qlInputDevs.end());
+	QStringList keys = jas->qhInput.keys();
+	std::sort(keys.begin(), keys.end());
 
-	for (const auto &dev : qlInputDevs) {
-		qlReturn << audioDevice(jas->qhInput.value(dev), dev);
+	for (const auto &key : keys) {
+		choices << audioDevice(jas->qhInput.value(key), key);
 	}
 
-	return qlReturn;
+	return choices;
 }
 
 void JackAudioInputRegistrar::setDeviceChoice(const QVariant &, Settings &) {
@@ -142,20 +145,21 @@ AudioOutput *JackAudioOutputRegistrar::create() {
 	return new JackAudioOutput();
 }
 
+const QVariant JackAudioOutputRegistrar::getDeviceChoice() {
+	return Global::get().s.qsJackAudioOutput;
+}
+
 const QList< audioDevice > JackAudioOutputRegistrar::getDeviceChoices() {
-	QList< audioDevice > qlReturn;
+	QList< audioDevice > choices;
 
-	QStringList qlOutputDevs = jas->qhOutput.keys();
-	std::sort(qlOutputDevs.begin(), qlOutputDevs.end());
+	QStringList keys = jas->qhOutput.keys();
+	std::sort(keys.begin(), keys.end());
 
-	if (qlOutputDevs.contains(g.s.qsJackAudioOutput)) {
-		qlOutputDevs.removeAll(g.s.qsJackAudioOutput);
-		qlOutputDevs.prepend(g.s.qsJackAudioOutput);
+	for (const auto &key : keys) {
+		choices << audioDevice(jas->qhOutput.value(key), key);
 	}
 
-	foreach (const QString &dev, qlOutputDevs) { qlReturn << audioDevice(jas->qhOutput.value(dev), dev); }
-
-	return qlReturn;
+	return choices;
 }
 
 void JackAudioOutputRegistrar::setDeviceChoice(const QVariant &choice, Settings &s) {
@@ -168,10 +172,6 @@ bool JackAudioOutputRegistrar::usesOutputDelay() const {
 
 void JackAudioInit::initialize() {
 	jas.reset(new JackAudioSystem());
-
-	jas->qmWait.lock();
-	jas->qwcWait.wait(&jas->qmWait, 1000);
-	jas->qmWait.unlock();
 
 	if (jas->bAvailable) {
 		airJackAudio.reset(new JackAudioInputRegistrar());
@@ -269,8 +269,8 @@ bool JackAudioSystem::initialize() {
 	}
 
 	jack_status_t status;
-	client = jack_client_open(g.s.qsJackClientName.toStdString().c_str(),
-							  g.s.bJackStartServer ? JackNullOption : JackNoStartServer, &status);
+	client = jack_client_open(Global::get().s.qsJackClientName.toStdString().c_str(),
+							  Global::get().s.bJackStartServer ? JackNullOption : JackNoStartServer, &status);
 	if (!client) {
 		const auto errors = jackStatusToStringList(status);
 		qWarning("JackAudioSystem: unable to open client due to %i errors:", errors.count());
@@ -395,7 +395,8 @@ bool JackAudioSystem::isOk() {
 }
 
 uint8_t JackAudioSystem::outPorts() {
-	return static_cast< uint8_t >(qBound< unsigned >(1, g.s.qsJackAudioOutput.toUInt(), JACK_MAX_OUTPUT_PORTS));
+	return static_cast< uint8_t >(
+		qBound< unsigned >(1, Global::get().s.qsJackAudioOutput.toUInt(), JACK_MAX_OUTPUT_PORTS));
 }
 
 jack_nframes_t JackAudioSystem::sampleRate() {
@@ -599,8 +600,8 @@ void JackAudioSystem::ringbufferWriteAdvance(jack_ringbuffer_t *buffer, const si
 }
 
 int JackAudioSystem::processCallback(jack_nframes_t frames, void *) {
-	auto const jai = dynamic_cast< JackAudioInput * >(g.ai.get());
-	auto const jao = dynamic_cast< JackAudioOutput * >(g.ao.get());
+	auto const jai = dynamic_cast< JackAudioInput * >(Global::get().ai.get());
+	auto const jao = dynamic_cast< JackAudioOutput * >(Global::get().ao.get());
 
 	const bool input  = (jai && jai->isReady());
 	const bool output = (jao && jao->isReady());
@@ -617,8 +618,8 @@ int JackAudioSystem::processCallback(jack_nframes_t frames, void *) {
 }
 
 int JackAudioSystem::sampleRateCallback(jack_nframes_t, void *) {
-	auto const jai = dynamic_cast< JackAudioInput * >(g.ai.get());
-	auto const jao = dynamic_cast< JackAudioOutput * >(g.ao.get());
+	auto const jai = dynamic_cast< JackAudioInput * >(Global::get().ai.get());
+	auto const jao = dynamic_cast< JackAudioOutput * >(Global::get().ao.get());
 
 	if (jai) {
 		jai->activate();
@@ -632,8 +633,8 @@ int JackAudioSystem::sampleRateCallback(jack_nframes_t, void *) {
 }
 
 int JackAudioSystem::bufferSizeCallback(jack_nframes_t frames, void *) {
-	auto const jai = dynamic_cast< JackAudioInput * >(g.ai.get());
-	auto const jao = dynamic_cast< JackAudioOutput * >(g.ao.get());
+	auto const jai = dynamic_cast< JackAudioInput * >(Global::get().ai.get());
+	auto const jao = dynamic_cast< JackAudioOutput * >(Global::get().ao.get());
 
 	if (jai && !jai->allocBuffer(frames)) {
 		return 1;
@@ -822,7 +823,7 @@ void JackAudioInput::run() {
 	}
 
 	// Initialization
-	if (g.s.bJackAutoConnect) {
+	if (Global::get().s.bJackAutoConnect) {
 		connectPorts();
 	}
 
@@ -1064,7 +1065,7 @@ void JackAudioOutput::run() {
 	}
 
 	// Initialization
-	if (g.s.bJackAutoConnect) {
+	if (Global::get().s.bJackAutoConnect) {
 		connectPorts();
 	}
 
@@ -1129,3 +1130,5 @@ void JackAudioOutput::run() {
 		qsSleep.acquire(1);
 	} while (bReady);
 }
+
+#undef RESOLVE

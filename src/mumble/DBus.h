@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -27,12 +27,12 @@ public slots:
 
 	/// Change when Mumble transmits voice.
 	///
-	/// @param mode The new transmit mode (0 = continous, 1 = voice activity, 2 = push-to-talk)
+	/// @param mode The new transmit mode (0 = continuous, 1 = voice activity, 2 = push-to-talk)
 	void setTransmitMode(unsigned int mode, const QDBusMessage &);
 
 	/// Get the current transmit mode.
 	///
-	/// @return The current transmit mode (0 = continous, 1 = voice activity, 2 = push-to-talk)
+	/// @return The current transmit mode (0 = continuous, 1 = voice activity, 2 = push-to-talk)
 	unsigned int getTransmitMode();
 
 	void toggleSelfMuted();

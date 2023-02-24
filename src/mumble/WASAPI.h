@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2008-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -36,7 +36,6 @@ public:
 	static const QHash< QString, QString > getDevices(EDataFlow dataflow);
 	static const QHash< QString, QString > getInputDevices();
 	static const QHash< QString, QString > getOutputDevices();
-	static const QList< audioDevice > mapToDevice(const QHash< QString, QString > &, const QString &);
 };
 
 class WASAPIInput : public AudioInput {

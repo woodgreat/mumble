@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2013-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -6,7 +6,7 @@
 #include "UserListModel.h"
 
 #include "Channel.h"
-#include "Message.h"
+#include "QtUtils.h"
 #include "Utils.h"
 
 #include <algorithm>
@@ -261,7 +261,7 @@ QVariant UserListModel::lastSeenToTodayDayCount(const std::string &lastSeenDate)
 	if (count.isNull()) {
 		QDateTime dt = isoUTCToDateTime(lastSeenDate);
 		if (!dt.isValid()) {
-			// Not convertable to int
+			// Not convertible to int
 			return QVariant();
 		}
 		count = dt.daysTo(QDateTime::currentDateTime().toUTC());

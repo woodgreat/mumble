@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2016-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -26,8 +26,6 @@ class License {
 public:
 	/// Get the Mumble license text (the LICENSE file)
 	static QString license();
-	/// Get the Mumble authors list (the AUTHORS file)
-	static QString authors();
 	/// Get a list of license information for Mumble's
 	/// third-party libraries.
 	static QList< LicenseInfo > thirdPartyLicenses();

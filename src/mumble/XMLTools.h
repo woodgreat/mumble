@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2017-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -15,7 +15,7 @@ class XMLTools : public QObject {
 	Q_OBJECT
 public:
 	/* Recursively parse and output XHTML.
-	 * This will drop <head>, <html> etc, take the contents of <body> and strip out unnecesarry styles.
+	 * This will drop <head>, <html> etc, take the contents of <body> and strip out unnecessary styles.
 	 * It will also change <span style=""> into matching <b>, <i> or <u>.
 	 */
 	static void recurseParse(QXmlStreamReader &reader, QXmlStreamWriter &writer, int &paragraphs,

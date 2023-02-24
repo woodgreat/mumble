@@ -1,4 +1,4 @@
-// Copyright 2019-2020 The Mumble Developers. All rights reserved.
+// Copyright 2019-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -11,12 +11,15 @@ class QScreen;
 class QWidget;
 class QWindow;
 
-class Screen {
-public:
+namespace Mumble {
+
+namespace Screen {
 	/// Inspired by https://phabricator.kde.org/D22379
-	static QWindow *windowFromWidget(const QWidget &widget);
-	static QScreen *screenFromWidget(const QWidget &widget);
-	static QScreen *screenAt(const QPoint &point);
-};
+	QWindow *windowFromWidget(const QWidget &widget);
+	QScreen *screenFromWidget(const QWidget &widget);
+	QScreen *screenAt(const QPoint &point);
+}; // namespace Screen
+
+}; // namespace Mumble
 
 #endif

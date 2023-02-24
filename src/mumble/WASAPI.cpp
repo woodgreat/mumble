@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2008-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -16,14 +16,13 @@
 
 #include "MainWindow.h"
 #include "Utils.h"
-
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name
-// (like protobuf 3.7 does). As such, for now, we have to make this our last include.
 #include "Global.h"
 
 // Now that Win7 is published, which includes public versions of these
 // interfaces, we simply inherit from those but use the "old" IIDs.
 
+// Note that the DEFINE_GUID macro here only declares the existence of the respective variables
+// as extern variables. The actual initialization of these variables happens in WinGUIDs.cpp
 DEFINE_GUID(IID_IVistaAudioSessionControl2, 0x33969B1DL, 0xD06F, 0x4281, 0xB8, 0x37, 0x7E, 0xAA, 0xFD, 0x21, 0xA9,
 			0xC0);
 MIDL_INTERFACE("33969B1D-D06F-4281-B837-7EAAFD21A9C0")
@@ -37,7 +36,7 @@ IAudioSessionQuery : public IUnknown {
 
 /// Convert the configured 'wasapi/role' to an ERole.
 static ERole WASAPIRoleFromSettings() {
-	QString role = g.s.qsWASAPIRole.toLower().trimmed();
+	QString role = Global::get().s.qsWASAPIRole.toLower().trimmed();
 
 	if (role == QLatin1String("console")) {
 		return eConsole;
@@ -52,6 +51,7 @@ class WASAPIInputRegistrar : public AudioInputRegistrar {
 public:
 	WASAPIInputRegistrar();
 	virtual AudioInput *create();
+	virtual const QVariant getDeviceChoice();
 	virtual const QList< audioDevice > getDeviceChoices();
 	virtual void setDeviceChoice(const QVariant &, Settings &);
 	virtual bool canEcho(EchoCancelOptionID echoCancelID, const QString &outputSystem) const;
@@ -71,6 +71,7 @@ class WASAPIOutputRegistrar : public AudioOutputRegistrar {
 public:
 	WASAPIOutputRegistrar();
 	virtual AudioOutput *create();
+	virtual const QVariant getDeviceChoice();
 	virtual const QList< audioDevice > getDeviceChoices();
 	virtual void setDeviceChoice(const QVariant &, Settings &);
 	bool canMuteOthers() const;
@@ -136,7 +137,7 @@ bool WASAPIInputRegistrar::isMicrophoneAccessDeniedByOS() {
 /// @param waveFormatEx WAVEFORMATEX structure to store getMixFormat result in
 /// @param waveFormatExtensible If waveFormatEx is of type WAVEFORMATEXTENSIBLE receives a cast pointer.
 /// @param sampleFormat Receives either SampleFloat or SampleShort as valid format
-/// @return True if mix format is ok. False if incompatible or another error occured.
+/// @return True if mix format is ok. False if incompatible or another error occurred.
 
 template< typename SAMPLEFORMAT > // Template on SampleFormat enum as AudioOutput and AudioInput each define their own
 bool getAndCheckMixFormat(const char *sourceName, const char *deviceName, IAudioClient *audioClient,
@@ -200,8 +201,23 @@ AudioInput *WASAPIInputRegistrar::create() {
 	return new WASAPIInput();
 }
 
+const QVariant WASAPIInputRegistrar::getDeviceChoice() {
+	return Global::get().s.qsWASAPIInput;
+}
+
 const QList< audioDevice > WASAPIInputRegistrar::getDeviceChoices() {
-	return WASAPISystem::mapToDevice(WASAPISystem::getInputDevices(), g.s.qsWASAPIInput);
+	QList< audioDevice > choices;
+
+	const QHash< QString, QString > devs = WASAPISystem::getInputDevices();
+
+	auto keys = devs.keys();
+	std::sort(keys.begin(), keys.end());
+
+	for (const auto &key : keys) {
+		choices << audioDevice(devs.value(key), key);
+	}
+
+	return choices;
 }
 
 void WASAPIInputRegistrar::setDeviceChoice(const QVariant &choice, Settings &s) {
@@ -209,8 +225,8 @@ void WASAPIInputRegistrar::setDeviceChoice(const QVariant &choice, Settings &s) 
 }
 
 bool WASAPIInputRegistrar::canEcho(EchoCancelOptionID echoOptionIDs, const QString &outputSystem) const {
-	return (echoOptionIDs == EchoCancelOptionID::SPEEX_MIXED
-	        || echoOptionIDs == EchoCancelOptionID::SPEEX_MULTICHANNEL) && (outputSystem == name);
+	return (echoOptionIDs == EchoCancelOptionID::SPEEX_MIXED || echoOptionIDs == EchoCancelOptionID::SPEEX_MULTICHANNEL)
+		   && (outputSystem == name);
 }
 
 bool WASAPIInputRegistrar::canExclusive() const {
@@ -224,8 +240,22 @@ AudioOutput *WASAPIOutputRegistrar::create() {
 	return new WASAPIOutput();
 }
 
+const QVariant WASAPIOutputRegistrar::getDeviceChoice() {
+	return Global::get().s.qsWASAPIOutput;
+}
+
 const QList< audioDevice > WASAPIOutputRegistrar::getDeviceChoices() {
-	return WASAPISystem::mapToDevice(WASAPISystem::getOutputDevices(), g.s.qsWASAPIOutput);
+	QList< audioDevice > choices;
+
+	const QHash< QString, QString > devs = WASAPISystem::getOutputDevices();
+	auto keys                            = devs.keys();
+	std::sort(keys.begin(), keys.end());
+
+	for (const auto &key : keys) {
+		choices << audioDevice(devs.value(key), key);
+	}
+
+	return choices;
 }
 
 void WASAPIOutputRegistrar::setDeviceChoice(const QVariant &choice, Settings &s) {
@@ -260,7 +290,7 @@ const QHash< QString, QString > WASAPISystem::getDevices(EDataFlow dataflow) {
 						  reinterpret_cast< void ** >(&pEnumerator));
 
 	if (!pEnumerator || FAILED(hr)) {
-		qWarning("WASAPI: Failed to instatiate enumerator: hr=0x%08lx", hr);
+		qWarning("WASAPI: Failed to instantiate enumerator: hr=0x%08lx", hr);
 	} else {
 		hr = pEnumerator->EnumAudioEndpoints(dataflow, DEVICE_STATE_ACTIVE, &pCollection);
 		if (!pCollection || FAILED(hr)) {
@@ -299,21 +329,6 @@ const QHash< QString, QString > WASAPISystem::getDevices(EDataFlow dataflow) {
 	}
 
 	return devices;
-}
-
-const QList< audioDevice > WASAPISystem::mapToDevice(const QHash< QString, QString > &devs, const QString &match) {
-	QList< audioDevice > qlReturn;
-
-	QStringList qlDevices = devs.keys();
-	std::sort(qlDevices.begin(), qlDevices.end());
-
-	if (qlDevices.contains(match)) {
-		qlDevices.removeAll(match);
-		qlDevices.prepend(match);
-	}
-
-	foreach (const QString &dev, qlDevices) { qlReturn << audioDevice(devs.value(dev), dev); }
-	return qlReturn;
 }
 
 WASAPIInput::WASAPIInput(){};
@@ -406,7 +421,7 @@ void WASAPIInput::run() {
 	HANDLE hMmThread;
 	float *tbuff = nullptr;
 	short *sbuff = nullptr;
-	bool doecho  = g.s.doEcho();
+	bool doecho  = Global::get().s.doEcho();
 	REFERENCE_TIME def, min, latency, want;
 	bool exclusive = false;
 
@@ -420,13 +435,13 @@ void WASAPIInput::run() {
 	}
 
 	// Open mic device.
-	pMicDevice = openNamedOrDefaultDevice(g.s.qsWASAPIInput, eCapture, WASAPIRoleFromSettings());
+	pMicDevice = openNamedOrDefaultDevice(Global::get().s.qsWASAPIInput, eCapture, WASAPIRoleFromSettings());
 	if (!pMicDevice)
 		goto cleanup;
 
 	// Open echo capture device.
 	if (doecho) {
-		pEchoDevice = openNamedOrDefaultDevice(g.s.qsWASAPIOutput, eRender, WASAPIRoleFromSettings());
+		pEchoDevice = openNamedOrDefaultDevice(Global::get().s.qsWASAPIOutput, eRender, WASAPIRoleFromSettings());
 		if (!pEchoDevice)
 			doecho = false;
 	}
@@ -444,7 +459,7 @@ void WASAPIInput::run() {
 	want = qMax< REFERENCE_TIME >(min, 100000);
 	qWarning("WASAPIInput: Latencies %lld %lld => %lld", def, min, want);
 
-	if (g.s.bExclusiveInput && !doecho) {
+	if (Global::get().s.bExclusiveInput && !doecho) {
 		for (int channels = 1; channels <= 2; ++channels) {
 			ZeroMemory(&wfe, sizeof(wfe));
 			wfe.Format.cbSize          = 0;
@@ -473,7 +488,7 @@ void WASAPIInput::run() {
 	}
 
 	if (!micpwfxe) {
-		if (g.s.bExclusiveInput)
+		if (Global::get().s.bExclusiveInput)
 			qWarning("WASAPIInput: Failed to open exclusive mode.");
 
 		if (!getAndCheckMixFormat("WASAPIInput", "Mic", pMicAudioClient, &micpwfx, &micpwfxe, &eMicFormat)) {
@@ -486,8 +501,9 @@ void WASAPIInput::run() {
 			qWarning("WASAPIInput: Mic Initialize failed: hr=0x%08lx", hr);
 			if (hr == E_ACCESSDENIED) {
 				WASAPIInputRegistrar::hasOSPermissionDenied = true;
-				g.mw->msgBox(tr("Access to the microphone was denied. Please check that your operating system's "
-								"microphone settings allow Mumble to use the microphone."));
+				Global::get().mw->msgBox(
+					tr("Access to the microphone was denied. Please check that your operating system's "
+					   "microphone settings allow Mumble to use the microphone."));
 			}
 			goto cleanup;
 		}
@@ -719,7 +735,7 @@ void WASAPIOutput::setVolumes(IMMDevice *pDevice, bool talking) {
 	DWORD dwMumble                              = GetCurrentProcessId();
 
 	qmVolumes.clear();
-	if (qFuzzyCompare(g.s.fOtherVolume, 1.0f))
+	if (qFuzzyCompare(Global::get().s.fOtherVolume, 1.0f))
 		return;
 
 	// FIXME: Try to keep the session object around when returning volume.
@@ -791,7 +807,7 @@ bool WASAPIOutput::setVolumeForSessionControl2(IAudioSessionControl2 *control2, 
 	if (SUCCEEDED(hr = pVolume->GetMute(&bMute)) && !bMute) {
 		float fVolume = 1.0f;
 		if (SUCCEEDED(hr = pVolume->GetMasterVolume(&fVolume)) && !qFuzzyCompare(fVolume, 0.0f)) {
-			float fSetVolume = fVolume * g.s.fOtherVolume;
+			float fSetVolume = fVolume * Global::get().s.fOtherVolume;
 			if (SUCCEEDED(hr = pVolume->SetMasterVolume(fSetVolume, nullptr))) {
 				hr = pVolume->GetMasterVolume(&fSetVolume);
 				qmVolumes.insert(pVolume, VolumePair(fVolume, fSetVolume));
@@ -886,10 +902,11 @@ void WASAPIOutput::run() {
 	int ns = 0;
 	unsigned int chanmasks[32];
 	QMap< DWORD, float > qmVolumes;
-	bool lastspoke                = false;
-	REFERENCE_TIME bufferDuration = (g.s.iOutputDelay > 1) ? (g.s.iOutputDelay + 1) * 100000 : 0;
-	bool exclusive                = false;
-	bool mixed                    = false;
+	bool lastspoke = false;
+	REFERENCE_TIME bufferDuration =
+		(Global::get().s.iOutputDelay > 1) ? (Global::get().s.iOutputDelay + 1) * 100000 : 0;
+	bool exclusive = false;
+	bool mixed     = false;
 
 	CoInitialize(nullptr);
 
@@ -901,7 +918,7 @@ void WASAPIOutput::run() {
 	}
 
 	// Open the output device.
-	pDevice = openNamedOrDefaultDevice(g.s.qsWASAPIOutput, eRender, WASAPIRoleFromSettings());
+	pDevice = openNamedOrDefaultDevice(Global::get().s.qsWASAPIOutput, eRender, WASAPIRoleFromSettings());
 	if (!pDevice)
 		goto cleanup;
 
@@ -918,7 +935,7 @@ void WASAPIOutput::run() {
 	want = qMax< REFERENCE_TIME >(min, 100000);
 	qWarning("WASAPIOutput: Latencies %lld %lld => %lld", def, min, want);
 
-	if (g.s.bExclusiveOutput) {
+	if (Global::get().s.bExclusiveOutput) {
 		hr = pAudioClient->GetMixFormat(&pwfx);
 		if (FAILED(hr)) {
 			qWarning("WASAPIOutput: GetMixFormat failed: hr=0x%08lx", hr);
@@ -929,7 +946,7 @@ void WASAPIOutput::run() {
 			pwfxe = reinterpret_cast< WAVEFORMATEXTENSIBLE * >(pwfx);
 		}
 
-		if (!g.s.bPositionalAudio) {
+		if (!Global::get().s.bPositionalAudio) {
 			// Override mix format and request stereo
 			pwfx->nChannels = 2;
 			if (pwfxe) {
@@ -963,14 +980,14 @@ void WASAPIOutput::run() {
 	}
 
 	if (!pwfx) {
-		if (g.s.bExclusiveOutput)
+		if (Global::get().s.bExclusiveOutput)
 			qWarning("WASAPIOutput: Failed to open exclusive mode.");
 
 		if (!getAndCheckMixFormat("WASAPIOutput", "Output", pAudioClient, &pwfx, &pwfxe, &eSampleFormat)) {
 			goto cleanup;
 		}
 
-		if (!g.s.bPositionalAudio) {
+		if (!Global::get().s.bPositionalAudio) {
 			pwfx->nChannels       = 2;
 			pwfx->nBlockAlign     = pwfx->nChannels * pwfx->wBitsPerSample / 8;
 			pwfx->nAvgBytesPerSec = pwfx->nBlockAlign * pwfx->nSamplesPerSec;
@@ -1016,7 +1033,8 @@ void WASAPIOutput::run() {
 	iMixerFreq = pwfx->nSamplesPerSec;
 
 	qWarning("WASAPIOutput: Periods %lldus %lldus (latency %lldus)", def / 10LL, min / 10LL, latency / 10LL);
-	qWarning("WASAPIOutput: Buffer is %dus (%d)", (bufferFrameCount * 1000000) / iMixerFreq, g.s.iOutputDelay);
+	qWarning("WASAPIOutput: Buffer is %dus (%d)", (bufferFrameCount * 1000000) / iMixerFreq,
+			 Global::get().s.iOutputDelay);
 
 	hr = pAudioClient->GetService(__uuidof(IAudioRenderClient), (void **) &pRenderClient);
 	if (FAILED(hr)) {
@@ -1062,8 +1080,8 @@ void WASAPIOutput::run() {
 	while (bRunning && !FAILED(hr)) {
 		if (!exclusive) {
 			// Attenuate stream volumes.
-			if (lastspoke != (g.bAttenuateOthers || mixed)) {
-				lastspoke = g.bAttenuateOthers || mixed;
+			if (lastspoke != (Global::get().bAttenuateOthers || mixed)) {
+				lastspoke = Global::get().bAttenuateOthers || mixed;
 				setVolumes(pDevice, lastspoke);
 			}
 
@@ -1097,12 +1115,12 @@ void WASAPIOutput::run() {
 			if (exclusive)
 				break;
 
-			if (!g.s.bAttenuateOthers && !g.bAttenuateOthers) {
+			if (!Global::get().s.bAttenuateOthers && !Global::get().bAttenuateOthers) {
 				mixed = false;
 			}
 
-			if (lastspoke != (g.bAttenuateOthers || mixed)) {
-				lastspoke = g.bAttenuateOthers || mixed;
+			if (lastspoke != (Global::get().bAttenuateOthers || mixed)) {
+				lastspoke = Global::get().bAttenuateOthers || mixed;
 				setVolumes(pDevice, lastspoke);
 			}
 

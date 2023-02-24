@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2010-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -51,6 +51,10 @@ enum Format {
 	AU,
 	/// FLAC Format
 	FLAC,
+#ifdef USE_SNDFILE_OPUS
+	// OPUS Format
+	OPUS,
+#endif
 	kEnd
 };
 
@@ -64,7 +68,7 @@ QString getFormatDefaultExtension(VoiceRecorderFormat::Format fm);
 
 /// Class for recording audio data.
 ///
-/// Runs as a seperate thread accepting audio data through the addBuffer method
+/// Runs as a separate thread accepting audio data through the addBuffer method
 /// which is then encoded using one of the formats of VoiceRecordingFormat::Format
 /// and written to disk.
 ///
@@ -112,7 +116,7 @@ public:
 	/// Returns the elapsed time since the recording started.
 	quint64 getElapsedTime() const;
 
-	/// Returns a refence to the record user which is used to record local audio.
+	/// Returns a reference to the record user which is used to record local audio.
 	RecordUser &getRecordUser() const;
 
 	/// Returns true if the recorder is recording mixed down data instead of multichannel

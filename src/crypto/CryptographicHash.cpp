@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2020-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -8,6 +8,8 @@
 #include <QtCore/QString>
 
 #include <openssl/evp.h>
+
+#include <cassert>
 
 class CryptographicHashPrivate {
 public:
@@ -34,7 +36,7 @@ private:
 	void cleanupMdctx();
 };
 
-CryptographicHashPrivate::CryptographicHashPrivate() : m_mdctx(nullptr) {
+CryptographicHashPrivate::CryptographicHashPrivate() : m_mdctx(nullptr), m_result() {
 }
 
 void CryptographicHashPrivate::cleanupMdctx() {
@@ -44,7 +46,7 @@ void CryptographicHashPrivate::cleanupMdctx() {
 	}
 }
 
-CryptographicHashPrivate::CryptographicHashPrivate(const EVP_MD *type) : m_mdctx(nullptr) {
+CryptographicHashPrivate::CryptographicHashPrivate(const EVP_MD *type) : CryptographicHashPrivate() {
 	m_mdctx = EVP_MD_CTX_create();
 	if (!m_mdctx) {
 		return;
@@ -71,7 +73,7 @@ void CryptographicHashPrivate::addData(const QByteArray &buf) {
 	// In that case, transition into an error state by cleaning
 	// up the mdctx -- that way, subsequent calls to result()
 	// will return an empty QByteArray.
-	if (!m_result.isNull()) {
+	if (!m_result.isEmpty()) {
 		cleanupMdctx();
 		return;
 	}
@@ -90,7 +92,7 @@ QByteArray CryptographicHashPrivate::result() {
 	// If we have a result already, that means our m_mdctx
 	// object has been finalized, and can't be used anymore.
 	// In that case, just return the already computed result.
-	if (!m_result.isNull()) {
+	if (!m_result.isEmpty()) {
 		return m_result;
 	}
 
@@ -102,6 +104,8 @@ QByteArray CryptographicHashPrivate::result() {
 	}
 
 	m_result = digest;
+
+	assert(!m_result.isEmpty());
 
 	return m_result;
 }

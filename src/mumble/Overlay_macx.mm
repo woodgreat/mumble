@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2010-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -6,6 +6,7 @@
 #include "OverlayConfig.h"
 #include "OverlayClient.h"
 #include "MainWindow.h"
+#include "Global.h"
 
 #include <QtCore/QProcess>
 #include <QtCore/QXmlStreamReader>
@@ -13,9 +14,6 @@
 #import <ScriptingBridge/ScriptingBridge.h>
 #import <Cocoa/Cocoa.h>
 #include <Carbon/Carbon.h>
-
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name (like protobuf 3.7 does). As such, for now, we have to make this our last include.
-#include "Global.h"
 
 extern "C" {
 #include <xar/xar.h>
@@ -90,20 +88,20 @@ pid_t getForegroundProcessId() {
 
 		QString qsBundleIdentifier = QString::fromUtf8([bundleId UTF8String]);
 
-		switch (g.s.os.oemOverlayExcludeMode) {
+		switch (Global::get().s.os.oemOverlayExcludeMode) {
 			case OverlaySettings::LauncherFilterExclusionMode: {
 				qWarning("Overlay_macx: launcher filter mode not implemented on macOS, allowing everything");
 				overlayEnabled = YES;
 				break;
 			}
 			case OverlaySettings::WhitelistExclusionMode: {
-				if (g.s.os.qslWhitelist.contains(qsBundleIdentifier)) {
+				if (Global::get().s.os.qslWhitelist.contains(qsBundleIdentifier)) {
 					overlayEnabled = YES;
 				}
 				break;
 			}
 			case OverlaySettings::BlacklistExclusionMode: {
-				if (! g.s.os.qslBlacklist.contains(qsBundleIdentifier)) {
+				if (! Global::get().s.os.qslBlacklist.contains(qsBundleIdentifier)) {
 					overlayEnabled = YES;
 				}
 				break;
@@ -117,7 +115,7 @@ pid_t getForegroundProcessId() {
 
 			// This timeout is specified in 'ticks'.
 			// A tick defined as: "[...] (a tick is approximately 1/60 of a second) [...]" in the
-			// Apple Event Manager Refernce documentation:
+			// Apple Event Manager Reference documentation:
 			// http://developer.apple.com/legacy/mac/library/documentation/Carbon/reference/Event_Manager/Event_Manager.pdf
 			[app setTimeout:10*60];
 
@@ -205,17 +203,6 @@ void OverlayClient::updateMouse() {
 	}
 
 	QPixmap pm = qmCursors.value(csShape);
-	if (pm.isNull()) {
-		NSImage *img = [cursor image];
-		CGImageRef cgimg = nullptr;
-		NSArray *reps = [img representations];
-		for (NSUInteger i = 0; i < [reps count]; i++) {
-			NSImageRep *rep = [reps objectAtIndex:i];
-			if ([rep class] == [NSBitmapImageRep class]) {
-				cgimg = [(NSBitmapImageRep *)rep CGImage];
-			}
-		}
-	}
 
 	NSPoint p = [cursor hotSpot];
 	iOffsetX = (int) p.x;
@@ -249,7 +236,7 @@ bool OverlayConfig::isInstalled() {
 }
 
 // Check whether this installer installs something 'newer' than what we already have.
-// Also checks whether the new installer is compatiable with the current version of
+// Also checks whether the new installer is compatible with the current version of
 // Mumble.
 static bool isInstallerNewer(QString path, NSUInteger curVer) {
 	xar_t pkg = nullptr;

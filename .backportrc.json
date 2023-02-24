@@ -1,0 +1,11 @@
+{
+	"upstream": "mumble-voip/mumble",
+	"targetBranchChoices": [
+		{ "name": "1.5.x", "checked": true },
+		"1.4.x"
+	],
+	"targetPRLabels": ["backport"],
+	"fork": true,
+	"multipleCommits": true,
+	"prTitle": "Backport \"{commitMessages}\" to {targetBranch}"
+}

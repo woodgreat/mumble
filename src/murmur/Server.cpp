@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -7,18 +7,18 @@
 
 #include "ACL.h"
 #include "Channel.h"
-#include "ChannelListener.h"
+#include "ClientType.h"
 #include "Connection.h"
 #include "EnvUtils.h"
 #include "Group.h"
 #include "HTMLFilter.h"
 #include "HostAddress.h"
-#include "Message.h"
 #include "Meta.h"
-#include "PacketDataStream.h"
+#include "MumbleProtocol.h"
+#include "ProtoUtils.h"
+#include "QtUtils.h"
 #include "ServerDB.h"
 #include "ServerUser.h"
-#include "SpeechFlags.h"
 #include "User.h"
 #include "Version.h"
 
@@ -37,6 +37,14 @@
 
 #include <boost/bind/bind.hpp>
 
+#include "TracyConstants.h"
+#include <Tracy.hpp>
+#include <TracyC.h>
+
+#include <algorithm>
+#include <cassert>
+#include <vector>
+
 #ifdef Q_OS_WIN
 #	include <qos2.h>
 #	include <ws2tcpip.h>
@@ -44,12 +52,6 @@
 #	include <netinet/in.h>
 #	include <poll.h>
 #endif
-
-#ifndef MAX
-#	define MAX(a, b) ((a) > (b) ? (a) : (b))
-#endif
-
-#define UDP_PACKET_SIZE 1024
 
 ExecEvent::ExecEvent(boost::function< void() > f) : QEvent(static_cast< QEvent::Type >(EXEC_QEVENT)) {
 	func = f;
@@ -60,44 +62,6 @@ void ExecEvent::execute() {
 }
 
 SslServer::SslServer(QObject *p) : QTcpServer(p) {
-}
-
-bool SslServer::hasDualStackSupport() {
-	// Create a AF_INET6 socket and try to switch off IPV6_V6ONLY. This
-	// should only fail if the system does not support dual-stack mode
-	// for this socket type.
-
-	bool result = false;
-#ifdef Q_OS_UNIX
-	int s = ::socket(AF_INET6, SOCK_STREAM, 0);
-	if (s != -1) {
-		const int ipv6only = 0;
-		if (setsockopt(s, IPPROTO_IPV6, IPV6_V6ONLY, reinterpret_cast< const char * >(&ipv6only), sizeof(ipv6only))
-			== 0) {
-			result = true;
-		}
-		::close(s);
-	}
-#else
-	WSADATA wsaData;
-	WORD wVersionRequested = MAKEWORD(2, 2);
-	if (WSAStartup(wVersionRequested, &wsaData) != 0) {
-		// Seems like we won't be doing any network stuff anyways
-		return false;
-	}
-
-	SOCKET s = ::WSASocket(AF_INET6, SOCK_STREAM, IPPROTO_TCP, nullptr, 0, WSA_FLAG_OVERLAPPED);
-	if (s != INVALID_SOCKET) {
-		const int ipv6only = 0;
-		if (setsockopt(s, IPPROTO_IPV6, IPV6_V6ONLY, reinterpret_cast< const char * >(&ipv6only), sizeof(ipv6only))
-			== 0) {
-			result = true;
-		}
-		closesocket(s);
-	}
-	WSACleanup();
-#endif
-	return result;
 }
 
 void SslServer::incomingConnection(qintptr v) {
@@ -112,7 +76,10 @@ QSslSocket *SslServer::nextPendingSSLConnection() {
 	return qlSockets.takeFirst();
 }
 
+
 Server::Server(int snum, QObject *p) : QThread(p) {
+	tracy::SetThreadName("Main");
+
 	bValid     = true;
 	iServerNum = snum;
 #ifdef USE_ZEROCONF
@@ -265,12 +232,6 @@ Server::Server(int snum, QObject *p) : QThread(p) {
 	readLinks();
 	initializeCert();
 
-	int major, minor, patch;
-	QString release;
-	Meta::getVersion(major, minor, patch, release);
-
-	uiVersionBlob = qToBigEndian(static_cast< quint32 >((major << 16) | (minor << 8) | patch));
-
 	if (bValid) {
 #ifdef USE_ZEROCONF
 		if (bBonjour)
@@ -354,76 +315,45 @@ Server::~Server() {
 	log("Stopped");
 }
 
-/// normalizeSuggestVersion normalizes a 'suggestversion' config value.
-/// The config value may be a version string, or a bitmasked
-/// integer representing the version.
-/// This function converts the 'suggestversion' config value to
-/// always be a bitmasked integer representation.
-///
-/// On error, the function returns an empty QVariant.
-static QVariant normalizeSuggestVersion(QVariant suggestVersion) {
-	uint integerValue = suggestVersion.toUInt();
-
-	// If the integer value is 0, it can mean two things:
-	//
-	// Either the suggestversion is set to 0.
-	// Or, the suggestversion is a version string such as "1.3.0",
-	// and cannot be converted to an integer value.
-	//
-	// We handle both cases the same: by pretending the
-	// suggestversion is a version string in both cases.
-	//
-	// If it is a version string, the call to MumbleVersion::getRaw()
-	// will return the bitmasked representation.
-	//
-	// If it is not a version string, the call to MumbleVersion::getRaw()
-	// will return 0, so it is effectively a no-op.
-	if (integerValue == 0) {
-		integerValue = MumbleVersion::getRaw(suggestVersion.toString());
-	}
-
-	if (integerValue != 0) {
-		return integerValue;
-	}
-
-	return QVariant();
-}
-
 void Server::readParams() {
-	qsPassword             = Meta::mp.qsPassword;
-	usPort                 = static_cast< unsigned short >(Meta::mp.usPort + iServerNum - 1);
-	iTimeout               = Meta::mp.iTimeout;
-	iMaxBandwidth          = Meta::mp.iMaxBandwidth;
-	iMaxUsers              = Meta::mp.iMaxUsers;
-	iMaxUsersPerChannel    = Meta::mp.iMaxUsersPerChannel;
-	iMaxTextMessageLength  = Meta::mp.iMaxTextMessageLength;
-	iMaxImageMessageLength = Meta::mp.iMaxImageMessageLength;
-	bAllowHTML             = Meta::mp.bAllowHTML;
-	iDefaultChan           = Meta::mp.iDefaultChan;
-	bRememberChan          = Meta::mp.bRememberChan;
-	iRememberChanDuration  = Meta::mp.iRememberChanDuration;
-	qsWelcomeText          = Meta::mp.qsWelcomeText;
-	qsWelcomeTextFile      = Meta::mp.qsWelcomeTextFile;
-	qlBind                 = Meta::mp.qlBind;
-	qsRegName              = Meta::mp.qsRegName;
-	qsRegPassword          = Meta::mp.qsRegPassword;
-	qsRegHost              = Meta::mp.qsRegHost;
-	qsRegLocation          = Meta::mp.qsRegLocation;
-	qurlRegWeb             = Meta::mp.qurlRegWeb;
-	bBonjour               = Meta::mp.bBonjour;
-	bAllowPing             = Meta::mp.bAllowPing;
-	bCertRequired          = Meta::mp.bCertRequired;
-	bForceExternalAuth     = Meta::mp.bForceExternalAuth;
-	qrUserName             = Meta::mp.qrUserName;
-	qrChannelName          = Meta::mp.qrChannelName;
-	iMessageLimit          = Meta::mp.iMessageLimit;
-	iMessageBurst          = Meta::mp.iMessageBurst;
-	qvSuggestVersion       = Meta::mp.qvSuggestVersion;
-	qvSuggestPositional    = Meta::mp.qvSuggestPositional;
-	qvSuggestPushToTalk    = Meta::mp.qvSuggestPushToTalk;
-	iOpusThreshold         = Meta::mp.iOpusThreshold;
-	iChannelNestingLimit   = Meta::mp.iChannelNestingLimit;
-	iChannelCountLimit     = Meta::mp.iChannelCountLimit;
+	qsPassword                         = Meta::mp.qsPassword;
+	usPort                             = static_cast< unsigned short >(Meta::mp.usPort + iServerNum - 1);
+	iTimeout                           = Meta::mp.iTimeout;
+	iMaxBandwidth                      = Meta::mp.iMaxBandwidth;
+	iMaxUsers                          = Meta::mp.iMaxUsers;
+	iMaxUsersPerChannel                = Meta::mp.iMaxUsersPerChannel;
+	iMaxTextMessageLength              = Meta::mp.iMaxTextMessageLength;
+	iMaxImageMessageLength             = Meta::mp.iMaxImageMessageLength;
+	bAllowHTML                         = Meta::mp.bAllowHTML;
+	iDefaultChan                       = Meta::mp.iDefaultChan;
+	bRememberChan                      = Meta::mp.bRememberChan;
+	iRememberChanDuration              = Meta::mp.iRememberChanDuration;
+	qsWelcomeText                      = Meta::mp.qsWelcomeText;
+	qsWelcomeTextFile                  = Meta::mp.qsWelcomeTextFile;
+	qlBind                             = Meta::mp.qlBind;
+	qsRegName                          = Meta::mp.qsRegName;
+	qsRegPassword                      = Meta::mp.qsRegPassword;
+	qsRegHost                          = Meta::mp.qsRegHost;
+	qsRegLocation                      = Meta::mp.qsRegLocation;
+	qurlRegWeb                         = Meta::mp.qurlRegWeb;
+	bBonjour                           = Meta::mp.bBonjour;
+	bAllowPing                         = Meta::mp.bAllowPing;
+	allowRecording                     = Meta::mp.allowRecording;
+	bCertRequired                      = Meta::mp.bCertRequired;
+	bForceExternalAuth                 = Meta::mp.bForceExternalAuth;
+	qrUserName                         = Meta::mp.qrUserName;
+	qrChannelName                      = Meta::mp.qrChannelName;
+	iMessageLimit                      = Meta::mp.iMessageLimit;
+	iMessageBurst                      = Meta::mp.iMessageBurst;
+	iPluginMessageLimit                = Meta::mp.iPluginMessageLimit;
+	iPluginMessageBurst                = Meta::mp.iPluginMessageBurst;
+	broadcastListenerVolumeAdjustments = Meta::mp.broadcastListenerVolumeAdjustments;
+	m_suggestVersion                   = Meta::mp.m_suggestVersion;
+	qvSuggestPositional                = Meta::mp.qvSuggestPositional;
+	qvSuggestPushToTalk                = Meta::mp.qvSuggestPushToTalk;
+	iOpusThreshold                     = Meta::mp.iOpusThreshold;
+	iChannelNestingLimit               = Meta::mp.iChannelNestingLimit;
+	iChannelCountLimit                 = Meta::mp.iChannelCountLimit;
 
 	QString qsHost = getConf("host", QString()).toString();
 	if (!qsHost.isEmpty()) {
@@ -498,9 +428,8 @@ void Server::readParams() {
 	bCertRequired      = getConf("certrequired", bCertRequired).toBool();
 	bForceExternalAuth = getConf("forceExternalAuth", bForceExternalAuth).toBool();
 
-	qvSuggestVersion = normalizeSuggestVersion(getConf("suggestversion", qvSuggestVersion));
-	if (qvSuggestVersion.toUInt() == 0)
-		qvSuggestVersion = QVariant();
+	m_suggestVersion =
+		Version::fromString(getConf("suggestversion", Version::toConfigString(m_suggestVersion)).toString());
 
 	qvSuggestPositional = getConf("suggestpositional", qvSuggestPositional);
 	if (qvSuggestPositional.toString().trimmed().isEmpty())
@@ -526,6 +455,17 @@ void Server::readParams() {
 	if (iMessageBurst < 1) { // Prevent disabling messages entirely
 		iMessageBurst = 1;
 	}
+
+	iPluginMessageLimit = getConf("mpluginessagelimit", iPluginMessageLimit).toUInt();
+	if (iPluginMessageLimit < 1) { // Prevent disabling messages entirely
+		iPluginMessageLimit = 1;
+	}
+	iPluginMessageBurst = getConf("pluginmessageburst", iPluginMessageBurst).toUInt();
+	if (iPluginMessageBurst < 1) { // Prevent disabling messages entirely
+		iPluginMessageBurst = 1;
+	}
+	broadcastListenerVolumeAdjustments =
+		getConf("broadcastlistenervolumeadjustments", broadcastListenerVolumeAdjustments).toBool();
 }
 
 void Server::setLiveConf(const QString &key, const QString &value) {
@@ -596,9 +536,6 @@ void Server::setLiveConf(const QString &key, const QString &value) {
 		QString text = !v.isNull() ? v : Meta::mp.qsWelcomeText;
 		if (text != qsWelcomeText) {
 			qsWelcomeText = text;
-			MumbleProto::ServerConfig mpsc;
-			mpsc.set_welcome_text(u8(qsWelcomeText));
-			sendAll(mpsc);
 		}
 	} else if (key == "registername") {
 		QString text = !v.isNull() ? v : Meta::mp.qsRegName;
@@ -634,13 +571,14 @@ void Server::setLiveConf(const QString &key, const QString &value) {
 #endif
 	} else if (key == "allowping")
 		bAllowPing = !v.isNull() ? QVariant(v).toBool() : Meta::mp.bAllowPing;
+	else if (key == "allowrecording")
+		allowRecording = !v.isNull() ? QVariant(v).toBool() : Meta::mp.allowRecording;
 	else if (key == "username")
 		qrUserName = !v.isNull() ? QRegExp(v) : Meta::mp.qrUserName;
 	else if (key == "channelname")
 		qrChannelName = !v.isNull() ? QRegExp(v) : Meta::mp.qrChannelName;
 	else if (key == "suggestversion")
-		qvSuggestVersion =
-			!v.isNull() ? (v.isEmpty() ? QVariant() : normalizeSuggestVersion(v)) : Meta::mp.qvSuggestVersion;
+		m_suggestVersion = !v.isNull() ? Version::fromConfig(v) : Meta::mp.m_suggestVersion;
 	else if (key == "suggestpositional")
 		qvSuggestPositional = !v.isNull() ? (v.isEmpty() ? QVariant() : v) : Meta::mp.qvSuggestPositional;
 	else if (key == "suggestpushtotalk")
@@ -661,6 +599,9 @@ void Server::setLiveConf(const QString &key, const QString &value) {
 		if (iMessageBurst < 1) {
 			iMessageBurst = 1;
 		}
+	} else if (key == "broadcastlistenervolumeadjustments") {
+		broadcastListenerVolumeAdjustments =
+			(!v.isNull() ? QVariant(v).toBool() : Meta::mp.broadcastListenerVolumeAdjustments);
 	}
 }
 
@@ -691,24 +632,54 @@ void Server::removeZeroconf() {
 }
 #endif
 
+gsl::span< const Mumble::Protocol::byte >
+	Server::handlePing(const Mumble::Protocol::UDPDecoder< Mumble::Protocol::Role::Server > &decoder,
+					   Mumble::Protocol::UDPPingEncoder< Mumble::Protocol::Role::Server > &encoder,
+					   bool expectExtended) {
+	Mumble::Protocol::PingData pingData = decoder.getPingData();
+
+	if (pingData.requestAdditionalInformation) {
+		pingData.requestAdditionalInformation = false;
+
+		pingData.serverVersion                 = Version::get();
+		pingData.userCount                     = qhUsers.size() - m_botCount;
+		pingData.maxUserCount                  = iMaxUsers;
+		pingData.maxBandwidthPerUser           = iMaxBandwidth;
+		pingData.containsAdditionalInformation = true;
+	} else if (expectExtended) {
+		// Return zero-length span
+		return {};
+	}
+
+	// Encode in the same protocol version that we decoded with
+	encoder.setProtocolVersion(decoder.getProtocolVersion());
+
+	return encoder.encodePingPacket(pingData);
+}
+
+
 void Server::customEvent(QEvent *evt) {
 	if (evt->type() == EXEC_QEVENT)
 		static_cast< ExecEvent * >(evt)->execute();
 }
 
 void Server::udpActivated(int socket) {
+	// At this part we are only expecting pings of clients we don't know yet -> thus we also don't know which protocol
+	// version they are using.
+	m_udpDecoder.setProtocolVersion(Version::UNKNOWN);
+
 	qint32 len;
-	char encrypt[UDP_PACKET_SIZE];
+
 	sockaddr_storage from;
 #ifdef Q_OS_UNIX
 #	ifdef Q_OS_LINUX
 	struct msghdr msg;
 	struct iovec iov[1];
 
-	iov[0].iov_base = encrypt;
-	iov[0].iov_len  = UDP_PACKET_SIZE;
+	iov[0].iov_base = m_udpDecoder.getBuffer().data();
+	iov[0].iov_len  = m_udpDecoder.getBuffer().size();
 
-	u_char controldata[CMSG_SPACE(MAX(sizeof(struct in6_pktinfo), sizeof(struct in_pktinfo)))];
+	uint8_t controldata[CMSG_SPACE(std::max(sizeof(struct in6_pktinfo), sizeof(struct in_pktinfo)))];
 
 	memset(&msg, 0, sizeof(msg));
 	msg.msg_name       = reinterpret_cast< struct sockaddr * >(&from);
@@ -723,43 +694,48 @@ void Server::udpActivated(int socket) {
 #	else
 	socklen_t fromlen = sizeof(from);
 	int &sock         = socket;
-	len               = static_cast< qint32 >(
-        ::recvfrom(sock, encrypt, UDP_PACKET_SIZE, MSG_TRUNC, reinterpret_cast< struct sockaddr * >(&from), &fromlen));
+	len = static_cast< qint32 >(::recvfrom(sock, m_udpDecoder.getBuffer().data(), m_udpDecoder.getBuffer().size(),
+										   MSG_TRUNC, reinterpret_cast< struct sockaddr * >(&from), &fromlen));
 #	endif
 #else
 	int fromlen = sizeof(from);
 	SOCKET sock = static_cast< SOCKET >(socket);
-	len         = ::recvfrom(sock, encrypt, UDP_PACKET_SIZE, 0, reinterpret_cast< struct sockaddr * >(&from), &fromlen);
+	len = ::recvfrom(sock, reinterpret_cast< char * >(m_udpDecoder.getBuffer().data()), m_udpDecoder.getBuffer().size(),
+					 0, reinterpret_cast< struct sockaddr * >(&from), &fromlen);
 #endif
 
-	// Cloned from ::run(), as it's the only UDP data we care about until the thread is started.
-	quint32 *ping = reinterpret_cast< quint32 * >(encrypt);
-	if ((len == 12) && (*ping == 0) && bAllowPing) {
-		ping[0] = uiVersionBlob;
-		ping[3] = qToBigEndian(static_cast< quint32 >(qhUsers.count()));
-		ping[4] = qToBigEndian(static_cast< quint32 >(iMaxUsers));
-		ping[5] = qToBigEndian(static_cast< quint32 >(iMaxBandwidth));
+	gsl::span< Mumble::Protocol::byte > inputData(&m_udpDecoder.getBuffer()[0], len);
 
+	if (bAllowPing && m_udpDecoder.decodePing(inputData)
+		&& m_udpDecoder.getMessageType() == Mumble::Protocol::UDPMessageType::Ping) {
+		gsl::span< const Mumble::Protocol::byte > encodedPing = handlePing(m_udpDecoder, m_udpPingEncoder, true);
+
+		if (!encodedPing.empty()) {
 #ifdef Q_OS_LINUX
-		// There will be space for only one header, and the only data we have asked for is the incoming
-		// address. So we can reuse most of the same msg and control data.
-		iov[0].iov_len = 6 * sizeof(quint32);
-		::sendmsg(sock, &msg, 0);
+			// There will be space for only one header, and the only data we have asked for is the incoming
+			// address. So we can reuse most of the same msg and control data.
+			iov[0].iov_len  = encodedPing.size();
+			iov[0].iov_base = const_cast< Mumble::Protocol::byte * >(encodedPing.data());
+			::sendmsg(sock, &msg, 0);
 #else
-        ::sendto(sock, encrypt, 6 * sizeof(quint32), 0, reinterpret_cast< struct sockaddr * >(&from), fromlen);
+			::sendto(sock, reinterpret_cast< const char * >(encodedPing.data()), encodedPing.size(), 0,
+					 reinterpret_cast< struct sockaddr * >(&from), fromlen);
 #endif
+		}
 	}
 }
 
 void Server::run() {
+	tracy::SetThreadName("Audio");
+
 	qint32 len;
 #if defined(__LP64__)
-	char encbuff[UDP_PACKET_SIZE + 8];
-	char *encrypt = encbuff + 4;
+	unsigned char encbuff[Mumble::Protocol::MAX_UDP_PACKET_SIZE + 8];
+	unsigned char *encrypt = encbuff + 4;
 #else
-	char encrypt[UDP_PACKET_SIZE];
+	unsigned char encrypt[Mumble::Protocol::MAX_UDP_PACKET_SIZE];
 #endif
-	char buffer[UDP_PACKET_SIZE];
+	unsigned char buffer[Mumble::Protocol::MAX_UDP_PACKET_SIZE];
 
 	sockaddr_storage from;
 	int nfds = qlUdpSocket.count();
@@ -792,6 +768,8 @@ void Server::run() {
 	++nfds;
 
 	while (bRunning) {
+		FrameMarkNamed(TracyConstants::UDP_FRAME);
+
 #ifdef Q_OS_UNIX
 		int pret = poll(fds, nfds, -1);
 		if (pret <= 0) {
@@ -836,17 +814,17 @@ void Server::run() {
 
 				fromlen = sizeof(from);
 #ifdef Q_OS_WIN
-				len = ::recvfrom(sock, encrypt, UDP_PACKET_SIZE, 0, reinterpret_cast< struct sockaddr * >(&from),
-								 &fromlen);
+				len = ::recvfrom(sock, reinterpret_cast< char * >(encrypt), Mumble::Protocol::MAX_UDP_PACKET_SIZE, 0,
+								 reinterpret_cast< struct sockaddr * >(&from), &fromlen);
 #else
 #	ifdef Q_OS_LINUX
 				struct msghdr msg;
 				struct iovec iov[1];
 
 				iov[0].iov_base = encrypt;
-				iov[0].iov_len  = UDP_PACKET_SIZE;
+				iov[0].iov_len  = Mumble::Protocol::MAX_UDP_PACKET_SIZE;
 
-				u_char controldata[CMSG_SPACE(MAX(sizeof(struct in6_pktinfo), sizeof(struct in_pktinfo)))];
+				uint8_t controldata[CMSG_SPACE(std::max(sizeof(struct in6_pktinfo), sizeof(struct in_pktinfo)))];
 
 				memset(&msg, 0, sizeof(msg));
 				msg.msg_name       = reinterpret_cast< struct sockaddr * >(&from);
@@ -859,10 +837,14 @@ void Server::run() {
 				len = static_cast< quint32 >(::recvmsg(sock, &msg, MSG_TRUNC));
 				Q_UNUSED(fromlen);
 #	else
-				len = static_cast< qint32 >(::recvfrom(sock, encrypt, UDP_PACKET_SIZE, MSG_TRUNC,
+				len = static_cast< qint32 >(::recvfrom(sock, encrypt, Mumble::Protocol::MAX_UDP_PACKET_SIZE, MSG_TRUNC,
 													   reinterpret_cast< struct sockaddr * >(&from), &fromlen));
 #	endif
 #endif
+
+				// Capture only the processing without the polling
+				ZoneScopedN(TracyConstants::UDP_PACKET_PROCESSING_ZONE);
+
 				if (len == 0) {
 					break;
 				} else if (len == SOCKET_ERROR) {
@@ -870,31 +852,14 @@ void Server::run() {
 				} else if (len < 5) {
 					// 4 bytes crypt header + type + session
 					continue;
-				} else if (len > UDP_PACKET_SIZE) {
+				} else if (static_cast< unsigned int >(len) > Mumble::Protocol::MAX_UDP_PACKET_SIZE) {
+					// This will also catch the len == -1 case (indicating error)
+					static_assert(static_cast< unsigned int >(-1) > Mumble::Protocol::MAX_UDP_PACKET_SIZE,
+								  "Invalid assumption");
 					continue;
 				}
 
 				QReadLocker rl(&qrwlVoiceThread);
-
-				quint32 *ping = reinterpret_cast< quint32 * >(encrypt);
-
-				if ((len == 12) && (*ping == 0) && bAllowPing) {
-					ping[0] = uiVersionBlob;
-					// 1 and 2 will be the timestamp, which we return unmodified.
-					ping[3] = qToBigEndian(static_cast< quint32 >(qhUsers.count()));
-					ping[4] = qToBigEndian(static_cast< quint32 >(iMaxUsers));
-					ping[5] = qToBigEndian(static_cast< quint32 >(iMaxBandwidth));
-
-#ifdef Q_OS_LINUX
-					iov[0].iov_len = 6 * sizeof(quint32);
-					::sendmsg(sock, &msg, 0);
-#else
-					::sendto(sock, encrypt, 6 * sizeof(quint32), 0, reinterpret_cast< struct sockaddr * >(&from),
-							 fromlen);
-#endif
-					continue;
-				}
-
 
 				quint16 port = (from.ss_family == AF_INET6) ? (reinterpret_cast< sockaddr_in6 * >(&from)->sin6_port)
 															: (reinterpret_cast< sockaddr_in * >(&from)->sin_port);
@@ -903,11 +868,43 @@ void Server::run() {
 				const QPair< HostAddress, quint16 > &key = QPair< HostAddress, quint16 >(ha, port);
 
 				ServerUser *u = qhPeerUsers.value(key);
+
+				if (u) {
+					m_udpDecoder.setProtocolVersion(u->m_version);
+				} else {
+					m_udpDecoder.setProtocolVersion(Version::UNKNOWN);
+				}
+				// This may be a general ping requesting server details, unencrypted.
+				if (bAllowPing && m_udpDecoder.decodePing(gsl::span< Mumble::Protocol::byte >(encrypt, len))
+					&& m_udpDecoder.getMessageType() == Mumble::Protocol::UDPMessageType::Ping) {
+					ZoneScopedN(TracyConstants::PING_PROCESSING_ZONE);
+
+					gsl::span< const Mumble::Protocol::byte > encodedPing =
+						handlePing(m_udpDecoder, m_udpPingEncoder, true);
+
+					if (!encodedPing.empty()) {
+#ifdef Q_OS_LINUX
+						// We are only reading from the buffer and thus the const_cast should be fine
+						iov[0].iov_base = const_cast< Mumble::Protocol::byte * >(encodedPing.data());
+						iov[0].iov_len  = encodedPing.size();
+						::sendmsg(sock, &msg, 0);
+#else
+						::sendto(sock, reinterpret_cast< const char * >(encodedPing.data()), encodedPing.size(), 0,
+								 reinterpret_cast< struct sockaddr * >(&from), fromlen);
+#endif
+					}
+
+					continue;
+				}
+
+
 				if (u) {
 					if (!checkDecrypt(u, encrypt, buffer, len)) {
 						continue;
 					}
 				} else {
+					ZoneScopedN(TracyConstants::DECRYPT_UNKNOWN_PEER_ZONE);
+
 					// Unknown peer
 					foreach (ServerUser *usr, qhHostUsers.value(ha)) {
 						if (checkDecrypt(usr, encrypt, buffer, len)) { // checkDecrypt takes the User's qrwlCrypt lock.
@@ -936,25 +933,43 @@ void Server::run() {
 				}
 				len -= 4;
 
-				MessageHandler::UDPMessageType msgType =
-					static_cast< MessageHandler::UDPMessageType >((buffer[0] >> 5) & 0x7);
+				if (m_udpDecoder.decode(gsl::span< Mumble::Protocol::byte >(buffer, len))) {
+					switch (m_udpDecoder.getMessageType()) {
+						case Mumble::Protocol::UDPMessageType::Audio: {
+							Mumble::Protocol::AudioData audioData = m_udpDecoder.getAudioData();
 
-				if (msgType == MessageHandler::UDPVoiceSpeex || msgType == MessageHandler::UDPVoiceCELTAlpha
-					|| msgType == MessageHandler::UDPVoiceCELTBeta || msgType == MessageHandler::UDPVoiceOpus) {
-					// Allow all voice packets through by default.
-					bool ok = true;
-					// ...Unless we're in Opus mode. In Opus mode, only Opus packets are allowed.
-					if (bOpus && msgType != MessageHandler::UDPVoiceOpus) {
-						ok = false;
-					}
+							// Allow all voice packets through by default.
+							bool ok = true;
+							// ...Unless we're in Opus mode. In Opus mode, only Opus packets are allowed.
+							if (bOpus && audioData.usedCodec != Mumble::Protocol::AudioCodec::Opus) {
+								ok = false;
+							}
 
-					if (ok) {
-						u->aiUdpFlag = 1;
-						processMsg(u, buffer, len);
+							if (ok) {
+								u->aiUdpFlag = 1;
+
+								// Add session id
+								audioData.senderSession = u->uiSession;
+
+								processMsg(u, audioData, m_udpAudioReceivers, m_udpAudioEncoder);
+							}
+							break;
+						}
+						case Mumble::Protocol::UDPMessageType::Ping: {
+							ZoneScopedN(TracyConstants::UDP_PING_PROCESSING_ZONE);
+
+							Mumble::Protocol::PingData pingData = m_udpDecoder.getPingData();
+							if (!pingData.requestAdditionalInformation && !pingData.containsAdditionalInformation) {
+								// At this point here, we only want to handle connectivity pings
+								gsl::span< const Mumble::Protocol::byte > encodedPing =
+									handlePing(m_udpDecoder, m_udpPingEncoder, false);
+
+								QByteArray cache;
+								sendMessage(*u, encodedPing.data(), encodedPing.size(), cache, true);
+							}
+							break;
+						}
 					}
-				} else if (msgType == MessageHandler::UDPPing) {
-					QByteArray qba;
-					sendMessage(u, buffer, len, qba, true);
 				}
 #ifdef Q_OS_UNIX
 				fds[i].revents = 0;
@@ -970,13 +985,14 @@ void Server::run() {
 #endif
 }
 
-bool Server::checkDecrypt(ServerUser *u, const char *encrypt, char *plain, unsigned int len) {
+bool Server::checkDecrypt(ServerUser *u, const unsigned char *encrypt, unsigned char *plain, unsigned int len) {
+	ZoneScoped;
+
 	QMutexLocker l(&u->qmCrypt);
 
-	if (u->csCrypt->isValid()
-		&& u->csCrypt->decrypt(reinterpret_cast< const unsigned char * >(encrypt),
-							   reinterpret_cast< unsigned char * >(plain), len))
+	if (u->csCrypt->isValid() && u->csCrypt->decrypt(encrypt, plain, len)) {
 		return true;
+	}
 
 	if (u->csCrypt->tLastGood.elapsed() > 5000000ULL) {
 		if (u->csCrypt->tLastRequest.elapsed() > 5000000ULL) {
@@ -987,12 +1003,14 @@ bool Server::checkDecrypt(ServerUser *u, const char *encrypt, char *plain, unsig
 	return false;
 }
 
-void Server::sendMessage(ServerUser *u, const char *data, int len, QByteArray &cache, bool force) {
+void Server::sendMessage(ServerUser &u, const unsigned char *data, int len, QByteArray &cache, bool force) {
+	ZoneScoped;
+
 #if QT_VERSION >= QT_VERSION_CHECK(5, 14, 0)
-	if ((u->aiUdpFlag.loadRelaxed() == 1 || force) && (u->sUdpSocket != INVALID_SOCKET)) {
+	if ((u.aiUdpFlag.loadRelaxed() == 1 || force) && (u.sUdpSocket != INVALID_SOCKET)) {
 #else
 	// Qt 5.14 introduced QAtomicInteger::loadRelaxed() which deprecates QAtomicInteger::load()
-	if ((u->aiUdpFlag.load() == 1 || force) && (u->sUdpSocket != INVALID_SOCKET)) {
+	if ((u.aiUdpFlag.load() == 1 || force) && (u.sUdpSocket != INVALID_SOCKET)) {
 #endif
 #if defined(__LP64__)
 		STACKVAR(char, ebuffer, len + 4 + 16);
@@ -1001,21 +1019,21 @@ void Server::sendMessage(ServerUser *u, const char *data, int len, QByteArray &c
 		STACKVAR(char, buffer, len + 4);
 #endif
 		{
-			QMutexLocker wl(&u->qmCrypt);
+			QMutexLocker wl(&u.qmCrypt);
 
-			if (!u->csCrypt->isValid()) {
+			if (!u.csCrypt->isValid()) {
 				return;
 			}
 
-			if (!u->csCrypt->encrypt(reinterpret_cast< const unsigned char * >(data),
-									 reinterpret_cast< unsigned char * >(buffer), len)) {
+			if (!u.csCrypt->encrypt(reinterpret_cast< const unsigned char * >(data),
+									reinterpret_cast< unsigned char * >(buffer), len)) {
 				return;
 			}
 		}
 #ifdef Q_OS_WIN
 		DWORD dwFlow = 0;
 		if (Meta::hQoS)
-			QOSAddSocketToFlow(Meta::hQoS, u->sUdpSocket, reinterpret_cast< struct sockaddr * >(&u->saiUdpAddress),
+			QOSAddSocketToFlow(Meta::hQoS, u.sUdpSocket, reinterpret_cast< struct sockaddr * >(&u.saiUdpAddress),
 							   QOSTrafficTypeVoice, QOS_NON_ADAPTIVE_FLOW, reinterpret_cast< PQOS_FLOWID >(&dwFlow));
 #endif
 #ifdef Q_OS_LINUX
@@ -1025,22 +1043,22 @@ void Server::sendMessage(ServerUser *u, const char *data, int len, QByteArray &c
 		iov[0].iov_base = buffer;
 		iov[0].iov_len  = len + 4;
 
-		u_char controldata[CMSG_SPACE(MAX(sizeof(struct in6_pktinfo), sizeof(struct in_pktinfo)))];
+		uint8_t controldata[CMSG_SPACE(std::max(sizeof(struct in6_pktinfo), sizeof(struct in_pktinfo)))];
 		memset(controldata, 0, sizeof(controldata));
 
 		memset(&msg, 0, sizeof(msg));
-		msg.msg_name    = reinterpret_cast< struct sockaddr * >(&u->saiUdpAddress);
+		msg.msg_name    = reinterpret_cast< struct sockaddr * >(&u.saiUdpAddress);
 		msg.msg_namelen = static_cast< socklen_t >(
-			(u->saiUdpAddress.ss_family == AF_INET6) ? sizeof(struct sockaddr_in6) : sizeof(struct sockaddr_in));
+			(u.saiUdpAddress.ss_family == AF_INET6) ? sizeof(struct sockaddr_in6) : sizeof(struct sockaddr_in));
 		msg.msg_iov        = iov;
 		msg.msg_iovlen     = 1;
 		msg.msg_control    = controldata;
-		msg.msg_controllen = CMSG_SPACE((u->saiUdpAddress.ss_family == AF_INET6) ? sizeof(struct in6_pktinfo)
-																				 : sizeof(struct in_pktinfo));
+		msg.msg_controllen = CMSG_SPACE((u.saiUdpAddress.ss_family == AF_INET6) ? sizeof(struct in6_pktinfo)
+																				: sizeof(struct in_pktinfo));
 
 		struct cmsghdr *cmsg = CMSG_FIRSTHDR(&msg);
-		HostAddress tcpha(u->saiTcpLocalAddress);
-		if (u->saiUdpAddress.ss_family == AF_INET6) {
+		HostAddress tcpha(u.saiTcpLocalAddress);
+		if (u.saiUdpAddress.ss_family == AF_INET6) {
 			cmsg->cmsg_level            = IPPROTO_IPV6;
 			cmsg->cmsg_type             = IPV6_PKTINFO;
 			cmsg->cmsg_len              = CMSG_LEN(sizeof(struct in6_pktinfo));
@@ -1059,10 +1077,10 @@ void Server::sendMessage(ServerUser *u, const char *data, int len, QByteArray &c
 		}
 
 
-		::sendmsg(u->sUdpSocket, &msg, 0);
+		::sendmsg(u.sUdpSocket, &msg, 0);
 #else
-		::sendto(u->sUdpSocket, buffer, len + 4, 0, reinterpret_cast< struct sockaddr * >(&u->saiUdpAddress),
-				 (u->saiUdpAddress.ss_family == AF_INET6) ? sizeof(struct sockaddr_in6) : sizeof(struct sockaddr_in));
+		::sendto(u.sUdpSocket, buffer, len + 4, 0, reinterpret_cast< struct sockaddr * >(&u.saiUdpAddress),
+				 (u.saiUdpAddress.ss_family == AF_INET6) ? sizeof(struct sockaddr_in6) : sizeof(struct sockaddr_in));
 #endif
 #ifdef Q_OS_WIN
 		if (Meta::hQoS && dwFlow)
@@ -1071,21 +1089,27 @@ void Server::sendMessage(ServerUser *u, const char *data, int len, QByteArray &c
 #endif
 	} else {
 		if (cache.isEmpty())
-			cache = QByteArray(data, len);
-		emit tcpTransmit(cache, u->uiSession);
+			cache = QByteArray(reinterpret_cast< const char * >(data), len);
+		emit tcpTransmit(cache, u.uiSession);
 	}
 }
 
-#define SENDTO                                                 \
-	if ((!pDst->bDeaf) && (!pDst->bSelfDeaf) && (pDst != u)) { \
-		if ((poslen > 0) && (pDst->ssContext == u->ssContext)) \
-			sendMessage(pDst, buffer, len, qba);               \
-		else                                                   \
-			sendMessage(pDst, buffer, len - poslen, qba_npos); \
-	}
+void Server::addListener(QHash< ServerUser *, VolumeAdjustment > &listeners, ServerUser &user, const Channel &channel) {
+	const VolumeAdjustment &volumeAdjustment =
+		m_channelListenerManager.getListenerVolumeAdjustment(user.uiSession, channel.iId);
 
-void Server::processMsg(ServerUser *u, const char *data, int len) {
-	// Note that in this function we never have to aquire a read-lock on qrwlVoiceThread
+	auto it = listeners.find(&user);
+
+	if (it == listeners.end() || it->factor < volumeAdjustment.factor) {
+		listeners[&user] = volumeAdjustment;
+	}
+}
+
+void Server::processMsg(ServerUser *u, Mumble::Protocol::AudioData audioData, AudioReceiverBuffer &buffer,
+						Mumble::Protocol::UDPAudioEncoder< Mumble::Protocol::Role::Server > &encoder) {
+	ZoneScoped;
+
+	// Note that in this function we never have to acquire a read-lock on qrwlVoiceThread
 	// as all places that call this function will hold that lock at the point of calling
 	// this function.
 	// This function is currently called from Server::msgUDPTunnel, Server::run and
@@ -1093,21 +1117,12 @@ void Server::processMsg(ServerUser *u, const char *data, int len) {
 	if (u->sState != ServerUser::Authenticated || u->bMute || u->bSuppress || u->bSelfMute)
 		return;
 
-	QByteArray qba, qba_npos;
-	unsigned int counter;
-	char buffer[UDP_PACKET_SIZE];
-	PacketDataStream pdi(data + 1, len - 1);
-	PacketDataStream pds(buffer + 1, UDP_PACKET_SIZE - 1);
-	unsigned int type   = data[0] & 0xe0;
-	unsigned int target = data[0] & 0x1f;
-	unsigned int poslen;
-
 	// Check the voice data rate limit.
 	{
 		BandwidthRecord *bw = &u->bwr;
 
 		// IP + UDP + Crypt + Data
-		const int packetsize = 20 + 8 + 4 + len;
+		const int packetsize = 20 + 8 + 4 + audioData.payload.size();
 
 		if (!bw->addFrame(packetsize, iMaxBandwidth / 8)) {
 			// Suppress packet.
@@ -1115,69 +1130,27 @@ void Server::processMsg(ServerUser *u, const char *data, int len) {
 		}
 	}
 
-	// Read the sequence number.
-	pdi >> counter;
+	buffer.clear();
 
-	// Skip to the end of the voice data.
-	if ((type >> 5) != MessageHandler::UDPVoiceOpus) {
-		do {
-			counter = pdi.next8();
-			pdi.skip(counter & 0x7f);
-		} while ((counter & 0x80) && pdi.isValid());
-	} else {
-		int size;
-		pdi >> size;
-		pdi.skip(size & 0x1fff);
-	}
-
-	// Save location of the positional audio data.
-	poslen = pdi.left();
-
-	// Append session id to the new output stream.
-	pds << u->uiSession;
-	// Copy all voice and positional audio data to the output stream.
-	pds.append(data + 1, len - 1);
-
-	len = pds.size() + 1;
-
-	if (poslen > static_cast< unsigned int >(len)) {
-		// poslen must never ever be bigger than len as this could lead to negative buffer sizes (len - poslen) being
-		// used when further processing the packet.
-		// Usually this shouldn't happen in the first place but can happen with malformed/malicious packets in certain
-		// cases.
-		poslen = 0;
-	}
-
-	/// A set of users that'll receive the audio buffer because they are listening
-	/// to a channel that received that audio.
-	QSet< ServerUser * > listeningUsers;
-
-	if (target == 0x1f) { // Server loopback
-		buffer[0] = static_cast< char >(type | SpeechFlags::Normal);
-		sendMessage(u, buffer, len, qba);
-		return;
-	} else if (target == 0) { // Normal speech
+	if (audioData.targetOrContext == Mumble::Protocol::ReservedTargetIDs::SERVER_LOOPBACK) {
+		buffer.forceAddReceiver(*u, Mumble::Protocol::AudioContext::NORMAL, audioData.containsPositionalData);
+	} else if (audioData.targetOrContext == Mumble::Protocol::ReservedTargetIDs::REGULAR_SPEECH) {
 		Channel *c = u->cChannel;
 
-		buffer[0] = static_cast< char >(type | SpeechFlags::Normal);
-
 		// Send audio to all users that are listening to the channel
-		foreach (unsigned int currentSession, ChannelListener::getListenersForChannel(c)) {
+		foreach (unsigned int currentSession, m_channelListenerManager.getListenersForChannel(c->iId)) {
 			ServerUser *pDst = static_cast< ServerUser * >(qhUsers.value(currentSession));
 			if (pDst) {
-				listeningUsers << pDst;
+				buffer.addReceiver(*u, *pDst, Mumble::Protocol::AudioContext::LISTEN, audioData.containsPositionalData,
+								   m_channelListenerManager.getListenerVolumeAdjustment(pDst->uiSession, c->iId));
 			}
 		}
 
 		// Send audio to all users in the same channel
-		foreach (User *p, c->qlUsers) {
+		for (User *p : c->qlUsers) {
 			ServerUser *pDst = static_cast< ServerUser * >(p);
 
-			// As we send the audio to this particular user here, we want to make sure to not send it again due to a
-			// listener proxy
-			listeningUsers -= pDst;
-
-			SENDTO;
+			buffer.addReceiver(*u, *pDst, Mumble::Protocol::AudioContext::NORMAL, audioData.containsPositionalData);
 		}
 
 		// Send audio to all linked channels the user has speak-permission
@@ -1187,45 +1160,44 @@ void Server::processMsg(ServerUser *u, const char *data, int len) {
 
 			QMutexLocker qml(&qmCache);
 
-			foreach (Channel *l, chans) {
+			for (Channel *l : chans) {
 				if (ChanACL::hasPermission(u, l, ChanACL::Speak, &acCache)) {
-					// Send the audio stream to all users that are listening to the linked channel but are not
-					// in the original channel the audio is coming from nor are they listening to the orignal
-					// channel (in these cases they have received the audio already).
-					foreach (unsigned int currentSession, ChannelListener::getListenersForChannel(l)) {
+					// Send the audio stream to all users that are listening to the linked channel
+					for (unsigned int currentSession : m_channelListenerManager.getListenersForChannel(l->iId)) {
 						ServerUser *pDst = static_cast< ServerUser * >(qhUsers.value(currentSession));
-						if (pDst && pDst->cChannel != c && !ChannelListener::isListening(pDst, c)) {
-							listeningUsers << pDst;
+						if (pDst) {
+							buffer.addReceiver(
+								*u, *pDst, Mumble::Protocol::AudioContext::LISTEN, audioData.containsPositionalData,
+								m_channelListenerManager.getListenerVolumeAdjustment(pDst->uiSession, l->iId));
 						}
 					}
 
 					// Send audio to users in the linked channel
-					foreach (User *p, l->qlUsers) {
-						if (!ChannelListener::isListening(p->uiSession, c->iId)) {
-							ServerUser *pDst = static_cast< ServerUser * >(p);
+					for (User *p : l->qlUsers) {
+						ServerUser *pDst = static_cast< ServerUser * >(p);
 
-							// As we send the audio to this particular user here, we want to make sure to not send it
-							// again due to a listener proxy
-							listeningUsers -= pDst;
-
-							SENDTO;
-						}
+						buffer.addReceiver(*u, *pDst, Mumble::Protocol::AudioContext::NORMAL,
+										   audioData.containsPositionalData);
 					}
 				}
 			}
 		}
-	} else if (u->qmTargets.contains(target)) { // Whisper/Shout
+	} else if (u->qmTargets.contains(audioData.targetOrContext)) { // Whisper/Shout
 		QSet< ServerUser * > channel;
 		QSet< ServerUser * > direct;
-		QSet< ServerUser * > listener;
+		QHash< ServerUser *, VolumeAdjustment > cachedListeners;
 
-		if (u->qmTargetCache.contains(target)) {
-			const WhisperTargetCache &cache = u->qmTargetCache.value(target);
+		if (u->qmTargetCache.contains(audioData.targetOrContext)) {
+			ZoneScopedN(TracyConstants::AUDIO_WHISPER_CACHE_STORE);
+
+			const WhisperTargetCache &cache = u->qmTargetCache.value(audioData.targetOrContext);
 			channel                         = cache.channelTargets;
 			direct                          = cache.directTargets;
-			listener                        = cache.listeningTargets;
+			cachedListeners                 = cache.listeningTargets;
 		} else {
-			const WhisperTarget &wt = u->qmTargets.value(target);
+			ZoneScopedN(TracyConstants::AUDIO_WHISPER_CACHE_CREATE);
+
+			const WhisperTarget &wt = u->qmTargets.value(audioData.targetOrContext);
 			if (!wt.qlChannels.isEmpty()) {
 				QMutexLocker qml(&qmCache);
 
@@ -1240,11 +1212,12 @@ void Server::processMsg(ServerUser *u, const char *data, int len) {
 							if (ChanACL::hasPermission(u, wc, ChanACL::Whisper, &acCache)) {
 								foreach (User *p, wc->qlUsers) { channel.insert(static_cast< ServerUser * >(p)); }
 
-								foreach (unsigned int currentSession, ChannelListener::getListenersForChannel(wc)) {
+								foreach (unsigned int currentSession,
+										 m_channelListenerManager.getListenersForChannel(wc->iId)) {
 									ServerUser *pDst = static_cast< ServerUser * >(qhUsers.value(currentSession));
 
 									if (pDst) {
-										listener << pDst;
+										addListener(cachedListeners, *pDst, *wc);
 									}
 								}
 							}
@@ -1263,18 +1236,19 @@ void Server::processMsg(ServerUser *u, const char *data, int len) {
 									foreach (User *p, tc->qlUsers) {
 										ServerUser *su = static_cast< ServerUser * >(p);
 
-										if (!group || Group::isMember(tc, tc, qsg, su)) {
+										if (!group || Group::appliesToUser(*tc, *tc, qsg, *su)) {
 											channel.insert(su);
 										}
 									}
 
-									foreach (unsigned int currentSession, ChannelListener::getListenersForChannel(tc)) {
+									foreach (unsigned int currentSession,
+											 m_channelListenerManager.getListenersForChannel(tc->iId)) {
 										ServerUser *pDst = static_cast< ServerUser * >(qhUsers.value(currentSession));
 
-										if (pDst && (!group || Group::isMember(tc, tc, qsg, pDst))) {
-											// Only send audio to listener if the user exists and it is in the group the speech is directed
-											// at (if any)
-											listener << pDst;
+										if (pDst && (!group || Group::appliesToUser(*tc, *tc, qsg, *pDst))) {
+											// Only send audio to listener if the user exists and it is in the group the
+											// speech is directed at (if any)
+											addListener(cachedListeners, *pDst, *tc);
 										}
 									}
 								}
@@ -1282,10 +1256,6 @@ void Server::processMsg(ServerUser *u, const char *data, int len) {
 						}
 					}
 				}
-
-				// If a user receives the audio through this shout anyways, we won't send it through the
-				// listening channel again (and thus sending the audio twice)
-				listener -= channel;
 			}
 
 			{
@@ -1304,33 +1274,91 @@ void Server::processMsg(ServerUser *u, const char *data, int len) {
 			qrwlVoiceThread.lockForWrite();
 
 			if (qhUsers.contains(uiSession))
-				u->qmTargetCache.insert(target, { channel, direct, listener });
+				u->qmTargetCache.insert(audioData.targetOrContext, { channel, direct, cachedListeners });
 			qrwlVoiceThread.unlock();
 			qrwlVoiceThread.lockForRead();
 			if (!qhUsers.contains(uiSession))
 				return;
 		}
-		if (!channel.isEmpty()) {
-			// These users receive the audio because someone is shouting to their channel
-			buffer[0] = static_cast< char >(type | SpeechFlags::Shout);
-			foreach (ServerUser *pDst, channel) { SENDTO; }
-			if (!direct.isEmpty()) {
-				qba.clear();
-				qba_npos.clear();
-			}
+		// These users receive the audio because someone is shouting to their channel
+		for (ServerUser *pDst : channel) {
+			buffer.addReceiver(*u, *pDst, Mumble::Protocol::AudioContext::SHOUT, audioData.containsPositionalData);
 		}
-		if (!direct.isEmpty()) {
-			buffer[0] = static_cast< char >(type | SpeechFlags::Whisper);
-			foreach (ServerUser *pDst, direct) { SENDTO; }
+		// These users receive audio because someone is whispering to them
+		for (ServerUser *pDst : direct) {
+			buffer.addReceiver(*u, *pDst, Mumble::Protocol::AudioContext::WHISPER, audioData.containsPositionalData);
 		}
+		// These users receive audio because someone is sending audio to one of their listeners
+		QHashIterator< ServerUser *, VolumeAdjustment > it(cachedListeners);
+		while (it.hasNext()) {
+			it.next();
+			ServerUser *user                         = it.key();
+			const VolumeAdjustment &volumeAdjustment = it.value();
 
-		// Add the listening users to the set of current listeners
-		listeningUsers += listener;
+			buffer.addReceiver(*u, *user, Mumble::Protocol::AudioContext::LISTEN, audioData.containsPositionalData,
+							   volumeAdjustment);
+		}
 	}
 
-	// Send the audio to all listening users
-	buffer[0] = static_cast< char >(type | SpeechFlags::Listen);
-	foreach (ServerUser *pDst, listeningUsers) { SENDTO; }
+	ZoneNamedN(__tracy_scoped_zone2, TracyConstants::AUDIO_SENDOUT_ZONE, true);
+
+	buffer.preprocessBuffer();
+
+	bool isFirstIteration = true;
+	QByteArray tcpCache;
+	for (bool includePositionalData : { true, false }) {
+		std::vector< AudioReceiver > &receiverList = buffer.getReceivers(includePositionalData);
+
+		audioData.containsPositionalData = includePositionalData && audioData.containsPositionalData;
+
+		if (!audioData.containsPositionalData) {
+			encoder.dropPositionalData();
+		}
+
+		// Note: The receiver-ranges are determined in such a way, that they are all going to receive the exact
+		// same audio packet.
+		ReceiverRange< std::vector< AudioReceiver >::iterator > currentRange =
+			AudioReceiverBuffer::getReceiverRange(receiverList.begin(), receiverList.end());
+
+		while (currentRange.begin != currentRange.end) {
+			// Setup encoder for this range
+			if (isFirstIteration
+				|| !Mumble::Protocol::protocolVersionsAreCompatible(encoder.getProtocolVersion(),
+																	currentRange.begin->getReceiver().m_version)) {
+				ZoneScopedN(TracyConstants::AUDIO_ENCODE);
+
+				encoder.setProtocolVersion(currentRange.begin->getReceiver().m_version);
+
+				// We have to re-encode the "fixed" part of the audio message
+				encoder.prepareAudioPacket(audioData);
+
+				if (audioData.containsPositionalData) {
+					encoder.addPositionalData(audioData);
+				}
+
+				isFirstIteration = false;
+			}
+
+			audioData.targetOrContext  = currentRange.begin->getContext();
+			audioData.volumeAdjustment = currentRange.begin->getVolumeAdjustment();
+
+			// Update data
+			TracyCZoneN(__tracy_zone, TracyConstants::AUDIO_UPDATE, true);
+			gsl::span< const Mumble::Protocol::byte > encodedPacket = encoder.updateAudioPacket(audioData);
+			TracyCZoneEnd(__tracy_zone);
+
+			// Clear TCP cache
+			tcpCache.clear();
+
+			// Send encoded packet to all receivers of this range
+			for (auto it = currentRange.begin; it != currentRange.end; ++it) {
+				sendMessage(it->getReceiver(), encodedPacket.data(), encodedPacket.size(), tcpCache);
+			}
+
+			// Find next range
+			currentRange = AudioReceiverBuffer::getReceiverRange(currentRange.end, receiverList.end());
+		}
+	}
 }
 
 void Server::log(ServerUser *u, const QString &str) const {
@@ -1453,23 +1481,14 @@ void Server::newClient() {
 		}
 
 		ServerUser *u = new ServerUser(this, sock);
-		u->uiSession  = qqIds.dequeue();
 		u->haAddress  = ha;
 		HostAddress(sock->localAddress()).toSockaddr(&u->saiTcpLocalAddress);
 
-		{
-			QWriteLocker wl(&qrwlVoiceThread);
-			qhUsers.insert(u->uiSession, u);
-			qhHostUsers[ha].insert(u);
-		}
-
-		connect(u, SIGNAL(connectionClosed(QAbstractSocket::SocketError, const QString &)), this,
-				SLOT(connectionClosed(QAbstractSocket::SocketError, const QString &)));
-		connect(u, SIGNAL(message(unsigned int, const QByteArray &)), this,
-				SLOT(message(unsigned int, const QByteArray &)));
-		connect(u, SIGNAL(handleSslErrors(const QList< QSslError > &)), this,
-				SLOT(sslError(const QList< QSslError > &)));
-		connect(u, SIGNAL(encrypted()), this, SLOT(encrypted()));
+		connect(u, &ServerUser::connectionClosed, this, &Server::connectionClosed);
+		connect(u, SIGNAL(message(Mumble::Protocol::TCPMessageType, const QByteArray &)), this,
+				SLOT(message(Mumble::Protocol::TCPMessageType, const QByteArray &)));
+		connect(u, &ServerUser::handleSslErrors, this, &Server::sslError);
+		connect(u, &ServerUser::encrypted, this, &Server::encrypted);
 
 		log(u, QString("New connection: %1").arg(addressToString(sock->peerAddress(), sock->peerPort())));
 
@@ -1492,15 +1511,11 @@ void Server::newClient() {
 
 void Server::encrypted() {
 	ServerUser *uSource = qobject_cast< ServerUser * >(sender());
-	int major, minor, patch;
-	QString release;
-
-	Meta::getVersion(major, minor, patch, release);
 
 	MumbleProto::Version mpv;
-	mpv.set_version((major << 16) | (minor << 8) | patch);
+	MumbleProto::setVersion(mpv, Version::get());
 	if (Meta::mp.bSendVersion) {
-		mpv.set_release(u8(release));
+		mpv.set_release(u8(Version::getRelease()));
 		mpv.set_os(u8(meta->qsOS));
 		mpv.set_os_version(u8(meta->qsOSVersion));
 	}
@@ -1508,7 +1523,8 @@ void Server::encrypted() {
 
 	QList< QSslCertificate > certs = uSource->peerCertificateChain();
 	if (!certs.isEmpty()) {
-		const QSslCertificate &cert = certs.last();
+		// Get the client's immediate SSL certificate
+		const QSslCertificate &cert = certs.first();
 		uSource->qslEmail           = cert.subjectAlternativeNames().values(QSsl::EmailEntry);
 		uSource->qsHash             = QString::fromLatin1(cert.digest(QCryptographicHash::Sha1).toHex());
 		if (!uSource->qslEmail.isEmpty() && uSource->bVerified) {
@@ -1611,8 +1627,8 @@ void Server::sslError(const QList< QSslError > &errors) {
 void Server::connectionClosed(QAbstractSocket::SocketError err, const QString &reason) {
 	if (reason.contains(QLatin1String("140E0197"))) {
 		// A severe bug was introduced in qt/qtbase@93a803a6de27d9eb57931c431b5f3d074914f693.
-		// q_SSL_shutdown() causes Qt to emit "error()" from unrelated QSslSocket(s), in addition to the correct one.
-		// The issue causes this function to disconnect random authenticated clients.
+		// q_SSL_shutdown() causes Qt to emit "error()" from unrelated QSslSocket(s), in addition to the correct
+		// one. The issue causes this function to disconnect random authenticated clients.
 		//
 		// The workaround consists in ignoring a specific OpenSSL error:
 		// "Error while reading: error:140E0197:SSL routines:SSL_shutdown:shutdown while in init [20]"
@@ -1636,25 +1652,20 @@ void Server::connectionClosed(QAbstractSocket::SocketError err, const QString &r
 	setLastDisconnect(u);
 
 	if (u->sState == ServerUser::Authenticated) {
-		if (ChannelListener::isListeningToAny(u)) {
-			// Send nessage to all other clients that this particular user won't be listening
-			// to any channel anymore
-			MumbleProto::UserState mpus;
-			mpus.set_session(u->uiSession);
-
-			foreach (int channelID, ChannelListener::getListenedChannelsForUser(u)) {
-				mpus.add_listening_channel_remove(channelID);
-
-				// Also remove the client from the list on the server
-				ChannelListener::removeListener(u->uiSession, channelID);
+		if (m_channelListenerManager.isListeningToAny(u->uiSession)) {
+			foreach (int channelID, m_channelListenerManager.getListenedChannelsForUser(u->uiSession)) {
+				// Remove the client from the list on the server
+				m_channelListenerManager.removeListener(u->uiSession, channelID);
 			}
-
-			sendExcept(u, mpus);
 		}
 
 		MumbleProto::UserRemove mpur;
 		mpur.set_session(u->uiSession);
 		sendExcept(u, mpur);
+
+		if (u->m_clientType == ClientType::BOT) {
+			m_botCount--;
+		}
 
 		emit userDisconnected(u);
 	}
@@ -1681,7 +1692,7 @@ void Server::connectionClosed(QAbstractSocket::SocketError err, const QString &r
 		QCoreApplication::instance()->postEvent(this,
 												new ExecEvent(boost::bind(&Server::removeChannel, this, old->iId)));
 
-	if (static_cast< int >(u->uiSession) < iMaxUsers * 2)
+	if (u->uiSession > 0 && static_cast< int >(u->uiSession) < iMaxUsers * 2)
 		qqIds.enqueue(u->uiSession); // Reinsert session id into pool
 
 	if (u->sState == ServerUser::Authenticated) {
@@ -1695,7 +1706,9 @@ void Server::connectionClosed(QAbstractSocket::SocketError err, const QString &r
 		stopThread();
 }
 
-void Server::message(unsigned int uiType, const QByteArray &qbaMsg, ServerUser *u) {
+void Server::message(Mumble::Protocol::TCPMessageType type, const QByteArray &qbaMsg, ServerUser *u) {
+	ZoneScopedN(TracyConstants::TCP_PACKET_PROCESSING_ZONE);
+
 	if (!u) {
 		u = static_cast< ServerUser * >(sender());
 	}
@@ -1704,9 +1717,9 @@ void Server::message(unsigned int uiType, const QByteArray &qbaMsg, ServerUser *
 		u->resetActivityTime();
 	}
 
-	if (uiType == MessageHandler::UDPTunnel) {
+	if (type == Mumble::Protocol::TCPMessageType::UDPTunnel) {
 		int len = qbaMsg.size();
-		if (len < 2 || len > UDP_PACKET_SIZE) {
+		if (len < 2 || static_cast< unsigned int >(len) > Mumble::Protocol::MAX_UDP_PACKET_SIZE) {
 			// Drop messages that are too small to be senseful or that are bigger than allowed
 			return;
 		}
@@ -1715,21 +1728,25 @@ void Server::message(unsigned int uiType, const QByteArray &qbaMsg, ServerUser *
 
 		u->aiUdpFlag = 0;
 
-		const char *buffer = qbaMsg.constData();
+		m_tcpTunnelDecoder.setProtocolVersion(u->m_version);
 
-		MessageHandler::UDPMessageType msgType = static_cast< MessageHandler::UDPMessageType >((buffer[0] >> 5) & 0x7);
+		if (m_tcpTunnelDecoder.decode(gsl::span< const Mumble::Protocol::byte >(
+				reinterpret_cast< const Mumble::Protocol::byte * >(qbaMsg.constData()), qbaMsg.size()))) {
+			if (m_tcpTunnelDecoder.getMessageType() == Mumble::Protocol::UDPMessageType::Audio) {
+				Mumble::Protocol::AudioData audioData = m_tcpTunnelDecoder.getAudioData();
+				// Allow all voice packets through by default.
+				bool ok = true;
+				// ...Unless we're in Opus mode. In Opus mode, only Opus packets are allowed.
+				if (bOpus && audioData.usedCodec != Mumble::Protocol::AudioCodec::Opus) {
+					ok = false;
+				}
 
-		if (msgType == MessageHandler::UDPVoiceSpeex || msgType == MessageHandler::UDPVoiceCELTAlpha
-			|| msgType == MessageHandler::UDPVoiceCELTBeta || msgType == MessageHandler::UDPVoiceOpus) {
-			// Allow all voice packets through by default.
-			bool ok = true;
-			// ...Unless we're in Opus mode. In Opus mode, only Opus packets are allowed.
-			if (bOpus && msgType != MessageHandler::UDPVoiceOpus) {
-				ok = false;
-			}
+				if (ok) {
+					// Add session id
+					audioData.senderSession = u->uiSession;
 
-			if (ok) {
-				processMsg(u, buffer, len);
+					processMsg(u, std::move(audioData), m_tcpAudioReceivers, m_tcpAudioEncoder);
+				}
 			}
 		}
 
@@ -1737,32 +1754,34 @@ void Server::message(unsigned int uiType, const QByteArray &qbaMsg, ServerUser *
 	}
 
 #ifdef QT_NO_DEBUG
-#	define MUMBLE_MH_MSG(x)                                             \
-		case MessageHandler::x: {                                        \
-			MumbleProto::x msg;                                          \
+#	define PROCESS_MUMBLE_TCP_MESSAGE(name, value)                      \
+		case Mumble::Protocol::TCPMessageType::name: {                   \
+			MumbleProto::name msg;                                       \
 			if (msg.ParseFromArray(qbaMsg.constData(), qbaMsg.size())) { \
 				msg.DiscardUnknownFields();                              \
-				msg##x(u, msg);                                          \
+				msg##name(u, msg);                                       \
 			}                                                            \
 			break;                                                       \
 		}
 #else
-#	define MUMBLE_MH_MSG(x)                                             \
-		case MessageHandler::x: {                                        \
-			MumbleProto::x msg;                                          \
+#	define PROCESS_MUMBLE_TCP_MESSAGE(name, value)                      \
+		case Mumble::Protocol::TCPMessageType::name: {                   \
+			MumbleProto::name msg;                                       \
 			if (msg.ParseFromArray(qbaMsg.constData(), qbaMsg.size())) { \
-				if (uiType != MessageHandler::Ping) {                    \
-					printf("== %s:\n", #x);                              \
+				if (type != Mumble::Protocol::TCPMessageType::Ping) {    \
+					printf("== %s:\n", #name);                           \
 					msg.PrintDebugString();                              \
 				}                                                        \
 				msg.DiscardUnknownFields();                              \
-				msg##x(u, msg);                                          \
+				msg##name(u, msg);                                       \
 			}                                                            \
 			break;                                                       \
 		}
 #endif
 
-	switch (uiType) { MUMBLE_MH_ALL }
+	switch (type) { MUMBLE_ALL_TCP_MESSAGES }
+
+#undef PROCESS_MUMBLE_TCP_MESSAGE
 }
 
 void Server::checkTimeout() {
@@ -1787,8 +1806,9 @@ void Server::tcpTransmitData(QByteArray a, unsigned int id) {
 		int len = a.size();
 
 		qba.resize(len + 6);
-		unsigned char *uc                      = reinterpret_cast< unsigned char * >(qba.data());
-		*reinterpret_cast< quint16 * >(&uc[0]) = qToBigEndian(static_cast< quint16 >(MessageHandler::UDPTunnel));
+		unsigned char *uc = reinterpret_cast< unsigned char * >(qba.data());
+		*reinterpret_cast< quint16 * >(&uc[0]) =
+			qToBigEndian(static_cast< quint16 >(Mumble::Protocol::TCPMessageType::UDPTunnel));
 		*reinterpret_cast< quint32 * >(&uc[2]) = qToBigEndian(static_cast< quint32 >(len));
 		memcpy(uc + 6, a.constData(), len);
 
@@ -1806,23 +1826,32 @@ void Server::doSync(unsigned int id) {
 	}
 }
 
-void Server::sendProtoMessage(ServerUser *u, const ::google::protobuf::Message &msg, unsigned int msgType) {
+void Server::sendProtoMessage(ServerUser *u, const ::google::protobuf::Message &msg,
+							  Mumble::Protocol::TCPMessageType msgType) {
 	QByteArray cache;
 	u->sendMessage(msg, msgType, cache);
 }
 
-void Server::sendProtoAll(const ::google::protobuf::Message &msg, unsigned int msgType, unsigned int version) {
-	sendProtoExcept(nullptr, msg, msgType, version);
+void Server::sendProtoAll(const ::google::protobuf::Message &msg, Mumble::Protocol::TCPMessageType msgType,
+						  Version::full_t version, Version::CompareMode mode) {
+	sendProtoExcept(nullptr, msg, msgType, version, mode);
 }
 
-void Server::sendProtoExcept(ServerUser *u, const ::google::protobuf::Message &msg, unsigned int msgType,
-							 unsigned int version) {
+void Server::sendProtoExcept(ServerUser *u, const ::google::protobuf::Message &msg,
+							 Mumble::Protocol::TCPMessageType msgType, Version::full_t version,
+							 Version::CompareMode mode) {
 	QByteArray cache;
 	foreach (ServerUser *usr, qhUsers)
-		if ((usr != u) && (usr->sState == ServerUser::Authenticated))
-			if ((version == 0) || (usr->uiVersion >= version)
-				|| ((version & 0x80000000) && (usr->uiVersion < (~version))))
+		if ((usr != u) && (usr->sState == ServerUser::Authenticated)) {
+			assert(mode == Version::CompareMode::AtLeast || mode == Version::CompareMode::LessThan);
+
+			const bool isUnknown = version == Version::UNKNOWN;
+			const bool fulfillsVersionRequirement =
+				mode == Version::CompareMode::AtLeast ? usr->m_version >= version : usr->m_version < version;
+			if (isUnknown || fulfillsVersionRequirement) {
 				usr->sendMessage(msg, msgType, cache);
+			}
+		}
 }
 
 void Server::removeChannel(int id) {
@@ -1865,12 +1894,17 @@ void Server::removeChannel(Channel *chan, Channel *dest) {
 		emit userStateChanged(p);
 	}
 
-	foreach (unsigned int userSession, ChannelListener::getListenersForChannel(chan)) {
-		ChannelListener::removeListener(userSession, chan->iId);
+	foreach (unsigned int userSession, m_channelListenerManager.getListenersForChannel(chan->iId)) {
+		const ServerUser *user = qhUsers.value(userSession);
+		if (!user) {
+			continue;
+		}
+
+		deleteChannelListener(*user, *chan);
 
 		// Notify that all clients that have been listening to this channel, will do so no more
 		MumbleProto::UserState mpus;
-		mpus.set_session(userSession);
+		mpus.set_session(user->uiSession);
 		mpus.add_listening_channel_remove(chan->iId);
 
 		sendAll(mpus);
@@ -1951,6 +1985,12 @@ void Server::userEnterChannel(User *p, Channel *c, MumbleProto::UserState &mpus)
 			p->bSuppress = !mayspeak;
 			mpus.set_suppress(p->bSuppress);
 		}
+
+		if (p->bPrioritySpeaker) {
+			// Clear priority speaker flag when switching channels
+			p->bPrioritySpeaker = false;
+			mpus.set_priority_speaker(p->bPrioritySpeaker);
+		}
 	}
 
 	clearACLCache(p);
@@ -1976,7 +2016,7 @@ QFlags< ChanACL::Perm > Server::effectivePermissions(ServerUser *p, Channel *c) 
 	return ChanACL::effectivePermissions(p, c, &acCache);
 }
 
-void Server::sendClientPermission(ServerUser *u, Channel *c, bool forceupdate) {
+void Server::sendClientPermission(ServerUser *u, Channel *c, bool explicitlyRequested) {
 	unsigned int perm;
 
 	if (u->iId == 0)
@@ -1984,14 +2024,21 @@ void Server::sendClientPermission(ServerUser *u, Channel *c, bool forceupdate) {
 
 	{
 		QMutexLocker qml(&qmCache);
+		// Abuse that hasPermission will update acCache with the latest permissions (all of them,
+		// not only the requested one) so that we can pull this information out of it afterwards.
 		ChanACL::hasPermission(u, c, ChanACL::Enter, &acCache);
 		perm = acCache.value(u)->value(c);
 	}
 
-	if (forceupdate)
+	if (explicitlyRequested) {
+		// Store the last channel the client showed explicit interest in
 		u->iLastPermissionCheck = c->iId;
+	}
 
-	if (u->qmPermissionSent.value(c->iId) != perm) {
+	if (explicitlyRequested || u->qmPermissionSent.value(c->iId) != perm) {
+		// Send the permission info only if the client has explicitly asked for it
+		// or if the permissions have changed since the last time the client has
+		// been informed about permission for this channel.
 		u->qmPermissionSent.insert(c->iId, perm);
 
 		MumbleProto::PermissionQuery mppq;
@@ -2068,6 +2115,31 @@ void Server::clearACLCache(User *p) {
 				if (u->sState == ServerUser::Authenticated)
 					flushClientPermissionCache(u, mppq);
 		}
+
+		// A change in ACLs could also change a user's suppression state
+		MumbleProto::UserState mpus;
+		auto processingFunction = [&](ServerUser *user) {
+			bool maySpeak = ChanACL::hasPermission(user, user->cChannel, ChanACL::Speak, &acCache);
+
+			if (maySpeak == user->bSuppress) {
+				// Mirror a user's ability to speak in the current channel (by means of the ACLs) in the suppress
+				// property (not being allowed to speak -> suppressed and vice versa)
+				user->bSuppress = !maySpeak;
+
+				mpus.Clear();
+				mpus.set_session(user->uiSession);
+				mpus.set_suppress(true);
+				sendAll(mpus);
+			}
+		};
+
+		if (p) {
+			processingFunction(static_cast< ServerUser * >(p));
+		} else {
+			for (ServerUser *currentUser : qhUsers) {
+				processingFunction(currentUser);
+			}
+		}
 	}
 
 	// A change in ACLs means that the user might be able to whisper
@@ -2100,7 +2172,9 @@ QString Server::addressToString(const QHostAddress &adr, unsigned short port) {
 }
 
 bool Server::validateUserName(const QString &name) {
-	return (qrUserName.exactMatch(name) && (name.length() <= 512));
+	// We expect the name passed to this function to be fully trimmed already. This way we
+	// prevent "empty" names (at least with the default username restriction).
+	return (name.trimmed().length() == name.length() && qrUserName.exactMatch(name) && (name.length() <= 512));
 }
 
 bool Server::validateChannelName(const QString &name) {
@@ -2184,14 +2258,14 @@ void Server::recheckCodecVersions(ServerUser *connectingUser) {
 	if (bOpus) {
 		foreach (ServerUser *u, qhUsers) {
 			// Prevent connected users that could not yet declare their opus capability during msgAuthenticate from
-			// being spammed. Only authenticated users and the currently connecting user (if recheck is called in that
-			// context) have a reliable u->bOpus.
+			// being spammed. Only authenticated users and the currently connecting user (if recheck is called in
+			// that context) have a reliable u->bOpus.
 			if ((u->sState == ServerUser::Authenticated || u == connectingUser) && !u->bOpus) {
-				sendTextMessage(
-					nullptr, u, false,
-					QLatin1String(
-						"<strong>WARNING:</strong> Your client doesn't support the Opus codec the server is switching "
-						"to, you won't be able to talk or hear anyone. Please upgrade to a client with Opus support."));
+				sendTextMessage(nullptr, u, false,
+								QLatin1String("<strong>WARNING:</strong> Your client doesn't support the Opus "
+											  "codec the server is switching "
+											  "to, you won't be able to talk or hear anyone. Please upgrade to a "
+											  "client with Opus support."));
 			}
 		}
 	}
@@ -2298,3 +2372,6 @@ bool Server::canNest(Channel *newParent, Channel *channel) const {
 
 	return (parentLevel + channelDepth) < iChannelNestingLimit;
 }
+
+#undef SIO_UDP_CONNRESET
+#undef SENDTO

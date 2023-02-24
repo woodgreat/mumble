@@ -1,3 +1,8 @@
+# Copyright 2020-2023 The Mumble Developers. All rights reserved.
+# Use of this source code is governed by a BSD-style license
+# that can be found in the LICENSE file at the root of the
+# Mumble source tree or at <https://www.mumble.info/LICENSE>.
+
 parameters:
 - name: installEnvironment
   type: boolean
@@ -13,6 +18,10 @@ steps:
     env:
       MUMBLE_BUILD_NUMBER_TOKEN: $(BUILD_NUMBER_TOKEN)
     displayName: 'Build'
+  - script: 'cd $BUILD_BINARIESDIRECTORY; ctest --output-on-failure'
+    displayName: 'Test'
+  - script: .ci/azure-pipelines/release_macos.bash
+    displayName: 'Release'
   - template: task-publish-artifacts.yml
     parameters:
       name: "macOS package" 

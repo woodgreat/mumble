@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -7,6 +7,7 @@
 
 #include "AudioOutput.h"
 #include "AudioOutputSample.h"
+#include "AudioOutputToken.h"
 #include "Channel.h"
 #include "MainWindow.h"
 #include "NetworkConfig.h"
@@ -17,6 +18,8 @@
 #	include "TextToSpeech.h"
 #endif
 #include "Utils.h"
+#include "VolumeAdjustment.h"
+#include "Global.h"
 
 #include <QSignalBlocker>
 #include <QtCore/QMutexLocker>
@@ -27,28 +30,30 @@
 #include <QtNetwork/QNetworkReply>
 #include <QtWidgets/QDesktopWidget>
 
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name
-// (like protobuf 3.7 does). As such, for now, we have to make this our last include.
-#include "Global.h"
-
 const QString LogConfig::name = QLatin1String("LogConfig");
 
 static ConfigWidget *LogConfigDialogNew(Settings &st) {
 	return new LogConfig(st);
 }
 
-static ConfigRegistrar registrar(4000, LogConfigDialogNew);
+static ConfigRegistrar registrarLog(4000, LogConfigDialogNew);
 
 LogConfig::LogConfig(Settings &st) : ConfigWidget(st) {
 	setupUi(this);
 	qtwMessages->setAccessibleName(tr("Log messages"));
-	qsVolume->setAccessibleName(tr("TTS engine volume"));
+	qsTTSVolume->setAccessibleName(tr("TTS engine volume"));
+	qsNotificationVolume->setAccessibleName(tr("Notification sound volume adjustment"));
+	qsbNotificationVolume->setAccessibleName(tr("Notification sound volume adjustment"));
+	qsCueVolume->setAccessibleName(tr("Audio cue volume adjustment"));
+	qsbCueVolume->setAccessibleName(tr("Audio cue volume adjustment"));
 	qsbThreshold->setAccessibleName(tr("Length threshold"));
+	qsbMessageLimitUsers->setAccessibleName(tr("User limit for message limiting"));
 	qsbMaxBlocks->setAccessibleName(tr("Maximum chat length"));
 	qsbChatMessageMargins->setAccessibleName(tr("Chat message margins"));
 
 #ifdef USE_NO_TTS
 	qgbTTS->setDisabled(true);
+	qsTTSVolume->setDisabled(true);
 #endif
 
 	qtwMessages->header()->setSectionResizeMode(ColMessage, QHeaderView::Stretch);
@@ -56,6 +61,7 @@ LogConfig::LogConfig(Settings &st) : ConfigWidget(st) {
 	qtwMessages->header()->setSectionResizeMode(ColNotification, QHeaderView::ResizeToContents);
 	qtwMessages->header()->setSectionResizeMode(ColHighlight, QHeaderView::ResizeToContents);
 	qtwMessages->header()->setSectionResizeMode(ColTTS, QHeaderView::ResizeToContents);
+	qtwMessages->header()->setSectionResizeMode(ColMessageLimit, QHeaderView::ResizeToContents);
 	qtwMessages->header()->setSectionResizeMode(ColStaticSound, QHeaderView::ResizeToContents);
 
 	// Add a "All messages" entry
@@ -67,6 +73,9 @@ LogConfig::LogConfig(Settings &st) : ConfigWidget(st) {
 	allMessagesItem->setToolTip(ColNotification, QObject::tr("Toggle pop-up notifications for all events"));
 	allMessagesItem->setCheckState(ColHighlight, Qt::Unchecked);
 	allMessagesItem->setToolTip(ColHighlight, QObject::tr("Toggle window highlight (if not active) for all events"));
+	allMessagesItem->setCheckState(ColMessageLimit, Qt::Unchecked);
+	allMessagesItem->setToolTip(ColMessageLimit, tr("Click here to toggle message limiting for all events - If using "
+													"this option be sure to change the user limit below."));
 	allMessagesItem->setCheckState(ColStaticSound, Qt::Unchecked);
 	allMessagesItem->setToolTip(ColStaticSound, QObject::tr("Click here to toggle sound notifications for all events"));
 #ifndef USE_NO_TTS
@@ -77,7 +86,7 @@ LogConfig::LogConfig(Settings &st) : ConfigWidget(st) {
 	QTreeWidgetItem *twi;
 	for (int i = Log::firstMsgType; i <= Log::lastMsgType; ++i) {
 		Log::MsgType t            = Log::msgOrder[i];
-		const QString messageName = g.l->msgName(t);
+		const QString messageName = Global::get().l->msgName(t);
 
 		twi = new QTreeWidgetItem(qtwMessages);
 		twi->setData(ColMessage, Qt::UserRole, static_cast< int >(t));
@@ -85,11 +94,13 @@ LogConfig::LogConfig(Settings &st) : ConfigWidget(st) {
 		twi->setCheckState(ColConsole, Qt::Unchecked);
 		twi->setCheckState(ColNotification, Qt::Unchecked);
 		twi->setCheckState(ColHighlight, Qt::Unchecked);
+		twi->setCheckState(ColMessageLimit, Qt::Unchecked);
 		twi->setCheckState(ColStaticSound, Qt::Unchecked);
 
 		twi->setToolTip(ColConsole, tr("Toggle console for %1 events").arg(messageName));
 		twi->setToolTip(ColNotification, tr("Toggle pop-up notifications for %1 events").arg(messageName));
 		twi->setToolTip(ColHighlight, tr("Toggle window highlight (if not active) for %1 events").arg(messageName));
+		twi->setToolTip(ColMessageLimit, tr("Toggle message limiting behavior for %1 events ").arg(messageName));
 		twi->setToolTip(ColStaticSound, tr("Click here to toggle sound notification for %1 events").arg(messageName));
 		twi->setToolTip(ColStaticSoundPath, tr("Path to sound file used for sound notifications in the case of %1 "
 											   "events<br />Single click to play<br />Double-click to change")
@@ -105,6 +116,11 @@ LogConfig::LogConfig(Settings &st) : ConfigWidget(st) {
 		twi->setWhatsThis(ColHighlight, tr("Click here to toggle window highlight for %1 events.<br />If checked, "
 										   "Mumble's window will be highlighted for every %1 event, if not active.")
 											.arg(messageName));
+		twi->setWhatsThis(
+			ColMessageLimit,
+			tr("Click here to toggle limiting for %1 events.<br />If checked, notifications for this event type "
+			   "will not be played when the user count on the server exceeds the set threshold.")
+				.arg(messageName));
 		twi->setWhatsThis(ColStaticSound, tr("Click here to toggle sound notification for %1 events.<br />If checked, "
 											 "Mumble uses a sound file predefined by you to indicate %1 events. Sound "
 											 "files and Text-To-Speech cannot be used at the same time.")
@@ -136,6 +152,7 @@ void LogConfig::updateSelectAllButtons() {
 	bool allTTSChecked = true;
 #endif
 	bool allSoundChecked = true;
+	bool allLimitChecked = true;
 	foreach (QTreeWidgetItem *i, qlItems) {
 		if (i == allMessagesItem) {
 			continue;
@@ -155,6 +172,9 @@ void LogConfig::updateSelectAllButtons() {
 			allTTSChecked = false;
 		}
 #endif
+		if (i->checkState(ColMessageLimit) != Qt::Checked) {
+			allLimitChecked = false;
+		}
 		if (i->checkState(ColStaticSound) != Qt::Checked) {
 			allSoundChecked = false;
 		}
@@ -176,6 +196,7 @@ void LogConfig::updateSelectAllButtons() {
 #ifndef USE_NO_TTS
 	allMessagesItem->setCheckState(ColTTS, allTTSChecked ? Qt::Checked : Qt::Unchecked);
 #endif
+	allMessagesItem->setCheckState(ColMessageLimit, allLimitChecked ? Qt::Checked : Qt::Unchecked);
 	allMessagesItem->setCheckState(ColStaticSound, allSoundChecked ? Qt::Checked : Qt::Unchecked);
 }
 
@@ -207,6 +228,7 @@ void LogConfig::load(const Settings &r) {
 #ifndef USE_NO_TTS
 		i->setCheckState(ColTTS, (ml & Settings::LogTTS) ? Qt::Checked : Qt::Unchecked);
 #endif
+		i->setCheckState(ColMessageLimit, (ml & Settings::LogMessageLimit) ? Qt::Checked : Qt::Unchecked);
 		i->setCheckState(ColStaticSound, (ml & Settings::LogSoundfile) ? Qt::Checked : Qt::Unchecked);
 		i->setText(ColStaticSoundPath, r.qmMessageSounds.value(mt));
 	}
@@ -217,15 +239,21 @@ void LogConfig::load(const Settings &r) {
 
 #ifdef USE_NO_TTS
 	qtwMessages->hideColumn(ColTTS);
+	qsTTSVolume->hide();
+	qlTTSVolume->hide();
 #else
-	loadSlider(qsVolume, r.iTTSVolume);
+	loadSlider(qsTTSVolume, r.iTTSVolume);
 	qsbThreshold->setValue(r.iTTSThreshold);
 	qcbReadBackOwn->setChecked(r.bTTSMessageReadBack);
 	qcbNoScope->setChecked(r.bTTSNoScope);
 	qcbNoAuthor->setChecked(r.bTTSNoAuthor);
+	qcbEnableTTS->setChecked(r.bTTS);
 
 #endif
+	loadSlider(qsNotificationVolume, VolumeAdjustment::toIntegerDBAdjustment(r.notificationVolume));
+	loadSlider(qsCueVolume, VolumeAdjustment::toIntegerDBAdjustment(r.cueVolume));
 	qcbWhisperFriends->setChecked(r.bWhisperFriends);
+	qsbMessageLimitUsers->setValue(r.iMessageLimitUserThreshold);
 }
 
 void LogConfig::save() const {
@@ -247,6 +275,9 @@ void LogConfig::save() const {
 		if (i->checkState(ColTTS) == Qt::Checked)
 			v |= Settings::LogTTS;
 #endif
+		if (i->checkState(ColMessageLimit) == Qt::Checked) {
+			v |= Settings::LogMessageLimit;
+		}
 		if (i->checkState(ColStaticSound) == Qt::Checked)
 			v |= Settings::LogSoundfile;
 		s.qmMessages[mt]      = v;
@@ -257,20 +288,24 @@ void LogConfig::save() const {
 	s.iChatMessageMargins = qsbChatMessageMargins->value();
 
 #ifndef USE_NO_TTS
-	s.iTTSVolume          = qsVolume->value();
+	s.iTTSVolume          = qsTTSVolume->value();
 	s.iTTSThreshold       = qsbThreshold->value();
 	s.bTTSMessageReadBack = qcbReadBackOwn->isChecked();
 	s.bTTSNoScope         = qcbNoScope->isChecked();
 	s.bTTSNoAuthor        = qcbNoAuthor->isChecked();
+	s.bTTS                = qcbEnableTTS->isChecked();
 #endif
-	s.bWhisperFriends = qcbWhisperFriends->isChecked();
+	s.notificationVolume         = VolumeAdjustment::toFactor(qsNotificationVolume->value());
+	s.cueVolume                  = VolumeAdjustment::toFactor(qsCueVolume->value());
+	s.bWhisperFriends            = qcbWhisperFriends->isChecked();
+	s.iMessageLimitUserThreshold = qsbMessageLimitUsers->value();
 }
 
 void LogConfig::accept() const {
 #ifndef USE_NO_TTS
-	g.l->tts->setVolume(s.iTTSVolume);
+	Global::get().l->tts->setVolume(s.iTTSVolume);
 #endif
-	g.mw->qteLog->document()->setMaximumBlockCount(s.iMaxLogBlocks);
+	Global::get().mw->qteLog->document()->setMaximumBlockCount(s.iMaxLogBlocks);
 }
 
 void LogConfig::on_qtwMessages_itemChanged(QTreeWidgetItem *i, int column) {
@@ -309,10 +344,11 @@ void LogConfig::on_qtwMessages_itemChanged(QTreeWidgetItem *i, int column) {
 
 void LogConfig::on_qtwMessages_itemClicked(QTreeWidgetItem *item, int column) {
 	if (item && item != allMessagesItem && column == ColStaticSoundPath) {
-		AudioOutputPtr ao = g.ao;
+		AudioOutputPtr ao = Global::get().ao;
 		if (ao) {
-			if (!ao->playSample(item->text(ColStaticSoundPath), false))
+			if (!ao->playSample(item->text(ColStaticSoundPath), Global::get().s.notificationVolume)) {
 				browseForAudioFile();
+			}
 		}
 	}
 }
@@ -332,17 +368,48 @@ void LogConfig::browseForAudioFile() {
 	}
 }
 
+void LogConfig::on_qsNotificationVolume_valueChanged(int value) {
+	qsbNotificationVolume->setValue(value);
+}
+
+void LogConfig::on_qsCueVolume_valueChanged(int value) {
+	qsbCueVolume->setValue(value);
+}
+
+void LogConfig::on_qsTTSVolume_valueChanged(int value) {
+	qsbTTSVolume->setValue(value);
+}
+
+void LogConfig::on_qsbNotificationVolume_valueChanged(int value) {
+	qsNotificationVolume->setValue(value);
+}
+
+void LogConfig::on_qsbCueVolume_valueChanged(int value) {
+	qsCueVolume->setValue(value);
+}
+
+void LogConfig::on_qsbTTSVolume_valueChanged(int value) {
+	qsTTSVolume->setValue(value);
+}
+
+
 QMutex Log::qmDeferredLogs;
 QVector< LogMessage > Log::qvDeferredLogs;
 
 
 Log::Log(QObject *p) : QObject(p) {
+	qRegisterMetaType< Log::MsgType >();
+
 #ifndef USE_NO_TTS
 	tts = new TextToSpeech(this);
-	tts->setVolume(g.s.iTTSVolume);
+	tts->setVolume(Global::get().s.iTTSVolume);
 #endif
 	uiLastId = 0;
 	qdDate   = QDate::currentDate();
+
+	// remove gap above first chat message; the gaps below
+	// each chat message are handled within `Log::log`.
+	Global::get().mw->qteLog->document()->firstBlock().setVisible(false);
 }
 
 // Display order in settingsscreen, allows to insert new events without breaking config-compatibility with older
@@ -377,7 +444,8 @@ const Log::MsgType Log::msgOrder[] = { DebugInfo,
 									   ChannelLeaveDisconnect,
 									   PermissionDenied,
 									   TextMessage,
-									   PrivateTextMessage };
+									   PrivateTextMessage,
+									   PluginMessage };
 
 const char *Log::msgNames[] = { QT_TRANSLATE_NOOP("Log", "Debug"),
 								QT_TRANSLATE_NOOP("Log", "Critical"),
@@ -409,7 +477,8 @@ const char *Log::msgNames[] = { QT_TRANSLATE_NOOP("Log", "Debug"),
 								QT_TRANSLATE_NOOP("Log", "User left channel and disconnected"),
 								QT_TRANSLATE_NOOP("Log", "Private text message"),
 								QT_TRANSLATE_NOOP("Log", "User started listening to channel"),
-								QT_TRANSLATE_NOOP("Log", "User stopped listening to channel") };
+								QT_TRANSLATE_NOOP("Log", "User stopped listening to channel"),
+								QT_TRANSLATE_NOOP("Log", "Plugin message") };
 
 QString Log::msgName(MsgType t) const {
 	return tr(msgNames[t]);
@@ -422,17 +491,19 @@ const QStringList Log::allowedSchemes() {
 	qslAllowedSchemeNames << QLatin1String("mumble");
 	qslAllowedSchemeNames << QLatin1String("http");
 	qslAllowedSchemeNames << QLatin1String("https");
+	qslAllowedSchemeNames << QLatin1String("gemini");
 	qslAllowedSchemeNames << QLatin1String("ftp");
 	qslAllowedSchemeNames << QLatin1String("clientid");
 	qslAllowedSchemeNames << QLatin1String("channelid");
 	qslAllowedSchemeNames << QLatin1String("spotify");
 	qslAllowedSchemeNames << QLatin1String("steam");
 	qslAllowedSchemeNames << QLatin1String("irc");
-	qslAllowedSchemeNames << QLatin1String("gg"); // Gadu-Gadu http://gg.pl - Polish instant massager
+	qslAllowedSchemeNames << QLatin1String("gg"); // Gadu-Gadu http://gg.pl - Polish instant messenger
 	qslAllowedSchemeNames << QLatin1String("mailto");
 	qslAllowedSchemeNames << QLatin1String("xmpp");
 	qslAllowedSchemeNames << QLatin1String("skype");
-	qslAllowedSchemeNames << QLatin1String("rtmp"); // http://en.wikipedia.org/wiki/Real_Time_Messaging_Protocol
+	qslAllowedSchemeNames << QLatin1String("rtmp");   // http://en.wikipedia.org/wiki/Real_Time_Messaging_Protocol
+	qslAllowedSchemeNames << QLatin1String("magnet"); // https://en.wikipedia.org/wiki/Magnet_URI_scheme
 
 	return qslAllowedSchemeNames;
 }
@@ -444,17 +515,17 @@ QString Log::msgColor(const QString &text, LogColorType t) {
 }
 
 QString Log::formatChannel(::Channel *c) {
-	return QString::fromLatin1("<a href='channelid://%1/%3' class='log-channel'>%2</a>")
+	return QString::fromLatin1("<a href='channelid://id.%1/%3' class='log-channel'>%2</a>")
 		.arg(c->iId)
 		.arg(c->qsName.toHtmlEscaped())
-		.arg(QString::fromLatin1(g.sh->qbaDigest.toBase64()));
+		.arg(QString::fromLatin1(Global::get().sh->qbaDigest.toBase64()));
 }
 
 void Log::logOrDefer(Log::MsgType mt, const QString &console, const QString &terse, bool ownMessage,
 					 const QString &overrideTTS, bool ignoreTTS) {
-	if (g.l) {
+	if (Global::get().l) {
 		// log directly as it seems the log-UI has been set-up already
-		g.l->log(mt, console, terse, ownMessage, overrideTTS, ignoreTTS);
+		Global::get().l->log(mt, console, terse, ownMessage, overrideTTS, ignoreTTS);
 	} else {
 		// defer the log
 		QMutexLocker mLock(&Log::qmDeferredLogs);
@@ -474,11 +545,11 @@ QString Log::formatClientUser(ClientUser *cu, LogColorType t, const QString &dis
 	if (cu) {
 		QString name = (displayName.isNull() ? cu->qsName : displayName).toHtmlEscaped();
 		if (cu->qsHash.isEmpty()) {
-			return QString::fromLatin1("<a href='clientid://%2/%4' class='log-user log-%1'>%3</a>")
+			return QString::fromLatin1("<a href='clientid://id.%2/%4' class='log-user log-%1'>%3</a>")
 				.arg(className)
 				.arg(cu->uiSession)
 				.arg(name)
-				.arg(QString::fromLatin1(g.sh->qbaDigest.toBase64()));
+				.arg(QString::fromLatin1(Global::get().sh->qbaDigest.toBase64()));
 		} else {
 			return QString::fromLatin1("<a href='clientid://%2' class='log-user log-%1'>%3</a>")
 				.arg(className)
@@ -523,8 +594,11 @@ QString Log::imageToImg(const QByteArray &format, const QByteArray &image) {
 }
 
 QString Log::imageToImg(QImage img, int maxSize) {
-	if ((img.width() > 480) || (img.height() > 270)) {
-		img = img.scaled(480, 270, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+	constexpr int MAX_WIDTH  = 600;
+	constexpr int MAX_HEIGHT = 400;
+
+	if ((img.width() > MAX_WIDTH) || (img.height() > MAX_HEIGHT)) {
+		img = img.scaled(MAX_WIDTH, MAX_HEIGHT, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	}
 
 	int quality       = 100;
@@ -552,7 +626,7 @@ QString Log::imageToImg(QImage img, int maxSize) {
 QString Log::validHtml(const QString &html, QTextCursor *tc) {
 	LogDocument qtd;
 
-	QRectF qr = Screen::screenFromWidget(*g.mw)->availableGeometry();
+	QRectF qr = Mumble::Screen::screenFromWidget(*Global::get().mw)->availableGeometry();
 	qtd.setTextWidth(qr.width() / 2);
 	qtd.setDefaultStyleSheet(qApp->styleSheet());
 
@@ -633,27 +707,26 @@ void Log::log(MsgType mt, const QString &console, const QString &terse, bool own
 
 	QString plain = QTextDocumentFragment::fromHtml(console).toPlainText();
 
-	quint32 flags = g.s.qmMessages.value(mt);
+	quint32 flags = Global::get().s.qmMessages.value(mt);
 
 	// Message output on console
 	if ((flags & Settings::LogConsole)) {
-		QTextCursor tc = g.mw->qteLog->textCursor();
+		QTextCursor tc = Global::get().mw->qteLog->textCursor();
+
+		tc.movePosition(QTextCursor::End);
 
 		// We copy the value from the settings in order to make sure that
 		// we use the same margin everywhere while in this method (even if
 		// the setting might change in that time).
-		const int msgMargin = g.s.iChatMessageMargins;
+		const int msgMargin = Global::get().s.iChatMessageMargins;
 
-		QTextBlockFormat format = tc.blockFormat();
-		format.setTopMargin(msgMargin);
-		format.setBottomMargin(msgMargin);
-		tc.setBlockFormat(format);
+		QTextFrameFormat qttf;
+		qttf.setTopMargin(0);
+		qttf.setBottomMargin(msgMargin);
 
-		LogTextBrowser *tlog     = g.mw->qteLog;
+		LogTextBrowser *tlog     = Global::get().mw->qteLog;
 		const int oldscrollvalue = tlog->getLogScroll();
 		const bool scroll        = (oldscrollvalue == tlog->getLogScrollMaximum());
-
-		tc.movePosition(QTextCursor::End);
 
 		if (qdDate != dt.date()) {
 			qdDate = dt.date();
@@ -672,25 +745,41 @@ void Log::log(MsgType mt, const QString &console, const QString &terse, bool own
 			// paint a border around the message to make clear that it contains invisible parts.
 			// The beginning of the message is clear anyway (the date and potentially the "To XY" part)
 			// so we don't have to care about that.
-			QTextFrameFormat qttf;
 			qttf.setBorder(1);
 			qttf.setPadding(2);
-			qttf.setMargin(msgMargin);
 			qttf.setBorderStyle(QTextFrameFormat::BorderStyle_Dashed);
-			tc.insertFrame(qttf);
-		} else if (!tc.block().text().isEmpty()) {
-			// Only insert a block if the current block is not empty. It may be empty because
-			// it is the default block of an empty document. Another cause might be that apparently
-			// a new empty block is automatically inserted after a frame.
-			tc.insertBlock();
 		}
 
-		const QString timeString = dt.time().toString(QLatin1String(g.s.bLog24HourClock ? "HH:mm:ss" : "hh:mm:ss AP"));
+		tc.insertFrame(qttf);
+
+		const QString timeString =
+			dt.time().toString(QLatin1String(Global::get().s.bLog24HourClock ? "HH:mm:ss" : "hh:mm:ss AP"));
 		tc.insertHtml(Log::msgColor(QString::fromLatin1("[%1] ").arg(timeString.toHtmlEscaped()), Log::Time));
 
 		validHtml(console, &tc);
 		tc.movePosition(QTextCursor::End);
-		g.mw->qteLog->setTextCursor(tc);
+		Global::get().mw->qteLog->setTextCursor(tc);
+
+		// Qt's document model for [Rich Text Documents][RT] is based on blocks and frames.
+		// You always have a root frame and at least one block per frame:
+		//
+		// [Document]
+		//     +--> [Root frame]
+		//               +--> [Block]
+		//               +--> [Frame]
+		//               +--> [Block]
+		//               +--> [Frame]
+		//               +--> [Block]
+		//
+		// [RT]: https://doc.qt.io/qt-5/richtext-structure.html
+		//
+		// However, the issue is that the blocks between the frames are mandatory. They lead
+		// to additional gaps, especially on Windows, where `QTextCursor::setBlockCharFormat`
+		// cannot be used to decrease the trailing block's size.
+		//
+		// Fortunately, the `tlog`/`LogTextBrowser` is a `QTextBrowser` with a `QDocument*`.
+		// This allows us to hide the last block created by `QTextCursor::insertFrame()`.
+		tlog->document()->lastBlock().setVisible(false);
 
 		if (scroll || ownMessage)
 			tlog->scrollLogToBottom();
@@ -699,38 +788,46 @@ void Log::log(MsgType mt, const QString &console, const QString &terse, bool own
 	}
 
 	if (!ownMessage) {
-		if (!(g.mw->isActiveWindow() && g.mw->qdwLog->isVisible())) {
+		if (!(Global::get().mw->isActiveWindow() && Global::get().mw->qdwLog->isVisible())) {
 			// Message notification with window highlight
 			if (flags & Settings::LogHighlight) {
-				QApplication::alert(g.mw);
+				QApplication::alert(Global::get().mw);
 			}
 
 			// Message notification with balloon tooltips
 			if (flags & Settings::LogBalloon) {
-				postNotification(mt, plain);
+				// Replace any instances of a "Object Replacement Character" from QTextDocumentFragment::toPlainText
+				postNotification(mt, plain.replace("\xEF\xBF\xBC", tr("[embedded content]")));
 			}
 		}
 
 		// Don't make any noise if we are self deafened (Unless it is the sound for activating self deaf)
-		if (g.s.bDeaf && mt != Log::SelfDeaf) {
+		if (Global::get().s.bDeaf && mt != Log::SelfDeaf) {
 			return;
 		}
 
 		// Message notification with static sounds
-		if ((flags & Settings::LogSoundfile)) {
-			QString sSound    = g.s.qmMessageSounds.value(mt);
-			AudioOutputPtr ao = g.ao;
-			if (!ao || !ao->playSample(sSound, false)) {
+		int connectedUsers = 0;
+		{
+			QReadLocker lock(&ClientUser::c_qrwlUsers);
+			connectedUsers = ClientUser::c_qmUsers.size();
+		}
+		if ((flags & Settings::LogSoundfile)
+			&& !(flags & Settings::LogMessageLimit && connectedUsers > Global::get().s.iMessageLimitUserThreshold)) {
+			QString sSound    = Global::get().s.qmMessageSounds.value(mt);
+			AudioOutputPtr ao = Global::get().ao;
+
+			if (!ao || !ao->playSample(sSound, Global::get().s.notificationVolume)) {
 				qWarning() << "Sound file" << sSound << "is not a valid audio file, fallback to TTS.";
 				flags ^= Settings::LogSoundfile | Settings::LogTTS; // Fallback to TTS
 			}
 		}
-	} else if (!g.s.bTTSMessageReadBack) {
+	} else if (!Global::get().s.bTTSMessageReadBack) {
 		return;
 	}
 
 	// Message notification with Text-To-Speech
-	if (g.s.bDeaf || !g.s.bTTS || !(flags & Settings::LogTTS) || ignoreTTS) {
+	if (Global::get().s.bDeaf || !Global::get().s.bTTS || !(flags & Settings::LogTTS) || ignoreTTS) {
 		return;
 	}
 
@@ -749,7 +846,7 @@ void Log::log(MsgType mt, const QString &console, const QString &terse, bool own
 		QUrl url(identifyURL.cap(0).toLower());
 		int len = identifyURL.matchedLength();
 		if (url.isValid() && qslAllowed.contains(url.scheme())) {
-			// Replace it appropriatly
+			// Replace it appropriately
 			QString replacement;
 			QString host = url.host().replace(QRegExp(QLatin1String("^www.")), QString());
 
@@ -772,9 +869,9 @@ void Log::log(MsgType mt, const QString &console, const QString &terse, bool own
 
 #ifndef USE_NO_TTS
 	// TTS threshold limiter.
-	if (plain.length() <= g.s.iTTSThreshold)
+	if (plain.length() <= Global::get().s.iTTSThreshold)
 		tts->say(plain);
-	else if ((!terse.isEmpty()) && (terse.length() <= g.s.iTTSThreshold))
+	else if ((!terse.isEmpty()) && (terse.length() <= Global::get().s.iTTSThreshold))
 		tts->say(terse);
 #else
 	// Mark as unused
@@ -794,7 +891,7 @@ void Log::processDeferredLogs() {
 
 // Post a notification using the MainWindow's QSystemTrayIcon.
 void Log::postQtNotification(MsgType mt, const QString &plain) {
-	if (g.mw->qstiIcon->isSystemTrayAvailable() && g.mw->qstiIcon->supportsMessages()) {
+	if (Global::get().mw->qstiIcon->isSystemTrayAvailable() && Global::get().mw->qstiIcon->supportsMessages()) {
 		QSystemTrayIcon::MessageIcon msgIcon;
 		switch (mt) {
 			case DebugInfo:
@@ -808,7 +905,7 @@ void Log::postQtNotification(MsgType mt, const QString &plain) {
 				msgIcon = QSystemTrayIcon::Information;
 				break;
 		}
-		g.mw->qstiIcon->showMessage(msgName(mt), plain, msgIcon);
+		Global::get().mw->qstiIcon->showMessage(msgName(mt), plain, msgIcon);
 	}
 }
 

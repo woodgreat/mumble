@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2017-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -265,8 +265,8 @@ void TestCrypt::xexstarAttack() {
 	}
 
 	// Actual content should have been changed such that the critical block is no longer all 0.
-	QCOMPARE(src[0], static_cast<unsigned char>(0));
-	QCOMPARE(decrypted[0], static_cast<unsigned char>(1));
+	QCOMPARE(src[0], static_cast< unsigned char >(0));
+	QCOMPARE(decrypted[0], static_cast< unsigned char >(1));
 }
 
 void TestCrypt::tamper() {

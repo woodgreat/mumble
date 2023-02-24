@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2012-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -34,8 +34,11 @@
    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "../mumble_plugin_main.h"
-#include "../mumble_plugin_utils.h"
+#define MUMBLE_ALLOW_DEPRECATED_LEGACY_PLUGIN_API
+#include "mumble_legacy_plugin.h"
+
+#include "mumble_positional_audio_main.h"
+#include "mumble_positional_audio_utils.h"
 
 procptr_t posptr;
 procptr_t frtptr;
@@ -62,7 +65,7 @@ static void norm(float *a) {
 }
 
 static bool correctFront(float *front, float *top) {
-	float n[3] = {0};
+	float n[3] = { 0 };
 
 	if (top[1] < 0) {
 		front[0] *= -1;

@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Copyright 2020-2023 The Mumble Developers. All rights reserved.
+# Use of this source code is governed by a BSD-style license
+# that can be found in the LICENSE file at the root of the
+# Mumble source tree or at <https://www.mumble.info/LICENSE>.
+
+
 # Copyright 2020 The 'mumble-releng-experimental' Authors. All rights reserved.
 # Use of this source code is governed by a BSD-style license that
 # can be found in the LICENSE file in the source tree or at
@@ -35,20 +41,20 @@ set -o pipefail
 
 VCPKGDIR=~/vcpkg
 
-mumble_deps='qt5-base,
+mumble_deps='qt5-base[mysqlplugin],
+            qt5-base[postgresqlplugin],
             qt5-svg,
             qt5-tools,
-            grpc,
+            qt5-translations,
             boost-accumulators,
-            opus,
             poco,
             libvorbis,
             libogg,
             libflac,
             libsndfile,
-            libmariadb,
+            protobuf,
             zlib,
-            zeroc-ice'
+            zeroc-ice-mumble'
 
 # Determine vcpkg triplet from OS https://github.com/Microsoft/vcpkg/blob/master/docs/users/triplets.md
 # Available triplets can be printed with `vcpkg help triplet`
@@ -69,7 +75,7 @@ fi
 if [ -d "$VCPKGDIR" ]
     then
         # copy ZeroC Ice port files
-        cp -R helpers/vcpkg/ports/zeroc-ice $VCPKGDIR/ports
+        cp -R helpers/vcpkg/ports/zeroc-ice-mumble $VCPKGDIR/ports
         cd $VCPKGDIR
 
         if [ ! -x $VCPKGDIR/vcpkg ]

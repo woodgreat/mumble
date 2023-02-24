@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2008-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -10,9 +10,10 @@
 #endif
 
 #include "Channel.h"
-#include "ChannelListener.h"
+#include "ChannelListenerManager.h"
 #include "Group.h"
 #include "Meta.h"
+#include "QtUtils.h"
 #include "Server.h"
 #include "ServerDB.h"
 #include "ServerUser.h"
@@ -81,145 +82,15 @@ void Server::setUserState(User *pUser, Channel *cChannel, bool mute, bool deaf, 
 	}
 
 	if (changed) {
-		sendAll(mpus, ~0x010202);
+		sendAll(mpus, Version::fromComponents(1, 2, 2), Version::CompareMode::LessThan);
 		if (mpus.has_comment() && !pUser->qbaCommentHash.isEmpty()) {
 			mpus.clear_comment();
 			mpus.set_comment_hash(blob(pUser->qbaCommentHash));
 		}
-		sendAll(mpus, 0x010202);
+		sendAll(mpus, Version::fromComponents(1, 2, 2), Version::CompareMode::AtLeast);
 
 		emit userStateChanged(pUser);
 	}
-}
-
-// Sets err to error message on failure.
-bool Server::setChannelStateGRPC(const MumbleProto::ChannelState &cs, QString &err) {
-	::MumbleProto::ChannelState mpcs;
-	bool changed = false;
-	bool updated = false;
-
-	if (!cs.has_channel_id()) {
-		err = QLatin1String("missing channel ID");
-		return false;
-	}
-	Channel *channel = qhChannels.value(cs.channel_id());
-	if (!channel) {
-		err = QLatin1String("invalid channel");
-		return false;
-	}
-	mpcs.set_channel_id(cs.channel_id());
-
-	// Links and parent channel are processed first, because they can return
-	// errors. Without doing this, the server state can be changed without
-	// notifying users.
-	QSet<::Channel * > newLinksSet;
-	for (int i = 0; i < cs.links_size(); i++) {
-		Channel *link = qhChannels.value(cs.links(i));
-		if (!link) {
-			err = QLatin1String("invalid channel link");
-			return false;
-		}
-		newLinksSet.insert(link);
-	}
-
-	if (cs.has_parent()) {
-		Channel *parent = qhChannels.value(cs.parent());
-		if (!parent) {
-			err = QLatin1String("invalid parent channel");
-			return false;
-		}
-		if (parent != channel->cParent) {
-			Channel *p = parent;
-			while (p) {
-				if (p == channel) {
-					err = QLatin1String("parent channel cannot be a descendant of channel");
-					return false;
-				}
-				p = p->cParent;
-			}
-			if (!canNest(parent, channel)) {
-				err = QLatin1String("channel cannot be nested in the given parent");
-				return false;
-			}
-
-			{
-				QWriteLocker wl(&qrwlVoiceThread);
-				channel->cParent->removeChannel(channel);
-				parent->addChannel(channel);
-			}
-
-			mpcs.set_parent(parent->iId);
-
-			changed = true;
-			updated = true;
-		}
-	}
-
-	if (cs.has_name()) {
-		QString qsName = u8(cs.name());
-		if (channel->qsName != qsName) {
-			channel->qsName = qsName;
-			mpcs.set_name(cs.name());
-
-			changed = true;
-			updated = true;
-		}
-	}
-
-	const QSet< Channel * > &oldLinksSet = channel->qsPermLinks;
-
-	if (newLinksSet != oldLinksSet) {
-		// Remove
-		foreach (Channel *l, oldLinksSet) {
-			if (!newLinksSet.contains(l)) {
-				removeLink(channel, l);
-				mpcs.add_links_remove(l->iId);
-			}
-		}
-		// Add
-		foreach (Channel *l, newLinksSet) {
-			if (!oldLinksSet.contains(l)) {
-				addLink(channel, l);
-				mpcs.add_links_add(l->iId);
-			}
-		}
-
-		changed = true;
-	}
-
-	if (cs.has_position() && cs.position() != channel->iPosition) {
-		channel->iPosition = cs.position();
-		mpcs.set_position(cs.position());
-
-		changed = true;
-		updated = true;
-	}
-
-	if (cs.has_description()) {
-		QString qsDescription = u8(cs.description());
-		if (qsDescription != channel->qsDesc) {
-			hashAssign(channel->qsDesc, channel->qbaDescHash, qsDescription);
-			mpcs.set_description(cs.description());
-
-			changed = true;
-			updated = true;
-		}
-	}
-
-	if (updated) {
-		updateChannel(channel);
-	}
-	if (changed) {
-		sendAll(mpcs, ~0x010202);
-		if (mpcs.has_description() && !channel->qbaDescHash.isEmpty()) {
-			mpcs.clear_description();
-			mpcs.set_description_hash(blob(channel->qbaDescHash));
-		}
-		sendAll(mpcs, 0x010202);
-		emit channelStateChanged(channel);
-	}
-
-	return true;
 }
 
 bool Server::setChannelState(Channel *cChannel, Channel *cParent, const QString &qsName, const QSet< Channel * > &links,
@@ -300,73 +171,16 @@ bool Server::setChannelState(Channel *cChannel, Channel *cParent, const QString 
 	if (updated)
 		updateChannel(cChannel);
 	if (changed) {
-		sendAll(mpcs, ~0x010202);
+		sendAll(mpcs, Version::fromComponents(1, 2, 2), Version::CompareMode::LessThan);
 		if (mpcs.has_description() && !cChannel->qbaDescHash.isEmpty()) {
 			mpcs.clear_description();
 			mpcs.set_description_hash(blob(cChannel->qbaDescHash));
 		}
-		sendAll(mpcs, 0x010202);
+		sendAll(mpcs, Version::fromComponents(1, 2, 2), Version::CompareMode::AtLeast);
 		emit channelStateChanged(cChannel);
 	}
 
 	return true;
-}
-
-void Server::sendTextMessageGRPC(const ::MumbleProto::TextMessage &tm) {
-	MumbleProto::TextMessage mptm;
-	mptm.set_message(tm.message());
-
-	if (tm.has_actor()) {
-		mptm.set_actor(tm.actor());
-	}
-
-	// Broadcast
-	if (!tm.session_size() && !tm.channel_id_size() && !tm.tree_id_size()) {
-		sendAll(mptm);
-		return;
-	}
-
-	// Single targets
-	for (int i = 0; i < tm.session_size(); i++) {
-		ServerUser *user = qhUsers.value(tm.session(i));
-		if (!user) {
-			continue;
-		}
-		mptm.add_session(user->uiSession);
-		sendMessage(user, mptm);
-		mptm.clear_session();
-	}
-
-	// Channel targets
-	QSet< Channel * > chans;
-
-	for (int i = 0; i < tm.channel_id_size(); i++) {
-		Channel *channel = qhChannels.value(tm.channel_id(i));
-		if (!channel) {
-			continue;
-		}
-		chans.insert(channel);
-		mptm.add_channel_id(channel->iId);
-	}
-
-	QQueue< Channel * > chansQ;
-	for (int i = 0; i < tm.tree_id_size(); i++) {
-		Channel *channel = qhChannels.value(tm.tree_id(i));
-		if (!channel) {
-			continue;
-		}
-		chansQ.enqueue(channel);
-		mptm.add_tree_id(channel->iId);
-	}
-	while (!chansQ.isEmpty()) {
-		Channel *c = chansQ.dequeue();
-		chans.insert(c);
-		foreach (c, c->qlChannels) { chansQ.enqueue(c); }
-	}
-
-	foreach (Channel *c, chans) {
-		foreach (::User *p, c->qlUsers) { sendMessage(static_cast<::ServerUser * >(p), mptm); }
-	}
 }
 
 void Server::sendTextMessage(Channel *cChannel, ServerUser *pUser, bool tree, const QString &text) {
@@ -539,28 +353,44 @@ void Server::disconnectListener(QObject *obj) {
 }
 
 void Server::startListeningToChannel(ServerUser *user, Channel *cChannel) {
-	if (ChannelListener::isListening(user, cChannel)) {
+	if (m_channelListenerManager.isListening(user->uiSession, cChannel->iId)) {
 		// The user is already listening to this channel
 		return;
 	}
 
-	ChannelListener::addListener(user, cChannel);
+	addChannelListener(*user, *cChannel);
 
 	MumbleProto::UserState mpus;
 	mpus.set_session(user->uiSession);
 
 	mpus.add_listening_channel_add(cChannel->iId);
 
-	sendAll(mpus);
+	if (!broadcastListenerVolumeAdjustments) {
+		sendExcept(user, mpus);
+	}
+
+	// Adding a listener might resurrect an old volume adjustment, so we need to
+	// inform the (all) client(s) about this volume adjustment.
+	float volumeAdjustment =
+		m_channelListenerManager.getListenerVolumeAdjustment(user->uiSession, cChannel->iId).factor;
+	MumbleProto::UserState::VolumeAdjustment *volume_adjustment = mpus.add_listening_volume_adjustment();
+	volume_adjustment->set_listening_channel(cChannel->iId);
+	volume_adjustment->set_volume_adjustment(volumeAdjustment);
+
+	if (broadcastListenerVolumeAdjustments) {
+		sendAll(mpus);
+	} else {
+		sendMessage(user, mpus);
+	}
 }
 
 void Server::stopListeningToChannel(ServerUser *user, Channel *cChannel) {
-	if (!ChannelListener::isListening(user, cChannel)) {
+	if (!m_channelListenerManager.isListening(user->uiSession, cChannel->iId)) {
 		// The user is not listening to this channel
 		return;
 	}
 
-	ChannelListener::removeListener(user, cChannel);
+	disableChannelListener(*user, *cChannel);
 
 	MumbleProto::UserState mpus;
 	mpus.set_session(user->uiSession);
@@ -570,13 +400,40 @@ void Server::stopListeningToChannel(ServerUser *user, Channel *cChannel) {
 	sendAll(mpus);
 }
 
+void Server::setListenerVolumeAdjustment(ServerUser *user, const Channel *cChannel,
+										 const VolumeAdjustment &volumeAdjustment) {
+	setChannelListenerVolume(*user, *cChannel, volumeAdjustment.factor);
+
+	// Inform clients about this change
+	MumbleProto::UserState mpus;
+	mpus.set_session(user->uiSession);
+
+	MumbleProto::UserState::VolumeAdjustment *volume_adjustment = mpus.add_listening_volume_adjustment();
+	volume_adjustment->set_listening_channel(cChannel->iId);
+	volume_adjustment->set_volume_adjustment(volumeAdjustment.factor);
+
+	if (broadcastListenerVolumeAdjustments) {
+		sendAll(mpus);
+	} else {
+		sendMessage(user, mpus);
+	}
+}
+
+void Server::sendWelcomeMessageTo(ServerUser *user) {
+	MumbleProto::ServerConfig mpsc;
+	mpsc.set_welcome_text(qsWelcomeText.toUtf8().data());
+
+	sendMessage(user, mpsc);
+}
+
 void Meta::connectListener(QObject *obj) {
 	connect(this, SIGNAL(started(Server *)), obj, SLOT(started(Server *)));
 	connect(this, SIGNAL(stopped(Server *)), obj, SLOT(stopped(Server *)));
 }
 
-void Meta::getVersion(int &major, int &minor, int &patch, QString &string) {
-	string = QLatin1String(MUMBLE_RELEASE);
+void Meta::getVersion(Version::component_t &major, Version::component_t &minor, Version::component_t &patch,
+					  QString &string) {
+	string = Version::getRelease();
 	major = minor = patch = 0;
-	MumbleVersion::get(&major, &minor, &patch);
+	Version::getComponents(major, minor, patch);
 }

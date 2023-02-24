@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2010-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -6,28 +6,13 @@
 #include "UserInformation.h"
 
 #include "Audio.h"
-#include "CELTCodec.h"
 #include "HostAddress.h"
+#include "ProtoUtils.h"
+#include "QtUtils.h"
 #include "ServerHandler.h"
 #include "ViewCert.h"
-
-#include <QtCore/QUrl>
-
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name
-// (like protobuf 3.7 does). As such, for now, we have to make this our last include.
 #include "Global.h"
 
-static QString decode_utf8_qssl_string(const QString &input) {
-	QString i = input;
-	return QUrl::fromPercentEncoding(i.replace(QLatin1String("\\x"), QLatin1String("%")).toLatin1());
-}
-
-static QString decode_utf8_qssl_string(const QStringList &list) {
-	if (list.count() > 0) {
-		return decode_utf8_qssl_string(list.at(0));
-	}
-	return QString();
-}
 
 UserInformation::UserInformation(const MumbleProto::UserStats &msg, QWidget *p) : QDialog(p) {
 	setupUi(this);
@@ -58,7 +43,7 @@ void UserInformation::tick() {
 
 	bRequested = true;
 
-	g.sh->requestUserStats(uiSession, true);
+	Global::get().sh->requestUserStats(uiSession, true);
 }
 
 void UserInformation::on_qpbCertificate_clicked() {
@@ -119,7 +104,8 @@ void UserInformation::update(const MumbleProto::UserStats &msg) {
 			if (alts.contains(QSsl::EmailEntry))
 				qlCertificate->setText(QStringList(alts.values(QSsl::EmailEntry)).join(tr(", ")));
 			else
-				qlCertificate->setText(decode_utf8_qssl_string(cert.subjectInfo(QSslCertificate::CommonName)));
+				qlCertificate->setText(
+					Mumble::QtUtils::decode_first_utf8_qssl_string(cert.subjectInfo(QSslCertificate::CommonName)));
 
 			if (msg.strong_certificate()) {
 				QFont f = qfCertificateFont;
@@ -142,21 +128,16 @@ void UserInformation::update(const MumbleProto::UserStats &msg) {
 		showcon = true;
 
 		const MumbleProto::Version &mpv = msg.version();
-
-		qlVersion->setText(tr("%1 (%2)").arg(MumbleVersion::toString(mpv.version())).arg(u8(mpv.release())));
+		Version::full_t version         = MumbleProto::getVersion(mpv);
+		qlVersion->setText(tr("%1 (%2)").arg(Version::toString(version)).arg(u8(mpv.release())));
 		qlOS->setText(tr("%1 (%2)").arg(u8(mpv.os())).arg(u8(mpv.os_version())));
-	}
-	if (msg.celt_versions_size() > 0) {
-		QStringList qsl;
-		for (int i = 0; i < msg.celt_versions_size(); ++i) {
-			int v         = msg.celt_versions(i);
-			CELTCodec *cc = g.qmCodecs.value(v);
-			if (cc)
-				qsl << cc->version();
-			else
-				qsl << QString::number(v, 16);
+
+		if (Version::getPatch(version) == 255) {
+			// The patch level 255 might indicate that the server is incapable of parsing
+			// the new version format (or the patch level is actually exactly 255).
+			// Show a warning to the user just in case.
+			qlVersionNote->show();
 		}
-		qlCELT->setText(qsl.join(tr(", ")));
 	}
 	if (msg.has_opus()) {
 		qlOpus->setText(msg.opus() ? tr("Supported") : tr("Not Supported"));

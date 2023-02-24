@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2016-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -27,9 +27,12 @@ AboutDialog::AboutDialog(QWidget *p, AboutDialogOptions options) : QDialog(p) {
 	qteLicense->setReadOnly(true);
 	qteLicense->setPlainText(License::license());
 
-	QTextEdit *qteAuthors = new QTextEdit(qtwTab);
-	qteAuthors->setReadOnly(true);
-	qteAuthors->setPlainText(License::authors());
+	QTextBrowser *authors = new QTextBrowser(qtwTab);
+	authors->setReadOnly(true);
+	authors->setOpenExternalLinks(true);
+	authors->setText(tr("For a list of authors, please see <a "
+						"href=\"https://github.com/mumble-voip/mumble/graphs/contributors\">https://github.com/"
+						"mumble-voip/mumble/graphs/contributors</a>"));
 
 	QTextBrowser *qtb3rdPartyLicense = new QTextBrowser(qtwTab);
 	qtb3rdPartyLicense->setReadOnly(true);
@@ -56,7 +59,7 @@ AboutDialog::AboutDialog(QWidget *p, AboutDialogOptions options) : QDialog(p) {
 	text->setText(tr("<h3>Murmur (%1)</h3>"
 					 "<p>%3</p>"
 					 "<p><tt><a href=\"%2\">%2</a></tt></p>")
-					  .arg(QLatin1String(MUMBLE_RELEASE))
+					  .arg(Version::getRelease())
 					  .arg(QLatin1String("http://www.mumble.info/"))
 					  .arg(QLatin1String("Copyright 2005-2020 The Mumble Developers")));
 	QHBoxLayout *qhbl = new QHBoxLayout(about);
@@ -65,7 +68,7 @@ AboutDialog::AboutDialog(QWidget *p, AboutDialogOptions options) : QDialog(p) {
 
 	qtwTab->addTab(about, tr("&About Murmur"));
 	qtwTab->addTab(qteLicense, tr("&License"));
-	qtwTab->addTab(qteAuthors, tr("A&uthors"));
+	qtwTab->addTab(authors, tr("A&uthors"));
 	qtwTab->addTab(qtb3rdPartyLicense, tr("&Third-Party Licenses"));
 
 	if (options == AboutDialogOptionsShowAbout) {
@@ -73,7 +76,7 @@ AboutDialog::AboutDialog(QWidget *p, AboutDialogOptions options) : QDialog(p) {
 	} else if (options == AboutDialogOptionsShowLicense) {
 		qtwTab->setCurrentWidget(qteLicense);
 	} else if (options == AboutDialogOptionsShowAuthors) {
-		qtwTab->setCurrentWidget(qteAuthors);
+		qtwTab->setCurrentWidget(authors);
 	} else if (options == AboutDialogOptionsShowThirdPartyLicenses) {
 		qtwTab->setCurrentWidget(qtb3rdPartyLicense);
 	}

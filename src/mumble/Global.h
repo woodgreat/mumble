@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -10,9 +10,12 @@
 #include <boost/shared_ptr.hpp>
 
 #include "ACL.h"
+#include "ChannelListenerManager.h"
 #include "Settings.h"
 #include "Timer.h"
 #include "Version.h"
+
+#include <memory>
 
 // Global helper class to spread variables around across threads.
 
@@ -22,25 +25,30 @@ class AudioInput;
 class AudioOutput;
 class Database;
 class Log;
-class Plugins;
+class PluginManager;
 class QSettings;
 class Overlay;
 class LCD;
 class Zeroconf;
 class OverlayClient;
-class CELTCodec;
-class OpusCodec;
 class LogEmitter;
 class DeveloperConsole;
 class TalkingUI;
 
 class QNetworkAccessManager;
 
+struct MigratedPath {
+	QString oldPath;
+	QString newPath;
+};
+
 struct Global Q_DECL_FINAL {
 private:
 	Q_DISABLE_COPY(Global)
 public:
 	static Global *g_global_struct;
+	static Global &get();
+
 	MainWindow *mw;
 	Settings s;
 	boost::shared_ptr< ServerHandler > sh;
@@ -51,8 +59,8 @@ public:
 	 */
 	Database *db;
 	Log *l;
-	Plugins *p;
-	QSettings *qs;
+	/// A pointer to the PluginManager that is used in this session
+	PluginManager *pluginManager;
 #ifdef USE_OVERLAY
 	Overlay *o;
 #endif
@@ -87,11 +95,6 @@ public:
 	int iMaxBandwidth;
 	int iAudioBandwidth;
 	QDir qdBasePath;
-	QMap< int, CELTCodec * > qmCodecs;
-	OpusCodec *oCodec;
-	int iCodecAlpha, iCodecBeta;
-	bool bPreferAlpha;
-	bool bOpus;
 	bool bAttenuateOthers;
 	/// If set the AudioOutput::mix will forcefully adjust the volume of all
 	/// non-priority speakers.
@@ -100,16 +103,24 @@ public:
 	unsigned int uiMessageLength;
 	unsigned int uiImageLength;
 	unsigned int uiMaxUsers;
+	bool recordingAllowed;
 	bool bQuit;
 	QString windowTitlePostfix;
 	bool bDebugDumpInput;
 	bool bDebugPrintQueue;
+	std::unique_ptr< ChannelListenerManager > channelListenerManager;
 
 	bool bHappyEaster;
 	static const char ccHappyEaster[];
 
+	QString migratedDBPath;
+	MigratedPath migratedPluginDirPath;
+
 	Global(const QString &qsConfigPath = QString());
-	~Global();
+	~Global() = default;
+
+private:
+	void migrateDataDir(const QDir &toDir);
 };
 
 // Class to handle ordered initialization of globals.
@@ -136,11 +147,5 @@ public:
 
 /// Special exit code which causes mumble to restart itself. The outward facing return code with be 0
 const int MUMBLE_EXIT_CODE_RESTART = 64738;
-
-// -Wshadow is bugged. If an inline function of a class uses a variable or
-// parameter named 'g', that will generate a warning even if the class header
-// is included long before this definition.
-
-#define g (*Global::g_global_struct)
 
 #endif

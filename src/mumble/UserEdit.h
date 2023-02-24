@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2009-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -6,7 +6,6 @@
 #ifndef MUMBLE_MUMBLE_USEREDIT_H_
 #define MUMBLE_MUMBLE_USEREDIT_H_
 
-#include "Message.h"
 #include "User.h"
 #include "ui_UserEdit.h"
 
@@ -65,7 +64,7 @@ public:
 	bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const Q_DECL_OVERRIDE;
 
 public slots:
-	/// Sets the amount of inactive days below which rows will get filterd by the proxy
+	/// Sets the amount of inactive days below which rows will get filtered by the proxy
 	void setFilterMinimumInactiveDays(int minimumInactiveDays);
 	/// Helper function for removing all rows involved in a given selection (must include COL_NICK).
 	void removeRowsInSelection(const QItemSelection &selection);

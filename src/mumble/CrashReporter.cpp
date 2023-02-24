@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2009-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -32,7 +32,7 @@ CrashReporter::CrashReporter(QWidget *p) : QDialog(p) {
 
 	QHBoxLayout *hbl = new QHBoxLayout();
 
-	qleEmail = new QLineEdit(g.qs->value(QLatin1String("crashemail")).toString());
+	qleEmail = new QLineEdit(Global::get().s.crashReportEmail);
 	l        = new QLabel(tr("Email address (optional)"));
 	l->setBuddy(qleEmail);
 
@@ -66,28 +66,39 @@ CrashReporter::CrashReporter(QWidget *p) : QDialog(p) {
 }
 
 CrashReporter::~CrashReporter() {
-	g.qs->setValue(QLatin1String("crashemail"), qleEmail->text());
+	Global::get().s.crashReportEmail = qleEmail->text();
 	delete qnrReply;
 }
 
 void CrashReporter::uploadFinished() {
 	qpdProgress->reset();
-	if (qnrReply->error() == QNetworkReply::NoError) {
-		if (qnrReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 200)
+
+	QVariant varStatus = qnrReply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
+	if (!varStatus.isValid()) {
+		qWarning() << "CrashReporter.cpp: Invalid HTTP code attribute";
+	}
+
+	int httpStatusCode = varStatus.toInt();
+
+	if (httpStatusCode != 0) {
+		// The 2xx HTTP status codes are considered success
+		if (httpStatusCode >= 200 && httpStatusCode < 300) {
 			QMessageBox::information(nullptr, tr("Crash upload successful"),
 									 tr("Thank you for helping make Mumble better!"));
-		else
+		} else {
 			QMessageBox::critical(nullptr, tr("Crash upload failed"),
-								  tr("We're really sorry, but it appears the crash upload has failed with error %1 %2. "
-									 "Please inform a developer.")
-									  .arg(qnrReply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt())
+								  tr("HTTP error %1: \"%2\"")
+									  .arg(httpStatusCode)
 									  .arg(qnrReply->attribute(QNetworkRequest::HttpReasonPhraseAttribute).toString()));
+		}
 	} else {
 		QMessageBox::critical(nullptr, tr("Crash upload failed"),
-							  tr("This really isn't funny, but apparently there's a bug in the crash reporting code, "
-								 "and we've failed to upload the report. You may inform a developer about error %1")
+							  tr("Internal error encountered in CrashReporter.cpp: Received network reply does not "
+								 "contain an HTTP status code."
+								 " Please inform a developer about error code %1")
 								  .arg(qnrReply->error()));
 	}
+
 	qelLoop->exit(0);
 }
 
@@ -98,7 +109,7 @@ void CrashReporter::uploadProgress(qint64 sent, qint64 total) {
 
 void CrashReporter::run() {
 	QByteArray qbaDumpContents;
-	QFile qfCrashDump(g.qdBasePath.filePath(QLatin1String("mumble.dmp")));
+	QFile qfCrashDump(Global::get().qdBasePath.filePath(QLatin1String("mumble.dmp")));
 	if (!qfCrashDump.exists())
 		return;
 
@@ -199,8 +210,8 @@ void CrashReporter::run() {
 										 "name=\"os\"\r\nContent-Transfer-Encoding: 8bit\r\n\r\n%2 %3\r\n")
 						 .arg(boundary, OSInfo::getOS(), OSInfo::getOSVersion());
 		QString ver = QString::fromLatin1("--%1\r\nContent-Disposition: form-data; "
-										  "name=\"ver\"\r\nContent-Transfer-Encoding: 8bit\r\n\r\n%2 %3\r\n")
-						  .arg(boundary, QLatin1String(MUMTEXT(MUMBLE_VERSION)), QLatin1String(MUMBLE_RELEASE));
+										  "name=\"ver\"\r\nContent-Transfer-Encoding: 8bit\r\n\r\n%2\r\n")
+						  .arg(boundary, Version::getRelease());
 		QString email = QString::fromLatin1("--%1\r\nContent-Disposition: form-data; "
 											"name=\"email\"\r\nContent-Transfer-Encoding: 8bit\r\n\r\n%2\r\n")
 							.arg(boundary, qleEmail->text());
@@ -224,7 +235,7 @@ void CrashReporter::run() {
 					  QString::fromLatin1("multipart/form-data; boundary=%1").arg(boundary));
 		req.setHeader(QNetworkRequest::ContentLengthHeader, QString::number(post.size()));
 		Network::prepareRequest(req);
-		qnrReply = g.nam->post(req, post);
+		qnrReply = Global::get().nam->post(req, post);
 		connect(qnrReply, SIGNAL(finished()), this, SLOT(uploadFinished()));
 		connect(qnrReply, SIGNAL(uploadProgress(qint64, qint64)), this, SLOT(uploadProgress(qint64, qint64)));
 

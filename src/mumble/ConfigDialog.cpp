@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -13,8 +13,8 @@
 #include <QtCore/QMutexLocker>
 #include <QtGui/QScreen>
 #include <QtWidgets/QDesktopWidget>
-#include <QtWidgets/QPushButton>
 #include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
 
 
 // init static member fields
@@ -32,7 +32,7 @@ ConfigDialog::ConfigDialog(QWidget *p) : QDialog(p) {
 	}
 
 
-	s = g.s;
+	s = Global::get().s;
 
 	unsigned int idx = 0;
 	ConfigWidgetNew cwn;
@@ -74,16 +74,15 @@ ConfigDialog::ConfigDialog(QWidget *p) : QDialog(p) {
 		   "changed.<br />"
 		   "To restore all settings to their defaults, you can press the \"Defaults (All)\" button."));
 
-	QPushButton *restoreAllButton =
-		pageButtonBox->addButton(QString::fromLatin1("Defaults (All)"), QDialogButtonBox::ResetRole);
+	QPushButton *restoreAllButton = pageButtonBox->addButton(tr("Defaults (All)"), QDialogButtonBox::ResetRole);
 	restoreAllButton->setToolTip(tr("Restore all defaults"));
 	restoreAllButton->setWhatsThis(tr("This button will restore the defaults for all settings."));
 
-	if (!g.s.qbaConfigGeometry.isEmpty()) {
+	if (!Global::get().s.qbaConfigGeometry.isEmpty()) {
 #ifdef USE_OVERLAY
-		if (!g.ocIntercept)
+		if (!Global::get().ocIntercept)
 #endif
-			restoreGeometry(g.s.qbaConfigGeometry);
+			restoreGeometry(Global::get().s.qbaConfigGeometry);
 	}
 }
 
@@ -117,7 +116,7 @@ void ConfigDialog::addPage(ConfigWidget *cw, unsigned int idx) {
 		qswPages->addWidget(cw);
 	}
 	qmWidgets.insert(idx, cw);
-	cw->load(g.s);
+	cw->load(Global::get().s);
 }
 
 ConfigDialog::~ConfigDialog() {
@@ -152,7 +151,7 @@ void ConfigDialog::on_pageButtonBox_clicked(QAbstractButton *b) {
 			break;
 		}
 		case QDialogButtonBox::Reset: {
-			conf->load(g.s);
+			conf->load(Global::get().s);
 			break;
 		}
 		// standardButton returns NoButton for any custom buttons. The only custom button
@@ -162,15 +161,14 @@ void ConfigDialog::on_pageButtonBox_clicked(QAbstractButton *b) {
 			QMessageBox msgBox;
 			msgBox.setIcon(QMessageBox::Question);
 			msgBox.setText(QObject::tr("Reset all settings?"));
-			msgBox.setInformativeText(QObject::tr("Do you really want to reset all settings (not only the ones currently visible) to their default value?"));
+			msgBox.setInformativeText(QObject::tr("Do you really want to reset all settings (not only the ones "
+												  "currently visible) to their default value?"));
 			msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
 			msgBox.setDefaultButton(QMessageBox::No);
 
 			if (msgBox.exec() == QMessageBox::Yes) {
 				Settings defaultSetting;
-				foreach (ConfigWidget *cw, qmWidgets) {
-					cw->load(defaultSetting);
-				}
+				foreach (ConfigWidget *cw, qmWidgets) { cw->load(defaultSetting); }
 			}
 			break;
 		}
@@ -246,16 +244,16 @@ void ConfigDialog::apply() {
 	foreach (ConfigWidget *cw, qmWidgets)
 		cw->save();
 
-	g.s = s;
+	Global::get().s = s;
 
 	foreach (ConfigWidget *cw, qmWidgets)
 		cw->accept();
 
-	if (!g.s.bAttenuateOthersOnTalk)
-		g.bAttenuateOthers = false;
+	if (!Global::get().s.bAttenuateOthersOnTalk)
+		Global::get().bAttenuateOthers = false;
 
 	// They might have changed their keys.
-	g.iPushToTalk = 0;
+	Global::get().iPushToTalk = 0;
 
 	Audio::start();
 
@@ -266,9 +264,12 @@ void ConfigDialog::accept() {
 	apply();
 
 #ifdef USE_OVERLAY
-	if (!g.ocIntercept)
+	if (!Global::get().ocIntercept)
 #endif
-		g.s.qbaConfigGeometry = saveGeometry();
+		Global::get().s.qbaConfigGeometry = saveGeometry();
+
+	// Save settings to disk
+	Global::get().s.save();
 
 	QDialog::accept();
 }

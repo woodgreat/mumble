@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -12,9 +12,6 @@
 
 #include "MainWindow.h"
 #include "User.h"
-
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name
-// (like protobuf 3.7 does). As such, for now, we have to make this our last include.
 #include "Global.h"
 
 #define NBLOCKS 8
@@ -43,6 +40,7 @@ class OSSInputRegistrar : public AudioInputRegistrar {
 public:
 	OSSInputRegistrar();
 	virtual AudioInput *create();
+	virtual const QVariant getDeviceChoice();
 	virtual const QList< audioDevice > getDeviceChoices();
 	virtual void setDeviceChoice(const QVariant &, Settings &);
 	virtual bool canEcho(EchoCancelOptionID echoCancelID, const QString &outputSystem) const;
@@ -54,6 +52,7 @@ class OSSOutputRegistrar : public AudioOutputRegistrar {
 public:
 	OSSOutputRegistrar();
 	virtual AudioOutput *create();
+	virtual const QVariant getDeviceChoice();
 	virtual const QList< audioDevice > getDeviceChoices();
 	virtual void setDeviceChoice(const QVariant &, Settings &);
 };
@@ -68,20 +67,21 @@ AudioInput *OSSInputRegistrar::create() {
 	return new OSSInput();
 }
 
+const QVariant OSSInputRegistrar::getDeviceChoice() {
+	return Global::get().s.qsOSSInput;
+}
+
 const QList< audioDevice > OSSInputRegistrar::getDeviceChoices() {
-	QList< audioDevice > qlReturn;
+	QList< audioDevice > choices;
 
-	QStringList qlInputDevs = cards->qhInput.keys();
-	std::sort(qlInputDevs.begin(), qlInputDevs.end());
+	QStringList keys = cards->qhInput.keys();
+	std::sort(keys.begin(), keys.end());
 
-	if (qlInputDevs.contains(g.s.qsOSSInput)) {
-		qlInputDevs.removeAll(g.s.qsOSSInput);
-		qlInputDevs.prepend(g.s.qsOSSInput);
+	for (const auto &key : keys) {
+		choices << audioDevice(cards->qhInput.value(key), key);
 	}
 
-	foreach (const QString &dev, qlInputDevs) { qlReturn << audioDevice(cards->qhInput.value(dev), dev); }
-
-	return qlReturn;
+	return choices;
 }
 
 void OSSInputRegistrar::setDeviceChoice(const QVariant &choice, Settings &s) {
@@ -99,20 +99,21 @@ AudioOutput *OSSOutputRegistrar::create() {
 	return new OSSOutput();
 }
 
+const QVariant OSSOutputRegistrar::getDeviceChoice() {
+	return Global::get().s.qsOSSOutput;
+}
+
 const QList< audioDevice > OSSOutputRegistrar::getDeviceChoices() {
-	QList< audioDevice > qlReturn;
+	QList< audioDevice > choices;
 
-	QStringList qlOutputDevs = cards->qhOutput.keys();
-	std::sort(qlOutputDevs.begin(), qlOutputDevs.end());
+	QStringList keys = cards->qhOutput.keys();
+	std::sort(keys.begin(), keys.end());
 
-	if (qlOutputDevs.contains(g.s.qsOSSOutput)) {
-		qlOutputDevs.removeAll(g.s.qsOSSOutput);
-		qlOutputDevs.prepend(g.s.qsOSSOutput);
+	for (const auto &key : keys) {
+		choices << audioDevice(cards->qhOutput.value(key), key);
 	}
 
-	foreach (const QString &dev, qlOutputDevs) { qlReturn << audioDevice(cards->qhOutput.value(dev), dev); }
-
-	return qlReturn;
+	return choices;
 }
 
 void OSSOutputRegistrar::setDeviceChoice(const QVariant &choice, Settings &s) {
@@ -175,7 +176,7 @@ OSSInput::~OSSInput() {
 }
 
 void OSSInput::run() {
-	QByteArray device = cards->qhDevices.value(g.s.qsOSSInput).toLatin1();
+	QByteArray device = cards->qhDevices.value(Global::get().s.qsOSSInput).toLatin1();
 	if (device.isEmpty()) {
 		qWarning("OSSInput: Stored device not found, falling back to default");
 		device = cards->qhDevices.value(QString()).toLatin1();
@@ -249,7 +250,7 @@ OSSOutput::~OSSOutput() {
 }
 
 void OSSOutput::run() {
-	QByteArray device = cards->qhDevices.value(g.s.qsOSSOutput).toLatin1();
+	QByteArray device = cards->qhDevices.value(Global::get().s.qsOSSOutput).toLatin1();
 	if (device.isEmpty()) {
 		qWarning("OSSOutput: Stored device not found, falling back to default");
 		device = cards->qhDevices.value(QString()).toLatin1();
@@ -263,7 +264,7 @@ void OSSOutput::run() {
 
 	int ival;
 
-	ival = (g.s.iOutputDelay + 1) << 16 | 11;
+	ival = (Global::get().s.iOutputDelay + 1) << 16 | 11;
 
 	if (ioctl(fd, SNDCTL_DSP_SETFRAGMENT, &ival) == -1) {
 		qWarning("OSSOutput: Failed to set fragment");
@@ -330,3 +331,5 @@ void OSSOutput::run() {
 	ioctl(fd, SNDCTL_DSP_RESET, nullptr);
 	close(fd);
 }
+
+#undef NBLOCKS

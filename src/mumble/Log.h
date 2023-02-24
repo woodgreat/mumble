@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -32,7 +32,16 @@ protected:
 public:
 	/// The unique name of this ConfigWidget
 	static const QString name;
-	enum Column { ColMessage, ColConsole, ColNotification, ColHighlight, ColTTS, ColStaticSound, ColStaticSoundPath };
+	enum Column {
+		ColMessage,
+		ColConsole,
+		ColNotification,
+		ColHighlight,
+		ColTTS,
+		ColMessageLimit,
+		ColStaticSound,
+		ColStaticSoundPath
+	};
 	LogConfig(Settings &st);
 	QString title() const Q_DECL_OVERRIDE;
 	const QString &getName() const Q_DECL_OVERRIDE;
@@ -46,6 +55,13 @@ public slots:
 	void on_qtwMessages_itemClicked(QTreeWidgetItem *, int);
 	void on_qtwMessages_itemDoubleClicked(QTreeWidgetItem *, int);
 	void browseForAudioFile();
+
+	void on_qsNotificationVolume_valueChanged(int value);
+	void on_qsCueVolume_valueChanged(int value);
+	void on_qsTTSVolume_valueChanged(int value);
+	void on_qsbNotificationVolume_valueChanged(int value);
+	void on_qsbCueVolume_valueChanged(int value);
+	void on_qsbTTSVolume_valueChanged(int value);
 };
 
 class ClientUser;
@@ -90,8 +106,10 @@ public:
 		ChannelLeaveDisconnect,
 		PrivateTextMessage,
 		ChannelListeningAdd,
-		ChannelListeningRemove
+		ChannelListeningRemove,
+		PluginMessage
 	};
+
 	enum LogColorType { Time, Server, Privilege, Source, Target };
 	static const MsgType firstMsgType = DebugInfo;
 	static const MsgType lastMsgType  = ChannelListeningRemove;
@@ -134,7 +152,9 @@ public:
 	static void logOrDefer(Log::MsgType mt, const QString &console, const QString &terse = QString(),
 						   bool ownMessage = false, const QString &overrideTTS = QString(), bool ignoreTTS = false);
 public slots:
-	void log(MsgType mt, const QString &console, const QString &terse = QString(), bool ownMessage = false,
+	// We have to explicitly use Log::MsgType and not only MsgType in order to be able to use QMetaObject::invokeMethod
+	// with this function.
+	void log(Log::MsgType mt, const QString &console, const QString &terse = QString(), bool ownMessage = false,
 			 const QString &overrideTTS = QString(), bool ignoreTTS = false);
 	/// Logs LogMessages that have been deferred so far
 	void processDeferredLogs();
@@ -171,5 +191,7 @@ public:
 
 	LogDocumentResourceAddedEvent();
 };
+
+Q_DECLARE_METATYPE(Log::MsgType);
 
 #endif

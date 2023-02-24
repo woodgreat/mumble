@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2010-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -8,7 +8,6 @@
 #include "Channel.h"
 #include "Database.h"
 #include "MainWindow.h"
-#include "Message.h"
 #include "NetworkConfig.h"
 #include "Overlay.h"
 #include "OverlayPositionableItem.h"
@@ -18,6 +17,7 @@
 #include "Screen.h"
 #include "ServerHandler.h"
 #include "User.h"
+#include "Global.h"
 #include "GlobalShortcut.h"
 
 #ifdef Q_OS_WIN
@@ -26,16 +26,13 @@
 #	include "../../overlay/overlay_whitelist.h"
 #endif
 
+#include <QSettings>
 #include <QtGui/QScreen>
 #include <QtGui/QWindow>
 #include <QtWidgets/QColorDialog>
 #include <QtWidgets/QDesktopWidget>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QFontDialog>
-
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name
-// (like protobuf 3.7 does). As such, for now, we have to make this our last include.
-#include "Global.h"
 
 const QString OverlayConfig::name = QLatin1String("OverlayConfig");
 
@@ -48,7 +45,7 @@ static ConfigWidget *OverlayConfigDialogNew(Settings &st) {
 	return new OverlayConfig(st);
 }
 
-static ConfigRegistrar registrar(6000, OverlayConfigDialogNew);
+static ConfigRegistrar registrarOverlayConfig(6000, OverlayConfigDialogNew);
 #endif
 
 void OverlayConfig::initDisplayFps() {
@@ -428,8 +425,6 @@ void OverlayConfig::save() const {
 	s.os.bFps    = qcbShowFps->isChecked();
 	s.os.bTime   = qcbShowTime->isChecked();
 
-	// Directly save overlay config
-
 	s.os.oemOverlayExcludeMode =
 		static_cast< OverlaySettings::OverlayExclusionMode >(qcbOverlayExclusionMode->currentIndex());
 
@@ -532,19 +527,11 @@ void OverlayConfig::save() const {
 			}
 		}
 	}
-
-	g.qs->beginGroup(QLatin1String("overlay"));
-	s.os.save();
-	g.qs->endGroup();
-#ifdef Q_OS_WIN
-	// On MS windows force sync so the registry is updated.
-	g.qs->sync();
-#endif
 }
 
 void OverlayConfig::accept() const {
-	g.o->forceSettings();
-	g.o->setActive(s.os.bEnable);
+	Global::get().o->forceSettings();
+	Global::get().o->setActive(s.os.bEnable);
 }
 
 bool OverlayConfig::eventFilter(QObject *obj, QEvent *evt) {
@@ -841,12 +828,18 @@ void OverlayConfig::on_qpbLoadPreset_clicked() {
 		return;
 	}
 
-	QSettings qs(fn, QSettings::IniFormat);
 	OverlaySettings load_preset;
+	try {
+		// First try regular format
+		load_preset.load(fn);
+	} catch (const std::exception &) {
+		// If that fails, fall back to the legacy format
+		QSettings qs(fn, QSettings::IniFormat);
 
-	qs.beginGroup(QLatin1String("overlay"));
-	load_preset.load(&qs);
-	qs.endGroup();
+		qs.beginGroup(QLatin1String("overlay"));
+		load_preset.legacyLoad(&qs);
+		qs.endGroup();
+	}
 
 #ifdef Q_OS_WIN
 	load_preset.qslLaunchers        = s.os.qslLaunchers;
@@ -875,20 +868,5 @@ void OverlayConfig::on_qpbSavePreset_clicked() {
 		return;
 	}
 
-	QSettings qs(fn, QSettings::IniFormat);
-
-	if (!qs.isWritable()) {
-		qWarning() << __FUNCTION__ << "preset save file" << fn << "is not writable!";
-		return;
-	}
-
-	qs.beginGroup(QLatin1String("overlay"));
-	s.os.save(&qs);
-	qs.remove(QLatin1String("enable"));
-	qs.remove(QLatin1String("usewhitelist"));
-	qs.remove(QLatin1String("blacklist"));
-	qs.remove(QLatin1String("whitelist"));
-	qs.remove(QLatin1String("enablelauncherfilter"));
-	qs.remove(QLatin1String("launchers"));
-	qs.endGroup();
+	s.os.savePresets(fn);
 }

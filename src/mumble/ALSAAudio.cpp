@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -10,10 +10,8 @@
 #include "Utils.h"
 
 #include <alsa/asoundlib.h>
-#include <sys/poll.h>
+#include <poll.h>
 
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name
-// (like protobuf 3.7 does). As such, for now, we have to make this our last include.
 #include "Global.h"
 
 #define NBLOCKS 8
@@ -32,6 +30,7 @@ class ALSAAudioInputRegistrar : public AudioInputRegistrar {
 public:
 	ALSAAudioInputRegistrar();
 	virtual AudioInput *create();
+	virtual const QVariant getDeviceChoice();
 	virtual const QList< audioDevice > getDeviceChoices();
 	virtual void setDeviceChoice(const QVariant &, Settings &);
 	virtual bool canEcho(EchoCancelOptionID echoCancelID, const QString &outputSystem) const;
@@ -43,6 +42,7 @@ class ALSAAudioOutputRegistrar : public AudioOutputRegistrar {
 public:
 	ALSAAudioOutputRegistrar();
 	virtual AudioOutput *create();
+	virtual const QVariant getDeviceChoice();
 	virtual const QList< audioDevice > getDeviceChoices();
 	virtual void setDeviceChoice(const QVariant &, Settings &);
 };
@@ -90,23 +90,22 @@ AudioInput *ALSAAudioInputRegistrar::create() {
 	return new ALSAAudioInput();
 }
 
+const QVariant ALSAAudioInputRegistrar::getDeviceChoice() {
+	return Global::get().s.qsALSAInput;
+}
+
 const QList< audioDevice > ALSAAudioInputRegistrar::getDeviceChoices() {
-	QList< audioDevice > qlReturn;
+	QList< audioDevice > choices;
 
-	QStringList qlInputDevs = cards->qhInput.keys();
-	std::sort(qlInputDevs.begin(), qlInputDevs.end());
+	QStringList keys = cards->qhInput.keys();
+	std::sort(keys.begin(), keys.end());
 
-	if (qlInputDevs.contains(g.s.qsALSAInput)) {
-		qlInputDevs.removeAll(g.s.qsALSAInput);
-		qlInputDevs.prepend(g.s.qsALSAInput);
+	for (const auto &key : keys) {
+		const auto name = QString::fromLatin1("[%1] %2").arg(key, cards->qhInput.value(key));
+		choices << audioDevice(name, key);
 	}
 
-	foreach (const QString &dev, qlInputDevs) {
-		QString t = QString::fromLatin1("[%1] %2").arg(dev, cards->qhInput.value(dev));
-		qlReturn << audioDevice(t, dev);
-	}
-
-	return qlReturn;
+	return choices;
 }
 
 void ALSAAudioInputRegistrar::setDeviceChoice(const QVariant &choice, Settings &s) {
@@ -124,23 +123,22 @@ AudioOutput *ALSAAudioOutputRegistrar::create() {
 	return new ALSAAudioOutput();
 }
 
+const QVariant ALSAAudioOutputRegistrar::getDeviceChoice() {
+	return Global::get().s.qsALSAOutput;
+}
+
 const QList< audioDevice > ALSAAudioOutputRegistrar::getDeviceChoices() {
-	QList< audioDevice > qlReturn;
+	QList< audioDevice > choices;
 
-	QStringList qlOutputDevs = cards->qhOutput.keys();
-	std::sort(qlOutputDevs.begin(), qlOutputDevs.end());
+	QStringList keys = cards->qhOutput.keys();
+	std::sort(keys.begin(), keys.end());
 
-	if (qlOutputDevs.contains(g.s.qsALSAOutput)) {
-		qlOutputDevs.removeAll(g.s.qsALSAOutput);
-		qlOutputDevs.prepend(g.s.qsALSAOutput);
+	for (const auto &key : keys) {
+		const auto name = QString::fromLatin1("[%1] %2").arg(key, cards->qhOutput.value(key));
+		choices << audioDevice(name, key);
 	}
 
-	foreach (const QString &dev, qlOutputDevs) {
-		QString t = QString::fromLatin1("[%1] %2").arg(dev, cards->qhOutput.value(dev));
-		qlReturn << audioDevice(t, dev);
-	}
-
-	return qlReturn;
+	return choices;
 }
 
 void ALSAAudioOutputRegistrar::setDeviceChoice(const QVariant &choice, Settings &s) {
@@ -211,16 +209,24 @@ ALSAEnumerator::ALSAEnumerator() {
 	snd_card_next(&card);
 	while (card != -1) {
 		char *name;
+		int err;
 		snd_ctl_t *ctl = nullptr;
-		snd_card_get_longname(card, &name);
+		if ((err = snd_card_get_longname(card, &name)) != 0) {
+			Global::get().mw->msgBox(tr("Getting name (longname) of the sound card failed: %1")
+										 .arg(QString::fromUtf8(snd_strerror(err)).toHtmlEscaped()));
+			return;
+		}
 		QByteArray dev = QString::fromLatin1("hw:%1").arg(card).toUtf8();
 		if (snd_ctl_open(&ctl, dev.data(), SND_CTL_READONLY) >= 0) {
 			snd_pcm_info_t *info = nullptr;
 			snd_pcm_info_malloc(&info);
 
 			char *cname = nullptr;
-			snd_card_get_name(card, &cname);
-
+			if ((err = snd_card_get_name(card, &cname)) != 0) {
+				Global::get().mw->msgBox(tr("Getting name of the sound card failed: %1")
+											 .arg(QString::fromUtf8(snd_strerror(err)).toHtmlEscaped()));
+				return;
+			}
 			int device = -1;
 			snd_ctl_pcm_next_device(ctl, &device);
 
@@ -254,8 +260,10 @@ ALSAEnumerator::ALSAEnumerator() {
 			}
 			snd_pcm_info_free(info);
 			snd_ctl_close(ctl);
+			free(cname);
 		}
 		snd_card_next(&card);
+		free(name);
 	}
 #endif
 }
@@ -299,7 +307,7 @@ void ALSAAudioInput::run() {
 	QMutexLocker qml(&qmALSA);
 	snd_pcm_sframes_t readblapp;
 
-	QByteArray device_name         = g.s.qsALSAInput.toLatin1();
+	QByteArray device_name         = Global::get().s.qsALSAInput.toLatin1();
 	snd_pcm_hw_params_t *hw_params = nullptr;
 	snd_pcm_t *capture_handle      = nullptr;
 
@@ -351,7 +359,7 @@ void ALSAAudioInput::run() {
 			snd_pcm_close(capture_handle);
 			capture_handle = nullptr;
 		}
-		g.mw->msgBox(
+		Global::get().mw->msgBox(
 			tr("Opening chosen ALSA Input failed: %1").arg(QString::fromLatin1(snd_strerror(err)).toHtmlEscaped()));
 		return;
 	}
@@ -420,7 +428,7 @@ void ALSAAudioOutput::run() {
 
 	snd_pcm_hw_params_t *hw_params = nullptr;
 	snd_pcm_sw_params_t *sw_params = nullptr;
-	QByteArray device_name         = g.s.qsALSAOutput.toLatin1();
+	QByteArray device_name         = Global::get().s.qsALSAOutput.toLatin1();
 
 	snd_pcm_hw_params_alloca(&hw_params);
 	snd_pcm_sw_params_alloca(&sw_params);
@@ -444,7 +452,7 @@ void ALSAAudioOutput::run() {
 	unsigned int iOutputSize = (iFrameSize * rrate) / SAMPLE_RATE;
 
 	snd_pcm_uframes_t period_size = iOutputSize;
-	snd_pcm_uframes_t buffer_size = iOutputSize * (g.s.iOutputDelay + 1);
+	snd_pcm_uframes_t buffer_size = iOutputSize * (Global::get().s.iOutputDelay + 1);
 
 	int dir = 1;
 	ALSA_ERRBAIL(snd_pcm_hw_params_set_period_size_near(pcm_handle, hw_params, &period_size, &dir));
@@ -487,7 +495,7 @@ void ALSAAudioOutput::run() {
 			snd_pcm_writei(pcm_handle, zerobuff, period_size);
 
 	if (!bOk) {
-		g.mw->msgBox(
+		Global::get().mw->msgBox(
 			tr("Opening chosen ALSA Output failed: %1").arg(QString::fromLatin1(snd_strerror(err)).toHtmlEscaped()));
 		if (pcm_handle) {
 			snd_pcm_close(pcm_handle);
@@ -567,3 +575,7 @@ void ALSAAudioOutput::run() {
 	}
 	snd_pcm_close(pcm_handle);
 }
+
+#undef NBLOCKS
+#undef ALSA_ERRBAIL
+#undef ALSA_ERRCHECK

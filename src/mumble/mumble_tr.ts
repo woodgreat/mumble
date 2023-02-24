@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="tr" version="2.1">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="tr">
 <context>
     <name>ACLEditor</name>
     <message>
@@ -71,7 +73,7 @@
     </message>
     <message>
         <source>Enter the channel password here.</source>
-        <translation>Kanalın parolasını burada giriniz.</translation>
+        <translation>Kanalın parolasını buraya girin.</translation>
     </message>
     <message>
         <source>Check to create a temporary channel.</source>
@@ -376,7 +378,7 @@ Güncel kanal tarafından alınmış üyelerin listesini içerir. Üst kanallard
     </message>
     <message>
         <source>This controls which group of users this entry applies to.&lt;br /&gt;Note that the group is evaluated in the context of the channel the entry is used in. For example, the default ACL on the Root channel gives &lt;i&gt;Write&lt;/i&gt; permission to the &lt;i&gt;admin&lt;/i&gt; group. This entry, if inherited by a channel, will give a user write privileges if he belongs to the &lt;i&gt;admin&lt;/i&gt; group in that channel, even if he doesn&apos;t belong to the &lt;i&gt;admin&lt;/i&gt; group in the channel where the ACL originated.&lt;br /&gt;If a group name starts with &apos;!&apos;, its membership is negated, and if it starts with &apos;~&apos;, it is evaluated in the channel the ACL was defined in, rather than the channel the ACL is active in.&lt;br /&gt;If a group name starts with &apos;#&apos;, it is interpreted as an access token. Users must have entered whatever follows the &apos;#&apos; in their list of access tokens to match. This can be used for very simple password access to channels for non-authenticated users.&lt;br /&gt;If a group name starts with &apos;$&apos;, it will only match users whose certificate hash matches what follows the &apos;$&apos;.&lt;br /&gt;A few special predefined groups are:&lt;br /&gt;&lt;b&gt;all&lt;/b&gt; - Everyone will match.&lt;br /&gt;&lt;b&gt;auth&lt;/b&gt; - All authenticated users will match.&lt;br /&gt;&lt;b&gt;sub,a,b,c&lt;/b&gt; - User currently in a sub-channel minimum &lt;i&gt;a&lt;/i&gt; common parents, and between &lt;i&gt;b&lt;/i&gt; and &lt;i&gt;c&lt;/i&gt; channels down the chain. See the website for more extensive documentation on this one.&lt;br /&gt;&lt;b&gt;in&lt;/b&gt; - Users currently in the channel will match (convenience for &apos;&lt;i&gt;sub,0,0,0&lt;/i&gt;&apos;).&lt;br /&gt;&lt;b&gt;out&lt;/b&gt; - Users outside the channel will match (convenience for &apos;&lt;i&gt;!sub,0,0,0&lt;/i&gt;&apos;).&lt;br /&gt;Note that an entry applies to either a user or a group, not both.</source>
-        <translation>Bu unsurun hangi kullanıcı gruplarına uygulandığını yönetir.&lt;br /&gt;Grubun, unsurun kullanıldığı kanal bağlamında değerlendirildiğini unutmayınız. Örneğin kök kanalda varsayılan EKL&apos;ler &lt;i&gt;yöneticiler&lt;/i&gt; grubuna &lt;i&gt;Yaz&lt;/i&gt; iznini verir. Bu unsur, bir kanal tarafından alındıysa, kullanıcı EKL&apos;in tanımlandığı kanalda &lt;i&gt;yöneticiler&lt;/i&gt; grubuna üye olmasa bile, bu kanalda &lt;i&gt;yöneticiler&lt;/i&gt; grubuna ait bir kullanıcıya yazma iznini verecektir. Bir grubun ismi &apos;!&apos; ile başlarsa üyeliği olumsuzlanır, &apos;~&apos; ile başlarsa EKL&apos;in etkin olduğu kanal yerine tanımlandığı kanal bağlamında değerlendirilir.&lt;br /&gt;Eğer bir grup ismi &apos;#&apos; ile başlarsa, bu bir erişim jetonu olarak değerlendirilir. Denk gelmesi için kullanıcıların erişim jeton listelerinde &apos;#&apos; karakterini izleyen metni girmiş olmaları gerekir. Kanallara kimliği doğrulanmamış kullanıcıların erişimi için çok basit bir parola sistemi olarak kullanılabilir.&lt;br /&gt;Eğer grup ismi &apos;$&apos; ile başlarsa, sadece sertifikalarının hash değerinin &apos;$&apos; karakterini izleyen metne denk geldiği kullanıcılar dikkate alınır.&lt;br /&gt;Birkaç öntanımlı özel grup vardır:&lt;br /&gt;&lt;b&gt;all&lt;/b&gt; - Herkes denk gelir.&lt;br /&gt;&lt;b&gt;auth&lt;/b&gt; - Kimliği doğrulanmış tüm kullanıcılar denk gelir.&lt;br /&gt;&lt;b&gt;sub,a,b,c&lt;/b&gt; - Güncel olarak &lt;i&gt;b&lt;/i&gt; ilâ &lt;i&gt;c&lt;/i&gt; sayı alt kanalda bulunan ve asgari &lt;i&gt;a&lt;/i&gt; paylaşılan üst kanalı bulunan kullanıcılar. Bu unsur hakkında daha fazla bilgi için sitemize bakınız.&lt;br /&gt;&lt;b&gt;in&lt;/b&gt; - Güncel olarak kanalda bulunan kullanıcılar denk gelir (&apos;&lt;i&gt;sub,0,0,0&lt;/i&gt;&apos; değeri için bir kısaltma olarak görülebilir.)&lt;br /&gt;&lt;br /&gt;&lt;b&gt;out&lt;/b&gt; Kanal dışındaki kullanıcılar denk gelir (&apos;&lt;i&gt;!sub,0,0,0&lt;/i&gt;&apos; değeri için bir kısaltma olarak kabul edilebilir).&lt;br /&gt;Bir unsurun ya bir gruba ya da bir kullanıcıya uygulandığını, ancak her ikisine aynı anda uygulanmadığını unutmayınız.</translation>
+        <translation>Bu unsurun hangi kullanıcı gruplarına uygulandığını yönetir.&lt;br /&gt;Grubun, unsurun kullanıldığı kanal bağlamında değerlendirildiğini unutmayınız. Örneğin kök kanalda varsayılan EKL&apos;ler &lt;i&gt;yöneticiler&lt;/i&gt; grubuna &lt;i&gt;Yaz&lt;/i&gt; iznini verir. Bu unsur, bir kanal tarafından alındıysa, kullanıcı EKL&apos;in tanımlandığı kanalda &lt;i&gt;yöneticiler&lt;/i&gt; grubuna üye olmasa bile, bu kanalda &lt;i&gt;yöneticiler&lt;/i&gt; grubuna ait bir kullanıcıya yazma iznini verecektir.&lt;br /&gt;Bir grubun ismi &apos;!&apos; ile başlarsa üyeliği olumsuzlanır, &apos;~&apos; ile başlarsa EKL&apos;in etkin olduğu kanal yerine tanımlandığı kanal bağlamında değerlendirilir.&lt;br /&gt;Eğer bir grup ismi &apos;#&apos; ile başlarsa, bu bir erişim jetonu olarak değerlendirilir. Denk gelmesi için kullanıcıların erişim jeton listelerinde &apos;#&apos; karakterini izleyen metni girmiş olmaları gerekir. Kanallara kimliği doğrulanmamış kullanıcıların erişimi için çok basit bir parola sistemi olarak kullanılabilir.&lt;br /&gt;Eğer grup ismi &apos;$&apos; ile başlarsa, sadece sertifikalarının hash değerinin &apos;$&apos; karakterini izleyen metne denk geldiği kullanıcılar dikkate alınır.&lt;br /&gt;Birkaç öntanımlı özel grup vardır:&lt;br /&gt;&lt;b&gt;all&lt;/b&gt; - Herkes denk gelir.&lt;br /&gt;&lt;b&gt;auth&lt;/b&gt; - Kimliği doğrulanmış tüm kullanıcılar denk gelir.&lt;br /&gt;&lt;b&gt;sub,a,b,c&lt;/b&gt; - Güncel olarak &lt;i&gt;b&lt;/i&gt; ilâ &lt;i&gt;c&lt;/i&gt; sayı alt kanalda bulunan ve asgari &lt;i&gt;a&lt;/i&gt; paylaşılan üst kanalı bulunan kullanıcılar. Bu unsur hakkında daha fazla bilgi için sitemize bakınız.&lt;br /&gt;&lt;b&gt;in&lt;/b&gt; - Güncel olarak kanalda bulunan kullanıcılar denk gelir (&apos;&lt;i&gt;sub,0,0,0&lt;/i&gt;&apos; değeri için bir kısaltma olarak görülebilir.)&lt;br /&gt;&lt;b&gt;out&lt;/b&gt; Kanal dışındaki kullanıcılar denk gelir (&apos;&lt;i&gt;!sub,0,0,0&lt;/i&gt;&apos; değeri için bir kısaltma olarak kabul edilebilir).&lt;br /&gt;Bir unsurun ya bir gruba ya da bir kullanıcıya uygulandığını, ancak her ikisine aynı anda uygulanmadığını unutmayınız.</translation>
     </message>
     <message>
         <source>&lt;b&gt;Password&lt;/b&gt;&lt;br /&gt;This field allows you to easily set and change the password of a channel. It uses Mumble&apos;s access tokens feature in the background. Use ACLs and groups if you need more fine grained and powerful access control.</source>
@@ -410,39 +412,39 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>Properties</source>
-        <translation type="unfinished"/>
+        <translation>Özellikler</translation>
     </message>
     <message>
         <source>Channel password</source>
-        <translation type="unfinished"/>
+        <translation>Kanal parolası</translation>
     </message>
     <message>
         <source>Maximum users</source>
-        <translation type="unfinished"/>
+        <translation>Azami kullanıcı sayısı</translation>
     </message>
     <message>
         <source>Channel name</source>
-        <translation type="unfinished"/>
+        <translation>Kanal adı</translation>
     </message>
     <message>
         <source>Inherited group members</source>
-        <translation type="unfinished"/>
+        <translation>Devralınan grup üyeleri</translation>
     </message>
     <message>
         <source>Foreign group members</source>
-        <translation type="unfinished"/>
+        <translation>Yabancı grup üyeleri</translation>
     </message>
     <message>
         <source>Inherited channel members</source>
-        <translation type="unfinished"/>
+        <translation>Devralınan kanal üyeleri</translation>
     </message>
     <message>
         <source>Add members to group</source>
-        <translation type="unfinished"/>
+        <translation>Gruba üye ekle</translation>
     </message>
     <message>
         <source>List of ACL entries</source>
-        <translation type="unfinished"/>
+        <translation>ACL girdilerinin listesi</translation>
     </message>
 </context>
 <context>
@@ -465,6 +467,17 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     <message>
         <source>Opening chosen ALSA Output failed: %1</source>
         <translation>Seçilen ALSA Çıktısı başarısız oldu: %1</translation>
+    </message>
+</context>
+<context>
+    <name>ALSAEnumerator</name>
+    <message>
+        <source>Getting name (longname) of the sound card failed: %1</source>
+        <translation>Ses kartının adı (uzun adı) alınamadı: %1</translation>
+    </message>
+    <message>
+        <source>Getting name of the sound card failed: %1</source>
+        <translation>Ses kartının adı alınamadı: %1</translation>
     </message>
 </context>
 <context>
@@ -492,27 +505,27 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>Device selection</source>
-        <translation>Cihaz seçimi</translation>
+        <translation>Aygıt seçimi</translation>
     </message>
     <message>
         <source>Device</source>
-        <translation>Cihaz</translation>
+        <translation>Aygıt</translation>
     </message>
     <message>
         <source>Device to use for microphone</source>
-        <translation>Mikrofon için kullanılacak cihaz</translation>
+        <translation>Mikrofon için kullanılacak aygıt</translation>
     </message>
     <message>
         <source>This chooses what device to query. You still need to actually query the device and select which channels to use.</source>
-        <translation>Sorgulanacak cihazı seçer. Bundan sonra cihazı sorgulamanız ve kullanılacak kanalları seçmeniz gerekir.</translation>
+        <translation>Sorgulanacak aygıtı seçer. Bundan sonra aygıtı sorgulamanız ve kullanılacak kanalları seçmeniz gerekir.</translation>
     </message>
     <message>
         <source>Query selected device</source>
-        <translation>Seçilen cihazı sorgula</translation>
+        <translation>Seçilen aygıtı sorgula</translation>
     </message>
     <message>
         <source>This queries the selected device for channels. Be aware that many ASIO drivers are buggy to the extreme, and querying them might cause a crash of either the application or the system.</source>
-        <translation>Bu, seçilen cihazı yapılandırır. Birçok ASİO sürücüsünün oldukça hatalı olduğunu ve onları sorgulamanın uygulama ya da sisteminizi çökertebileceği dikkatinize sunulur.</translation>
+        <translation>Bu, kanallar için seçilen aygıtı sorgular. Pek çok ASIO sürücüsünün aşırı derecede hatalı olduğunu ve bunları sorgulamanın uygulamanın veya sistemin çökmesine neden olabileceğini unutmayın.</translation>
     </message>
     <message>
         <source>&amp;Query</source>
@@ -520,11 +533,11 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>Configure selected device</source>
-        <translation>Seçilen cihazı yapılandır</translation>
+        <translation>Seçilen aygıtı yapılandır</translation>
     </message>
     <message>
         <source>This configures the selected device. Be aware that many ASIO drivers are buggy to the extreme, and querying them might cause a crash of either the application or the system.</source>
-        <translation>Bu, seçilen cihazı yapılandırır. Birçok ASİO sürücüsünün oldukça hatalı olduğunu ve onları sorgulamanın uygulama ya da sisteminizi çökertebileceği dikkatinize sunulur.</translation>
+        <translation>Bu, seçilen aygıtı yapılandırır. Pek çok ASIO sürücüsünün aşırı derecede hatalı olduğunu ve bunları sorgulamanın uygulamanın veya sistemin çökmesine neden olabileceğini unutmayın.</translation>
     </message>
     <message>
         <source>&amp;Configure</source>
@@ -544,7 +557,7 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>This will configure the input channels for ASIO. Make sure you select at least one channel as microphone and speaker. &lt;i&gt;Microphone&lt;/i&gt; should be where your microphone is attached, and &lt;i&gt;Speaker&lt;/i&gt; should be a channel that samples &apos;&lt;i&gt;What you hear&lt;/i&gt;&apos;.&lt;br /&gt;For example, on the Audigy 2 ZS, a good selection for Microphone would be &apos;&lt;i&gt;Mic L&lt;/i&gt;&apos; while Speaker should be &apos;&lt;i&gt;Mix L&lt;/i&gt;&apos; and &apos;&lt;i&gt;Mix R&lt;/i&gt;&apos;.</source>
-        <translation>Bu, ASİO için girdi kanallarını yapılandırır. En az bir kanalı mikrofon ve hoparlör olarak seçtiğinize emin olunuz. &lt;i&gt;Mikrofon&lt;/i&gt;, mikrofonunuzun bağlı olduğu konum ve &lt;i&gt;Hoparlör&lt;/i&gt; &apos;&lt;i&gt;duyduğunuzu&lt;/i&gt;&apos; örnekleyen bir kanal olmalıdır. Mesela Audigy 2 ZS için iyi bir mikrofon seçimi &apos;&lt;i&gt;Mic L&lt;/i&gt;&apos; değeridir; Hoparlör ise &apos;&lt;i&gt;Mix L&lt;/i&gt;&apos; ve &apos;&lt;i&gt;Mix R&lt;/i&gt;&apos; olmalıdır.</translation>
+        <translation>Bu, ASIO için girdi kanallarını yapılandırır. En az bir kanalı mikrofon ve hoparlör olarak seçtiğinize emin olunuz. &lt;i&gt;Mikrofon&lt;/i&gt;, mikrofonunuzun bağlı olduğu konum ve &lt;i&gt;Hoparlör&lt;/i&gt; &apos;&lt;i&gt;duyduğunuzu&lt;/i&gt;&apos; örnekleyen bir kanal olmalıdır.&lt;br /&gt;Mesela Audigy 2 ZS için iyi bir mikrofon seçimi &apos;&lt;i&gt;Mic L&lt;/i&gt;&apos; değeridir; Hoparlör ise &apos;&lt;i&gt;Mix L&lt;/i&gt;&apos; ve &apos;&lt;i&gt;Mix R&lt;/i&gt;&apos; olmalıdır.</translation>
     </message>
     <message>
         <source>Configure input channels</source>
@@ -576,11 +589,11 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>List of microphones</source>
-        <translation type="unfinished"/>
+        <translation>Mikrofonların listesi</translation>
     </message>
     <message>
         <source>List of speakers</source>
-        <translation type="unfinished"/>
+        <translation>Hoparlörlerin listesi</translation>
     </message>
 </context>
 <context>
@@ -591,7 +604,7 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>Opening selected ASIO device failed. No input will be done.</source>
-        <translation>Seçilen ASİO cihazının açılması başarısız oldu. Hiçbir girdi alınmayacak.</translation>
+        <translation>Seçilen ASIO aygıtının açılması başarısız oldu. Hiçbir girdi alınmayacak.</translation>
     </message>
 </context>
 <context>
@@ -599,10 +612,6 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     <message>
         <source>About Mumble</source>
         <translation>Mumble Hakkında</translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;Mumble (%1)&lt;/h3&gt;&lt;p&gt;%3&lt;/p&gt;&lt;p&gt;&lt;b&gt;A voice-chat utility for gamers&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;tt&gt;&lt;a href=&quot;%2&quot;&gt;%2&lt;/a&gt;&lt;/tt&gt;&lt;/p&gt;</source>
-        <translation>&lt;h3&gt;Mumble (%1)&lt;/h3&gt;&lt;p&gt;%3&lt;/p&gt;&lt;p&gt;&lt;b&gt;Oyuncular için sesle sohbet etme aracı&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;tt&gt;&lt;a href=&quot;%2&quot;&gt;%2&lt;/a&gt;&lt;/tt&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&amp;About Mumble</source>
@@ -626,15 +635,23 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>License agreement</source>
-        <translation type="unfinished"/>
+        <translation>Lisans anlaşması</translation>
     </message>
     <message>
         <source>Authors</source>
-        <translation type="unfinished"/>
+        <translation>Yazarlar</translation>
     </message>
     <message>
         <source>Third-party license agreements</source>
-        <translation type="unfinished"/>
+        <translation>Üçüncü taraf lisans anlaşmaları</translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;Mumble (%1)&lt;/h3&gt;&lt;p&gt;%3&lt;/p&gt;&lt;p&gt;&lt;b&gt;An Open Source, low-latency, high quality voice-chat utility&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;tt&gt;&lt;a href=&quot;%2&quot;&gt;%2&lt;/a&gt;&lt;/tt&gt;&lt;/p&gt;</source>
+        <translation>&lt;h3&gt;Mumble (%1)&lt;/h3&gt;&lt;p&gt;%3&lt;/p&gt;&lt;p&gt;&lt;b&gt;Açık kaynaklı, düşük gecikmeli, yüksek kaliteli sesli sohbet aracı &lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;tt&gt;&lt;a href=&quot;%2&quot;&gt;%2&lt;/a&gt;&lt;/tt&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>For a list of authors, please see &lt;a href=&quot;https://github.com/mumble-voip/mumble/graphs/contributors&quot;&gt;https://github.com/mumble-voip/mumble/graphs/contributors&lt;/a&gt;</source>
+        <translation>Yazarların listesi için lütfen &lt;a href=&quot;https://github.com/mumble-voip/mumble/graphs/contributors&quot;&gt;https://github.com/mumble-voip/mumble/graphs/contributors&lt;/a&gt; adresine bakın</translation>
     </message>
 </context>
 <context>
@@ -653,15 +670,15 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>Device</source>
-        <translation>Cihaz</translation>
+        <translation>Aygıt</translation>
     </message>
     <message>
         <source>Input device for audio</source>
-        <translation>Ses için girdi cihazı</translation>
+        <translation>Ses için girdi aygıtı</translation>
     </message>
     <message>
         <source>&lt;b&gt;This is the input device to use for audio.&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Bu, ses için kullanılacak girdi cihazıdır.&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Bu, ses için kullanılacak girdi aygıtıdır.&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Transmission</source>
@@ -777,7 +794,7 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>Audio per packet</source>
-        <translation>Paket başı ses</translation>
+        <translation>Paket başına ses</translation>
     </message>
     <message>
         <source>How many audio frames to send per packet</source>
@@ -797,11 +814,11 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>Noise suppression</source>
-        <translation>Gürültü iptali</translation>
+        <translation>Gürültü bastırma</translation>
     </message>
     <message>
         <source>&lt;b&gt;This sets the amount of noise suppression to apply.&lt;/b&gt;&lt;br /&gt;The higher this value, the more aggressively stationary noise will be suppressed.</source>
-        <translation>&lt;b&gt;Uygulanacak azami gürültü iptalini belirler.&lt;/b&gt;&lt;br /&gt;Bu değer ne kadar büyükse, sabit gürültü o kadar çok silinecektir.</translation>
+        <translation>&lt;b&gt;Bu, uygulanacak gürültü bastırma miktarını ayarlar.&lt;/b&gt;&lt;br /&gt;Bu değer ne kadar yüksek olursa, sabit gürültü o kadar çok bastırılacaktır.</translation>
     </message>
     <message>
         <source>Maximum amplification of input sound</source>
@@ -809,7 +826,7 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>&lt;b&gt;Maximum amplification of input.&lt;/b&gt;&lt;br /&gt;Mumble normalizes the input volume before compressing, and this sets how much it&apos;s allowed to amplify.&lt;br /&gt;The actual level is continually updated based on your current speech pattern, but it will never go above the level specified here.&lt;br /&gt;If the &lt;i&gt;Microphone loudness&lt;/i&gt; level of the audio statistics hover around 100%, you probably want to set this to 2.0 or so, but if, like most people, you are unable to reach 100%, set this to something much higher.&lt;br /&gt;Ideally, set it so &lt;i&gt;Microphone Loudness * Amplification Factor &gt;= 100&lt;/i&gt;, even when you&apos;re speaking really soft.&lt;br /&gt;&lt;br /&gt;Note that there is no harm in setting this to maximum, but Mumble will start picking up other conversations if you leave it to auto-tune to that level.</source>
-        <translation>&lt;b&gt;Girdinin azami yükseltilmesi (amplifikasyon)&lt;/b&gt;&lt;br /&gt;Mumble sıkıştırmadan önce girdi sesini normalize eder, ve bu ne kadar yükseltebileceğini ayarlar.&lt;br /&gt;Asli seviye konuşmanıza dayalı olarak devamlı güncellenir, fakat hiçbir zaman burada belirtilen değeri geçmez.&lt;br /&gt;Eğer &lt;i&gt;Mikrofon hacmi&lt;/i&gt; ses istatistikleri %100 civarındaysa, bunu muhtemelen 2.0 civarı bir değere ayarlamak en iyisidir. ama eğer kullanıcıların çoğu gibi %100 değerine erişemiyorsanız, çok daha yüksek bir değer seçiniz.&lt;br /&gt;İdeal durumda, çok alçak sesle konuşuyorsanız bile &lt;i&gt;Mikrofon hacmi * Yükseltme faktörü &gt;=100&lt;/i&gt; olacak şekilde seçiniz.&lt;br /&gt;&lt;br /&gt;Azami değeri seçmenin hiçbir kötü yanı yoktur, ancak bu değere otomatik olarak ulaşmasına izin verirseniz, Mumble başka konuşmaları da duymaya başlar.</translation>
+        <translation>&lt;b&gt;Girdinin azami yükseltilmesi (amplifikasyon)&lt;/b&gt;&lt;br /&gt;Mumble sıkıştırmadan önce girdi sesini normalize eder, ve bu ne kadar yükseltebileceğini ayarlar.&lt;br /&gt;Asli seviye konuşmanıza dayalı olarak devamlı güncellenir, fakat hiçbir zaman burada belirtilen değeri geçmez.&lt;br /&gt;Eğer &lt;i&gt;Mikrofon seviyesi&lt;/i&gt; ses istatistikleri %100 civarındaysa, bunu muhtemelen 2.0 civarı bir değere ayarlamak en iyisidir. ama eğer kullanıcıların çoğu gibi %100 değerine erişemiyorsanız, çok daha yüksek bir değer seçiniz.&lt;br /&gt;İdeal durumda, çok alçak sesle konuşuyorsanız bile &lt;i&gt;Mikrofon seviyesi * Yükseltme faktörü &gt;=100&lt;/i&gt; olacak şekilde seçiniz.&lt;br /&gt;&lt;br /&gt;Azami değeri seçmenin hiçbir kötü yanı yoktur, ancak bu değere otomatik olarak ulaşmasına izin verirseniz, Mumble başka konuşmaları da duymaya başlar.</translation>
     </message>
     <message>
         <source>Current speech detection chance</source>
@@ -853,7 +870,7 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>&lt;b&gt;This opens the device in exclusive mode.&lt;/b&gt;&lt;br /&gt;No other application will be able to use the device.</source>
-        <translation>&lt;b&gt;Cihazı ayrıcalıklı kipte açar.&lt;/b&gt;&lt;br /&gt;Başka hiçbir uygulama bu cihazı kullanamaz.</translation>
+        <translation>&lt;b&gt;Bu, aygıtı ayrıcalıklı kipte açar.&lt;/b&gt;&lt;br /&gt;Başka hiçbir uygulama bu aygıtı kullanamaz.</translation>
     </message>
     <message>
         <source>Exclusive</source>
@@ -892,18 +909,6 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
         <translation>Çeşitli</translation>
     </message>
     <message>
-        <source>Audible audio cue when starting or stopping to transmit</source>
-        <translation>Aktarım başladığında ve bittiğinde duyulabilir işaret</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;This enables transmission audio cues.&lt;/b&gt;&lt;br /&gt;Setting this will give you a short audio beep when you start and stop transmitting.</source>
-        <translation>&lt;b&gt;Aktarım ses işaretlerin etkinleştirir.&lt;/b&gt;&lt;br /&gt;Seçilirse, aktarmaya başladığınızda ve bu sona erdiğinde kısa bir bip sesi duyarsınız.</translation>
-    </message>
-    <message>
-        <source>Audio cue</source>
-        <translation>Sesli işaretler</translation>
-    </message>
-    <message>
         <source>Gets played when starting to transmit</source>
         <translation>Aktarıma başlanıldığında çalınır</translation>
     </message>
@@ -929,7 +934,7 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>Idle action</source>
-        <translation>Boşta faaliyet (Idle)</translation>
+        <translation>Boşta kalma eylemi</translation>
     </message>
     <message>
         <source>minutes do</source>
@@ -985,31 +990,71 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>Don&apos;t use noise suppression.</source>
-        <translation type="unfinished"/>
+        <translation>Gürültü bastırmayı kullanma.</translation>
     </message>
     <message>
         <source>Use the noise suppression algorithm provided by Speex.</source>
-        <translation type="unfinished"/>
+        <translation>Speex tarafından sağlanan gürültü bastırma algoritmasını kullan.</translation>
     </message>
     <message>
         <source>Use the noise suppression algorithm provided by RNNoise.</source>
-        <translation type="unfinished"/>
+        <translation>RNNoise tarafından sağlanan gürültü bastırma algoritmasını kullan.</translation>
     </message>
     <message>
         <source>Use a combination of Speex and RNNoise to do noise suppression.</source>
-        <translation type="unfinished"/>
+        <translation>Gürültü bastırma yapmak için Speex ve RNNoise birleşimini kullan.</translation>
     </message>
     <message>
         <source>Both</source>
-        <translation type="unfinished"/>
+        <translation>Her ikisi</translation>
     </message>
     <message>
         <source>This controls the amount by which Speex will suppress noise.</source>
-        <translation type="unfinished"/>
+        <translation>Bu, Speex&apos;in gürültüyü ne kadar bastıracağını denetler.</translation>
     </message>
     <message>
         <source>Speex suppression strength</source>
-        <translation type="unfinished"/>
+        <translation>Speex bastırma gücü</translation>
+    </message>
+    <message>
+        <source>Mute cue</source>
+        <translation>İşareti sessize alma</translation>
+    </message>
+    <message>
+        <source>Br&amp;owse...</source>
+        <translation>&amp;Tara...</translation>
+    </message>
+    <message>
+        <source>Pre&amp;view</source>
+        <translation>Ön izleme</translation>
+    </message>
+    <message>
+        <source>Audio cue when using...</source>
+        <translation>Kullanırken ses işareti...</translation>
+    </message>
+    <message>
+        <source>Audible audio cue when starting or stopping to transmit using Push To Talk</source>
+        <translation>Bas ve konuş kullanarak aktarımı başlatırken veya durdururken duyulabilir ses işareti</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;This enables transmission audio cues when using Push To Talk.&lt;/b&gt;&lt;br /&gt;Setting this will give you a short audio beep when you start and stop transmitting.</source>
+        <translation>&lt;b&gt;Bu, Bas ve konuş kullanırken aktarım ses işaretlerini etkinleştirir.&lt;/b&gt;&lt;br /&gt;Bunu ayarlamak, aktarımı başlattığınızda ve durdurduğunuzda size kısa bir ses bip sesi verecektir.</translation>
+    </message>
+    <message>
+        <source>Push To Talk</source>
+        <translation>Bas ve Konuş</translation>
+    </message>
+    <message>
+        <source>Audible audio cue when starting or stopping to transmit using Voice Activity</source>
+        <translation>Ses Etkinliğini kullanarak aktarımı başlatırken veya durdururken duyulabilir ses işareti</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;This enables transmission audio cues when using Voice Activity.&lt;/b&gt;&lt;br /&gt;Setting this will give you a short audio beep when you start and stop transmitting.</source>
+        <translation>&lt;b&gt;Bu, Ses Etkinliğini kullanırken aktarım ses işaretlerini etkinleştirir.&lt;/b&gt;&lt;br /&gt;Bunu ayarlamak, aktarımı başlattığınızda ve durdurduğunuzda size kısa bir ses bip sesi verecektir.</translation>
+    </message>
+    <message>
+        <source>Voice Activity</source>
+        <translation>Ses Etkinliği</translation>
     </message>
 </context>
 <context>
@@ -1056,91 +1101,91 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>Audio system</source>
-        <translation type="unfinished"/>
+        <translation>Ses sistemi</translation>
     </message>
     <message>
         <source>Input device</source>
-        <translation type="unfinished"/>
+        <translation>Girdi aygıtı</translation>
     </message>
     <message>
         <source>Echo cancellation mode</source>
-        <translation type="unfinished"/>
+        <translation>Yankı iptal modu</translation>
     </message>
     <message>
         <source>Transmission mode</source>
-        <translation type="unfinished"/>
+        <translation>Aktarım modu</translation>
     </message>
     <message>
         <source>PTT lock threshold</source>
-        <translation type="unfinished"/>
+        <translation>PTT kilit eşiği</translation>
     </message>
     <message>
         <source>PTT hold threshold</source>
-        <translation type="unfinished"/>
+        <translation>PTT tutma eşiği</translation>
     </message>
     <message>
         <source>Silence below</source>
-        <translation type="unfinished"/>
+        <translation>Aşağısında sessizlik</translation>
     </message>
     <message>
         <source>Current speech detection chance</source>
-        <translation type="unfinished"/>
+        <translation>Güncel konuşma tespit ihtimâli</translation>
     </message>
     <message>
         <source>Speech above</source>
-        <translation type="unfinished"/>
+        <translation>Üstünde Konuşma</translation>
     </message>
     <message>
         <source>Speech below</source>
-        <translation type="unfinished"/>
+        <translation>Aşağıdaki konuşma</translation>
     </message>
     <message>
         <source>Audio per packet</source>
-        <translation type="unfinished"/>
+        <translation>Paket başına ses</translation>
     </message>
     <message>
         <source>Quality of compression (peak bandwidth)</source>
-        <translation type="unfinished"/>
+        <translation>Sıkıştırma kalitesi (azami bant genişliği)</translation>
     </message>
     <message>
         <source>Noise suppression</source>
-        <translation type="unfinished"/>
+        <translation>Gürültü bastırma</translation>
     </message>
     <message>
         <source>Maximum amplification</source>
-        <translation type="unfinished"/>
+        <translation>Azami Yükseltme</translation>
     </message>
     <message>
         <source>Transmission started sound</source>
-        <translation type="unfinished"/>
+        <translation>İletim başladı sesi</translation>
     </message>
     <message>
         <source>Transmission stopped sound</source>
-        <translation type="unfinished"/>
+        <translation>İletim durdu sesi</translation>
     </message>
     <message>
         <source>Initiate idle action after (in minutes)</source>
-        <translation type="unfinished"/>
+        <translation>(Dakika olarak) sonra boşta kalma eylemini başlat</translation>
     </message>
     <message>
         <source>Idle action</source>
-        <translation type="unfinished"/>
+        <translation>Boşta kalma eylemi</translation>
     </message>
     <message>
         <source>Access to the microphone was denied. Please allow Mumble to use the microphone by changing the settings in System Preferences -&gt; Security &amp; Privacy -&gt; Privacy -&gt; Microphone.</source>
-        <translation type="unfinished"/>
+        <translation>Mikrofona erişim reddedildi. Lütfen Sistem Tercihleri -&gt; Güvenlik ve Gizlilik -&gt; Gizlilik -&gt; Mikrofon&apos;daki ayarları değiştirerek Mumble&apos;ın mikrofonu kullanmasına izin verin.</translation>
     </message>
     <message>
         <source>Access to the microphone was denied. Please check that your operating system&apos;s microphone settings allow Mumble to use the microphone.</source>
-        <translation type="unfinished"/>
+        <translation>Mikrofona erişim reddedildi. Lütfen işletim sisteminizin mikrofon ayarlarının Mumble&apos;ın mikrofonu kullanmasına izin verip vermediğini kontrol edin.</translation>
     </message>
     <message>
         <source>Disabled</source>
-        <translation type="unfinished"/>
+        <translation>Devre dışı</translation>
     </message>
     <message>
         <source>Disable echo cancellation.</source>
-        <translation type="unfinished"/>
+        <translation>Yankı iptalini devre dışı bırakın.</translation>
     </message>
 </context>
 <context>
@@ -1159,15 +1204,15 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>Device</source>
-        <translation>Cihaz</translation>
+        <translation>Aygıt</translation>
     </message>
     <message>
         <source>Output device for audio</source>
-        <translation>Ses için çıktı cihazı</translation>
+        <translation>Ses için çıktı aygıtı</translation>
     </message>
     <message>
         <source>&lt;b&gt;This is the output device to use for audio.&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Bu, ses için kullanılacak çıktı cihazıdır.&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Bu, ses için kullanılacak çıktı aygıtıdır.&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Positional Audio</source>
@@ -1190,10 +1235,6 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
         <translation>&lt;b&gt;Jitter (titreme) tamponu için asgari emniyet aralığını aralar.&lt;/b&gt;&lt;br /&gt;İçeriye gelen tüm ses arabelleğe alınır, ve gecikmeyi en aza indirmek için jitter tamponu devamlı şebekenin kaldırabileceği asgari değere itmeye çalışır. Bu seçenek kullanılacak asgari tampon boyutunu belirler. Duyduğunuz cümlelerin başında bozukluk varsa bu değeri arttırınız.</translation>
     </message>
     <message>
-        <source>Minimum distance to user before sound volume decreases</source>
-        <translation>Ses hacmi düşülmeden önce asgari mesafe</translation>
-    </message>
-    <message>
         <source>This sets the minimum distance for sound calculations. The volume of other users&apos; speech will not decrease until they are at least this far away from you.</source>
         <translation>Ses hesapları için asgari mesafeyi belirler. Diğer kullanıcıların ses seviyesi sizden en az bu kadar uzaklaşmadıkları sürece düşürülmeyecektir.</translation>
     </message>
@@ -1207,11 +1248,11 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>Volume</source>
-        <translation>Hacim</translation>
+        <translation>Seviye</translation>
     </message>
     <message>
         <source>Volume of incoming speech</source>
-        <translation>Gelen konuşma için ses hacmi</translation>
+        <translation>Gelen konuşma için ses düzeyi</translation>
     </message>
     <message>
         <source>&lt;b&gt;This adjusts the volume of incoming speech.&lt;/b&gt;&lt;br /&gt;Note that if you increase this beyond 100%, audio will be distorted.</source>
@@ -1231,16 +1272,12 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
         <translation>Bağlı &quot;hoparlörler&quot; aslında kulaklıktır</translation>
     </message>
     <message>
-        <source>Factor for sound volume decrease</source>
-        <translation>Ses hacmi düşürülmesi için katsayı</translation>
-    </message>
-    <message>
         <source>Bloom</source>
         <translation>Genişletme</translation>
     </message>
     <message>
         <source>Factor for sound volume increase</source>
-        <translation>Ses hacmi yükseltilmesi için katsayı</translation>
+        <translation>Ses seviyesi yükseltilmesi için katsayı</translation>
     </message>
     <message>
         <source>How much should sound volume increase for sources that are really close?</source>
@@ -1267,12 +1304,8 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
         <translation>Azami Mesafe</translation>
     </message>
     <message>
-        <source>Maximum distance, beyond which speech volume won&apos;t decrease</source>
-        <translation>Azami mesafe, geçildiğinde ses seviyesi düşürülmeyecektir</translation>
-    </message>
-    <message>
         <source>Minimum Volume</source>
-        <translation>Asgari Hacim</translation>
+        <translation>Asgari Ses Seviyesi</translation>
     </message>
     <message>
         <source>What should the volume be at the maximum distance?</source>
@@ -1357,7 +1390,7 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>&lt;b&gt;This opens the device in exclusive mode.&lt;/b&gt;&lt;br /&gt;No other application will be able to use the device.</source>
-        <translation>&lt;b&gt;Cihazı ayrıcalıklı kipte açar.&lt;/b&gt;&lt;br /&gt;Başka hiçbir uygulama bu cihazı kullanamaz.</translation>
+        <translation>&lt;b&gt;Bu, aygıtı ayrıcalıklı kipte açar.&lt;/b&gt;&lt;br /&gt;Başka hiçbir uygulama bu aygıtı kullanamaz.</translation>
     </message>
     <message>
         <source>Exclusive</source>
@@ -1365,7 +1398,7 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>If checked Mumble lowers the volume of other users while you talk if you have the &quot;Priority Speaker&quot; status.</source>
-        <translation>&quot;Öncelikli Konuşmacı&quot;  olarak işaretlendiğinizde, siz konuşurken Mumble diğer kullanıcıların sesini kısar.</translation>
+        <translation>&quot;Öncelikli Konuşmacı&quot; olarak işaretlendiğinizde, siz konuşurken Mumble diğer kullanıcıların sesini kısar.</translation>
     </message>
     <message>
         <source>If checked, Mumble will only attenuate applications that are using the same output source as Mumble</source>
@@ -1377,7 +1410,7 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>Only attenuate applications using the same output device</source>
-        <translation>Sadece aynı çıktı cihazını kullanan uygulamaların sesini kıs</translation>
+        <translation>Sadece aynı çıktı aygıtını kullanan uygulamaların sesini kıs</translation>
     </message>
     <message>
         <source>If checked, PulseAudio loopback modules will be attenuated</source>
@@ -1385,7 +1418,7 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>&lt;b&gt;Attenuate PulseAudio loopback modules&lt;/b&gt;&lt;br /&gt;If loopback modules are linked to Mumble&apos;s output device/sink, they will also be attenuated.</source>
-        <translation>&lt;b&gt;PulseAudio geri döngü öbeklerinin sesini kıs&lt;/b&gt;&lt;br /&gt;Eğer geri döngü öbekleri Mumble&apos;ın çıktı cihazına bağlı iseler, onların da sesi kısılacaktır.</translation>
+        <translation>&lt;b&gt;PulseAudio geri döngü öbeklerinin sesini kıs&lt;/b&gt;&lt;br /&gt;Eğer geri döngü öbekleri Mumble&apos;ın çıktı aygıtına bağlı iseler, onların da sesi kısılacaktır.</translation>
     </message>
     <message>
         <source>Attenuate PulseAudio loopback modules</source>
@@ -1409,11 +1442,23 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>Enable</source>
-        <translation type="unfinished"/>
+        <translation>Etkinleştir</translation>
     </message>
     <message>
         <source>Attenuation</source>
-        <translation type="unfinished"/>
+        <translation>Kısma</translation>
+    </message>
+    <message>
+        <source> %</source>
+        <translation> %</translation>
+    </message>
+    <message>
+        <source> m</source>
+        <translation> m</translation>
+    </message>
+    <message>
+        <source>Positional audio cannot work with mono output devices!</source>
+        <translation>Konumsal ses, mono çıkış aygıtlarıyla çalışamaz!</translation>
     </message>
 </context>
 <context>
@@ -1443,60 +1488,72 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
         <translation>%1 %</translation>
     </message>
     <message>
-        <source>%1 m</source>
-        <translation>%1 m</translation>
-    </message>
-    <message>
         <source>Output system</source>
-        <translation type="unfinished"/>
+        <translation>Çıkış sistemi</translation>
     </message>
     <message>
         <source>Output device</source>
-        <translation type="unfinished"/>
+        <translation>Çıktı aygıtı</translation>
     </message>
     <message>
         <source>Default jitter buffer</source>
-        <translation type="unfinished"/>
+        <translation>Varsayılan titreşim arabelleği</translation>
     </message>
     <message>
         <source>Volume of incoming speech</source>
-        <translation type="unfinished"/>
+        <translation>Gelen konuşma için ses düzeyi</translation>
     </message>
     <message>
         <source>Output delay</source>
-        <translation type="unfinished"/>
+        <translation>Çıkış gecikmesi</translation>
     </message>
     <message>
         <source>Attenuation of other applications during speech</source>
-        <translation type="unfinished"/>
+        <translation>Diğer tüm uygulamaları konuşma sırasında kıs</translation>
     </message>
     <message>
         <source>Minimum distance</source>
-        <translation type="unfinished"/>
+        <translation>Asgari Mesafe</translation>
     </message>
     <message>
         <source>Maximum distance</source>
-        <translation type="unfinished"/>
+        <translation>Azami Mesafe</translation>
     </message>
     <message>
         <source>Minimum volume</source>
-        <translation type="unfinished"/>
+        <translation>En düşük ses seviyesi</translation>
     </message>
     <message>
         <source>Bloom</source>
-        <translation type="unfinished"/>
+        <translation>Genişletme</translation>
     </message>
     <message>
         <source>Delay variance</source>
-        <translation type="unfinished"/>
+        <translation>Gecikme Değişikliği</translation>
     </message>
     <message>
         <source>Packet loss</source>
-        <translation type="unfinished"/>
+        <translation>Paket kaybı</translation>
     </message>
     <message>
         <source>Loopback</source>
-        <translation type="unfinished"/>
+        <translation>Geridöngü</translation>
+    </message>
+    <message>
+        <source>Distance at which audio volume from another player starts decreasing</source>
+        <translation>Başka bir oyuncunun ses seviyesinin azalmaya başladığı mesafe</translation>
+    </message>
+    <message>
+        <source>Distance at which a player&apos;s audio volume has reached its minimum value</source>
+        <translation>Bir oyuncunun ses seviyesinin asgari değerine ulaştığı mesafe</translation>
+    </message>
+    <message>
+        <source>The minimum volume a player&apos;s audio will fade out to with increasing distance. Set to 0% for it to fade into complete silence for a realistic maximum hearing distance.</source>
+        <translation>Bir oyuncunun sesinin mesafe arttıkça azalacağı asgari ses seviyesi. Gerçekçi bir azami işitme mesafesi için tam sessizliğe geçmesi için %0 olarak ayarlayın.</translation>
+    </message>
+    <message>
+        <source>If an audio source is close enough, blooming will cause the audio to be played on all speakers more or less regardless of their position (albeit with lower volume)</source>
+        <translation>Genişletme; bir ses kaynağı yeterince yakınsa, sesin tüm hoparlörlerde konumlarından bağımsız olarak (daha düşük ses seviyesinde de olsa) aşağı yukarı aynı çalınmasına neden olacaktır</translation>
     </message>
 </context>
 <context>
@@ -1547,7 +1604,7 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>This shows the peak power of the speakers in the last frame (20 ms). Unless you are using a multi-channel sampling method (such as ASIO) with speaker channels configured, this will be 0. If you have such a setup configured, and this still shows 0 while you&apos;re playing audio from other programs, your setup is not working.</source>
-        <oldsource>This shows the peak power in the last frame (20 ms) of the speakers. Unless you are using a multi-channel sampling method (such as ASIO) with speaker channels configured, this will be 0. If you have such a setup configured, and this still shows 0 while you're playing audio from other programs, your setup is not working.</oldsource>
+        <oldsource>This shows the peak power in the last frame (20 ms) of the speakers. Unless you are using a multi-channel sampling method (such as ASIO) with speaker channels configured, this will be 0. If you have such a setup configured, and this still shows 0 while you&apos;re playing audio from other programs, your setup is not working.</oldsource>
         <translation>Son çerçevede (20 ms) hoparlörlerin azami seviyesini gösterir. Hoparlör kanalları yapılandırılmış çoklu-kanal örnekleme metodu kullanmıyorsanız bu 0 olacaktır. Eğer böyle bir düzenek yapılandırdıysanız ve başka uygulamalarda ses çalındığında bu değer hâlâ sıfırı gösteriyorsa, düzeneğiniz çalışmıyor demektir.</translation>
     </message>
     <message>
@@ -1584,7 +1641,7 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>This is the Signal-To-Noise Ratio (SNR) of the microphone in the last frame (20 ms). It shows how much clearer the voice is compared to the noise.&lt;br /&gt;If this value is below 1.0, there&apos;s more noise than voice in the signal, and so quality is reduced.&lt;br /&gt;There is no upper limit to this value, but don&apos;t expect to see much above 40-50 without a sound studio.</source>
-        <translation>Bu, son çerçevede (20 ms) mikrofonun Sinyal / Gürültü oranıdır. Gürültüye oranla sesinizin netliğini gösterir.&lt;br /&gt;Bu değer 1.0&apos;dan düşükse sinyalde sesten çok gürültü var demektir, dolayısıyla kalite düşer. Bu değerin üst sınırı yoktur ancak stüdyoda olmadan 40 ilâ 50&apos;nin üstü bir değer görmeyi beklemeyin.</translation>
+        <translation>Bu, son çerçevede (20 ms) mikrofonun Sinyal / Gürültü oranıdır. Gürültüye oranla sesinizin netliğini gösterir.&lt;br /&gt;Bu değer 1.0&apos;dan düşükse sinyalde sesten çok gürültü var demektir, dolayısıyla kalite düşer.&lt;br /&gt;Bu değerin üst sınırı yoktur ancak stüdyoda olmadan 40 ilâ 50&apos;nin üstü bir değer görmeyi beklemeyin.</translation>
     </message>
     <message>
         <source>Speech Probability</source>
@@ -1652,7 +1709,7 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>This shows the weights of the echo canceller, with time increasing downwards and frequency increasing to the right.&lt;br /&gt;Ideally, this should be black, indicating no echo exists at all. More commonly, you&apos;ll have one or more horizontal stripes of bluish color representing time delayed echo. You should be able to see the weights updated in real time.&lt;br /&gt;Please note that as long as you have nothing to echo off, you won&apos;t see much useful data here. Play some music and things should stabilize. &lt;br /&gt;You can choose to view the real or imaginary parts of the frequency-domain weights, or alternately the computed modulus and phase. The most useful of these will likely be modulus, which is the amplitude of the echo, and shows you how much of the outgoing signal is being removed at that time step. The other viewing modes are mostly useful to people who want to tune the echo cancellation algorithms.&lt;br /&gt;Please note: If the entire image fluctuates massively while in modulus mode, the echo canceller fails to find any correlation whatsoever between the two input sources (speakers and microphone). Either you have a very long delay on the echo, or one of the input sources is configured wrong.</source>
-        <translation>Yankı iptalinin ağırlığını gösterir, zaman aşağıya doğru artar ve frekans sağda artar. İdeal durumda hiçbir yankının olmadığını siyah renk ile gösterir. Genel durumda bir ya da daha fazla mavimtırak yatay çizgiler görürsünüz ki bunlar yankıları gösterir. Ağırlıkların gerçek zamanlı güncellemelerinizi görmeniz gerekir.&lt;br /&gt;Yankı yaratacak hiçbir şey olmadığı sürece burada dikkate değer veri görmeyeceğinizi unutmayınız. Müzik çalarsanız durum açıklaşır ve sabitleşir.&lt;br /&gt;Frekans-alanı ağırlıklarının gerçek ya da sanal kısımlarını, veya hesaplanan modül ve fazı görüntülemeyi seçebilirsiniz. Muhtemelen bunların en yararlısı yankının amplitüdü olan modüldür ve gönderilen sinyalin bu zaman çerçevesinde ne kadarının kaldırıldığını gösterir. Diğer görüntüleme kipleri en çok yankı algoritmaları ayarlamak isteyen kişilerin işine yarar&lt;br /&gt; Lütfen dikkat: Modül kipinde bütün görüntü önemli bir şekilde dalgalanırsa, bu yankı iptalinin iki girdi kaynağı (mikrofon ve hoparlörler) arasında hiçbir korelasyon bulamadığı anlamına gelir. Ya yankı için çok yüksek bir süre bulunduğunu, ya da girdi kaynaklarının yanlış yapılandırılmış olduğunu gösterir bu.</translation>
+        <translation>Yankı iptalinin ağırlığını gösterir, zaman aşağıya doğru artar ve frekans sağda artar.&lt;br /&gt;İdeal durumda hiçbir yankının olmadığını siyah renk ile gösterir. Genel durumda bir ya da daha fazla mavimtırak yatay çizgiler görürsünüz ki bunlar yankıları gösterir. Ağırlıkların gerçek zamanlı güncellemelerinizi görmeniz gerekir.&lt;br /&gt;Yankı yaratacak hiçbir şey olmadığı sürece burada dikkate değer veri görmeyeceğinizi unutmayınız. Müzik çalarsanız durum açıklaşır ve sabitleşir.&lt;br /&gt;Frekans-alanı ağırlıklarının gerçek ya da sanal kısımlarını, veya hesaplanan modül ve fazı görüntülemeyi seçebilirsiniz. Muhtemelen bunların en yararlısı yankının amplitüdü olan modüldür ve gönderilen sinyalin bu zaman çerçevesinde ne kadarının kaldırıldığını gösterir. Diğer görüntüleme kipleri en çok yankı algoritmaları ayarlamak isteyen kişilerin işine yarar&lt;br /&gt;Lütfen dikkat: Modül kipinde bütün görüntü önemli bir şekilde dalgalanırsa, bu yankı iptalinin iki girdi kaynağı (mikrofon ve hoparlörler) arasında hiçbir korelasyon bulamadığı anlamına gelir. Ya yankı için çok yüksek bir süre bulunduğunu, ya da girdi kaynaklarının yanlış yapılandırılmış olduğunu gösterir bu.</translation>
     </message>
     <message>
         <source>This is the audio bitrate of the last compressed frame (20 ms), and as such will jump up and down as the VBR adjusts the quality. The peak bitrate can be adjusted in the Settings dialog.</source>
@@ -1683,15 +1740,15 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>Device selection</source>
-        <translation>Cihaz seçimi</translation>
+        <translation>Aygıt seçimi</translation>
     </message>
     <message>
         <source>Selecting the input and output device to use with Mumble.</source>
-        <translation>Mumble ile kullanılacak girdi ve çıktı cihazlarının seçimi.</translation>
+        <translation>Mumble ile kullanılacak girdi ve çıktı aygıtlarının seçimi.</translation>
     </message>
     <message>
         <source>This is the device your microphone is connected to.</source>
-        <translation>Bu, mikrofonunuzun bağlı olduğu cihazdır.</translation>
+        <translation>Bu, mikrofonunuzun bağlı olduğu aygıttır.</translation>
     </message>
     <message>
         <source>System</source>
@@ -1703,11 +1760,11 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>Device</source>
-        <translation>Cihaz</translation>
+        <translation>Aygıt</translation>
     </message>
     <message>
         <source>Input device to use</source>
-        <translation>Kullanılacak girdi cihazı</translation>
+        <translation>Kullanılacak girdi aygıtı</translation>
     </message>
     <message>
         <source>&lt;b&gt;Selects which sound card to use for audio input.&lt;/b&gt;</source>
@@ -1727,7 +1784,7 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>This is the device your speakers or headphones are connected to.</source>
-        <translation>Bu, kulaklıklarınızın ya da hoparlörlerinizin bağlı olduğu cihazdır.</translation>
+        <translation>Bu, kulaklıklarınızın ya da hoparlörlerinizin bağlı olduğu aygıttır.</translation>
     </message>
     <message>
         <source>Output method for audio</source>
@@ -1735,7 +1792,7 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>Output device to use</source>
-        <translation>Kullanılacak çıktı cihazı</translation>
+        <translation>Kullanılacak çıktı aygıtı</translation>
     </message>
     <message>
         <source>&lt;b&gt;Selects which sound card to use for audio Output.&lt;/b&gt;</source>
@@ -1752,11 +1809,11 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>Input Device</source>
-        <translation>Girdi Cihazı</translation>
+        <translation>Girdi Aygıtı</translation>
     </message>
     <message>
         <source>Output Device</source>
-        <translation>Çıktı Cihazı</translation>
+        <translation>Çıktı Aygıtı</translation>
     </message>
     <message>
         <source>This allows Mumble to use positional audio to place voices.</source>
@@ -1764,7 +1821,7 @@ Bu değer kanalda izin verilen azami kullanıcı sayısını ayarlamanıza izin 
     </message>
     <message>
         <source>&lt;p&gt;
-To keep latency to an absolute minimum, it's important to buffer as little audio as possible on the soundcard. However, many soundcards report that they require a much smaller buffer than what they can actually work with, so the only way to set this value is to try and fail.
+To keep latency to an absolute minimum, it&apos;s important to buffer as little audio as possible on the soundcard. However, many soundcards report that they require a much smaller buffer than what they can actually work with, so the only way to set this value is to try and fail.
 &lt;/p&gt;
 &lt;p&gt;
 You should hear a voice sample. Change the slider below to the lowest value which gives &lt;b&gt;no&lt;/b&gt; interruptions or jitter in the sound. Please note that local echo is disabled during this test.
@@ -1788,17 +1845,17 @@ Bir ses örneği duymalısınız. Aşağıdaki göstergeci, &lt;b&gt;hiçbir&lt;
     </message>
     <message>
         <source>&lt;p&gt;
-Open your sound control panel and go to the recording settings. Make sure the microphone is selected as active input with maximum recording volume. If there's an option to enable a &quot;Microphone boost&quot; make sure it's checked.
+Open your sound control panel and go to the recording settings. Make sure the microphone is selected as active input with maximum recording volume. If there&apos;s an option to enable a &quot;Microphone boost&quot; make sure it&apos;s checked.
 &lt;/p&gt;
 &lt;p&gt;
 Speak loudly, as when you are annoyed or excited. Decrease the volume in the sound control panel until the bar below stays as high as possible in the blue and green but &lt;b&gt;not&lt;/b&gt; the red zone while you speak.
 &lt;/p&gt;
 </source>
         <translation>&lt;p&gt;
-Ses kontrol panelini açınız ve kayıt ayarlarına gidiniz. Etkin girdi olarak mikrofonun azami kayıt hacmiyle seçildiğinden emin olunuz. Eğer &quot;Mikrofon güçlendirmesi&quot; ya da &quot;boost&quot; gibi bir seçenek varsa etkinleştirildiğinden emin olunuz.
+Ses kontrol panelini açınız ve kayıt ayarlarına gidiniz. Etkin girdi olarak mikrofonun azami kayıt ses seviyesiyle seçildiğinden emin olunuz. Eğer &quot;Mikrofon güçlendirmesi&quot; ya da &quot;boost&quot; gibi bir seçenek varsa etkinleştirildiğinden emin olunuz.
 &lt;/p&gt;
 &lt;p&gt;
-Sinirli ya da coştuğunuz zamanlardaki gibi yüksek sesle konuşunuz. Kontrol panelinde, aşağıdaki çubuk mavi ve yeşil bölgede mümkün olduğu kadar en yüksek değerde bulunacağı ancak kırmızı bölgeye &lt;b&gt;ulaşmayacağı&lt;/b&gt; şekilde hacmi düşrünüz.
+Sinirli ya da coştuğunuz zamanlardaki gibi yüksek sesle konuşunuz. Kontrol panelinde, aşağıdaki çubuk mavi ve yeşil bölgede mümkün olduğu kadar en yüksek değerde bulunacağı ancak kırmızı bölgeye &lt;b&gt;ulaşmayacağı&lt;/b&gt; şekilde ses seviyesini düşürünüz.
 &lt;/p&gt;
 </translation>
     </message>
@@ -1819,13 +1876,14 @@ Sinirli ya da coştuğunuz zamanlardaki gibi yüksek sesle konuşunuz. Kontrol p
 Congratulations. You should now be ready to enjoy a richer sound experience with Mumble.
 &lt;/p&gt;
 &lt;p&gt;
-Mumble is under continuous development, and the development team wants to focus on the features that benefit the most users. To this end, Mumble supports submitting anonymous statistics about your configuration to the developers. These statistics are essential for future development, and also make sure the features you use aren't deprecated.
+Mumble is under continuous development, and the development team wants to focus on the features that benefit the most users. To this end, Mumble supports submitting anonymous statistics about your configuration to the developers. These statistics are essential for future development, and also make sure the features you use aren&apos;t deprecated.
 &lt;/p&gt;
 </source>
         <translation>&lt;p&gt;
 Tebrikler. Artık Mumble ile daha zengin bir ses deneyimi yaşayabileceksiniz.
 &lt;/p&gt;
-&lt;p&gt;Mumble devamlı olarak geliştirilmektedir ve geliştirme ekibi kullanıcıların en çoğuna faydası bulunacak işlevlere odaklanmak istemektedir. Bu amaçla, Mumble yapılandırmanız hakkında geliştiricilere anonim istatistik göndermeyi destekler. Bu istatistikler sürmekte olan programlama için çok önemlidir ve kullandığınız işlevlerin desteğinin sürmesine de yarar.
+&lt;p&gt;
+Mumble devamlı olarak geliştirilmektedir ve geliştirme ekibi kullanıcıların en çoğuna faydası bulunacak işlevlere odaklanmak istemektedir. Bu amaçla, Mumble yapılandırmanız hakkında geliştiricilere anonim istatistik göndermeyi destekler. Bu istatistikler sürmekte olan programlama için çok önemlidir ve kullandığınız işlevlerin desteğinin sürmesine de yarar.
 &lt;/p&gt;
 </translation>
     </message>
@@ -1839,11 +1897,11 @@ Tebrikler. Artık Mumble ile daha zengin bir ses deneyimi yaşayabileceksiniz.
     </message>
     <message>
         <source>Volume tuning</source>
-        <translation>Ses hacim ayarı</translation>
+        <translation>Ses seviyesi ayarı</translation>
     </message>
     <message>
         <source>Tuning microphone hardware volume to optimal settings.</source>
-        <translation>Mikrofonun donanım hacminin en uygun değerlere ayarı.</translation>
+        <translation>Mikrofonun donanım ses seviyesinin en uygun değerlere ayarı.</translation>
     </message>
     <message>
         <source>Now talk softly, as you would when talking late at night and you don&apos;t want to disturb anyone. Adjust the slider below so that the bar moves into green when you talk, but stays blue while you&apos;re silent.</source>
@@ -1871,12 +1929,12 @@ Tebrikler. Artık Mumble ile daha zengin bir ses deneyimi yaşayabileceksiniz.
     </message>
     <message>
         <source>Next you need to adjust the following slider. The first few utterances you say should end up in the green area (definitive speech). While talking, you should stay inside the yellow (might be speech) and when you&apos;re not talking, everything should be in the red (definitively not speech).</source>
-        <oldsource>Next you need to adjust the following two sliders. The first few utterances you say should end up in the green area (definitive speech). While talking, you should stay inside the yellow (might be speech) and when you're not talking, everything should be in the red (definitively not speech).</oldsource>
+        <oldsource>Next you need to adjust the following two sliders. The first few utterances you say should end up in the green area (definitive speech). While talking, you should stay inside the yellow (might be speech) and when you&apos;re not talking, everything should be in the red (definitively not speech).</oldsource>
         <translation>Şimdi aşağıdaki göstergeyi ayarlamanız gerekiyor. Söyleyeceğiniz ilk heceler yeşil alanda olmalıdır (mutlak konuşma). Konuştuğunuz sırada sarı alanda kalmanız gerekir (muhtemel konuşma) ve konuşmadığınızda, her şey kırmızı alanda olmalıdır (kesin olarak konuşma değil).</translation>
     </message>
     <message>
         <source>Device tuning</source>
-        <translation>Cihaz ayarı</translation>
+        <translation>Aygıt ayarı</translation>
     </message>
     <message>
         <source>Changing hardware output delays to their minimum value.</source>
@@ -1948,7 +2006,7 @@ Tebrikler. Artık Mumble ile daha zengin bir ses deneyimi yaşayabileceksiniz.
     </message>
     <message>
         <source>Enables attenuation of other applications while users talk to you. This means that as soon someone starts to speak to you in Mumble, the sound of all other applications (like audio players) will get attenuated so you can hear them more clearly.</source>
-        <translation>Kullanıcılar sizinle konuştuğunda diğer uygulamaların zayıflatılmasını etkinleştirir. Bu, birisinin sizinle konuşmaya başladığı zaman onu daha iyi duyabilmeniz için tüm diğer uygulamaların (müzik çalarlar gibi) sesinin zayıflatılacağı anlamına gelir.</translation>
+        <translation>Kullanıcılar sizinle konuştuğunda diğer uygulamaların zayıflatılmasını etkinleştirir. Bu, Mumble&apos;da birisinin sizinle konuşmaya başladığı zaman onu daha iyi duyabilmeniz için tüm diğer uygulamaların (müzik çalarlar gibi) sesinin zayıflatılacağı anlamına gelir.</translation>
     </message>
     <message>
         <source>Apply some high contrast optimizations for visually impaired users</source>
@@ -1964,14 +2022,14 @@ Tebrikler. Artık Mumble ile daha zengin bir ses deneyimi yaşayabileceksiniz.
     </message>
     <message>
         <source>&lt;p&gt;
-Open your sound control panel and go to the recording settings. Make sure the microphone is selected as active input with maximum recording volume. If there's an option to enable a &quot;Microphone boost&quot; make sure it's checked.
+Open your sound control panel and go to the recording settings. Make sure the microphone is selected as active input with maximum recording volume. If there&apos;s an option to enable a &quot;Microphone boost&quot; make sure it&apos;s checked.
 &lt;/p&gt;
 &lt;p&gt;
 Speak loudly, as when you are annoyed or excited. Decrease the volume in the sound control panel until the bar below stays as high as possible in the striped and the empty but &lt;b&gt;not&lt;/b&gt; the crisscrossed zone while you speak.
 &lt;/p&gt;
 </source>
         <oldsource>&lt;p&gt;
-Open your sound control panel and go to the recording settings. Make sure the microphone is selected as active input with maximum recording volume. If there's an option to enable a &quot;Microphone boost&quot; make sure it's checked.
+Open your sound control panel and go to the recording settings. Make sure the microphone is selected as active input with maximum recording volume. If there&apos;s an option to enable a &quot;Microphone boost&quot; make sure it&apos;s checked.
 &lt;/p&gt;
 &lt;p&gt;
 Speak loudly, as when you are annoyed or excited. Decrease the volume in the sound control panel until the bar below stays as high as possible in the striped and the empty but &lt;b&gt;not&lt;/b&gt; the criss-crossed zone while you speak.
@@ -1979,10 +2037,10 @@ Speak loudly, as when you are annoyed or excited. Decrease the volume in the sou
 </oldsource>
         <comment>For high contrast mode</comment>
         <translation>&lt;p&gt;
-Ses kontrol panelini açıp kayıt ayarlarına gidiniz. Mikrofonun azami hacimde etkin girdi olarak seçildiğinden emin olunuz. Eğer &quot;Mikrofon güçlendirme&quot; ya da &quot;boost&quot; gibi bir seçenek varsa seçildiğinden emin olunuz.
+Ses kontrol panelini açıp kayıt ayarlarına gidiniz. Mikrofonun azami ses seviyesinde etkin girdi olarak seçildiğinden emin olunuz. Eğer &quot;Mikrofon güçlendirme&quot; ya da &quot;boost&quot; gibi bir seçenek varsa seçildiğinden emin olunuz.
 &lt;/p&gt;
 &lt;p&gt;
-Sinirli ya da coştuğunuz zamanlardaki gibi yüksek sesle konuşunuz. Kontrol panelinde, aşağıdaki çubuk çizgili ve boş bölgede mümkün olduğu kadar en yüksek değerde bulunacağı ancak çapraz çizgili bölgeye &lt;b&gt;ulaşmayacağı&lt;/b&gt; şekilde hacmi düşürünüz.
+Sinirli ya da coştuğunuz zamanlardaki gibi yüksek sesle konuşunuz. Kontrol panelinde, aşağıdaki çubuk çizgili ve boş bölgede mümkün olduğu kadar en yüksek değerde bulunacağı ancak çapraz çizgili bölgeye &lt;b&gt;ulaşmayacağı&lt;/b&gt; şekilde ses seviyesini düşürünüz.
 &lt;/p&gt;
 </translation>
     </message>
@@ -2022,43 +2080,43 @@ Sinirli ya da coştuğunuz zamanlardaki gibi yüksek sesle konuşunuz. Kontrol p
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mumble supports positional audio for some games, and will position the voice of other users relative to their position in game. Depending on their position, the volume of the voice will be changed between the speakers to simulate the direction and distance the other user is at. Such positioning depends on your speaker configuration being correct in your operating system, so a test is done here. &lt;/p&gt;&lt;p&gt;The graph below shows the position of &lt;span style=&quot; color:#56b4e9;&quot;&gt;you&lt;/span&gt;, the &lt;span style=&quot; color:#d55e00;&quot;&gt;speakers&lt;/span&gt; and a &lt;span style=&quot; color:#009e73;&quot;&gt;moving sound source&lt;/span&gt; as if seen from above. You should hear the audio move between the channels. &lt;/p&gt;&lt;p&gt;You can also use your mouse to position the &lt;span style=&quot; color:#009e73;&quot;&gt;sound source&lt;/span&gt; manually.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;Mumble bazı oyunlar için konumsal sesi destekler ve diğer kullanıcıların seslerini oyunda bulundukları yere uygun olarak konumlar. Bulundukları yere göre, konuşanların seslerinin seviyesi, diğer kullanıcılara göre yön ve mesafeyi taklit edecek şekilde değiştirilecektir. Bu tip konumlama işletim sisteminizde hoparlör yapılandırmanızın doğru olmasına dayanır, dolayısıyla bu burada denenecektir. &lt;p&gt;&lt;p&gt; Aşağıdaki grafik kuşbaşı görünüşle &lt;span style=&quot; color:#56b4e9;&quot;&gt;sizin&lt;/span&gt; konumunuzu, &lt;span style=&quot; color:#d55e00;&quot;&gt;hoparlörlerinizi&lt;/span&gt;  ve &lt;span style=&quot; color:#009e73;&quot;&gt;hareket hâlinde bir ses kaynağı&lt;/span&gt; gösterir. Sesi kanallarda hareket hâlinde olarak duymanız gerekir. &lt;/p&gt;&lt;p&gt; &lt;span style=&quot; color:#009e73;&quot;&gt;Ses kaynağını&lt;/span&gt;el ile konumlandırmak için farenizi de kullanabilirsiniz.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mumble bazı oyunlar için konumsal sesi destekler ve diğer kullanıcıların seslerini oyunda bulundukları yere uygun olarak konumlar. Bulundukları yere göre, konuşanların seslerinin seviyesi, diğer kullanıcılara göre yön ve mesafeyi taklit edecek şekilde değiştirilecektir. Bu tip konumlama işletim sisteminizde hoparlör yapılandırmanızın doğru olmasına dayanır, dolayısıyla bu burada denenecektir. &lt;/p&gt;&lt;p&gt;Aşağıdaki grafik kuşbaşı görünüşle &lt;span style=&quot; color:#56b4e9;&quot;&gt;sizin&lt;/span&gt; konumunuzu, &lt;span style=&quot; color:#d55e00;&quot;&gt;hoparlörlerinizi&lt;/span&gt; ve &lt;span style=&quot; color:#009e73;&quot;&gt;hareket hâlinde bir ses kaynağı&lt;/span&gt; gösterir. Sesi kanallarda hareket hâlinde olarak duymanız gerekir. &lt;/p&gt;&lt;p&gt; &lt;span style=&quot; color:#009e73;&quot;&gt;Ses kaynağını&lt;/span&gt;el ile konumlandırmak için farenizi de kullanabilirsiniz.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Input system</source>
-        <translation type="unfinished"/>
+        <translation>Giriş sistemi</translation>
     </message>
     <message>
         <source>Input device</source>
-        <translation type="unfinished"/>
+        <translation>Girdi aygıtı</translation>
     </message>
     <message>
         <source>Output system</source>
-        <translation type="unfinished"/>
+        <translation>Çıkış sistemi</translation>
     </message>
     <message>
         <source>Output device</source>
-        <translation type="unfinished"/>
+        <translation>Çıktı aygıtı</translation>
     </message>
     <message>
         <source>Output delay</source>
-        <translation type="unfinished"/>
+        <translation>Çıkış gecikmesi</translation>
     </message>
     <message>
         <source>Maximum amplification</source>
-        <translation type="unfinished"/>
+        <translation>Azami Yükseltme</translation>
     </message>
     <message>
         <source>VAD level</source>
-        <translation type="unfinished"/>
+        <translation>VAD düzeyi</translation>
     </message>
     <message>
         <source>PTT shortcut</source>
-        <translation type="unfinished"/>
+        <translation>PTT kısayolu</translation>
     </message>
     <message>
         <source>No buttons assigned</source>
-        <translation type="unfinished"/>
+        <translation>Hiçbir düğme atanmadı</translation>
     </message>
 </context>
 <context>
@@ -2193,27 +2251,29 @@ Sinirli ya da coştuğunuz zamanlardaki gibi yüksek sesle konuşunuz. Kontrol p
     </message>
     <message numerus="yes">
         <source>Ban List - %n Ban(s)</source>
-        <translation><numerusform>Yasaklama listesi - %n yasaklama</numerusform><numerusform>Yasaklama listesi - %n yasaklama</numerusform></translation>
+        <translation>
+            <numerusform>Yasaklama Listesi - %n Yasaklama</numerusform>
+        </translation>
     </message>
     <message>
         <source>Search</source>
-        <translation type="unfinished"/>
+        <translation>Ara</translation>
     </message>
     <message>
         <source>IP Address</source>
-        <translation type="unfinished"/>
+        <translation>IP Adresi</translation>
     </message>
     <message>
         <source>Mask</source>
-        <translation type="unfinished"/>
+        <translation>Maske</translation>
     </message>
     <message>
         <source>Start date/time</source>
-        <translation type="unfinished"/>
+        <translation>Başlangıç tarihi / saati</translation>
     </message>
     <message>
         <source>End date/time</source>
-        <translation type="unfinished"/>
+        <translation>Bitiş tarihi / saati</translation>
     </message>
 </context>
 <context>
@@ -2299,35 +2359,35 @@ Sinirli ya da coştuğunuz zamanlardaki gibi yüksek sesle konuşunuz. Kontrol p
     </message>
     <message>
         <source>Current certificate</source>
-        <translation type="unfinished"/>
+        <translation>Geçerli sertifika</translation>
     </message>
     <message>
         <source>Certificate file to import</source>
-        <translation type="unfinished"/>
+        <translation>İçe aktarılacak sertifika dosyası</translation>
     </message>
     <message>
         <source>Certificate password</source>
-        <translation type="unfinished"/>
+        <translation>Sertifika parolası</translation>
     </message>
     <message>
         <source>Certificate to import</source>
-        <translation type="unfinished"/>
+        <translation>İçe aktarılacak sertifika</translation>
     </message>
     <message>
         <source>New certificate</source>
-        <translation type="unfinished"/>
+        <translation>Yeni sertifika</translation>
     </message>
     <message>
         <source>File to export certificate to</source>
-        <translation type="unfinished"/>
+        <translation>Dışa aktarılacak dosya için sertifika</translation>
     </message>
     <message>
         <source>Email address</source>
-        <translation type="unfinished"/>
+        <translation>E-posta adresi</translation>
     </message>
     <message>
         <source>Your name</source>
-        <translation type="unfinished"/>
+        <translation>Adınız</translation>
     </message>
 </context>
 <context>
@@ -2346,7 +2406,7 @@ Sinirli ya da coştuğunuz zamanlardaki gibi yüksek sesle konuşunuz. Kontrol p
     </message>
     <message>
         <source>Current certificate</source>
-        <translation>Güncel sertifika</translation>
+        <translation>Geçerli sertifika</translation>
     </message>
     <message>
         <source>This is the certificate Mumble currently uses.</source>
@@ -2461,15 +2521,14 @@ Sinirli ya da coştuğunuz zamanlardaki gibi yüksek sesle konuşunuz. Kontrol p
         <source>&lt;p&gt;You already have a certificate stored in Mumble, and you are about to replace it.&lt;/p&gt;
 &lt;p&gt;If you are upgrading to a certificate issued to you by a trusted CA and the email addresses match your current certificate, this is completely safe, and servers you connect to will automatically recognize the strong certificate for your email address.
 &lt;/p&gt;
-&lt;p&gt;If this is not the case, you will no longer be recognized by any server you previously have authenticated with. If you haven't been registered on any server yet, this is nothing to worry about.
+&lt;p&gt;If this is not the case, you will no longer be recognized by any server you previously have authenticated with. If you haven&apos;t been registered on any server yet, this is nothing to worry about.
 &lt;/p&gt;
 &lt;p&gt;
 Are you sure you wish to replace your certificate?
 &lt;/p&gt;
 </source>
-        <translation>&lt;p&gt;Mumble&apos;da hâlihazırda bir sertifikanız var, ve bu sertifikanın yerine yenisini getirmek üzeresiniz.&lt;/p&gt;
+        <translation>&lt;p&gt;Mumble&apos;da zaten bir sertifikanız var, ve bunu yenisiyle değiştirmek üzeresiniz.&lt;/p&gt;
 &lt;p&gt;Eğer bir CA (Sertifika Yetkili Kurumu) tarafından size verilen bir sertifikaya yükseltiyorsanız ve e-posta adresi şimdiki sertifikanızla uyuşuyorsa, bu tamamen güvenli bir işlemdir ve bağlandığınız sunucular e-posta adresiniz için verilen güçlü sertifikayı otomatik olarak tanıyacaklardır.
-
 &lt;/p&gt;
 &lt;p&gt;Eğer durum farklıysa, şimdiye kadar oturumunuz bulunan sunucuların hiçbiri sizi tanımayacaktır. Henüz herhangi bir sunucuda oturumunuz yoksa, endişelenecek bir şey de yoktur.
 &lt;/p&gt;
@@ -2717,11 +2776,11 @@ Sertifikanızı değiştirmek istediğinize emin misiniz?
     </message>
     <message>
         <source>This represents the permission to reset the comment or avatar of a user.</source>
-        <translation type="unfinished"/>
+        <translation>Bu, bir kullanıcının yorumunu veya avatarını sıfırlama iznini temsil eder.</translation>
     </message>
     <message>
         <source>Reset User Content</source>
-        <translation type="unfinished"/>
+        <translation>Kullanıcı İçeriğini Sıfırla</translation>
     </message>
 </context>
 <context>
@@ -2737,15 +2796,15 @@ Sertifikanızı değiştirmek istediğinize emin misiniz?
     </message>
     <message>
         <source>Unable to send image: too large.</source>
-        <translation type="unfinished"/>
+        <translation>Görüntü gönderilememiyor: çok büyük.</translation>
     </message>
     <message>
         <source>Unable to send image %1: too large.</source>
-        <translation type="unfinished"/>
+        <translation>%1 görüntüsü gönderilememiyor: çok büyük.</translation>
     </message>
     <message>
         <source>This server does not allow sending images.</source>
-        <translation type="unfinished"/>
+        <translation>Bu sunucu görüntü göndermeye izin vermiyor.</translation>
     </message>
 </context>
 <context>
@@ -2780,7 +2839,7 @@ Sertifikanızı değiştirmek istediğinize emin misiniz?
     </message>
     <message>
         <source>Local Mute</source>
-        <translation>Yerel olarak susturuldu</translation>
+        <translation>Yerel Olarak Sustur</translation>
     </message>
     <message>
         <source>Muted (self)</source>
@@ -2792,7 +2851,7 @@ Sertifikanızı değiştirmek istediğinize emin misiniz?
     </message>
     <message>
         <source>Local Ignore (Text-To-Speech)</source>
-        <translation type="unfinished"/>
+        <translation>Yerel Yoksay (Metinden Konuşmaya)</translation>
     </message>
 </context>
 <context>
@@ -2839,19 +2898,23 @@ Sertifikanızı değiştirmek istediğinize emin misiniz?
     </message>
     <message>
         <source>Configuration categories</source>
-        <translation type="unfinished"/>
+        <translation>Yapılandırma kategorileri</translation>
     </message>
     <message>
         <source>This button will restore the defaults for the settings on the current page. Other pages will not be changed.&lt;br /&gt;To restore all settings to their defaults, you can press the &quot;Defaults (All)&quot; button.</source>
-        <translation type="unfinished"/>
+        <translation>Bu düğme, mevcut sayfadaki ayarlar için varsayılanları geri yükleyecektir. Diğer sayfalar değiştirilmeyecektir. &lt;br /&gt; Tüm ayarları varsayılan değerlerine geri yüklemek için &quot;Varsayılanlar (Tümü)&quot; düğmesine basabilirsiniz.</translation>
     </message>
     <message>
         <source>Restore all defaults</source>
-        <translation type="unfinished"/>
+        <translation>Tüm varsayılanları geri yükle</translation>
     </message>
     <message>
         <source>This button will restore the defaults for all settings.</source>
-        <translation type="unfinished"/>
+        <translation>Bu düğme, tüm ayarlar için varsayılanları geri yükleyecektir.</translation>
+    </message>
+    <message>
+        <source>Defaults (All)</source>
+        <translation>Varsayılanlar (Tümü)</translation>
     </message>
 </context>
 <context>
@@ -2865,60 +2928,8 @@ Sertifikanızı değiştirmek istediğinize emin misiniz?
         <translation>Kullanıcı ismi giriniz</translation>
     </message>
     <message>
-        <source>Adding host %1</source>
-        <translation>%1 ekleniyor</translation>
-    </message>
-    <message>
         <source>Servername</source>
         <translation>Sunucu ismi</translation>
-    </message>
-    <message>
-        <source>Hostname</source>
-        <translation>Bilgisayar ismi</translation>
-    </message>
-    <message>
-        <source>Bonjour name</source>
-        <translation>Bonjour ismi</translation>
-    </message>
-    <message>
-        <source>Port</source>
-        <translation>Port</translation>
-    </message>
-    <message>
-        <source>Addresses</source>
-        <translation>Adresler</translation>
-    </message>
-    <message>
-        <source>Website</source>
-        <translation>Ağ sitesi</translation>
-    </message>
-    <message>
-        <source>Packet loss</source>
-        <translation>Paket kaybı</translation>
-    </message>
-    <message>
-        <source>Ping (80%)</source>
-        <translation>Ping (%80)</translation>
-    </message>
-    <message>
-        <source>%1 ms</source>
-        <translation>%1 ms</translation>
-    </message>
-    <message>
-        <source>Ping (95%)</source>
-        <translation>Ping (%95)</translation>
-    </message>
-    <message>
-        <source>Bandwidth</source>
-        <translation>Bant genişliği</translation>
-    </message>
-    <message>
-        <source>%1 kbit/s</source>
-        <translation>%1 kbit/s</translation>
-    </message>
-    <message>
-        <source>&amp;Connect</source>
-        <translation>&amp;Bağlan</translation>
     </message>
     <message>
         <source>Unknown</source>
@@ -2927,10 +2938,6 @@ Sertifikanızı değiştirmek istediğinize emin misiniz?
     <message>
         <source>Users</source>
         <translation>Kullanıcılar</translation>
-    </message>
-    <message>
-        <source>Version</source>
-        <translation>Sürüm</translation>
     </message>
     <message>
         <source>Failed to fetch server list</source>
@@ -2986,67 +2993,127 @@ Sertifikanızı değiştirmek istediğinize emin misiniz?
     </message>
     <message>
         <source>Server list</source>
-        <translation type="unfinished"/>
+        <translation>Sunucu listesi</translation>
     </message>
     <message>
         <source>Search</source>
-        <translation type="unfinished"/>
+        <translation>Ara</translation>
     </message>
     <message>
         <source>Location</source>
-        <translation type="unfinished"/>
+        <translation>Konum</translation>
     </message>
     <message>
         <source>Filter</source>
-        <translation type="unfinished"/>
+        <translation>Filtre</translation>
     </message>
     <message>
         <source>Show All</source>
-        <translation type="unfinished"/>
+        <translation>Tümünü Göster</translation>
     </message>
     <message>
         <source>Show Populated</source>
-        <translation type="unfinished"/>
+        <translation>Yoğunluğu Göster</translation>
     </message>
     <message>
         <source>Show Reachable</source>
-        <translation type="unfinished"/>
+        <translation>Ulaşılabilinenleri Göster</translation>
     </message>
     <message>
         <source>All</source>
-        <translation type="unfinished"/>
+        <translation>Hepsi</translation>
     </message>
     <message>
         <source>Africa</source>
-        <translation type="unfinished"/>
+        <translation>Afrika</translation>
     </message>
     <message>
         <source>Asia</source>
-        <translation type="unfinished"/>
+        <translation>Asya</translation>
     </message>
     <message>
         <source>Europe</source>
-        <translation type="unfinished"/>
+        <translation>Avrupa</translation>
     </message>
     <message>
         <source>North America</source>
-        <translation type="unfinished"/>
+        <translation>Kuzey Amerika</translation>
     </message>
     <message>
         <source>Oceania</source>
-        <translation type="unfinished"/>
+        <translation>Okyanusya</translation>
     </message>
     <message>
         <source>South America</source>
-        <translation type="unfinished"/>
+        <translation>Güney Amerika</translation>
     </message>
     <message>
         <source>Consent to the transmission of private data</source>
-        <translation type="unfinished"/>
+        <translation>Özel verilerin iletilmesine izin verme</translation>
     </message>
     <message>
         <source>&lt;p&gt;To measure the latency (ping) of public servers and determine the number of active users, your IP address must be transmitted to each public server.&lt;/p&gt;&lt;p&gt;Do you consent to the transmission of your IP address? If you answer no, the public server list will be deactivated. However, you can reactivate it at any time in the network settings.&lt;/p&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;p&gt;Genel sunucuların gecikmesini (ping) ölçmek ve etkin kullanıcı sayısını belirlemek için, IP adresinizin her bir genel sunucuya iletilmesi gerekir.&lt;/p&gt;&lt;p&gt;IP adresinizin iletilmesine izin veriyor musunuz? Hayır cevabını verirseniz, genel sunucu listesi devre dışı bırakılacaktır. Ancak, ağ ayarlarından istediğiniz zaman yeniden etkinleştirebilirsiniz.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>C&amp;onnect</source>
+        <translation>&amp;Bağlan</translation>
+    </message>
+    <message>
+        <source>Adding host %1</source>
+        <translation>%1 ekleniyor</translation>
+    </message>
+    <message>
+        <source>Hostname</source>
+        <translation>Ana makine adı</translation>
+    </message>
+    <message>
+        <source>Bonjour name</source>
+        <translation>Bonjour ismi</translation>
+    </message>
+    <message>
+        <source>Port</source>
+        <translation>Bağlantı noktası</translation>
+    </message>
+    <message>
+        <source>Website</source>
+        <translation>Ağ sitesi</translation>
+    </message>
+    <message>
+        <source>Packet loss</source>
+        <translation>Paket kaybı</translation>
+    </message>
+    <message>
+        <source>Ping (80%)</source>
+        <translation>Ping (%80)</translation>
+    </message>
+    <message>
+        <source>%1 ms</source>
+        <translation>%1 ms</translation>
+    </message>
+    <message>
+        <source>Ping (95%)</source>
+        <translation>Ping (%95)</translation>
+    </message>
+    <message>
+        <source>Bandwidth</source>
+        <translation>Bant genişliği</translation>
+    </message>
+    <message>
+        <source>%1 kbit/s</source>
+        <translation>%1 kbit/s</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation>Sürüm</translation>
+    </message>
+    <message>
+        <source>IPv4 address</source>
+        <translation>IPv4 adresi</translation>
+    </message>
+    <message>
+        <source>IPv6 address</source>
+        <translation>IPv6 adresi</translation>
     </message>
 </context>
 <context>
@@ -3066,29 +3133,29 @@ Sertifikanızı değiştirmek istediğinize emin misiniz?
     <message>
         <source>Internet address of the server.</source>
         <oldsource>Internet address of the server. </oldsource>
-        <translation>Sunucunun İnternet adresi.</translation>
+        <translation>Sunucunun internet adresi.</translation>
     </message>
     <message>
         <source>&lt;b&gt;Address&lt;/b&gt;&lt;br/&gt;
 Internet address of the server. This can be a normal hostname, an IPv4/IPv6 address or a Bonjour service identifier. Bonjour service identifiers have to be prefixed with a &apos;@&apos; to be recognized by Mumble.</source>
         <oldsource>&lt;b&gt;Address&lt;/b&gt;&lt;/br&gt;
-Internet address of the server. This can be a normal hostname, an ipv4/6 address or a bonjour service identifier. Bonjour service identifiers have to be prefixed with a '@' to be recognized by Mumble.</oldsource>
+Internet address of the server. This can be a normal hostname, an ipv4/6 address or a bonjour service identifier. Bonjour service identifiers have to be prefixed with a &apos;@&apos; to be recognized by Mumble.</oldsource>
         <translation>&lt;b&gt;Adres&lt;/b&gt;&lt;br/&gt;
-Sunucunun İnternet adresi. Bu normal bir bilgisayar ismi, bir İPv4/İPv6 adresi ya da bir Bonjour servis tanımlayıcısı olabilir. Bonjour servis tanımlayıcılarına Mumbe tarafından tanınmaları için &apos;@&apos; öneki konulmalıdır.</translation>
+Sunucunun internet adresi. Bu normal bir ana makine adı, bir IPv4/IPv6 adresi ya da bir Bonjour hizmet tanımlayıcısı olabilir. Bonjour hizmet tanımlayıcılarına Mumble tarafından tanınmaları için &apos;@&apos; ön eki konulmalıdır.</translation>
     </message>
     <message>
         <source>&amp;Port</source>
-        <translation>&amp;Port</translation>
+        <translation>&amp;Bağlantı noktası</translation>
     </message>
     <message>
         <source>Port on which the server is listening</source>
-        <translation>Sunucunun dinlediği port</translation>
+        <translation>Sunucunun dinlediği bağlantı noktası</translation>
     </message>
     <message>
         <source>&lt;b&gt;Port&lt;/b&gt;&lt;br/&gt;
 Port on which the server is listening. If the server is identified by a Bonjour service identifier this field will be ignored.</source>
-        <translation>&lt;b&gt;Port&lt;/b&gt;&lt;br/&gt;
-Sunucunun dinlediği port. Eğer sunucu bir Bonjour servis tanımlayıcısı ile tanımlandıysa bu alan görmezden gelinir.</translation>
+        <translation>&lt;b&gt;Bağlantı noktası&lt;/b&gt;&lt;br/&gt;
+Sunucunun dinlediği bağlantı noktası. Eğer sunucu bir Bonjour hizmet tanımlayıcısı ile tanımlandıysa bu alan görmezden gelinir.</translation>
     </message>
     <message>
         <source>&amp;Username</source>
@@ -3118,15 +3185,15 @@ Do you want to fill the dialog with the connection data of this server?
 Host: %1 Port: %2</source>
         <translation>Şu anda bir sunucuya bağlısınız.
 Diyaloğu bu sunucunun bağlantı verileriyle doldurmak istiyor musunuz?
-Makine: %1 Port: %2</translation>
+Ana makine: %1 Bağlantı noktası: %2</translation>
     </message>
     <message>
         <source>You have an URL in your clipboard.
 Do you want to fill the dialog with this data?
 Host: %1 Port: %2</source>
-        <translation>Panonuzda bir URL bulunmaktadır.
+        <translation>Panonuzda bir URL var.
 Diyaloğu bu verilerle doldurmak istiyor musunuz?
-Makine: %1 Port %2</translation>
+Ana makine: %1 Bağlantı noktası: %2</translation>
     </message>
     <message>
         <source>Password</source>
@@ -3178,7 +3245,7 @@ Sunucunun etiketi. Bu, sunucu listenizde sunucunun ismidir ve istediğinizi seç
     </message>
     <message>
         <source>&amp;Ignore</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Yok say</translation>
     </message>
 </context>
 <context>
@@ -3221,14 +3288,6 @@ Sunucunun etiketi. Bu, sunucu listenizde sunucunun ismidir ve istediğinizi seç
         <translation>Rapor gönderimi başarısız oldu</translation>
     </message>
     <message>
-        <source>We&apos;re really sorry, but it appears the crash upload has failed with error %1 %2. Please inform a developer.</source>
-        <translation>Çok üzgünüz ama rapor gönderimi %1 %2 hatası sebebiyle başarısızlığa uğradı. Lütfen bir geliştiriciyi bu konuda bilgilendirin.</translation>
-    </message>
-    <message>
-        <source>This really isn&apos;t funny, but apparently there&apos;s a bug in the crash reporting code, and we&apos;ve failed to upload the report. You may inform a developer about error %1</source>
-        <translation>Bu gerçekten hiç hoş değil ama öyle görünüyor ki çökme raporu gönderme kodunda bir hata var ve raporu gönderemedik. Geliştiricileri %1 hatası hakkında bilgilendirebilirsiniz</translation>
-    </message>
-    <message>
         <source>Uploading crash report</source>
         <translation>Çökme raporu gönderiliyor</translation>
     </message>
@@ -3236,21 +3295,29 @@ Sunucunun etiketi. Bu, sunucu listenizde sunucunun ismidir ve istediğinizi seç
         <source>Abort upload</source>
         <translation>Gönderimi iptal et</translation>
     </message>
+    <message>
+        <source>HTTP error %1: &quot;%2&quot;</source>
+        <translation>HTTP hatası %1: &quot;%2&quot;</translation>
+    </message>
+    <message>
+        <source>Internal error encountered in CrashReporter.cpp: Received network reply does not contain an HTTP status code. Please inform a developer about error code %1</source>
+        <translation>CrashReporter.cpp içinde dahili hata ile karşılaşıldı: Alınan ağ yanıtı bir HTTP durum kodu içermiyor. Lütfen bir geliştiriciye %1 hata kodu hakkında bilgi verin</translation>
+    </message>
 </context>
 <context>
     <name>Database</name>
     <message>
         <source>The database &apos;%1&apos; is read-only. Mumble cannot store server settings (i.e. SSL certificates) until you fix this problem.</source>
-        <oldsource>The database '%1' is read-only. Mumble can not store server settings (ie. SSL certificates) until you fix this problem.</oldsource>
+        <oldsource>The database &apos;%1&apos; is read-only. Mumble can not store server settings (ie. SSL certificates) until you fix this problem.</oldsource>
         <translation>&apos;%1&apos; veritabanı sadece okunabilir. Mumble SSL sertifikaları gibi sunucu ayarlarını bu problem çözülene dek saklayamaz.</translation>
     </message>
     <message>
         <source>The database file &apos;%1&apos; set in the configuration file does not exist. Do you want to create a new database file at this location?</source>
-        <translation type="unfinished"/>
+        <translation>Yapılandırma dosyasında ayarlanan &apos;%1&apos; veri tabanı dosyası yok. Bu konumda yeni bir veri tabanı dosyası oluşturmak istiyor musunuz?</translation>
     </message>
     <message>
         <source>Mumble failed to initialize a database in any of the possible locations.</source>
-        <translation type="unfinished"/>
+        <translation>Mumble, olası konumların herhangi birinde bir veritabanı başlatamadı.</translation>
     </message>
 </context>
 <context>
@@ -3319,7 +3386,7 @@ Sunucunun etiketi. Bu, sunucu listenizde sunucunun ismidir ve istediğinizi seç
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mumble can currently only use mouse buttons and keyboard modifier keys (Alt, Ctrl, Cmd, etc.) for global shortcuts.&lt;/p&gt;&lt;p&gt;If you want more flexibility, you can enable &lt;span style=&quot; font-style:italic;&quot;&gt;Access for assistive devices&lt;/span&gt; in the system&apos;s Accessibility preferences. However, please note that this change also potentially allows malicious programs to read what is typed on your keyboard.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mumble, genel kısayollar için şu anda sadece fare düğmelerini ve klavyenin birleştirici tuşlarını (Alt, Ctrl, Cmd vs.) kullanabilir.&lt;/p&gt;&lt;p&gt;Daha fazla esneklik istiyorsanız sisteminizin Yardımcı teknolojiler veya Erişilebilirlik tercihlerinde &lt;span style=&quot; font-style:italic;&quot;&gt;yardımcı cihazlar için erişimi&lt;/span&gt; etkinleştirebilirsiniz. Ancak bunun potansiyel olarak kötücül programların klavyenizde ne yazıldığını okumalarına imkân verebileceğini unutmayınız.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mumble, genel kısayollar için şu anda sadece fare düğmelerini ve klavyenin birleştirici tuşlarını (Alt, Ctrl, Cmd vs.) kullanabilir.&lt;/p&gt;&lt;p&gt;Daha fazla esneklik istiyorsanız sisteminizin Erişilebilirlik tercihlerinde &lt;span style=&quot; font-style:italic;&quot;&gt;yardımcı aygıtlar için erişimi&lt;/span&gt; etkinleştirebilirsiniz. Ancak bunun potansiyel olarak zararlı programların klavyenizde ne yazıldığını okumalarına imkân verebileceğini unutmayın.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Open Accessibility Preferences</source>
@@ -3342,14 +3409,6 @@ Sunucunun etiketi. Bu, sunucu listenizde sunucunun ismidir ve istediğinizi seç
         <translation>Ek Kısayol Motorları</translation>
     </message>
     <message>
-        <source>&lt;b&gt;Enable Windows hooks&lt;/b&gt;.&lt;br /&gt;This enables the Windows hooks shortcut engine. Using this engine allows Mumble to suppress keypresses and mouse clicks.</source>
-        <translation>&lt;b&gt;Windows kancalarını etkinleştir&lt;/b&gt;.&lt;br /&gt;Bu, Windows kancları (hooks) kısayol motorunu etkinleştirir. Bu motoru kullanmak, Mumble&apos;ın tuş basımlarını ve fare tıklamalarını bastırmasına imkân sağlar.</translation>
-    </message>
-    <message>
-        <source>Enable Windows hooks</source>
-        <translation>Windows kancalarını etkinleştir</translation>
-    </message>
-    <message>
         <source>&lt;b&gt;Enable GKey&lt;/b&gt;.&lt;br /&gt;This setting enables support for the GKey shortcut engine, for &quot;G&quot;-keys found on Logitech keyboards.</source>
         <translation>&lt;b&gt;GKey&apos;i etkinleştir&lt;/b&gt;.&lt;br /&gt;Bu ayar, Gkey kısayol motoru için desteği etkinleştirir, ki bu Logitech klavyelerinde bulunan &quot;G&quot; tuşları içindir.</translation>
     </message>
@@ -3369,39 +3428,44 @@ Sunucunun etiketi. Bu, sunucu listenizde sunucunun ismidir ve istediğinizi seç
         <source>&lt;b&gt;Enable shortcuts in privileged applications&lt;/b&gt;.&lt;br /&gt;Also known as &quot;UIAccess&quot;. This allows Mumble to receive global shortcut events from programs running at high privilege levels, such as an Admin Command Prompt or older games that run with admin privileges.
 &lt;br /&gt;&lt;br /&gt;
 Without this option enabled, using Mumble&apos;s global shortcuts in privileged applications will not work. This can seem inconsistent: for example, if the Push-to-Talk button is pressed in a non-privileged program, but released in a privileged application, Mumble will not observe that it has been released and you will continue to talk until you press the Push-to-Talk button again.</source>
-        <translation>&lt;b&gt;Ayrıcalıklı uygulamalarda kısayolları etkinleştir&lt;/b&gt;.&lt;br /&gt;&quot;UIAccess&quot; olarak da bilinir. Bu, Yönetici Komut İstemi veya yönetici yetkileriyle çalışan eski oyunlar gibi yüksek yetki ile çalışan programlardan Mumble&apos;ın genel kısayol olaylarını almasına müsaade eder.&lt;br /&gt;&lt;br /&gt;
+        <translation>&lt;b&gt;Ayrıcalıklı uygulamalarda kısayolları etkinleştir&lt;/b&gt;.&lt;br /&gt;&quot;UIAccess&quot; olarak da bilinir. Bu, Yönetici Komut İstemi veya yönetici yetkileriyle çalışan eski oyunlar gibi yüksek yetki ile çalışan programlardan Mumble&apos;ın genel kısayol olaylarını almasına müsaade eder.
+&lt;br /&gt;&lt;br /&gt;
 Bu seçenek seçilmediyse, yetkili programlarda Mumble&apos;ın genel kısayolları çalışmayacaktır. Bu, tutarsız görünebilir: mesela, yetkili olmayan bir programda Bas-ve-Konuş düğmesine basıldıysa ancak o düğme ayrıcalıklı bir programda bırakıldıysa, Mumble o düğmenin bırakıldığını gözlemlemez ve tekrar Bas-ve-Konuş düğmesine basana dek konuşmaya devam edersiniz.</translation>
     </message>
     <message>
         <source>Enable shortcuts in privileged applications</source>
         <translation>Ayrıcalıklı uygulamalarda kısayolları etkinleştir</translation>
     </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mumble&apos;s Global Shortcuts system does currently not work properly in combination with the Wayland protocol. For more information, visit &lt;a href=&quot;https://github.com/mumble-voip/mumble/issues/5257&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0057ae;&quot;&gt;https://github.com/mumble-voip/mumble/issues/5257&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mumble&apos;ın Genel Kısayollar sistemi şu anda Wayland protokolü ile birlikte düzgün çalışmıyor. Daha fazla bilgi için &lt;a href=&quot;https://github.com/mumble-voip/mumble/issues/5257&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0057ae;&quot;&gt;https://github.com/mumble-voip/mumble/issues/5257&lt;/span&gt;&lt;/a&gt; adresini ziyaret edin.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
 </context>
 <context>
     <name>GlobalShortcutButtons</name>
     <message>
         <source>Edit shortcut</source>
-        <translation type="unfinished"/>
+        <translation>Kısayolu Düzenle</translation>
     </message>
     <message>
         <source>Start capture process</source>
-        <translation type="unfinished"/>
+        <translation>Yakalama işlemini başlat</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Starts the capture process: all buttons you press will be added to the tree.&lt;/p&gt;&lt;p&gt;Once all buttons are released, the capture process stops automatically.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Yakalama işlemini başlatır: bastığınız tüm düğmeler ağaca eklenecektir.&lt;/p&gt;&lt;p&gt;Tüm düğmeler serbest bırakıldığında, yakalama işlemi otomatik olarak durur.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Add</source>
-        <translation type="unfinished"/>
+        <translation>Ekle</translation>
     </message>
     <message>
         <source>Remove the currently selected items</source>
-        <translation type="unfinished"/>
+        <translation>Şu anda seçili olan öğeleri kaldır</translation>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished"/>
+        <translation>Kaldır</translation>
     </message>
 </context>
 <context>
@@ -3429,25 +3493,25 @@ Bu seçenek seçilmediyse, yetkili programlarda Mumble&apos;ın genel kısayolla
     </message>
     <message>
         <source>Configured shortcuts</source>
-        <translation type="unfinished"/>
+        <translation>Yapılandırılmış kısayollar</translation>
     </message>
 </context>
 <context>
     <name>GlobalShortcutEngine</name>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"/>
+        <translation>Bilinmiyor</translation>
     </message>
 </context>
 <context>
     <name>GlobalShortcutMac</name>
     <message>
         <source>Mouse</source>
-        <translation type="unfinished"/>
+        <translation>Fare</translation>
     </message>
     <message>
         <source>Keyboard</source>
-        <translation type="unfinished"/>
+        <translation>Klavye</translation>
     </message>
 </context>
 <context>
@@ -3533,22 +3597,22 @@ Bu seçenek seçilmediyse, yetkili programlarda Mumble&apos;ın genel kısayolla
     <name>GlobalShortcutWin</name>
     <message>
         <source>Mouse</source>
-        <translation type="unfinished"/>
+        <translation>Fare</translation>
     </message>
     <message>
         <source>Keyboard</source>
-        <translation type="unfinished"/>
+        <translation>Klavye</translation>
     </message>
 </context>
 <context>
     <name>GlobalShortcutX</name>
     <message>
         <source>Keyboard</source>
-        <translation type="unfinished"/>
+        <translation>Klavye</translation>
     </message>
     <message>
         <source>Mouse</source>
-        <translation type="unfinished"/>
+        <translation>Fare</translation>
     </message>
 </context>
 <context>
@@ -3577,7 +3641,7 @@ Bu seçenek seçilmediyse, yetkili programlarda Mumble&apos;ın genel kısayolla
     <name>LCDConfig</name>
     <message>
         <source>Enable this device</source>
-        <translation>Bu cihazı etkinleştir</translation>
+        <translation>Bu aygıtı etkinleştir</translation>
     </message>
     <message>
         <source>LCD</source>
@@ -3585,7 +3649,7 @@ Bu seçenek seçilmediyse, yetkili programlarda Mumble&apos;ın genel kısayolla
     </message>
     <message>
         <source>Devices</source>
-        <translation>Cihazlar</translation>
+        <translation>Aygıtlar</translation>
     </message>
     <message>
         <source>Name</source>
@@ -3598,12 +3662,12 @@ Bu seçenek seçilmediyse, yetkili programlarda Mumble&apos;ın genel kısayolla
 This field describes the size of an LCD device. The size is given either in pixels (for Graphic LCDs) or in characters (for Character LCDs).&lt;/p&gt;
 &lt;h3&gt;Enabled:&lt;/h3&gt;
 &lt;p&gt;This decides whether Mumble should draw to a particular LCD device.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Bu, sisteminizde mevcut olan LCD cihazlarının listesidir.  Cihazları isimleriyle listeler ve ekranlarının boyutlarını da içerir. Mumble aynı zamanda birçok LCD cihaza çıktı göndermeyi destekler.&lt;/p&gt;
+        <translation>&lt;p&gt;Bu, sisteminizdeki kullanılabilir LCD aygıtlarının listesidir.  Aygıtları isimleriyle listeler ve ekranlarının boyutlarını da içerir. Mumble aynı zamanda birçok LCD aygıta çıktı göndermeyi destekler.&lt;/p&gt;
 &lt;h3&gt;Boyut:&lt;/h3&gt;
 &lt;p&gt;
-Bu alan LCD cihazın boyutunu belirtir. Boyut ya piksel olarak (Grafik LCD ekranları için) ya da karakter olarak (karakter LCD ekranları için) belirtilir.&lt;/p&gt;
+Bu alan LCD aygıtın boyutunu belirtir. Boyut ya piksel olarak (Grafik LCD ekranları için) ya da karakter olarak (karakter LCD ekranları için) belirtilir.&lt;/p&gt;
 &lt;h3&gt;Etkin:&lt;/h3&gt;
-&lt;p&gt;Bu Mumble&apos;ın belli bir LCD cihazını kullanmasını ayarlar.&lt;/p&gt;</translation>
+&lt;p&gt;Bu Mumble&apos;ın belli bir LCD aygıtını kullanıp kullanmayacağını ayarlar.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Size</source>
@@ -3639,18 +3703,11 @@ Bu alan LCD cihazın boyutunu belirtir. Boyut ya piksel olarak (Grafik LCD ekran
     </message>
     <message>
         <source>Minimum column width</source>
-        <translation type="unfinished"/>
+        <translation>Asgari sütun genişliği</translation>
     </message>
     <message>
         <source>Splitter width</source>
-        <translation type="unfinished"/>
-    </message>
-</context>
-<context>
-    <name>ListenerLocalVolumeDialog</name>
-    <message>
-        <source>Adjusting local volume for listening to %1</source>
-        <translation>%1 unsurunu dinlemek için yerel ses düzeyi ayarlanıyor</translation>
+        <translation>Ayraç genişliği</translation>
     </message>
 </context>
 <context>
@@ -3817,6 +3874,14 @@ Bu alan LCD cihazın boyutunu belirtir. Boyut ya piksel olarak (Grafik LCD ekran
         <source>User stopped listening to channel</source>
         <translation>Kullanıcı kanalı dinlemeye son verdi</translation>
     </message>
+    <message>
+        <source>Plugin message</source>
+        <translation>Eklenti mesajı</translation>
+    </message>
+    <message>
+        <source>[embedded content]</source>
+        <translation>[gömülü içerik]</translation>
+    </message>
 </context>
 <context>
     <name>LogConfig</name>
@@ -3904,16 +3969,12 @@ Bu alan LCD cihazın boyutunu belirtir. Boyut ya piksel olarak (Grafik LCD ekran
         <translation>Konuşma Sentezi</translation>
     </message>
     <message>
-        <source>Volume</source>
-        <translation>Seviye</translation>
-    </message>
-    <message>
         <source>Volume of Text-To-Speech Engine</source>
         <translation>Konuşma sentezinin seviyesi</translation>
     </message>
     <message>
         <source>&lt;b&gt;This is the volume used for the speech synthesis.&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Bu, konuşma sentezi için kullanılacak ses hacmidir.&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Bu, konuşma sentezi için kullanılacak ses seviyesidir.&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Length threshold</source>
@@ -3930,10 +3991,6 @@ Bu alan LCD cihazın boyutunu belirtir. Boyut ya piksel olarak (Grafik LCD ekran
     <message>
         <source> Characters</source>
         <translation> Karakter</translation>
-    </message>
-    <message>
-        <source>Whisper</source>
-        <translation>Fısıltı</translation>
     </message>
     <message>
         <source>If checked you will only hear whispers from users you added to your friend list.</source>
@@ -4009,15 +4066,103 @@ Bu ayar sadece yeni mesajlara uygulanır, zaten görüntülenmiş olanlar öncek
     </message>
     <message>
         <source>Log messages</source>
-        <translation type="unfinished"/>
+        <translation>Günlük mesajları</translation>
     </message>
     <message>
         <source>TTS engine volume</source>
-        <translation type="unfinished"/>
+        <translation>TTS motoru sesi</translation>
     </message>
     <message>
         <source>Chat message margins</source>
-        <translation type="unfinished"/>
+        <translation>Sohbet mesajı kenar boşlukları</translation>
+    </message>
+    <message>
+        <source>Limit</source>
+        <translation>Sınır</translation>
+    </message>
+    <message>
+        <source>Misc.</source>
+        <translation>Çeşitli</translation>
+    </message>
+    <message>
+        <source>Number of users that will trigger message limiting functionality.</source>
+        <translation>Mesaj sınırlama işlevini tetikleyecek kullanıcı sayısı.</translation>
+    </message>
+    <message>
+        <source>users on the server.</source>
+        <translation>sunucudaki kullanıcılar.</translation>
+    </message>
+    <message>
+        <source>Limit notifications when there are more than</source>
+        <translation>Daha fazlası olduğunda bildirimleri sınırla</translation>
+    </message>
+    <message>
+        <source>User limit for message limiting</source>
+        <translation>Mesaj sınırlaması için kullanıcı sınırı</translation>
+    </message>
+    <message>
+        <source>Click here to toggle message limiting for all events - If using this option be sure to change the user limit below.</source>
+        <translation>Tüm olaylar için mesaj sınırlamasını değiştirmek için buraya tıklayın - Bu seçeneği kullanıyorsanız aşağıdaki kullanıcı sınırını değiştirdiğinizden emin olun.</translation>
+    </message>
+    <message>
+        <source>Toggle message limiting behavior for %1 events </source>
+        <translation>%1 olayları için mesaj sınırlama davranışını değiştir </translation>
+    </message>
+    <message>
+        <source>Click to enable Text-to-Speech</source>
+        <translation>Metin okumayı etkinleştirmek için tıklayın</translation>
+    </message>
+    <message>
+        <source>Enable Text-to-Speech</source>
+        <translation>Metin Okumayı Etkinleştir</translation>
+    </message>
+    <message>
+        <source>Click here to toggle limiting for %1 events.&lt;br /&gt;If checked, notifications for this event type will not be played when the user count on the server exceeds the set threshold.</source>
+        <translation>%1 olayları için sınırlamayı değiştirmek için buraya tıklayın.&lt;br /&gt;İşaretlenirse, sunucudaki kullanıcı sayısı ayarlanan eşiği aştığında bu olay türü için bildirimler oynatılmayacaktır.</translation>
+    </message>
+    <message>
+        <source>Message Volume</source>
+        <translation>Mesaj Ses Seviyesi</translation>
+    </message>
+    <message>
+        <source>Volume adjustment for audio cues</source>
+        <translation>Ses işaretleri için ses seviyesi ayarı</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;This is the volume adjustment for audio cues.&lt;/b&gt;&lt;br /&gt;A value of 0 dB means no change to the sound sample.</source>
+        <translation>&lt;b&gt;Bu, ses işaretleri için ses seviyesi ayarıdır.&lt;/b&gt;&lt;br /&gt;0 dB değeri, ses örneğinde hiçbir değişiklik olmadığı anlamına gelir.</translation>
+    </message>
+    <message>
+        <source> dB</source>
+        <translation> dB</translation>
+    </message>
+    <message>
+        <source>Text-to-Speech volume</source>
+        <translation>Konuşma sentezi ses seviyesi</translation>
+    </message>
+    <message>
+        <source>Notification volume adjustment</source>
+        <translation>Bildirim ses seviyesi ayarı</translation>
+    </message>
+    <message>
+        <source>Volume adjustment for notification sounds</source>
+        <translation>Bildirim sesleri için ses seviyesi ayarı</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;This is the volume adjustment for notification sounds.&lt;/b&gt;&lt;br /&gt;A value of 0 dB means no change to the sound sample.</source>
+        <translation>&lt;b&gt;Bu, bildirim sesleri için ses seviyesi ayarıdır.&lt;/b&gt;&lt;br /&gt;0 dB değeri, ses örneğinde hiçbir değişiklik olmadığı anlamına gelir.</translation>
+    </message>
+    <message>
+        <source>Audio cue volume adjustment</source>
+        <translation>Ses işareti ses seviyesi ayarı</translation>
+    </message>
+    <message>
+        <source> %</source>
+        <translation> %</translation>
+    </message>
+    <message>
+        <source>Notification sound volume adjustment</source>
+        <translation>Bildirim sesi ses seviyesi ayarı</translation>
     </message>
 </context>
 <context>
@@ -4074,10 +4219,6 @@ Bu ayar sadece yeni mesajlara uygulanır, zaten görüntülenmiş olanlar öncek
     <message>
         <source>Users above Channels</source>
         <translation>Kullanıcılar kanalların üstünde</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;If set, will verify you want to quit if connected.&lt;/b&gt;</source>
-        <translation>&lt;b&gt;Bağlantıdayken programdan çıkmak istediğinizde, emin olup olmadığınızı sorar.&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Show number of users in each channel</source>
@@ -4145,14 +4286,6 @@ Bu ayar sadece yeni mesajlara uygulanır, zaten görüntülenmiş olanlar öncek
         <translation>Kanal Kaydırma</translation>
     </message>
     <message>
-        <source>Ask whether to close or minimize when quitting Mumble.</source>
-        <translation>Mumle&apos;dan çıkış seçildiğinde uygulamanın kapatılması ve küçültülmesi seçimi sun.</translation>
-    </message>
-    <message>
-        <source>Ask on quit while connected</source>
-        <translation>Bağlantıdayken çıkışta sor</translation>
-    </message>
-    <message>
         <source>Always On Top</source>
         <translation>Her Zaman Üstte</translation>
     </message>
@@ -4182,7 +4315,7 @@ Bu ayar sadece yeni mesajlara uygulanır, zaten görüntülenmiş olanlar öncek
     </message>
     <message>
         <source>In minimal view</source>
-        <translation>Minimal görünümde</translation>
+        <translation>Küçük görünümde</translation>
     </message>
     <message>
         <source>In normal view</source>
@@ -4198,7 +4331,7 @@ Bu ayar sadece yeni mesajlara uygulanır, zaten görüntülenmiş olanlar öncek
     </message>
     <message>
         <source>This setting controls in which situations the application will stay always on top. If you select &lt;i&gt;Never&lt;/i&gt; the application will not stay on top. &lt;i&gt;Always&lt;/i&gt; will always keep the application on top. &lt;i&gt;In minimal view&lt;/i&gt; / &lt;i&gt;In normal view&lt;/i&gt; will only keep the application always on top when minimal view is activated / deactivated.</source>
-        <translation>Bu seçenek hangi durumlarda uygulamanın en üstte kalacağını belirler. &lt;i&gt;Hiçbir zaman&lt;/i&gt;ı seçerseniz uygulama üstte kalmaz. &lt;i&gt;Daima&lt;/i&gt; uygulamayı her zaman en üstte tutar. &lt;i&gt;Minimal görünümde&lt;/i&gt; / &lt;i&gt;Normal görünümde&lt;/i&gt; uygulamayı en üste sadece minimal görünüm etkinleştirildiğinde / devre dışı bırakıldığında koyar.</translation>
+        <translation>Bu seçenek hangi durumlarda uygulamanın en üstte kalacağını belirler. &lt;i&gt;Hiçbir zaman&lt;/i&gt;ı seçerseniz uygulama üstte kalmaz. &lt;i&gt;Daima&lt;/i&gt; uygulamayı her zaman en üstte tutar. &lt;i&gt;Küçük görünümde&lt;/i&gt; / &lt;i&gt;Normal görünümde&lt;/i&gt; uygulamayı en üste sadece küçük görünüm etkinleştirildiğinde / devre dışı bırakıldığında koyar.</translation>
     </message>
     <message>
         <source>Show context menu in menu bar</source>
@@ -4262,7 +4395,7 @@ Bu ayar sadece yeni mesajlara uygulanır, zaten görüntülenmiş olanlar öncek
     </message>
     <message>
         <source>This sets the behavior of user drags; it can be used to prevent accidental dragging. &lt;i&gt;Move&lt;/i&gt; moves the user without prompting. &lt;i&gt;Do Nothing&lt;/i&gt; does nothing and prints an error message. &lt;i&gt;Ask&lt;/i&gt; uses a message box to confirm if you really wanted to move the user.</source>
-        <translation>Bu, kullanıcı kaydırılması sırasındaki davranışı belirler; istenmeyen kaydırmalara mani olmak için kullanılabilir. &lt;i&gt;Kaydır&lt;/i&gt; kullanıcıları hiçbir teyit istemeden kaydırır. &lt;i&gt;Hiçbir şey yapma&lt;/i&gt;  hiçbir faaliyette bulunmaz ve bir hata mesajı gösterir. &lt;i&gt;Sor&lt;/i&gt; kullanıcıyı hakikaten kaydırmak isteyip istemediğinizi sorar.</translation>
+        <translation>Bu, kullanıcı kaydırılması sırasındaki davranışı belirler; istenmeyen kaydırmaları engellemek için kullanılabilir. &lt;i&gt;Kaydır&lt;/i&gt; kullanıcıları hiçbir teyit istemeden kaydırır. &lt;i&gt;Hiçbir şey yapma&lt;/i&gt; hiçbir faaliyette bulunmaz ve bir hata mesajı gösterir. &lt;i&gt;Sor&lt;/i&gt; kullanıcıyı gerçekten kaydırmak isteyip istemediğinizi sorar.</translation>
     </message>
     <message>
         <source>&lt;b&gt;Enable Developer menu&lt;/b&gt;&lt;br /&gt;This enables the &quot;Developer&quot;-menu in Mumble. This menu is used for developer-specific features, such as the Developer Console.</source>
@@ -4302,135 +4435,191 @@ Bu ayar sadece yeni mesajlara uygulanır, zaten görüntülenmiş olanlar öncek
     </message>
     <message>
         <source>How many characters from the original name to display at the beginning of an abbreviated name.</source>
-        <translation type="unfinished"/>
+        <translation>Kısaltılmış isimin başında özgün isimden kaç karakter görüntülenecek.</translation>
     </message>
     <message>
         <source>String to separate a channel name from its parent&apos;s.</source>
-        <translation type="unfinished"/>
+        <translation>Kanal adını üst ögesinden ayırmak için kullanılan dizge.</translation>
     </message>
     <message>
         <source>Channel separator</source>
-        <translation type="unfinished"/>
+        <translation>Kanal ayırıcı</translation>
     </message>
     <message>
         <source>Abbreviated prefix characters</source>
-        <translation type="unfinished"/>
+        <translation>Kısaltılmış önek karakterleri</translation>
     </message>
     <message>
         <source>The names of how many parent channels should be included in the channel&apos;s name when displaying it in the TalkingUI?</source>
-        <translation type="unfinished"/>
+        <translation>TalkingUI&apos;de görüntülenirken kanalın adına kaç tane ana kanalın adı dahil edilmelidir?</translation>
     </message>
     <message>
         <source>How many characters from the original name to display at the end of an abbreviated name.</source>
-        <translation type="unfinished"/>
+        <translation>Kısaltılmış isimin başında özgün isimden kaç karakter görüntülenecek.</translation>
     </message>
     <message>
         <source>Abbreviated postfix characters</source>
-        <translation type="unfinished"/>
+        <translation>Kısaltılmış sonek karakterleri</translation>
     </message>
     <message>
         <source>Whether to also allow abbreviating the current channel of a user (instead of only its parent channels).</source>
-        <translation type="unfinished"/>
+        <translation>Ayrıca, bir kullanıcının mevcut kanalının kısaltılmasına da izin verilip verilmeyeceği (yalnızca ana kanalları yerine).</translation>
     </message>
     <message>
         <source>Abbreviate current channel name</source>
-        <translation type="unfinished"/>
+        <translation>Mevcut kanal adını kısaltın</translation>
     </message>
     <message>
         <source>Channel hierarchy depth</source>
-        <translation type="unfinished"/>
+        <translation>Kanal hiyerarşi derinliği</translation>
     </message>
     <message>
         <source>Abbreviation replacement</source>
-        <translation type="unfinished"/>
+        <translation>Kısaltma değişimi</translation>
     </message>
     <message>
         <source>Whether the channel (hierarchy) name should be abbreviated, if it exceeds the specified maximum length.</source>
-        <translation type="unfinished"/>
+        <translation>Kanal (hiyerarşi) adının, belirtilen en fazla uzunluğu aşması halinde kısaltılmasının gerekip gerekmediği.</translation>
     </message>
     <message>
         <source>Abbreviate channel names</source>
-        <translation type="unfinished"/>
+        <translation>Kanal adlarını kısaltın</translation>
     </message>
     <message>
         <source>The preferred maximum length of a channel (hierarchy) name in the Talking UI. Note that this is not a hard limit though.</source>
-        <translation type="unfinished"/>
+        <translation>Talking UI&apos;de bir kanal (hiyerarşi) adının tercih edilen en fazla uzunluğu. Ancak bunun kesin bir sınır olmadığını unutmayın.</translation>
     </message>
     <message>
         <source>Max. channel name length</source>
-        <translation type="unfinished"/>
+        <translation>Maks. kanal adı uzunluğu</translation>
     </message>
     <message>
         <source>Relative font size to use in the Talking UI in percent.</source>
-        <translation type="unfinished"/>
+        <translation>Talking UI kullanıcı arayüzünde yüzde olarak kullanılacak göreli yazı tipi boyutu.</translation>
     </message>
     <message>
         <source>Rel. font size (%)</source>
-        <translation type="unfinished"/>
+        <translation>Rel. yazı tipi boyutu (%)</translation>
     </message>
     <message>
         <source>String that gets used instead of the cut-out part of an abbreviated name.</source>
-        <translation type="unfinished"/>
+        <translation>Kısaltılmış bir adın kesik kısmı yerine kullanılan dizge.</translation>
     </message>
     <message>
         <source>Prefix character count</source>
-        <translation type="unfinished"/>
+        <translation>Önek karakter sayısı</translation>
     </message>
     <message>
         <source>Postfix character count</source>
-        <translation type="unfinished"/>
+        <translation>Sonek karakter sayısı</translation>
     </message>
     <message>
         <source>Maximum name length</source>
-        <translation type="unfinished"/>
+        <translation>Maksimum isim uzunluğu</translation>
     </message>
     <message>
         <source>Relative font size</source>
-        <translation type="unfinished"/>
+        <translation>Göreli yazı tipi boyutu</translation>
     </message>
     <message>
         <source>Always on top</source>
-        <translation type="unfinished"/>
+        <translation>Her zaman üstte</translation>
     </message>
     <message>
         <source>Channel dragging</source>
-        <translation type="unfinished"/>
+        <translation>Kanal Kaydırma</translation>
     </message>
     <message>
         <source>Automatically expand channels when</source>
-        <translation type="unfinished"/>
+        <translation>Kanalları otomatik olarak genişletirken</translation>
     </message>
     <message>
         <source>User dragging behavior</source>
-        <translation type="unfinished"/>
+        <translation>Kullanıcı sürükleme davranışı</translation>
     </message>
     <message>
         <source>Silent user lifetime</source>
-        <translation type="unfinished"/>
+        <translation>Sessiz kullanıcı ömrü</translation>
     </message>
     <message>
         <source>Show the local volume adjustment for each user (if any).</source>
-        <translation type="unfinished"/>
+        <translation>Her kullanıcı için yerel ses ayarını gösterin (varsa).</translation>
     </message>
     <message>
         <source>Show volume adjustments</source>
-        <translation type="unfinished"/>
+        <translation>Ses ayarlamalarını göster</translation>
     </message>
     <message>
         <source>Whether to show all of the local user&apos;s listeners (ears) in the TalkingUI (and thereby also the channels they are in). </source>
-        <translation type="unfinished"/>
+        <translation>TalkingUI&apos;de (ve dolayısıyla içinde bulundukları kanallarda) tüm yerel kullanıcının dinleyicilerinin (kulakların) gösterilip gösterilmeyeceği. </translation>
     </message>
     <message>
         <source>Show local user&apos;s listeners (ears)</source>
-        <translation type="unfinished"/>
+        <translation>Yerel kullanıcının dinleyicilerini (kulakları) göster</translation>
     </message>
     <message>
         <source>Hide the username for each user if they have a nickname.</source>
-        <translation type="unfinished"/>
+        <translation>Bir takma adı varsa her kullanıcının kullanıcı adını gizleyin.</translation>
     </message>
     <message>
         <source>Show nicknames only</source>
-        <translation type="unfinished"/>
+        <translation>Yalnızca takma adları göster</translation>
+    </message>
+    <message>
+        <source>Channel Hierarchy String</source>
+        <translation>Kanal Hiyerarşi Dizgesi</translation>
+    </message>
+    <message>
+        <source>Search</source>
+        <translation>Ara</translation>
+    </message>
+    <message>
+        <source>The action to perform when a user is activated (via double-click or enter) in the search dialog.</source>
+        <translation>Arama iletişim kutusunda bir kullanıcı etkinleştirildiğinde (çift tıklama veya giriş yoluyla) gerçekleştirilecek eylem.</translation>
+    </message>
+    <message>
+        <source>Action (User):</source>
+        <translation>Eylem (Kullanıcı):</translation>
+    </message>
+    <message>
+        <source>The action to perform when a channel is activated (via double-click or enter) in the search dialog.</source>
+        <translation>Arama iletişim kutusunda bir kanal etkinleştirildiğinde (çift tıklama veya giriş ile) gerçekleştirilecek eylem.</translation>
+    </message>
+    <message>
+        <source>Action (Channel):</source>
+        <translation>Eylem (Kanal):</translation>
+    </message>
+    <message>
+        <source>Quit Behavior</source>
+        <translation>Çıkış Davranışı</translation>
+    </message>
+    <message>
+        <source>This setting controls the behavior of clicking on the X in the top right corner.</source>
+        <translation>Bu ayar, sağ üst köşedeki X işaretine tıklandığında ne olacağını denetler.</translation>
+    </message>
+    <message>
+        <source>This setting controls the behavior when closing Mumble. You can choose between being asked for confirmation, minimize instead if closing or just closing without any additional prompt. Optionally, the first two options can only apply when you are currently connected to a server (in that case, Mumble will quit without asking, when not connected to any server).</source>
+        <translation>Bu ayar Mumble&apos;ı kapatırkenki davranışı denetler. Onay istenmesi, kapanma yerine simge durumuna küçültme veya herhangi bir ek istem olmadan yalnızca kapanma arasında seçim yapabilirsiniz. İsteğe bağlı olarak, ilk iki seçenek yalnızca o anda bir sunucuya bağlı olduğunuzda uygulanabilir (bu durumda, Mumble herhangi bir sunucuya bağlı değilken sormadan çıkacaktır).</translation>
+    </message>
+    <message>
+        <source>Always Ask</source>
+        <translation>Her Zaman Sor</translation>
+    </message>
+    <message>
+        <source>Ask when connected</source>
+        <translation>Bağlandığında sor</translation>
+    </message>
+    <message>
+        <source>Always Minimize</source>
+        <translation>Her Zaman Küçült</translation>
+    </message>
+    <message>
+        <source>Minimize when connected</source>
+        <translation>Bağlandığında küçült</translation>
+    </message>
+    <message>
+        <source>Always Quit</source>
+        <translation>Her Zaman Çık</translation>
     </message>
 </context>
 <context>
@@ -4487,7 +4676,7 @@ Bu ayar sadece yeni mesajlara uygulanır, zaten görüntülenmiş olanlar öncek
     <message>
         <source>Toggle Minimal</source>
         <comment>Global Shortcut</comment>
-        <translation>Küçültülmüş hâli açıp kapat</translation>
+        <translation>Küçültülmüş hâli aç/kapat</translation>
     </message>
     <message>
         <source>Volume Up (+10%)</source>
@@ -4522,10 +4711,6 @@ Bu ayar sadece yeni mesajlara uygulanır, zaten görüntülenmiş olanlar öncek
     <message>
         <source>Close</source>
         <translation>Kapat</translation>
-    </message>
-    <message>
-        <source>Mumble is currently connected to a server. Do you want to Close or Minimize it?</source>
-        <translation>Mumble hâlihazırda bir sunucuya bağlıdır. Kapatmak mı istiyorsunuz, küçültmek mi?</translation>
     </message>
     <message>
         <source>Mute Self</source>
@@ -4580,20 +4765,12 @@ Bu ayar sadece yeni mesajlara uygulanır, zaten görüntülenmiş olanlar öncek
         <translation>Dosya mevcut değil</translation>
     </message>
     <message>
-        <source>File is not a configuration file.</source>
-        <translation>Dosya yapılandırma dosyası değil.</translation>
-    </message>
-    <message>
         <source>Settings merged from file.</source>
         <translation>Ayarlar dosyadan birleştirildi.</translation>
     </message>
     <message>
         <source>URL scheme is not &apos;mumble&apos;</source>
         <translation>URL düzeni &apos;mumble&apos; değil</translation>
-    </message>
-    <message>
-        <source>This version of Mumble can&apos;t handle URLs for Mumble version %1.%2.%3</source>
-        <translation>Mumble&apos;ın bu sürümü %1.%2.%3 sayılı sürümün URL&apos;lerini işleyemez</translation>
     </message>
     <message>
         <source>Connecting to %1</source>
@@ -4616,14 +4793,6 @@ Bu ayar sadece yeni mesajlara uygulanır, zaten görüntülenmiş olanlar öncek
         <translation>Aktarma Kipi Devamlı olarak ayarlandı</translation>
     </message>
     <message>
-        <source>&lt;p&gt;%1 (%2)&lt;br /&gt;%3&lt;/p&gt;</source>
-        <translation>&lt;p&gt;%1 (%2)&lt;br /&gt;%3&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;h2&gt;Voice channel&lt;/h2&gt;&lt;p&gt;Encrypted with 128 bit OCB-AES128&lt;br /&gt;%1 ms average latency (%4 deviation)&lt;/p&gt;</source>
-        <translation>&lt;h2&gt;Ses kanalı&lt;/h2&gt;&lt;p&gt;128 bit OCB-AES128 ile şifrelenmiştir&lt;br /&gt;%1 ms vasati gecikme (%4 sapma)&lt;/p&gt;</translation>
-    </message>
-    <message>
         <source>Register yourself as %1</source>
         <translation>Kendinizi %1 olarak kaydedin</translation>
     </message>
@@ -4632,48 +4801,12 @@ Bu ayar sadece yeni mesajlara uygulanır, zaten görüntülenmiş olanlar öncek
         <translation>&lt;p&gt;Kendinizi bu sunucuda kaydetmek üzeresiniz. Bu faaliyet geriye alınamaz, ve tamamlandığında kullanıcı isminiz değiştirilemez. Bu sunucuda daima &apos;%1&apos; olarak tanınırsınız.&lt;/p&gt;&lt;p&gt;Kendinizi kaydetmek istediğinizden emin misiniz?&lt;/p&gt;</translation>
     </message>
     <message>
-        <source>&lt;h2&gt;Version&lt;/h2&gt;&lt;p&gt;Protocol %1&lt;/p&gt;</source>
-        <translation>&lt;h2&gt;Sürüm&lt;/h2&gt;&lt;p&gt;Protokol %1&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;No build information or OS version available&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Hiçbir derleme ya da işletim sistemi bilgisi mevcut değildir&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>The connection is encrypted and authenticated using %1 and uses %2 as the key exchange mechanism (%3)</source>
-        <translation>Bağlantı şifrelenmiştir, kimlik doğrulaması %1 kullanılarak yapılmıştır ve %2 anahtar alışveriş mekanizması olarak kullanılmıştır (%3)</translation>
-    </message>
-    <message>
-        <source>The connection is encrypted using %1, with %2 for message authentication and %3 as the key exchange mechanism (%4)</source>
-        <translation>Bağlantı %1 kullanılarak şifrelenmiştir, %2 mesaj kimlik doğrulaması için ve %3 anahtar alışveriş mekanizması olarak kullanılmıştır (%4)</translation>
-    </message>
-    <message>
-        <source>The connection is secured by the cipher suite that OpenSSL identifies as %1</source>
-        <translation>Bağlantı, OpenSSL&apos;in %1 olarak tanımladığı şifreleme paketi ile güvence altına alınmıştır</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;The connection provides perfect forward secrecy&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Bağlantı kusursuz iletme gizliliği (forward secrecy) sağlar&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;The connection does not provide perfect forward secrecy&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Bağlantı kusursuz iletme gizliliği (forward secrecy) sağlamaz&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;h2&gt;Control channel&lt;/h2&gt;&lt;p&gt;The connection uses %1&lt;/p&gt;%2%3&lt;p&gt;%4 ms average latency (%5 deviation)&lt;/p&gt;&lt;p&gt;Remote host %6 (port %7)&lt;/p&gt;</source>
-        <translation>&lt;h2&gt;Kontrol kanalı&lt;/h2&gt;&lt;p&gt;Bağlantı şunu kullanır: %1&lt;/p&gt;%2%3&lt;p&gt;%4 ms vasati gecikme (%5 sapma)&lt;/p&gt;&lt;p&gt;Uzaktaki makine %6 (port %7)&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Voice channel is sent over control channel</source>
-        <translation>Ses kanalı kontrol kanalından gönderilmekte</translation>
-    </message>
-    <message>
         <source>Register user %1</source>
         <translation>%1 adlı kullanıcıyı kaydet</translation>
     </message>
     <message>
         <source>&lt;p&gt;You are about to register %1 on the server. This action cannot be undone, the username cannot be changed, and as a registered user, %1 will have access to the server even if you change the server password.&lt;/p&gt;&lt;p&gt;From this point on, %1 will be authenticated with the certificate currently in use.&lt;/p&gt;&lt;p&gt;Are you sure you want to register %1?&lt;/p&gt;</source>
-        <translation>&lt;p&gt;%1 adlı kullanıcıyı bu sunucuda kaydetmek üzeresiniz. Bu faaliyet geriye alınamaz ve tamamlandığında, kaydedilmiş bir kullanıcı olarak %1 bu sunucuya parolasını değiştirseniz bile erişebilecektir.&lt;/p&gt;Bundan itibaren %1 şu anda kullanılan sertifika ile kimlik doğrulaması yapacaktır.&lt;/p&gt;&lt;p&gt;%1 adlı kullanıcıyı kaydetmek istediğinizden emin misiniz?&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;%1 adlı kullanıcıyı bu sunucuda kaydetmek üzeresiniz. Bu faaliyet geriye alınamaz ve tamamlandığında, kaydedilmiş bir kullanıcı olarak %1, bu sunucuya parolasını değiştirseniz bile erişebilecektir.&lt;/p&gt;&lt;p&gt;Bundan itibaren %1 şu anda kullanılan sertifika ile kimlik doğrulaması yapacaktır.&lt;/p&gt;&lt;p&gt;%1 adlı kullanıcıyı kaydetmek istediğinizden emin misiniz?&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Kicking user %1</source>
@@ -4717,12 +4850,12 @@ Bu ayar sadece yeni mesajlara uygulanır, zaten görüntülenmiş olanlar öncek
     </message>
     <message>
         <source>&lt;center&gt;Type message to channel &apos;%1&apos; here&lt;/center&gt;</source>
-        <oldsource>Type message to channel '%1' here</oldsource>
+        <oldsource>Type message to channel &apos;%1&apos; here</oldsource>
         <translation>&lt;center&gt;&apos;%1&apos; adlı kanala mesajı burada giriniz&lt;/center&gt;</translation>
     </message>
     <message>
         <source>&lt;center&gt;Type message to user &apos;%1&apos; here&lt;/center&gt;</source>
-        <oldsource>Type message to user '%1' here</oldsource>
+        <oldsource>Type message to user &apos;%1&apos; here</oldsource>
         <translation>&lt;center&gt;&apos;%1&apos; adlı kullanıcıya mesajı burada giriniz&lt;/center&gt;</translation>
     </message>
     <message>
@@ -4812,10 +4945,6 @@ Bu ayar sadece yeni mesajlara uygulanır, zaten görüntülenmiş olanlar öncek
         <translation>Bas-ve-Konuş</translation>
     </message>
     <message>
-        <source>Mumble - Minimal View -- %1</source>
-        <translation>Mumble - Asgari Görünüm -- %1</translation>
-    </message>
-    <message>
         <source>Cancel</source>
         <translation>İptal</translation>
     </message>
@@ -4842,46 +4971,6 @@ Bu ayar sadece yeni mesajlara uygulanır, zaten görüntülenmiş olanlar öncek
     <message>
         <source>Transmit Mode set to Push-to-Talk</source>
         <translation>Aktarma Kipi Bas-ve-Konuş olarak ayarlandı</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Connected users: %1/%2&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Çevrimiçi kullanıcılar: %1/%2&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>UDP Statistics</source>
-        <translation>UDP İstatistikleri</translation>
-    </message>
-    <message>
-        <source>To Server</source>
-        <translation>Sunucuya</translation>
-    </message>
-    <message>
-        <source>From Server</source>
-        <translation>Sunucudan</translation>
-    </message>
-    <message>
-        <source>Good</source>
-        <translation>İyi</translation>
-    </message>
-    <message>
-        <source>Late</source>
-        <translation>Gecikmeli</translation>
-    </message>
-    <message>
-        <source>Lost</source>
-        <translation>Kayıp</translation>
-    </message>
-    <message>
-        <source>Resync</source>
-        <translation>Tekrar Senkronize</translation>
-    </message>
-    <message>
-        <source>&lt;h2&gt;Audio bandwidth&lt;/h2&gt;&lt;p&gt;Maximum %1 kbit/s&lt;br /&gt;Current %2 kbit/s&lt;br /&gt;Codec: %3&lt;/p&gt;</source>
-        <translation>&lt;h2&gt;Ses bant genişliği&lt;/h2&gt;&lt;p&gt;Azami %1 kbit/s&lt;br /&gt;Güncel %2 kbit/s&lt;br /&gt;Kodek: %3&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Mumble Server Information</source>
-        <translation>Mumble Sunucu Verileri</translation>
     </message>
     <message>
         <source>&amp;View Certificate</source>
@@ -5412,7 +5501,7 @@ deneyiniz. Yoksa iptal edip parolanızı kontrol ediniz.</translation>
     </message>
     <message>
         <source>&amp;Minimal View</source>
-        <translation>K&amp;üçük Görüntü</translation>
+        <translation>&amp;Küçük Görünüm</translation>
     </message>
     <message>
         <source>Toggle minimal window modes</source>
@@ -5420,7 +5509,7 @@ deneyiniz. Yoksa iptal edip parolanızı kontrol ediniz.</translation>
     </message>
     <message>
         <source>This will toggle minimal mode, where the log window and menu is hidden.</source>
-        <translation>Kütük ve menü pencerelerinin saklandığı küçük görüntü kipini açıp kapatır.</translation>
+        <translation>Günlük penceresinin ve menünün gizlendiği küçük görüntü kipini açıp kapatır.</translation>
     </message>
     <message>
         <source>You muted and deafened %1.</source>
@@ -5633,7 +5722,7 @@ deneyiniz. Yoksa iptal edip parolanızı kontrol ediniz.</translation>
     </message>
     <message>
         <source>You were unsuppressed by %1.</source>
-        <translation>Askıya alınmanız  %1 tarafından kaldırıldı.</translation>
+        <translation>Askıya alınmanız %1 tarafından kaldırıldı.</translation>
     </message>
     <message>
         <source>You joined %1.</source>
@@ -5659,10 +5748,6 @@ deneyiniz. Yoksa iptal edip parolanızı kontrol ediniz.</translation>
         <source>Server</source>
         <comment>message from</comment>
         <translation>Sunucu</translation>
-    </message>
-    <message>
-        <source>Failed to load Opus, it will not be available for audio encoding/decoding.</source>
-        <translation>Opus&apos;ın yüklenmesi başarısız oldu, ses kodlaması ve kodlama çözmesi için kullanılamayacaktır.</translation>
     </message>
     <message>
         <source>The server requests minimum client version %1</source>
@@ -5711,10 +5796,6 @@ deneyiniz. Yoksa iptal edip parolanızı kontrol ediniz.</translation>
     <message>
         <source>%1 unmuted by %2.</source>
         <translation>%1 adlı kullanıcının susturulması %2 tarafından kaldırıldı.</translation>
-    </message>
-    <message>
-        <source>Unable to find matching CELT codecs with other clients. You will not be able to talk to all users.</source>
-        <translation>Diğer istemcilerle uyumlu CELT kodekleri bulunamadı. Diğer kullanıcılar ile konuşamayacaksınız.</translation>
     </message>
     <message>
         <source>You were muted and deafened by %1.</source>
@@ -5910,23 +5991,14 @@ deneyiniz. Yoksa iptal edip parolanızı kontrol ediniz.</translation>
         <translation>Bu, sunucuda IP yasaklama listesini düzenlemenize izin verir.</translation>
     </message>
     <message>
-        <source>&amp;Filter on/off</source>
-        <translation>&amp;Filtre Aç/Kapat</translation>
-    </message>
-    <message>
-        <source>Toggle the channel filter (Ctrl+F)</source>
-        <translation>Kanal filtresini değiştir  (Ctrl+F)</translation>
-    </message>
-    <message>
         <source>Enable or disable the filtering of select channels.
 By default all empty channels will be filtered.
 You can mark additional channels for filtering from
 the channel&apos;s context menu.</source>
         <translation>Seçtiğiniz kanalların filtrelenmesini etkinleştirin
-yada devre dışı bırakın.
-Varsayılan olarak boş kanallar filtrelenir.
-Kanalın içerik menüsünden filtrelenmesi için
-ilave kanallar ekleyebilirsiniz.</translation>
+yada devre dışı bırakın. Varsayılan olarak tüm boş
+kanallar filtrelenir. Kanalın içerik menüsünden
+filtrelenmesi için ilave kanallar ekleyebilirsiniz.</translation>
     </message>
     <message>
         <source>Ctrl+F</source>
@@ -5939,14 +6011,6 @@ ilave kanallar ekleyebilirsiniz.</translation>
     <message>
         <source>Reset the avatar of the selected user.</source>
         <translation>Seçilen kullanıcının havarisini sıfırla.</translation>
-    </message>
-    <message>
-        <source>Locally adjust the user&apos;s speech volume.</source>
-        <translation>Kullanıcının konuşma ses seviyesini yerel olarak ayarla.</translation>
-    </message>
-    <message>
-        <source>Opens a dialog with a volume slider. Use this on other users in the same room.</source>
-        <translation>Ses seviyesini belirleyen kaydırıcı içeren bir diyalog açar. Bunu, aynı odadaki diğer kullanıcılar üzerinde kullanın.</translation>
     </message>
     <message>
         <source>&amp;Developer</source>
@@ -5991,10 +6055,6 @@ ilave kanallar ekleyebilirsiniz.</translation>
     <message>
         <source>&amp;Ban...</source>
         <translation>&amp;Yasakla...</translation>
-    </message>
-    <message>
-        <source>Local Volume Adjustment...</source>
-        <translation>Yerel Ses Ayarı...</translation>
     </message>
     <message>
         <source>Send &amp;Message...</source>
@@ -6090,7 +6150,7 @@ ilave kanallar ekleyebilirsiniz.</translation>
     </message>
     <message>
         <source>Server sync protocol violation. No user profile received.</source>
-        <translation>Sunucu senkronizasyon protokolü ihlali. Hiçbir kullanıcı profili alınmadı.</translation>
+        <translation>Sunucu eşzamanlama protokolü ihlali. Kullanıcı profili alınmadı.</translation>
     </message>
     <message>
         <source>Protocol violation. Server sent remove for occupied channel.</source>
@@ -6103,10 +6163,6 @@ ilave kanallar ekleyebilirsiniz.</translation>
     <message>
         <source>Listen to this channel without joining it</source>
         <translation>Bu kanalı ona katılmadan dinle</translation>
-    </message>
-    <message>
-        <source>Locally adjust the volume for this virtual ear.</source>
-        <translation>Bu sanal kulak için ses seviyesini yerel olarak ayarla.</translation>
     </message>
     <message>
         <source>&amp;Listener</source>
@@ -6162,71 +6218,256 @@ ilave kanallar ekleyebilirsiniz.</translation>
     </message>
     <message>
         <source>Channels and users</source>
-        <translation type="unfinished"/>
+        <translation>Kanallar ve kullanıcılar</translation>
     </message>
     <message>
         <source>Activity log</source>
-        <translation type="unfinished"/>
+        <translation>Etkinlik günlüğü</translation>
     </message>
     <message>
         <source>Chat message</source>
-        <translation type="unfinished"/>
+        <translation>Sohbet mesajı</translation>
     </message>
     <message>
         <source>Disable Text-To-Speech</source>
-        <translation type="unfinished"/>
+        <translation>TTS&apos;yi devre dışı bırak</translation>
     </message>
     <message>
         <source>Locally disable Text-To-Speech for this user&apos;s text chat messages.</source>
-        <translation type="unfinished"/>
+        <translation>Bu kullanıcının metin sohbet mesajları için TTS&apos;yi yerel olarak devre dışı bırakın.</translation>
     </message>
     <message>
         <source>Silently disables Text-To-Speech for all text messages from the user.</source>
-        <translation type="unfinished"/>
+        <translation>Kullanıcıdan gelen tüm metin mesajları için TTS&apos;yi sessizce devre dışı bırakır.</translation>
     </message>
     <message>
         <source>Tree</source>
-        <translation type="unfinished"/>
+        <translation>Ağaç</translation>
     </message>
     <message>
         <source>Channel</source>
-        <translation type="unfinished"/>
+        <translation>Kanal</translation>
     </message>
     <message>
         <source>Private</source>
-        <translation type="unfinished"/>
+        <translation>Özel</translation>
     </message>
     <message>
         <source>%1: %2</source>
-        <translation type="unfinished"/>
+        <translation>%1: %2</translation>
     </message>
     <message>
         <source>(%1) %2</source>
-        <translation type="unfinished"/>
+        <translation>(%1) %2</translation>
     </message>
     <message>
         <source>Configuration file %1 does not exist or is not writable.
 </source>
-        <translation type="unfinished"/>
+        <translation>%1 yapılandırma dosyası yok veya yazılabilir değil.
+</translation>
     </message>
     <message>
-        <source>Usage: mumble [options] [&lt;url&gt;]
+        <source>Hide/show main window</source>
+        <comment>Global Shortcut</comment>
+        <translation>Ana pencereyi gizle/göster</translation>
+    </message>
+    <message>
+        <source>&amp;Set Nickname...</source>
+        <translation>&amp; Takma Adı Ayarla ...</translation>
+    </message>
+    <message>
+        <source>Set a local nickname</source>
+        <translation>Yerel bir takma ad ayarlayın</translation>
+    </message>
+    <message>
+        <source>Sets a local nickname for another user.</source>
+        <translation>Başka bir kullanıcı için yerel bir takma ad belirler.</translation>
+    </message>
+    <message>
+        <source>Usage: mumble rpc &lt;action&gt; [options]
+
+It is possible to remote control a running instance of Mumble by using
+the &apos;mumble rpc&apos; command.
+
+Valid actions are:
+  mute
+                Mute self
+  unmute
+                Unmute self
+  togglemute
+                Toggle self-mute status
+  deaf
+                Deafen self
+  undeaf
+                Undeafen self
+  toggledeaf
+                Toggle self-deafen status
+  starttalking
+                Start talking
+  stoptalking
+                Stop talking
+
+</source>
+        <translation>Kullanım: mumble rpc &lt;eylem&gt; [seçenekler]
+
+Mumble&apos;ın çalışmakta olan bir örneklemesini &apos;mumble-rpc&apos; komutu
+ile uzaktan kontrol etmek mümkündür.
+
+Geçerli eylemler şunlardır:
+  sessize al
+                Kendinizi sessize alın
+  sessize alma durumunu kaldırın
+                Kendinizi sessize alma durumunu kaldırın
+  sessize alma durumuna geçiş yapın
+                Kendinizi sessize alma durumunu geçiş yapın
+  işitme engeli
+                Kendinizi işitme engelli durumuna geçirin
+  işitme engeli durumunu kaldırın
+                 İşitme engelli durumunuzu iptal edin
+  işitme engelli durumuna geçiş yapın
+                İşitme engelli  durumunuzu değiştirin
+  konuşmayabaşlayın
+                Konuşmaya başlayın
+  konuşmayıkesin
+                Konuşmayı kesin
+
+</translation>
+    </message>
+    <message>
+        <source>Directory %1 does not exist.
+</source>
+        <translation>%1 dizini mevcut değil.
+</translation>
+    </message>
+    <message>
+        <source>Toggle TalkingUI</source>
+        <comment>Global shortcut</comment>
+        <translation>Konuşma Arayüzü&apos;nü aç/kapat</translation>
+    </message>
+    <message>
+        <source>Toggles the visibility of the TalkingUI.</source>
+        <comment>Global Shortcut</comment>
+        <translation>Konuşma Arayüzü&apos;nün görünürlüğünü değiştirir.</translation>
+    </message>
+    <message>
+        <source>Toggle the channel filter (Alt+F)</source>
+        <translation>Kanal filtresini aç/kapat (Alt+F)</translation>
+    </message>
+    <message>
+        <source>Alt+F</source>
+        <translation>Alt+F</translation>
+    </message>
+    <message>
+        <source>Search</source>
+        <translation>Ara</translation>
+    </message>
+    <message>
+        <source>Search for a user or channel (Ctrl+F)</source>
+        <translation>Bir kullanıcı veya kanal ara (Ctrl+F)</translation>
+    </message>
+    <message>
+        <source>Toggle search dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>Arama iletişim kutusunu aç/kapat</translation>
+    </message>
+    <message>
+        <source>This will open or close the search dialog depending on whether it is currently opened already</source>
+        <translation>Bu, o anda açık olup olmamasına bağlı olarak arama iletişim kutusunu açacak veya kapatacaktır</translation>
+    </message>
+    <message>
+        <source>Unmute yourself</source>
+        <translation>Kendi susturmanı kaldır</translation>
+    </message>
+    <message>
+        <source>Undeafen yourself</source>
+        <translation>Kendi sağırlaştırmanı kaldır</translation>
+    </message>
+    <message>
+        <source>Positional &amp;Audio Viewer...</source>
+        <translation>Konumsal ve Ses Görüntüleyici...</translation>
+    </message>
+    <message>
+        <source>Show the Positional Audio Viewer</source>
+        <translation>Konumsal Ses Görüntüleyiciyi Göster</translation>
+    </message>
+    <message>
+        <source>Shows the Positional Audio Viewer. In it the current information used for positional audio can be inspected. Context and identity are also shown.</source>
+        <translation>Konumsal Ses Görüntüleyiciyi gösterir. Burada konumsal ses için kullanılan mevcut bilgiler incelenebilir. Kaynak ve kimlik de gösterilir.</translation>
+    </message>
+    <message>
+        <source>Mumble - Minimal View</source>
+        <translation>Mumble - Küçük Görünüm</translation>
+    </message>
+    <message>
+        <source>Invalid settings file encountered.</source>
+        <translation>Geçersiz ayar dosyası bulundu.</translation>
+    </message>
+    <message>
+        <source>You are currently in minimal view but not connected to a server. Use the context menu to connect to a server or disable minimal view.</source>
+        <translation>Şu anda küçük görünümdesiniz ancak bir sunucuya bağlı değilsiniz. Bir sunucuya bağlanmak veya küçük görünümü devre dışı bırakmak için içerik menüsünü kullanın.</translation>
+    </message>
+    <message>
+        <source>Local Volume Adjustment:</source>
+        <translation>Yerel Ses Ayarı:</translation>
+    </message>
+    <message>
+        <source>This version of Mumble can&apos;t handle URLs for Mumble version %1</source>
+        <translation>Mumble&apos;ın bu sürümü Mumble %1 sürümü için URL&apos;leri işleyemiyor</translation>
+    </message>
+    <message>
+        <source>Listen to Channel</source>
+        <comment>Global Shortcut</comment>
+        <translation>Kanalı Dinle</translation>
+    </message>
+    <message>
+        <source>Toggles listening to the given channel.</source>
+        <comment>Global Shortcut</comment>
+        <translation>Verilen kanalı dinlemeye geçer.</translation>
+    </message>
+    <message>
+        <source>Server instructed us to use an audio codec different from Opus, which is no longer supported. Disconnecting...</source>
+        <translation>Sunucu, artık desteklenmeyen Opus&apos;tan farklı bir ses codec&apos;i kullanmamızı istedi. Bağlantı kesiliyor...</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to close Mumble? Perhaps you prefer to minimize it instead?</source>
+        <translation>Mumble&apos;ı kapatmak istediğinizden emin misiniz? Belki de bunun yerine küçültmeyi tercih edersiniz?</translation>
+    </message>
+    <message>
+        <source>Remember this setting</source>
+        <translation>Bu ayarı hatırla</translation>
+    </message>
+    <message>
+        <source>Channel &amp;Filter</source>
+        <translation>Kanal &amp;Filtresi</translation>
+    </message>
+    <message>
+        <source>&amp;Pin Channel when Filtering</source>
+        <translation>Filtreleme Sırasında Kanalı &amp;Sabitle</translation>
+    </message>
+    <message>
+        <source>Usage: mumble [options] [&lt;url&gt; | &lt;plugin_list&gt;]
 
 &lt;url&gt; specifies a URL to connect to after startup instead of showing
 the connection window, and has the following form:
 mumble://[&lt;username&gt;[:&lt;password&gt;]@]&lt;host&gt;[:&lt;port&gt;][/&lt;channel&gt;[/&lt;subchannel&gt;...]][?version=&lt;x.y.z&gt;]
 
+&lt;plugin_list&gt; is a list of plugin files that shall be installed
 The version query parameter has to be set in order to invoke the
 correct client version. It currently defaults to 1.2.0.
 
 Valid options are:
   -h, --help    Show this help text and exit.
+  --version     Print version information and exit
   -m, --multiple
                 Allow multiple instances of the client to be started.
   -c, --config
                 Specify an alternative configuration file.
                 If you use this to run multiple instances of Mumble at once,
-                make sure to set an alternative 'database' value in the config.
+                make sure to set an alternative &apos;database&apos; value in the config.
+  --default-certificate-dir &lt;dir&gt;
+                Specify an alternative default certificate path.
+                This path is only used if there is no certificate loaded
+                from the settings.
   -n, --noidentity
                 Suppress loading of identity files (i.e., certificates.)
   -jn, --jackname &lt;arg&gt;
@@ -6248,53 +6489,24 @@ Valid options are:
   --print-echocancel-queue
                 Print on stdout the echo cancellation queue state
                 (useful for debugging purposes)
-
+  --translation-dir &lt;dir&gt;
+                Specifies an additional translation directory &lt;dir&gt;
+                in which Mumble will search for translation files that
+                overwrite the bundled ones
+                Directories added this way have higher priority than
+                the default locations used otherwise
+  --print-translation-dirs
+                Print out the paths in which Mumble will search for
+                translation files that overwrite the bundled ones.
+                (Useful for translators testing their translations)
+  --locale &lt;locale&gt;
+                Overwrite the locale in Mumble&apos;s settings with a
+                locale that corresponds to the given locale string.
+                If the format is invalid, Mumble will error.
+                Otherwise the locale will be permanently saved to
+                Mumble&apos;s settings.
 </source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>Hide/show main window</source>
-        <comment>Global Shortcut</comment>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>&amp;Set Nickname...</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>Set a local nickname</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>Sets a local nickname for another user.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>Usage: mumble rpc &lt;action&gt; [options]
-
-It is possible to remote control a running instance of Mumble by using
-the 'mumble rpc' command.
-
-Valid actions are:
-  mute
-                Mute self
-  unmute
-                Unmute self
-  togglemute
-                Toggle self-mute status
-  deaf
-                Deafen self
-  undeaf
-                Undeafen self
-  toggledeaf
-                Toggle self-deafen status
-  starttalking
-                Start talking
-  stoptalking
-                Stop talking
-
-</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6373,15 +6585,15 @@ Valid actions are:
     </message>
     <message>
         <source>Display</source>
-        <translation type="unfinished"/>
+        <translation>Görüntüle</translation>
     </message>
     <message>
         <source>How long silent user&apos;s positions should stay marked after they have stopped talking (in seconds).</source>
-        <translation type="unfinished"/>
+        <translation>Sessiz kullanıcının pozisyonlarının konuşmayı bıraktıktan sonra ne kadar süreyle işaretli kalması gerektiği (saniye cinsinden).</translation>
     </message>
     <message>
         <source>Silent user displaytime:</source>
-        <translation type="unfinished"/>
+        <translation>Sessiz kullanıcı görüntüleme süresi:</translation>
     </message>
 </context>
 <context>
@@ -6441,11 +6653,11 @@ Valid actions are:
     </message>
     <message>
         <source>Hostname</source>
-        <translation>Makine ismi</translation>
+        <translation>Ana makine adı</translation>
     </message>
     <message>
         <source>Hostname of the proxy</source>
-        <translation>Vekilin makine ismi</translation>
+        <translation>Vekilin ana makine adı</translation>
     </message>
     <message>
         <source>Force TCP mode</source>
@@ -6481,19 +6693,19 @@ Valid actions are:
     </message>
     <message>
         <source>&lt;b&gt;Hostname of the proxy.&lt;/b&gt;&lt;br /&gt;This field specifies the hostname of the proxy you wish to tunnel network traffic through.</source>
-        <translation>&lt;b&gt;Vekilin bilgisayar ismi.&lt;/b&gt;&lt;br /&gt;Bu alan, şebeke trafiğinin tünelleneceği vekilin makine ismini (hostname) belirtir.</translation>
+        <translation>&lt;b&gt;Vekilin ana makine adı.&lt;/b&gt;&lt;br /&gt;Bu alan, şebeke trafiğinin tünelleneceği vekilin ana makine adını belirtir.</translation>
     </message>
     <message>
         <source>Port</source>
-        <translation>Port</translation>
+        <translation>Bağlantı noktası</translation>
     </message>
     <message>
         <source>Port number of the proxy</source>
-        <translation>Vekilin port numarası</translation>
+        <translation>Vekilin bağlantı noktası numarası</translation>
     </message>
     <message>
         <source>&lt;b&gt;Port number of the proxy.&lt;/b&gt;&lt;br /&gt;This field specifies the port number that the proxy expects connections on.</source>
-        <translation>&lt;b&gt;Vekilin port numarası.&lt;b&gt;&lt;br /&gt;Bu alan vekilin bağlantı beklediği port numarasını girmeye yarar.</translation>
+        <translation>&lt;b&gt;Vekilin bağlantı noktası numarası.&lt;/b&gt;&lt;br /&gt;Bu alan vekilin bağlantı beklediği bağlantı noktası numarasını girmeye yarar.</translation>
     </message>
     <message>
         <source>Username</source>
@@ -6564,10 +6776,6 @@ Valid actions are:
         <translation>Başladığında son sunucuya bağlan</translation>
     </message>
     <message>
-        <source>Download plugin and overlay updates on startup</source>
-        <translation>Başladığında eklenti ve yerpaylaşan güncellemelerini indir</translation>
-    </message>
-    <message>
         <source>Privacy</source>
         <translation>Gizlilik</translation>
     </message>
@@ -6576,7 +6784,7 @@ Valid actions are:
         <translation>İşletim Sistemi verilerinin Mumble ve web sunucularına gönderilmesine mani ol</translation>
     </message>
     <message>
-        <source>&lt;b&gt;Don't send OS information to servers&lt;/b&gt;&lt;br/&gt;
+        <source>&lt;b&gt;Don&apos;t send OS information to servers&lt;/b&gt;&lt;br/&gt;
 Prevents the client from sending potentially identifying information about the operating system to the Mumble server and web servers.</source>
         <translation>&lt;b&gt;İşletim Sistemi verilerini sunuculara gönderme&lt;/b&gt;&lt;br/&gt;
 İstemcinin işletim sistemi hakkında potansiyel olarak tanımlayıcı bilgileri Mumble sunucusuna ve web sunucularına göndermesine engel olur.</translation>
@@ -6587,11 +6795,19 @@ Prevents the client from sending potentially identifying information about the o
     </message>
     <message>
         <source>When toggled this hides the public server list from the connect dialog</source>
-        <translation type="unfinished"/>
+        <translation>Değiştirildiğinde bu, genel sunucu listesini bağlantı iletişim kutusundan gizler</translation>
     </message>
     <message>
         <source>Hide public server list</source>
-        <translation type="unfinished"/>
+        <translation>Genel sunucu listesini gizle</translation>
+    </message>
+    <message>
+        <source>Check for plugin updates on startup</source>
+        <translation>Başlangıçta eklenti güncellemelerini kontrol edin</translation>
+    </message>
+    <message>
+        <source>Automatically download and install plugin updates</source>
+        <translation>Eklenti güncellemelerini otomatik olarak indirin ve yükleyin</translation>
     </message>
 </context>
 <context>
@@ -6811,7 +7027,7 @@ Bu dosyaları son sürümlerine güncellemek için aşağıdaki düğmeyi tıkla
     </message>
     <message>
         <source>Load…</source>
-        <translation>Yükle...</translation>
+        <translation>Yükle…</translation>
     </message>
     <message>
         <source>Save your overlay settings to file</source>
@@ -6819,7 +7035,7 @@ Bu dosyaları son sürümlerine güncellemek için aşağıdaki düğmeyi tıkla
     </message>
     <message>
         <source>Save…</source>
-        <translation>Kaydet...</translation>
+        <translation>Kaydet…</translation>
     </message>
     <message>
         <source>Set the overlay font.</source>
@@ -6978,7 +7194,7 @@ Bu dosyaları son sürümlerine güncellemek için aşağıdaki düğmeyi tıkla
     </message>
     <message>
         <source>Zoom level</source>
-        <translation type="unfinished"/>
+        <translation>Yakınlaştırma seviyesi</translation>
     </message>
 </context>
 <context>
@@ -7147,38 +7363,267 @@ Bu dosyaları son sürümlerine güncellemek için aşağıdaki düğmeyi tıkla
         <translation>İsim</translation>
     </message>
     <message>
-        <source>Enabled</source>
-        <translation>Etkin</translation>
+        <source>Enable</source>
+        <translation>Etkinleştir</translation>
+    </message>
+    <message>
+        <source>PA</source>
+        <translation>PA</translation>
+    </message>
+    <message>
+        <source>KeyEvents</source>
+        <translation>Önemli olaylar</translation>
+    </message>
+    <message>
+        <source>Install a plugin from a local file</source>
+        <translation>Yerel bir dosyadan bir eklenti yükleyin</translation>
+    </message>
+    <message>
+        <source>Install plugin...</source>
+        <translation>Eklenti kur...</translation>
+    </message>
+    <message>
+        <source>Unload the currently selected plugin. This will remove it from the plugin list for the current session.</source>
+        <translation>Şu anda seçili eklentiyi kaldırın. Bu, onu mevcut oturum için eklenti listesinden kaldıracaktır.</translation>
+    </message>
+    <message>
+        <source>Unload</source>
+        <translation>yüklemeyi kaldır</translation>
+    </message>
+    <message>
+        <source>The plugin was installed successfully</source>
+        <translation>Eklenti başarıyla kuruldu</translation>
+    </message>
+    <message>
+        <source>Unable to deactivate all requested features for plugin &quot;%1&quot;</source>
+        <translation>&quot;%1&quot; eklentisi için istenen tüm özellikler devre dışı bırakılamıyor</translation>
+    </message>
+    <message>
+        <source>Unable to load plugin &quot;%1&quot;</source>
+        <translation>&quot;%1&quot; eklentisi yüklenemiyor</translation>
+    </message>
+    <message>
+        <source>Whether the positional audio feature of this plugin should be enabled</source>
+        <translation>Bu eklentinin konumsal ses özelliğinin etkinleştirilip etkinleştirilmeyeceği</translation>
+    </message>
+    <message>
+        <source>This plugin does not provide support for positional audio</source>
+        <translation>Bu eklenti konumsal ses desteği sağlamaz</translation>
+    </message>
+    <message>
+        <source>Whether this plugin has the permission to be listening to all keyboard events that occur while Mumble has focus</source>
+        <translation>Bu eklentinin, Mumble&apos;ın odaklandığı sırada gerçekleşen tüm klavye olaylarını dinleme iznine sahip olup olmadığı</translation>
+    </message>
+    <message>
+        <source>Whether this plugin should be enabled</source>
+        <translation>Bu eklentinin etkinleştirilip etkinleştirilmeyeceği</translation>
     </message>
 </context>
 <context>
-    <name>Plugins</name>
+    <name>PluginInstaller</name>
     <message>
-        <source>Skipping plugin update in debug mode.</source>
-        <translation>Hata ayıklama kipinde eklenti güncellemesi atlanıyor.</translation>
+        <source>PluginInstaller</source>
+        <translation>Eklenti kurucu</translation>
     </message>
     <message>
-        <source>Downloaded new or updated plugin to %1.</source>
-        <translation>Yeni ya da güncelleştirilmiş eklenti %1 konumuna indirildi.</translation>
+        <source>You are about to install the plugin listed below. Do you wish to proceed?</source>
+        <translation>Aşağıda listelenen eklentiyi kurmak üzeresiniz. Devam etmek istiyor musunuz?</translation>
     </message>
     <message>
-        <source>Failed to install new plugin to %1.</source>
-        <translation>Yeni eklenti %1 konumuna kurulamadı.</translation>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Name:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt; &lt;head/&gt; &lt;body&gt; &lt;p&gt; &lt;span style=&quot; font-weight:600;&quot;&gt; Ad: &lt;/span&gt; &lt;/p&gt; &lt;/body&gt; &lt;/html&gt;</translation>
     </message>
     <message>
-        <source>%1 lost link.</source>
-        <translation>%1 bağlantı kaybetti.</translation>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Version:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt; &lt;head/&gt; &lt;body&gt; &lt;p&gt; &lt;span style=&quot; font-weight:600;&quot;&gt; Sürüm: &lt;/span&gt; &lt;/p&gt; &lt;/body&gt; &lt;/html&gt;</translation>
     </message>
     <message>
-        <source>%1 linked.</source>
-        <translation>%1 bağlandı.</translation>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Author(s):&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt; &lt;head/&gt; &lt;body&gt; &lt;p&gt; &lt;span style=&quot; font-weight:600;&quot;&gt; Yazar (lar): &lt;/span&gt; &lt;/p&gt; &lt;/body&gt; &lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Description:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt; &lt;head/&gt; &lt;body&gt; &lt;p&gt; &lt;span style=&quot; font-weight:600;&quot;&gt; Tanımlama:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&amp;No</source>
+        <translation>&amp;Hayır</translation>
+    </message>
+    <message>
+        <source>&amp;Yes</source>
+        <translation>&amp;Evet</translation>
+    </message>
+    <message>
+        <source>The file &quot;%1&quot; is not a valid plugin file!</source>
+        <translation>&quot;%1&quot; dosyası geçerli bir eklenti dosyası değil!</translation>
+    </message>
+    <message>
+        <source>Unable to load plugin &quot;%1&quot; - check the plugin interface!</source>
+        <translation>&quot;%1&quot; eklentisi yüklenemiyor - eklenti arayüzünü kontrol edin!</translation>
+    </message>
+    <message>
+        <source>Unable to delete old plugin at &quot;%1&quot;</source>
+        <translation>&quot;%1&quot; konumundaki eski eklenti silinemiyor</translation>
+    </message>
+    <message>
+        <source>Unable to copy plugin library from &quot;%1&quot; to &quot;%2&quot;</source>
+        <translation>Eklenti kitaplığı &quot;%1&quot; konumundan &quot;%2&quot; konumuna kopyalanamıyor</translation>
+    </message>
+    <message>
+        <source>Unable to move plugin library to &quot;%1&quot;</source>
+        <translation>Eklenti kitaplığı &quot;%1&quot; konumuna taşınamıyor</translation>
+    </message>
+    <message>
+        <source>Unable to locate the plugin manifest (manifest.xml)</source>
+        <translation>Eklenti bildirimi (manifest.xml) bulunamıyor</translation>
+    </message>
+    <message>
+        <source>Error while processing manifest: %1</source>
+        <translation>Bildirim işlenirken hata oluştu: %1</translation>
+    </message>
+    <message>
+        <source>Unable to find plugin for the current OS (&quot;%1&quot;) and architecture (&quot;%2&quot;)</source>
+        <translation>Mevcut işletim sistemi (&quot;%1&quot;) ve mimari (&quot;%2&quot;) için eklenti bulunamadı</translation>
+    </message>
+    <message>
+        <source>Unable to locate plugin library specified in manifest (&quot;%1&quot;) in the bundle</source>
+        <translation>Pakette bildirimde (&quot;%1&quot;) belirtilen eklenti kitaplığı bulunamıyor</translation>
+    </message>
+    <message>
+        <source>Overwrite plugin?</source>
+        <translation>Eklentinin üzerine yazılsın mı?</translation>
+    </message>
+    <message>
+        <source>The new plugin &quot;%1&quot; (%2) is about to overwrite the already installed plugin &quot;%3&quot; (%4). Do you wish to proceed?</source>
+        <translation>Yeni eklenti &quot;%1&quot; (%2), önceden yüklenmiş olan &quot;%3&quot; (%4) eklentisinin üzerine yazmak üzere. Devam etmek istiyor musunuz?</translation>
+    </message>
+</context>
+<context>
+    <name>PluginManager</name>
+    <message>
+        <source>%1 lost link</source>
+        <translation>%1 kayıp bağlantı</translation>
+    </message>
+    <message>
+        <source>%1 linked</source>
+        <translation>%1 bağlandı</translation>
+    </message>
+    <message>
+        <source>Plugin &quot;%1&quot; encountered a permanent error in positional data gathering</source>
+        <translation>&quot;%1&quot; eklentisi konumsal veri toplamada kalıcı bir hatayla karşılaştı</translation>
+    </message>
+    <message>
+        <source>Non-plugin found in plugin directory: &quot;%1&quot;</source>
+        <translation>Eklenti dizininde eklenti olmayan bir şey bulundu: &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>Failed at loading manual plugin: %1</source>
+        <translation>Manuel eklenti yüklenirken başarısız oldu: %1</translation>
+    </message>
+</context>
+<context>
+    <name>PluginUpdater</name>
+    <message>
+        <source>PluginUpdater</source>
+        <translation>Eklenti Güncelleyici</translation>
+    </message>
+    <message>
+        <source>The following plugins can be updated.</source>
+        <translation>Aşağıdaki eklentiler güncellenebilir.</translation>
+    </message>
+    <message>
+        <source>Select all</source>
+        <translation>Tümünü seç</translation>
+    </message>
+    <message>
+        <source>Plugin</source>
+        <translation>Eklenti</translation>
+    </message>
+    <message>
+        <source>Download-URL</source>
+        <translation>İndirme URL&apos;si</translation>
+    </message>
+    <message>
+        <source>Do you want to update the selected plugins?</source>
+        <translation>Seçili eklentileri güncellemek istiyor musunuz?</translation>
+    </message>
+    <message>
+        <source>Unable to download plugin update for &quot;%1&quot; from &quot;%2&quot; (%3)</source>
+        <translation>&quot;%1&quot; için eklenti güncellemesi &quot;%2&quot; konumundan (%3) indirilemiyor</translation>
+    </message>
+    <message>
+        <source>Update for plugin &quot;%1&quot; failed due to too many redirects</source>
+        <translation>Çok fazla yönlendirme nedeniyle &quot;%1&quot; eklentisi için güncelleme başarısız oldu</translation>
+    </message>
+    <message>
+        <source>Unable to download plugin update for &quot;%1&quot; from &quot;%2&quot; (HTTP status code %3)</source>
+        <translation>&quot;%1&quot; için eklenti güncellemesi &quot;%2&quot; konumundan indirilemiyor (HTTP durum kodu %3)</translation>
+    </message>
+    <message>
+        <source>Successfully updated plugin &quot;%1&quot;</source>
+        <translation>&quot;%1&quot; eklentisi başarıyla güncellendi</translation>
     </message>
 </context>
 <context>
     <name>PortAudioSystem</name>
     <message>
         <source>Default device</source>
-        <translation>Varsayılan cihaz</translation>
+        <translation>Varsayılan aygıt</translation>
+    </message>
+</context>
+<context>
+    <name>PositionalAudioViewer</name>
+    <message>
+        <source>Positional Audio Viewer</source>
+        <translation>Konumsal Ses Görüntüleyici</translation>
+    </message>
+    <message>
+        <source>Camera direction</source>
+        <translation>Kamera yönü</translation>
+    </message>
+    <message>
+        <source>X</source>
+        <translation>X</translation>
+    </message>
+    <message>
+        <source>Y</source>
+        <translation>Y</translation>
+    </message>
+    <message>
+        <source>Z</source>
+        <translation>Z</translation>
+    </message>
+    <message>
+        <source>Player position</source>
+        <translation>Oynatıcı konumu</translation>
+    </message>
+    <message>
+        <source>Player axis</source>
+        <translation>Oynatıcı ekseni</translation>
+    </message>
+    <message>
+        <source>Player direction</source>
+        <translation>Oynatıcı yönü</translation>
+    </message>
+    <message>
+        <source>Camera axis</source>
+        <translation>Kamera ekseni</translation>
+    </message>
+    <message>
+        <source>Camera position</source>
+        <translation>Kamera konumu</translation>
+    </message>
+    <message>
+        <source>Info</source>
+        <translation>Bilgi</translation>
+    </message>
+    <message>
+        <source>Context</source>
+        <translation>Kaynak</translation>
+    </message>
+    <message>
+        <source>Identity</source>
+        <translation>Kimlik</translation>
     </message>
 </context>
 <context>
@@ -7204,15 +7649,11 @@ Bu dosyaları son sürümlerine güncellemek için aşağıdaki düğmeyi tıkla
     </message>
     <message>
         <source>Mumble is currently connected to a server</source>
-        <translation type="unfinished"/>
+        <translation>Mumble şu anda bir sunucuya bağlı</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
-    <message>
-        <source>CodecInit: Failed to load Opus, it will not be available for encoding/decoding audio.</source>
-        <translation>CodecInit: Opus&apos;un yüklenmesi başarısız oldu, ses kodlamak/kodlamayı açmak için kullanılamayacaktır.</translation>
-    </message>
     <message>
         <source>Talking UI</source>
         <translation>Konuşma Arayüzü</translation>
@@ -7222,137 +7663,186 @@ Bu dosyaları son sürümlerine güncellemek için aşağıdaki düğmeyi tıkla
         <translation>Yankı iptali, &quot;%1&quot; (giriş) ve &quot;%2&quot; (çıkış) arayüz birleşimi için desteklenmez.</translation>
     </message>
     <message>
-        <source>&lt;p&gt;If you're using Linux this is most likely because you are using a version from your distribution's package repository that have their own update cycles.&lt;/p&gt;&lt;p&gt;If you want to always have the most recent Mumble version, you should consider using a different method of installation.
+        <source>&lt;p&gt;If you&apos;re using Linux this is most likely because you are using a version from your distribution&apos;s package repository that have their own update cycles.&lt;/p&gt;&lt;p&gt;If you want to always have the most recent Mumble version, you should consider using a different method of installation.
 See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;the Mumble wiki&lt;/a&gt; for what alternatives there are.&lt;/p&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;p&gt; Linux kullanıyorsanız, bunun nedeni büyük olasılıkla dağıtımınızın paket havuzundan kendi güncelleme döngüleri olan bir sürümü kullanıyor olmanızdır. &lt;/p&gt;&lt;p&gt;Her zaman en yeni Mumble sürümüne sahip olmak istiyorsanız, farklı bir kurulum yöntemi kullanmayı düşünmelisiniz.
+Ne tür alternatifler olduğunu görmek için &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;Mumble wiki&lt;/a&gt; sayfasına bakın.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Local Mute</source>
-        <translation type="unfinished"/>
+        <translation>Yerel Olarak Sustur</translation>
     </message>
     <message>
         <source>Ignore Messages</source>
-        <translation type="unfinished"/>
+        <translation>Mesajları Görmezden Gel</translation>
     </message>
     <message>
         <source>Disable Text-To-Speech</source>
-        <translation type="unfinished"/>
+        <translation>TTS&apos;yi devre dışı bırak</translation>
     </message>
     <message>
         <source>&quot;%1&quot; could not be saved permanently and is lost on restart because %2 does not have a certificate.</source>
-        <translation type="unfinished"/>
+        <translation>&quot;%1&quot; kalıcı olarak kaydedilemedi ve yeniden başlatma sırasında kayboldu çünkü %2&apos;nin sertifikası yok.</translation>
     </message>
     <message>
         <source>Local Volume Adjustment...</source>
-        <translation type="unfinished"/>
+        <translation>Yerel Ses Ayarı...</translation>
     </message>
     <message>
         <source>&lt;p&gt;You&apos;re using a Mumble version that &lt;b&gt;explicitly disabled&lt;/b&gt; update-checks.&lt;/p&gt;&lt;p&gt;This means that the update notification you might receive by using this option will &lt;b&gt;most likely be meaningless&lt;/b&gt; for you.&lt;/p&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;p&gt; &lt;b&gt; &apos;in &lt;/b&gt; güncelleme kontrollerini açıkça devre dışı bıraktığı bir Mumble sürümü kullanıyorsunuz. &lt;/p&gt; &lt;p&gt; Bu, bu seçeneği kullanarak alabileceğiniz güncelleme bildiriminin &lt;b&gt; büyük olasılıkla &lt;/b&gt; sizin için. &lt;/p&gt;anlamsız olacağı anlamına gelir</translation>
     </message>
     <message>
         <source>Talking (muted)</source>
-        <translation type="unfinished"/>
+        <translation>Konuşma (sessiz)</translation>
     </message>
     <message>
         <source>All messages</source>
-        <translation type="unfinished"/>
+        <translation>Tüm mesajlar</translation>
     </message>
     <message>
         <source>Toggle console for all events</source>
-        <translation type="unfinished"/>
+        <translation>Tüm etkinlikler için konsolu aç / kapat</translation>
     </message>
     <message>
         <source>Toggle pop-up notifications for all events</source>
-        <translation type="unfinished"/>
+        <translation>Tüm etkinlikler için pop-up bildirimleri arasında geçiş yapın</translation>
     </message>
     <message>
         <source>Toggle window highlight (if not active) for all events</source>
-        <translation type="unfinished"/>
+        <translation>Tüm olaylar için pencere vurgulamasını (etkin değilse) aç / kapat</translation>
     </message>
     <message>
         <source>Click here to toggle sound notifications for all events</source>
-        <translation type="unfinished"/>
+        <translation>Tüm etkinlikler için sesli bildirimleri değiştirmek için burayı tıklayın</translation>
     </message>
     <message>
         <source>Toggle Text-to-Speech for all events</source>
-        <translation type="unfinished"/>
+        <translation>Tüm etkinlikler için TTS&apos;e(Metinden Konuşmaya) geçiş yapın</translation>
     </message>
     <message>
         <source>RNNoise is not available due to a sample rate mismatch.</source>
-        <translation type="unfinished"/>
+        <translation>RNNoise, örnekleme hızı uyumsuzluğu nedeniyle kullanılamıyor.</translation>
     </message>
     <message>
         <source>Reset all settings?</source>
-        <translation type="unfinished"/>
+        <translation>Tüm ayarlar sıfırlansın mı?</translation>
     </message>
     <message>
         <source>Do you really want to reset all settings (not only the ones currently visible) to their default value?</source>
-        <translation type="unfinished"/>
+        <translation>Tüm ayarları (yalnızca şu anda görünenleri değil) varsayılan değerlerine gerçekten sıfırlamak istiyor musunuz?</translation>
     </message>
     <message>
         <source>Local Nickname Adjustment...</source>
-        <translation type="unfinished"/>
+        <translation>Yerel Takma Ad Ayarı...</translation>
     </message>
     <message>
         <source>&lt;b&gt;Blocked URL scheme &quot;%1&quot;&lt;/b&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;b&gt;Engellenen URL şeması &quot;%1&quot;&lt;/b&gt;</translation>
     </message>
     <message>
         <source>The URL uses a scheme that has been blocked for security reasons.</source>
-        <translation type="unfinished"/>
+        <translation>URL, güvenlik nedenleriyle engellenmiş bir şema kullanıyor.</translation>
     </message>
     <message>
         <source>Blocked URL: &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Engellenen URL: &quot;%1&quot;</translation>
     </message>
     <message>
         <source>Default Device</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>This option works best when using built-in microphone and speaker.</source>
-        <translation type="unfinished"/>
+        <translation>Varsayılan Aygıt</translation>
     </message>
     <message>
         <source>Access to the microphone was denied. Please allow Mumble to use the microphone by changing the settings in System Preferences -&gt; Security &amp; Privacy -&gt; Privacy -&gt; Microphone.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>Access to the microphone was denied due to system restrictions. You will not be ableto use the microphone in this session.</source>
-        <translation type="unfinished"/>
+        <translation>Mikrofona erişim reddedildi. Lütfen Sistem Tercihleri -&gt; Güvenlik ve Gizlilik -&gt; Gizlilik -&gt; Mikrofon&apos;daki ayarları değiştirerek Mumble&apos;ın mikrofonu kullanmasına izin verin.</translation>
     </message>
     <message>
         <source>If enabled this tries to cancel out echo from the audio stream.</source>
-        <translation type="unfinished"/>
+        <translation>Etkinleştirilirse, ses akışından yankıyı iptal etmeye çalışır.</translation>
     </message>
     <message>
         <source>Disabled</source>
-        <translation type="unfinished"/>
+        <translation>Devre dışı</translation>
     </message>
     <message>
         <source>Echo cancellation is disabled.</source>
-        <translation type="unfinished"/>
+        <translation>Yankı iptali devre dışı bırakıldı.</translation>
     </message>
     <message>
         <source>Mixed echo cancellation (speex)</source>
-        <translation type="unfinished"/>
+        <translation>Karışık yankı iptali (speex)</translation>
     </message>
     <message>
         <source>Mixed has low CPU impact, but only works well if your speakers are equally loud and equidistant from the microphone.</source>
-        <translation type="unfinished"/>
+        <translation>Mixed düşük CPU etkisine sahiptir, ancak yalnızca hoparlörlerinizin sesi eşit derecede yüksekse ve mikrofondan eşit uzaklıkta ise iyi çalışır.</translation>
     </message>
     <message>
         <source>Multichannel echo cancellation (speex)</source>
-        <translation type="unfinished"/>
+        <translation>Çok kanallı yankı iptali (speex)</translation>
     </message>
     <message>
         <source>Multichannel echo cancellation provides much better echo cancellation, but at a higher CPU cost. Multichannel echo cancellation requires more CPU, so you should try mixed first.</source>
-        <translation type="unfinished"/>
+        <translation>Çok kanallı yankı iptali, çok daha iyi yankı iptali sağlar, ancak daha yüksek bir CPU maliyetiyle. Çok kanallı yankı iptali daha fazla CPU gerektirir, bu nedenle önce mixed&apos;i denemelisiniz.</translation>
     </message>
     <message>
-        <source>Acoustic echo cancellation provided by Apple.</source>
-        <translation type="unfinished"/>
+        <source>The provided URL uses an invalid version format: &quot;%1&quot;</source>
+        <translation>Sağlanan URL geçersiz bir sürüm biçimi kullanıyor: &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>The directories in which Mumble searches for extra translation files are:
+</source>
+        <translation>Mumble&apos;ın fazladan çeviri dosyaları aradığı dizinler şunlardır:
+</translation>
+    </message>
+    <message>
+        <source>Invocation</source>
+        <translation>Çağrı</translation>
+    </message>
+    <message>
+        <source>EXPERIMENTAL: Acoustic echo cancellation (Apple).</source>
+        <translation>DENEYSEL: Akustik yankı iptali (Apple).</translation>
+    </message>
+    <message>
+        <source>The support for this option is experimental only! This option works best when using built-in microphone and speaker.</source>
+        <translation>Bu seçenek için destek yalnızca deneyseldir! Bu seçenek en iyi dahili mikrofon ve hoparlör kullanılırken işe yarar.</translation>
+    </message>
+    <message>
+        <source>Shortcuts migration incomplete</source>
+        <translation>Kısayol geçişi tamamlanmadı</translation>
+    </message>
+    <message>
+        <source>Unfortunately %1 shortcut(s) could not be migrated.
+You can register them again.</source>
+        <translation>Ne yazık ki %1 kısayol geçirilemedi.
+Bunları tekrar kaydedebilirsiniz.</translation>
+    </message>
+    <message>
+        <source>Potentially broken settings</source>
+        <translation>Olası bozuk ayarlar</translation>
+    </message>
+    <message>
+        <source>Load backup settings?</source>
+        <translation>Yedeklenen ayarlar yüklensin mi?</translation>
+    </message>
+    <message>
+        <source>It seems that Mumble did not perform a normal shutdown. If you did not intentionally kill the application, this could mean that the used settings caused a crash. Do you want to load the setting&apos;s backup instead?</source>
+        <translation>Mumble&apos;ın normal bir şekilde kapanmadığı görülüyor. Uygulamayı kasıtlı olarak sonlandırmadıysanız, bu, kullanılan ayarların bir çökmeye neden olduğu anlamına gelebilir. Onun yerine ayarın yedeklemesini yüklemek istiyor musunuz?</translation>
+    </message>
+    <message>
+        <source>The backed-up settings also seem to have been saved without Mumble exiting normally (potentially indicating a crash).</source>
+        <translation>Yedeklenen ayarlar da Mumble normal bir şekilde çıkmadan kaydedilmiş görünüyor (olası bir çökme olabilir).</translation>
+    </message>
+    <message>
+        <source>If you experience repeated crashes with these settings, you might have to manually delete the settings files at &lt;pre&gt;%1&lt;/pre&gt; and &lt;pre&gt;%2&lt;/pre&gt; in order to reset all settings to their default value.</source>
+        <translation>Bu ayarlarla tekrarlanan çökmeler yaşarsanız, tüm ayarları öntanımlı değerlerine sıfırlamak için &lt;pre&gt;%1&lt;/pre&gt; ve &lt;pre&gt;%2&lt;/pre&gt; konumundaki ayar dosyalarını elle silmeniz gerekebilir.</translation>
+    </message>
+    <message>
+        <source>Access to the microphone was denied due to system restrictions. You will not be able to use the microphone in this session.</source>
+        <translation>Sistem kısıtlamaları nedeniyle mikrofona erişim reddedildi. Bu oturumda mikrofonu kullanamayacaksınız.</translation>
+    </message>
+    <message>
+        <source>Unknown Version</source>
+        <translation>Bilinmeyen Sürüm</translation>
     </message>
 </context>
 <context>
@@ -7371,7 +7861,7 @@ See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;th
     </message>
     <message>
         <source>Display</source>
-        <translation>Görüntü</translation>
+        <translation>Görüntüle</translation>
     </message>
     <message>
         <source>Source Text</source>
@@ -7438,10 +7928,76 @@ See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;th
     </message>
 </context>
 <context>
+    <name>Search::SearchDialog</name>
+    <message>
+        <source>None</source>
+        <translation>Hiçbiri</translation>
+    </message>
+    <message>
+        <source>Join</source>
+        <translation>Katıl</translation>
+    </message>
+</context>
+<context>
+    <name>SearchDialog</name>
+    <message>
+        <source>Search</source>
+        <translation>Ara</translation>
+    </message>
+    <message>
+        <source>Enter search String...</source>
+        <translation>Arama dizgesini gir...</translation>
+    </message>
+    <message>
+        <source>Options</source>
+        <translation>Seçenekler</translation>
+    </message>
+    <message>
+        <source>Whether to search for users</source>
+        <translation>Kullanıcıların aranıp aranmayacağı</translation>
+    </message>
+    <message>
+        <source>&amp;Users</source>
+        <translation>&amp;Kullanıcılar</translation>
+    </message>
+    <message>
+        <source>Whether the search should be performed case-sensitively</source>
+        <translation>Aramanın büyük/küçük harf duyarlı olarak gerçekleştirilip gerçekleştirilmeyeceği</translation>
+    </message>
+    <message>
+        <source>Case-&amp;sensitive</source>
+        <translation>Büyük/küçük &amp;harf duyarlı</translation>
+    </message>
+    <message>
+        <source>Options:</source>
+        <translation>Seçenekler:</translation>
+    </message>
+    <message>
+        <source>Whether the search string should be interpreted as a regular expression</source>
+        <translation>Arama dizgesinin bir düzenli ifade olarak yorumlanıp yorumlanmayacağı</translation>
+    </message>
+    <message>
+        <source>&amp;RegEx</source>
+        <translation>&amp;Düzenli İfade</translation>
+    </message>
+    <message>
+        <source>&amp;Channels</source>
+        <translation>&amp;Kanallar</translation>
+    </message>
+    <message>
+        <source>Search for:</source>
+        <translation>Şunu ara:</translation>
+    </message>
+    <message>
+        <source>Whether to search for channels</source>
+        <translation>Kanal aranıp aranmayacağı</translation>
+    </message>
+</context>
+<context>
     <name>ServerHandler</name>
     <message>
         <source>Unable to resolve hostname</source>
-        <translation>Makine ismi çözümlenemedi</translation>
+        <translation>Ana makine adı çözümlenemedi</translation>
     </message>
     <message>
         <source>Server is not responding to TCP pings</source>
@@ -7466,6 +8022,149 @@ See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;th
     <message>
         <source>Connection timed out</source>
         <translation>Bağlantı zaman aşımına uğradı</translation>
+    </message>
+</context>
+<context>
+    <name>ServerInformation</name>
+    <message>
+        <source>Server information</source>
+        <translation>Sunucu bilgileri</translation>
+    </message>
+    <message>
+        <source>Server Information</source>
+        <translation>Sunucu Bilgileri</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Host:&lt;/b&gt;</source>
+        <translation>&lt;b&gt;Ana makine:&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Port:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt; &lt;head/&gt; &lt;body&gt; &lt;p&gt; &lt;span style=&quot; font-weight:600;&quot;&gt; Bağlantı Noktası: &lt;/span&gt; &lt;/p&gt; &lt;/body&gt; &lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Users&lt;/b&gt;:</source>
+        <translation>&lt;b&gt; Kullanıcılar &lt;/b&gt;:</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Protocol:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt; &lt;head/&gt; &lt;body&gt; &lt;p&gt; &lt;span style=&quot; font-weight:600;&quot;&gt; Protokol: &lt;/span&gt; &lt;/p&gt; &lt;/body&gt; &lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Release:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt; &lt;head/&gt; &lt;body&gt; &lt;p&gt; &lt;span style=&quot; font-weight:600;&quot;&gt; Sürüm: &lt;/span&gt; &lt;/p&gt; &lt;/body&gt; &lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;OS:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt; &lt;head/&gt; &lt;body&gt; &lt;p&gt; &lt;span style=&quot; font-weight:600;&quot;&gt; İşletim Sistemi: &lt;/span&gt; &lt;/p&gt; &lt;/body&gt; &lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Audio</source>
+        <translation>Ses</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Allowed:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt; &lt;head/&gt; &lt;body&gt; &lt;p&gt; &lt;span style=&quot; font-weight:600;&quot;&gt; İzin Verildi:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Current:&lt;/b&gt;</source>
+        <translation>&lt;b&gt; Mevcut: &lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Codec:&lt;/b&gt;</source>
+        <translation>&lt;b&gt; Codec: &lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>Connection details</source>
+        <translation>Bağlantı Detayları</translation>
+    </message>
+    <message>
+        <source>UDP (Voice)</source>
+        <translation>UDP (Ses)</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Encryption:&lt;/b&gt;</source>
+        <translation>&lt;b&gt; Şifreleme: &lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Avg. latency:&lt;/b&gt;</source>
+        <translation>&lt;b&gt; Ortalama gecikme süresi:&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>Statistics</source>
+        <translation>İstatistikler</translation>
+    </message>
+    <message>
+        <source>Good</source>
+        <translation>İyi</translation>
+    </message>
+    <message>
+        <source>Late</source>
+        <translation>Geç</translation>
+    </message>
+    <message>
+        <source>Lost</source>
+        <translation>Kayıp</translation>
+    </message>
+    <message>
+        <source>Resync</source>
+        <translation>Yeniden eşzamanla</translation>
+    </message>
+    <message>
+        <source>Outgoing</source>
+        <translation>Giden</translation>
+    </message>
+    <message>
+        <source>Incoming</source>
+        <translation>Gelen</translation>
+    </message>
+    <message>
+        <source>Voice packets is currently sent over TCP.</source>
+        <translation>Ses paketleri şu anda TCP üzerinden gönderiliyor.</translation>
+    </message>
+    <message>
+        <source>TCP (Control)</source>
+        <translation>TCP (Kontrol)</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;TLS version:&lt;/b&gt;</source>
+        <translation>&lt;b&gt; TLS sürümü: &lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Cipher suite:&lt;/b&gt;</source>
+        <translation>&lt;b&gt; Şifreleme paketi:&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;forward secrecy&gt;</source>
+        <translation>&lt;iletme gizliliği&gt;</translation>
+    </message>
+    <message>
+        <source>&amp;View certificate</source>
+        <translation>&amp;Sertifika Görüntüle</translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation>&amp;Tamam</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>Bilinmiyor</translation>
+    </message>
+    <message>
+        <source>Whether the connection supports perfect forward secrecy (PFS).</source>
+        <translation>Bağlantının kusursuz ileri gizliliği (perfect forward secrecy - PFS) destekleyip desteklemediği.</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;PFS:&lt;/b&gt;</source>
+        <translation>&lt;b&gt;PFS:&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation>Evet</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>Hayır</translation>
     </message>
 </context>
 <context>
@@ -7510,11 +8209,15 @@ See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;th
     </message>
     <message>
         <source>No buttons assigned</source>
-        <translation type="unfinished"/>
+        <translation>Hiçbir düğme atanmadı</translation>
     </message>
     <message>
         <source>Press to show button combination</source>
-        <translation type="unfinished"/>
+        <translation>Düğme kombinasyonunu göstermek için basın</translation>
+    </message>
+    <message>
+        <source>&lt; Unknown Channel &gt;</source>
+        <translation>&lt; Bilinmeyen Kanal &gt;</translation>
     </message>
 </context>
 <context>
@@ -7607,7 +8310,7 @@ See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;th
     </message>
     <message>
         <source>Message</source>
-        <translation type="unfinished"/>
+        <translation>Mesaj</translation>
     </message>
 </context>
 <context>
@@ -7627,7 +8330,7 @@ See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;th
     <message>
         <source>&lt;b&gt;This is an editable list of access tokens on the connected server.&lt;/b&gt;
 &lt;br /&gt;
-An access token is a text string, which can be used as a password for very simple access management on channels. Mumble will remember the tokens you've used and resend them to the server next time you reconnect, so you don't have to enter these every time.
+An access token is a text string, which can be used as a password for very simple access management on channels. Mumble will remember the tokens you&apos;ve used and resend them to the server next time you reconnect, so you don&apos;t have to enter these every time.
 </source>
         <translation>&lt;b&gt;Bu, bağlanılan sunucudaki erişim jetonlarının düzenlenilebilir listesidir.&lt;/b&gt;
 &lt;br /&gt;
@@ -7652,7 +8355,7 @@ Erişim jetonu bir metindir ve kanallara erişimin çok basit bir şekilde yöne
     </message>
     <message>
         <source>Tokens</source>
-        <translation type="unfinished"/>
+        <translation>Jetonlar</translation>
     </message>
 </context>
 <context>
@@ -7695,15 +8398,17 @@ Erişim jetonu bir metindir ve kanallara erişimin çok basit bir şekilde yöne
     </message>
     <message numerus="yes">
         <source>Registered users: %n account(s)</source>
-        <translation><numerusform>Kayıtlı kullanıcı: %n hesap</numerusform><numerusform>Kayıtlı kullanıcılar: %n hesap</numerusform></translation>
+        <translation>
+            <numerusform>Kayıtlı kullanıcılar: %n hesap</numerusform>
+        </translation>
     </message>
     <message>
         <source>Search</source>
-        <translation type="unfinished"/>
+        <translation>Ara</translation>
     </message>
     <message>
         <source>User list</source>
-        <translation type="unfinished"/>
+        <translation>Kullanıcı listesi</translation>
     </message>
 </context>
 <context>
@@ -7731,10 +8436,6 @@ Erişim jetonu bir metindir ve kanallara erişimin çok basit bir şekilde yöne
     <message>
         <source>IP Address</source>
         <translation>İP Adresi</translation>
-    </message>
-    <message>
-        <source>CELT Versions</source>
-        <translation>CELT Sürümleri</translation>
     </message>
     <message>
         <source>Details...</source>
@@ -7778,7 +8479,7 @@ Erişim jetonu bir metindir ve kanallara erişimin çok basit bir şekilde yöne
     </message>
     <message>
         <source>Resync</source>
-        <translation>Tekrar Senkronize</translation>
+        <translation>Yeniden eşzamanla</translation>
     </message>
     <message>
         <source>From Client</source>
@@ -7859,6 +8560,10 @@ Erişim jetonu bir metindir ve kanallara erişimin çok basit bir şekilde yöne
         <source>Ping deviation</source>
         <translation>Ping sapması</translation>
     </message>
+    <message>
+        <source>Warning: The server seems to report a truncated protocol version for this client. (See: &lt;a href=&quot;https://github.com/mumble-voip/mumble/issues/5827/&quot;&gt;Issue #5827&lt;/a&gt;)</source>
+        <translation>Uyarı: Sunucu bu istemci için kesilmiş bir protokol sürümü bildiriyor gibi görünüyor. (Bkz: &lt;a href=&quot;https://github.com/mumble-voip/mumble/issues/5827/&quot;&gt;Sorun #5827&lt;/a&gt;)</translation>
+    </message>
 </context>
 <context>
     <name>UserListModel</name>
@@ -7891,46 +8596,19 @@ Erişim jetonu bir metindir ve kanallara erişimin çok basit bir şekilde yöne
     <name>UserLocalNicknameDialog</name>
     <message>
         <source>Local nickname for other users</source>
-        <translation type="unfinished"/>
+        <translation>Diğer kullanıcılar için yerel takma ad</translation>
     </message>
     <message>
         <source>&lt;b&gt;Adjust the nickname of other users locally&lt;/b&gt;&lt;br /&gt;</source>
-        <translation type="unfinished"/>
+        <translation>&lt;b&gt; Diğer kullanıcıların takma adlarını yerel olarak ayarlayın &lt;/b&gt; &lt;br /&gt;</translation>
     </message>
     <message>
         <source>User nickname</source>
-        <translation type="unfinished"/>
+        <translation>Kullanıcı takma adı</translation>
     </message>
     <message>
         <source>Adjusting local nickname for %1</source>
-        <translation type="unfinished"/>
-    </message>
-</context>
-<context>
-    <name>UserLocalVolumeDialog</name>
-    <message>
-        <source>Local volume for other users</source>
-        <translation>Diğer kullanıcılar için yerel ses seviyesi</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Adjust the volume of other users locally&lt;/b&gt;&lt;br /&gt;Mumble supports adjusting the volume of other users locally.</source>
-        <translation>&lt;b&gt;Diğer kullanıcıların ses seviyesini yerel olarak ayarla&lt;/b&gt;&lt;br /&gt;Mumble, diğer kullanıcıların ses seviyesinin yerel olarak ayarlanmasını destekler.</translation>
-    </message>
-    <message>
-        <source>Adjusting local volume for %1</source>
-        <translation>%1 için yerel ses seviyesi ayarlanıyor</translation>
-    </message>
-    <message>
-        <source> dB</source>
-        <translation> dB</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use the slider or the text box to change the volume of the user.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-weight:600;&quot;&gt;Attention!&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Increasing the volume of a user too much can permanently damage your hearing. It may also increase the background noise of the user.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Kullanıcın ses seviyesini değiştirmek için sürgüyü ya da metin kutusunu kullanın. &lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-weight:600;&quot;&gt;Dikkat!&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Herhangi bir kullanıcının ses seviyesini fazla arttırmanız kalıcı işitme kaybına sebep olabilir. Aynı zamanda kullanıcının arka plan gürültüsünün artmasına yol açabilir.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>User volume</source>
-        <translation type="unfinished"/>
+        <translation>%1 için yerel takma ad ayarlanıyor</translation>
     </message>
 </context>
 <context>
@@ -8062,19 +8740,23 @@ Erişim jetonu bir metindir ve kanallara erişimin çok basit bir şekilde yöne
     </message>
     <message>
         <source>Talking while being muted on your end</source>
-        <translation type="unfinished"/>
+        <translation>Senin tarafında sessize alınırken konuşmak</translation>
     </message>
     <message>
         <source>This is a channel listener. The corresponding user hears everything you say in this channel.</source>
-        <translation type="unfinished"/>
+        <translation>Bu bir kanal dinleyicisidir. İlgili kullanıcı bu kanalda söylediğiniz her şeyi duyar.</translation>
     </message>
     <message>
         <source>Channel has access restrictions so that you can&apos;t enter it</source>
-        <translation type="unfinished"/>
+        <translation>Kanalın, girememeniz için erişim kısıtlamaları vardır</translation>
     </message>
     <message>
         <source>Channel has access restrictions but you can enter nonetheless</source>
-        <translation type="unfinished"/>
+        <translation>Kanalın erişim kısıtlamaları var ancak yine de girebilirsiniz</translation>
+    </message>
+    <message>
+        <source>Channel will be pinned when filtering is enabled</source>
+        <translation>Filtreleme etkinleştirildiğinde kanal sabitlenecektir</translation>
     </message>
 </context>
 <context>
@@ -8161,7 +8843,7 @@ Erişim jetonu bir metindir ve kanallara erişimin çok basit bir şekilde yöne
     </message>
     <message>
         <source>Public Key: %1 bits %2</source>
-        <translation>Kamu anahtarı (Public Key): %1 bits %2</translation>
+        <translation>Ortak Anahtar: %1 bit %2</translation>
     </message>
     <message>
         <source>RSA</source>
@@ -8221,6 +8903,10 @@ Erişim jetonu bir metindir ve kanallara erişimin çok basit bir şekilde yöne
     <message>
         <source>.flac - Lossless compressed</source>
         <translation>.flac - Kayıpsız olarak sıkıştırılmış</translation>
+    </message>
+    <message>
+        <source>.opus - Lossy compressed</source>
+        <translation>.opus - Kayıplı sıkıştırılmış</translation>
     </message>
 </context>
 <context>
@@ -8291,7 +8977,7 @@ Erişim jetonu bir metindir ve kanallara erişimin çok basit bir şekilde yöne
     </message>
     <message>
         <source>Inserts the hostname</source>
-        <translation>Bilgisayar ismini ekler</translation>
+        <translation>Ana makine adını ekler</translation>
     </message>
     <message>
         <source>Recorder still running</source>
@@ -8331,6 +9017,21 @@ Daha fazla bilgi için sunucu yöneticisi ile irtibata geçiniz.</translation>
         <source>Downmix</source>
         <translation>Kanalları azalt</translation>
     </message>
+    <message>
+        <source>Unable to start recording - the audio output is miconfigured (0Hz sample rate)</source>
+        <translation>Kayıt başlatılamıyor - ses çıktısı yanlış yapılandırıldı (0Hz örnekleme hızı)</translation>
+    </message>
+</context>
+<context>
+    <name>VolumeSliderWidgetAction</name>
+    <message>
+        <source>Slider for volume adjustment</source>
+        <translation>Ses seviyesi ayarı için kaydırıcı</translation>
+    </message>
+    <message>
+        <source>Volume Adjustment</source>
+        <translation>Ses Ayarı</translation>
+    </message>
 </context>
 <context>
     <name>WASAPIInput</name>
@@ -8343,7 +9044,7 @@ Daha fazla bilgi için sunucu yöneticisi ile irtibata geçiniz.</translation>
     <name>WASAPISystem</name>
     <message>
         <source>Default Device</source>
-        <translation>Varsayılan cihaz</translation>
+        <translation>Varsayılan Aygıt</translation>
     </message>
 </context>
 <context>
@@ -8354,7 +9055,7 @@ Daha fazla bilgi için sunucu yöneticisi ile irtibata geçiniz.</translation>
     </message>
     <message>
         <source>Push to talk</source>
-        <translation>Tıklayıp konuşun</translation>
+        <translation>Bas ve konuş</translation>
     </message>
 </context>
 </TS>

@@ -1,4 +1,4 @@
-// Copyright 2020 The Mumble Developers. All rights reserved.
+// Copyright 2020-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -7,6 +7,7 @@
 
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
+#include <QTextDocument>
 
 namespace Markdown {
 // Placeholder constant
@@ -25,7 +26,7 @@ bool processEscapedChar(QString &str, int &offset) {
 		s_regex.match(str, offset, QRegularExpression::NormalMatch, QRegularExpression::AnchoredMatchOption);
 
 	if (match.hasMatch()) {
-		QString replacement = QString::fromLatin1("%1").arg(match.captured(1));
+		QString replacement = QString::fromLatin1("%1").arg(match.captured(1)).toHtmlEscaped();
 
 		str.replace(match.capturedStart(), match.capturedEnd() - match.capturedStart(), replacement);
 
@@ -53,7 +54,7 @@ bool processMarkdownHeader(QString &str, int &offset) {
 
 	if (match.hasMatch()) {
 		int sectionLevel    = match.captured(1).size();
-		QString sectionName = match.captured(2);
+		QString sectionName = match.captured(2).trimmed().toHtmlEscaped();
 
 		QString replacement = QString::fromLatin1("<h%1>%2</h%1>").arg(sectionLevel).arg(sectionName);
 
@@ -65,6 +66,18 @@ bool processMarkdownHeader(QString &str, int &offset) {
 	}
 
 	return false;
+}
+
+/// Reverts the effect of QString::toHtmlEscaped. It is intended to be used for URLs that are part of the
+/// actual href specification. In there we don't want to escape HTML characters as they are indeed part of
+/// the underlaying link and thus we must not escape e.g. "&" by "&amp;" in there.
+///
+/// @param url The html-escaped URL
+/// @return The un-escaped version of the given URL
+QString unescapeURL(const QString &url) {
+	QTextDocument doc;
+	doc.setHtml(url);
+	return doc.toPlainText();
 }
 
 /// Tries to match and replace a markdown link at exactly the given offset in the string
@@ -86,12 +99,13 @@ bool processMarkdownLink(QString &str, int &offset) {
 		if (!url.startsWith(QLatin1String("http"), Qt::CaseInsensitive)) {
 			// For a markdown link to work, it has to start with the protocol specification, e.g. http or https
 			// As we can't know for sure that the given website supports https, we'll have to fall back to http
-			// Most browsers will upgrade the request to https whenver possible anyways though, so this shouldn't be
+			// Most browsers will upgrade the request to https whenever possible anyways though, so this shouldn't be
 			// too much of a problem.
 			url = QLatin1String("http://") + url;
 		}
 
-		QString replacement = QString::fromLatin1("<a href=\"%1\">%2</a>").arg(url).arg(match.captured(1));
+		QString replacement =
+			QString::fromLatin1("<a href=\"%1\">%2</a>").arg(unescapeURL(url), match.captured(1).toHtmlEscaped());
 		str.replace(match.capturedStart(), match.capturedEnd() - match.capturedStart(), replacement);
 
 		offset += replacement.size();
@@ -116,7 +130,7 @@ bool processMarkdownBold(QString &str, int &offset) {
 		s_regex.match(str, offset, QRegularExpression::NormalMatch, QRegularExpression::AnchoredMatchOption);
 
 	if (match.hasMatch()) {
-		QString replacement = QString::fromLatin1("<b>%1</b>").arg(match.captured(1));
+		QString replacement = QString::fromLatin1("<b>%1</b>").arg(match.captured(1).toHtmlEscaped());
 		str.replace(match.capturedStart(), match.capturedEnd() - match.capturedStart(), replacement);
 
 		offset += replacement.size();
@@ -141,7 +155,7 @@ bool processMarkdownItalic(QString &str, int &offset) {
 		s_regex.match(str, offset, QRegularExpression::NormalMatch, QRegularExpression::AnchoredMatchOption);
 
 	if (match.hasMatch()) {
-		QString replacement = QString::fromLatin1("<i>%1</i>").arg(match.captured(1));
+		QString replacement = QString::fromLatin1("<i>%1</i>").arg(match.captured(1).toHtmlEscaped());
 		str.replace(match.capturedStart(), match.capturedEnd() - match.capturedStart(), replacement);
 
 		offset += replacement.size();
@@ -166,7 +180,7 @@ bool processMarkdownStrikethrough(QString &str, int &offset) {
 		s_regex.match(str, offset, QRegularExpression::NormalMatch, QRegularExpression::AnchoredMatchOption);
 
 	if (match.hasMatch()) {
-		QString replacement = QString::fromLatin1("<s>%1</s>").arg(match.captured(1));
+		QString replacement = QString::fromLatin1("<s>%1</s>").arg(match.captured(1).toHtmlEscaped());
 		str.replace(match.capturedStart(), match.capturedEnd() - match.capturedStart(), replacement);
 
 		offset += replacement.size();
@@ -207,8 +221,8 @@ bool processMarkdownBlockQuote(QString &str, int &offset) {
 			}
 		}
 
-		QString replacement =
-			QString::fromLatin1("<div><i>%1</i></div>").arg(quote.replace(QLatin1String("\n"), QLatin1String("<br/>")));
+		QString replacement = QString::fromLatin1("<div><i>%1</i></div>")
+								  .arg(quote.toHtmlEscaped().replace(QLatin1String("\n"), QLatin1String("<br/>")));
 		str.replace(match.capturedStart(), match.capturedEnd() - match.capturedStart(), replacement);
 
 		offset += replacement.size();
@@ -233,7 +247,7 @@ bool processMarkdownInlineCode(QString &str, int &offset) {
 		s_regex.match(str, offset, QRegularExpression::NormalMatch, QRegularExpression::AnchoredMatchOption);
 
 	if (match.hasMatch()) {
-		QString replacement = QString::fromLatin1("<code>%1</code>").arg(match.captured(1));
+		QString replacement = QString::fromLatin1("<code>%1</code>").arg(match.captured(1).toHtmlEscaped());
 		str.replace(match.capturedStart(), match.capturedEnd() - match.capturedStart(), replacement);
 
 		offset += replacement.size();
@@ -259,7 +273,7 @@ bool processMarkdownCodeBlock(QString &str, int &offset) {
 		s_regex.match(str, offset, QRegularExpression::NormalMatch, QRegularExpression::AnchoredMatchOption);
 
 	if (match.hasMatch()) {
-		QString code = match.captured(1);
+		QString code = match.captured(1).toHtmlEscaped();
 
 		// Trim away leading linebreaks
 		while (code.size() >= 1 && (code[0] == QLatin1Char('\n') || code[0] == QLatin1Char('\r'))) {
@@ -296,22 +310,23 @@ bool processMarkdownCodeBlock(QString &str, int &offset) {
 /// @returns Whether a replacement has been made
 bool processPlainLink(QString &str, int &offset) {
 	// We support links with prefixed protocol (e.g. https://bla.com) and prefixed with www (e.g. www.bla.com)
-	static const QRegularExpression s_regex(QLatin1String("([a-zA-Z]+://|[wW][wW][wW]\\.)[^ \\t\\n<]+"));
+	// The last part of the regex matches percent encoded characters in the url
+	// See also https://stackoverflow.com/a/1547940/3907364
+	static const QRegularExpression s_regex(
+		QLatin1String("([a-zA-Z]+://|[wW][wW][wW]\\.)([A-Za-z0-9-._~:/?#\\[\\]@!$&'()*+,;=]|%[a-fA-F0-9]{2})+"));
 
 	QRegularExpressionMatch match =
 		s_regex.match(str, offset, QRegularExpression::NormalMatch, QRegularExpression::AnchoredMatchOption);
 
 	if (match.hasMatch()) {
-		QString url     = match.captured(0);
-		QString urlText = url;
+		QString url = match.captured(0);
 
 		if (url.startsWith(QLatin1String("www"), Qt::CaseInsensitive)) {
-			// Link is missing a protocol specification.
-			// Use http as the default
-			url = QLatin1String("http://") + url;
+			// Link is missing a protocol specification - use https as the default
+			url = QStringLiteral("https://") + url;
 		}
 
-		QString replacement = QString::fromLatin1("<a href=\"%1\">%2</a>").arg(url).arg(urlText);
+		QString replacement = QString::fromLatin1("<a href=\"%1\">%2</a>").arg(unescapeURL(url), url.toHtmlEscaped());
 		str.replace(match.capturedStart(), match.capturedEnd() - match.capturedStart(), replacement);
 
 		offset += replacement.size();
@@ -320,6 +335,32 @@ bool processPlainLink(QString &str, int &offset) {
 	}
 
 	return false;
+}
+
+void escapeCharacter(QString &str, int &offset) {
+	QString tmp(str[offset]);
+
+	tmp = tmp.toHtmlEscaped();
+
+	if (tmp.size() == 1 && tmp[0] == str[offset]) {
+		// Nothing to escape
+		return;
+	}
+
+	// Perform the replacement
+	QString first;
+	QString second;
+
+	if (offset > 0) {
+		first = str.left(offset);
+	}
+	if (offset < str.size() - 1) {
+		second = str.right(str.size() - offset - 1);
+	}
+
+	str = first + tmp + second;
+
+	offset += tmp.size() - 1;
 }
 
 QString markdownToHTML(const QString &markdownInput) {
@@ -344,16 +385,21 @@ QString markdownToHTML(const QString &markdownInput) {
 			  || processMarkdownStrikethrough(htmlString, offset) || processMarkdownBlockQuote(htmlString, offset)
 			  || processMarkdownCodeBlock(htmlString, offset) || processMarkdownInlineCode(htmlString, offset)
 			  || processPlainLink(htmlString, offset) || processEscapedChar(htmlString, offset))) {
+			escapeCharacter(htmlString, offset);
 			offset++;
 		}
 	}
 
 	// Replace linebreaks afterwards in order to not mess up the RegEx used by the
 	// different functions.
-	static const QRegularExpression s_lineBreakRegEx(QLatin1String("\r\n|\n|\r"));
-	htmlString.replace(s_lineBreakRegEx, QLatin1String("</br>"));
+	static const QRegularExpression s_doubleLineBreakRegEx(QLatin1String("(\r\n|\n|\r)(\r\n|\n|\r)"));
+	htmlString.replace(s_doubleLineBreakRegEx, QLatin1String("<br/>"));
 
-	// Resore linebreaks in <pre> blocks
+	// Remove single newlines
+	static const QRegularExpression s_singleLineBreak("\r\n|\n|\r");
+	htmlString.replace(s_singleLineBreak, "");
+
+	// Restore linebreaks in <pre> blocks
 	htmlString.replace(regularLineBreakPlaceholder, QLatin1String("\n"));
 
 	return htmlString;

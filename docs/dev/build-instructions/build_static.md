@@ -45,7 +45,7 @@ Once vcpkg is installed on your system, you have to switch into the directory vc
 qt5-base
 qt5-svg
 qt5-tools
-grpc
+qt5-translations
 boost-accumulators
 opus
 poco
@@ -230,7 +230,7 @@ get a lot of debug information regarding the search for the needed dependencies.
 
 This can happen if you're using a system that doesn't support TLS 1.3 (which https://repo.msys2.org requires) such as Windows 7. In this case the only
 possible workaround is either to download the respective files manually using a brower that does support TLS 1.3 (e.g. Firefox) or to replace all
-occurences of `https://repo.msys2.org` in the vcpkg dir with `http://repo.msys2.org` and thereby forxing vcpkg to use the HTTP mirror instead. Note
+occurrences of `https://repo.msys2.org` in the vcpkg dir with `http://repo.msys2.org` and thereby forxing vcpkg to use the HTTP mirror instead. Note
 though that this is inherently unsafer than using HTTPS.
 
 A common error message for this scenario could be
@@ -247,3 +247,13 @@ CMake Error at scripts/cmake/vcpkg_download_distfile.cmake:173 (message):
       Otherwise, please submit an issue at https://github.com/Microsoft/vcpkg/issue
 ```
 Ref: https://github.com/microsoft/vcpkg/issues/13217
+
+### `afxres.h` not found
+
+When installing the dependency zlib via vcpkg, it may fail to locate the include file `afxres.h` (when building its mdnsresponder dependency).
+
+```
+dll.rc(10): fatal error RC1015: cannot open include file 'afxres.h'. [[…]\vcpkg\buildtrees\mdnsresponder\src\ponder-878-e7e3a9a271.clean\mDNSWindows\DLL\dnssd.vcxproj]
+```
+
+To resolve this, ensure MFC has been installed in your Visual Studio installation.

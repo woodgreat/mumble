@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -13,12 +13,16 @@
 #endif
 
 #include "ACL.h"
+#include "AudioReceiverBuffer.h"
 #include "Ban.h"
+#include "ChannelListenerManager.h"
 #include "HostAddress.h"
-#include "Message.h"
 #include "Mumble.pb.h"
+#include "MumbleProtocol.h"
 #include "Timer.h"
 #include "User.h"
+#include "Version.h"
+#include "VolumeAdjustment.h"
 
 #ifndef Q_MOC_RUN
 #	include <boost/function.hpp>
@@ -70,9 +74,6 @@ protected:
 public:
 	QSslSocket *nextPendingSSLConnection();
 	SslServer(QObject *parent = nullptr);
-
-	/// Checks whether the AF_INET6 socket on this system has dual-stack support.
-	static bool hasDualStackSupport();
 };
 
 #define EXEC_QEVENT (QEvent::User + 959)
@@ -125,6 +126,7 @@ public:
 	QString qsWelcomeTextFile;
 	bool bCertRequired;
 	bool bForceExternalAuth;
+	unsigned int m_botCount = 0;
 
 	QString qsRegName;
 	QString qsRegPassword;
@@ -133,6 +135,7 @@ public:
 	QUrl qurlRegWeb;
 	bool bBonjour;
 	bool bAllowPing;
+	bool allowRecording;
 
 	QRegExp qrUserName;
 	QRegExp qrChannelName;
@@ -140,7 +143,13 @@ public:
 	unsigned int iMessageLimit;
 	unsigned int iMessageBurst;
 
-	QVariant qvSuggestVersion;
+	unsigned int iPluginMessageLimit;
+	unsigned int iPluginMessageBurst;
+
+	bool broadcastListenerVolumeAdjustments;
+
+	Version::full_t m_suggestVersion;
+
 	QVariant qvSuggestPositional;
 	QVariant qvSuggestPushToTalk;
 
@@ -165,6 +174,19 @@ public:
 
 	bool bValid;
 
+	ChannelListenerManager m_channelListenerManager;
+
+
+	Mumble::Protocol::UDPDecoder< Mumble::Protocol::Role::Server > m_udpDecoder;
+	Mumble::Protocol::UDPDecoder< Mumble::Protocol::Role::Server > m_tcpTunnelDecoder;
+	Mumble::Protocol::UDPPingEncoder< Mumble::Protocol::Role::Server > m_udpPingEncoder;
+	Mumble::Protocol::UDPAudioEncoder< Mumble::Protocol::Role::Server > m_udpAudioEncoder;
+	Mumble::Protocol::UDPAudioEncoder< Mumble::Protocol::Role::Server > m_tcpAudioEncoder;
+
+	gsl::span< const Mumble::Protocol::byte >
+		handlePing(const Mumble::Protocol::UDPDecoder< Mumble::Protocol::Role::Server > &decoder,
+				   Mumble::Protocol::UDPPingEncoder< Mumble::Protocol::Role::Server > &encoder, bool expectExtended);
+
 	void readParams();
 
 	int iCodecAlpha;
@@ -184,6 +206,9 @@ public:
 private:
 	int iChannelNestingLimit;
 	int iChannelCountLimit;
+
+	AudioReceiverBuffer m_udpAudioReceivers;
+	AudioReceiverBuffer m_tcpAudioReceivers;
 
 public slots:
 	void regSslError(const QList< QSslError > &);
@@ -205,7 +230,7 @@ public slots:
 	void newClient();
 	void connectionClosed(QAbstractSocket::SocketError, const QString &);
 	void sslError(const QList< QSslError > &);
-	void message(unsigned int, const QByteArray &, ServerUser *cCon = nullptr);
+	void message(Mumble::Protocol::TCPMessageType, const QByteArray &, ServerUser *cCon = nullptr);
 	void checkTimeout();
 	void tcpTransmitData(QByteArray, unsigned int);
 	void doSync(unsigned int);
@@ -228,7 +253,6 @@ public:
 	HANDLE hNotify;
 	QList< SOCKET > qlUdpSocket;
 #endif
-	quint32 uiVersionBlob;
 	QList< QSocketNotifier * > qlUdpNotifier;
 
 	/// This lock provides synchronization between the
@@ -290,38 +314,47 @@ public:
 
 	QList< Ban > qlBans;
 
-	void processMsg(ServerUser *u, const char *data, int len);
-	void sendMessage(ServerUser *u, const char *data, int len, QByteArray &cache, bool force = false);
+	void addListener(QHash< ServerUser *, VolumeAdjustment > &listeners, ServerUser &user, const Channel &channel);
+	void processMsg(ServerUser *u, Mumble::Protocol::AudioData audioData, AudioReceiverBuffer &buffer,
+					Mumble::Protocol::UDPAudioEncoder< Mumble::Protocol::Role::Server > &encoder);
+	void sendMessage(ServerUser &u, const unsigned char *data, int len, QByteArray &cache, bool force = false);
 	void run();
 
 	bool validateChannelName(const QString &name);
 	bool validateUserName(const QString &name);
 
-	bool checkDecrypt(ServerUser *u, const char *encrypted, char *plain, unsigned int cryptlen);
+	bool checkDecrypt(ServerUser *u, const unsigned char *encrypted, unsigned char *plain, unsigned int cryptlen);
 
 	bool hasPermission(ServerUser *p, Channel *c, QFlags< ChanACL::Perm > perm);
 	QFlags< ChanACL::Perm > effectivePermissions(ServerUser *p, Channel *c);
-	void sendClientPermission(ServerUser *u, Channel *c, bool updatelast = false);
+	void sendClientPermission(ServerUser *u, Channel *c, bool explicitlyRequested = false);
 	void flushClientPermissionCache(ServerUser *u, MumbleProto::PermissionQuery &mpqq);
 	void clearACLCache(User *p = nullptr);
 	void clearWhisperTargetCache();
 
-	void sendProtoAll(const ::google::protobuf::Message &msg, unsigned int msgType, unsigned int minversion);
-	void sendProtoExcept(ServerUser *, const ::google::protobuf::Message &msg, unsigned int msgType,
-						 unsigned int minversion);
-	void sendProtoMessage(ServerUser *, const ::google::protobuf::Message &msg, unsigned int msgType);
+	void sendProtoAll(const ::google::protobuf::Message &msg, Mumble::Protocol::TCPMessageType type,
+					  Version::full_t version, Version::CompareMode mode);
+	void sendProtoExcept(ServerUser *, const ::google::protobuf::Message &msg, Mumble::Protocol::TCPMessageType type,
+						 Version::full_t version, Version::CompareMode mode);
+	void sendProtoMessage(ServerUser *, const ::google::protobuf::Message &msg, Mumble::Protocol::TCPMessageType type);
 
 	// sendAll sends a protobuf message to all users on the server whose version is either bigger than v or
 	// lower than ~v. If v == 0 the message is sent to everyone.
-#define MUMBLE_MH_MSG(x)                                                                                     \
-	void sendAll(const MumbleProto::x &msg, unsigned int v = 0) { sendProtoAll(msg, MessageHandler::x, v); } \
-	void sendExcept(ServerUser *u, const MumbleProto::x &msg, unsigned int v = 0) {                          \
-		sendProtoExcept(u, msg, MessageHandler::x, v);                                                       \
-	}                                                                                                        \
-	void sendMessage(ServerUser *u, const MumbleProto::x &msg) { sendProtoMessage(u, msg, MessageHandler::x); }
+#define PROCESS_MUMBLE_TCP_MESSAGE(name, value)                                                        \
+	void sendAll(const MumbleProto::name &msg, Version::full_t v = Version::UNKNOWN,                   \
+				 Version::CompareMode mode = Version::CompareMode::AtLeast) {                          \
+		sendProtoAll(msg, Mumble::Protocol::TCPMessageType::name, v, mode);                            \
+	}                                                                                                  \
+	void sendExcept(ServerUser *u, const MumbleProto::name &msg, Version::full_t v = Version::UNKNOWN, \
+					Version::CompareMode mode = Version::CompareMode::AtLeast) {                       \
+		sendProtoExcept(u, msg, Mumble::Protocol::TCPMessageType::name, v, mode);                      \
+	}                                                                                                  \
+	void sendMessage(ServerUser *u, const MumbleProto::name &msg) {                                    \
+		sendProtoMessage(u, msg, Mumble::Protocol::TCPMessageType::name);                              \
+	}
 
-	MUMBLE_MH_ALL
-#undef MUMBLE_MH_MSG
+	MUMBLE_ALL_TCP_MESSAGES
+#undef PROCESS_MUMBLE_TCP_MESSAGE
 
 	static void hashAssign(QString &destination, QByteArray &hash, const QString &str);
 	static void hashAssign(QByteArray &destination, QByteArray &hash, const QByteArray &source);
@@ -353,6 +386,9 @@ public:
 	void clearTempGroups(User *user, Channel *cChannel = nullptr, bool recurse = true);
 	void startListeningToChannel(ServerUser *user, Channel *cChannel);
 	void stopListeningToChannel(ServerUser *user, Channel *cChannel);
+	void setListenerVolumeAdjustment(ServerUser *user, const Channel *cChannel,
+									 const VolumeAdjustment &volumeAdjustment);
+	void sendWelcomeMessageTo(ServerUser *user);
 signals:
 	void registerUserSig(int &, const QMap< int, QString > &);
 	void unregisterUserSig(int &, int);
@@ -382,29 +418,8 @@ public:
 	void setUserState(User *p, Channel *parent, bool mute, bool deaf, bool suppressed, bool prioritySpeaker,
 					  const QString &name = QString(), const QString &comment = QString());
 
-	/// Update a channel's state using the ChannelState protobuf message and
-	/// broadcast the changes appropriately to the server. On return, if
-	/// err is non-empty, the operation failed, and err contains a description
-	/// of the error.
-	///
-	/// This method is equivalent to the logic that happens in
-	/// Server::msgChannelState  when a ChannelState message is received from
-	/// a user. However, this method doesn't do permissions checking.
-	///
-	/// This method is used by the gRPC implementation to perform channel
-	/// state changes.
-	bool setChannelStateGRPC(const MumbleProto::ChannelState &cs, QString &err);
-
 	bool setChannelState(Channel *c, Channel *parent, const QString &qsName, const QSet< Channel * > &links,
 						 const QString &desc = QString(), const int position = 0);
-
-	/// Send a text message using the TextMessage protobuf message
-	/// as a template.
-	/// This is equivalent to the logic that happens in Server::msgTextMessage
-	/// when sending a receieved TextMessage, with the exception that this
-	/// method does not perform any permission checks.
-	/// It is used by our gRPC implementation to send text messages.
-	void sendTextMessageGRPC(const ::MumbleProto::TextMessage &tm);
 
 	void sendTextMessage(Channel *cChannel, ServerUser *pUser, bool tree, const QString &text);
 
@@ -449,10 +464,19 @@ public:
 	void setConf(const QString &key, const QVariant &value);
 	void dblog(const QString &str) const;
 
-	// From msgHandler. Implementation in Messages.cpp
-#define MUMBLE_MH_MSG(x) void msg##x(ServerUser *, MumbleProto::x &);
-	MUMBLE_MH_ALL
-#undef MUMBLE_MH_MSG
+	// These functions perform both the necessary changes to ChannelListeners as
+	// well as persisting the changed listeners state to the DB. You should use
+	// these unless you have a good reason not to
+	void loadChannelListenersOf(const ServerUser &user);
+	void addChannelListener(const ServerUser &user, const Channel &channel);
+	void disableChannelListener(const ServerUser &user, const Channel &channel);
+	void deleteChannelListener(const ServerUser &user, const Channel &channel);
+	void setChannelListenerVolume(const ServerUser &user, const Channel &channel, float volumeAdjustment);
+
+	// Implementation in Messages.cpp
+#define PROCESS_MUMBLE_TCP_MESSAGE(name, value) void msg##name(ServerUser *, MumbleProto::name &);
+	MUMBLE_ALL_TCP_MESSAGES
+#undef PROCESS_MUMBLE_TCP_MESSAGE
 };
 
 #endif

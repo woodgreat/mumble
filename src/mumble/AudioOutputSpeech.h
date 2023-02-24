@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2011-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -6,26 +6,32 @@
 #ifndef MUMBLE_MUMBLE_AUDIOOUTPUTSPEECH_H_
 #define MUMBLE_MUMBLE_AUDIOOUTPUTSPEECH_H_
 
-#include <celt.h>
-#include <speex/speex.h>
 #include <speex/speex_jitter.h>
 #include <speex/speex_resampler.h>
 
 #include <QtCore/QMutex>
 
-#include "AudioOutputUser.h"
-#include "Message.h"
+#include "AudioOutputBuffer.h"
+#include "AudioOutputCache.h"
+#include "MumbleProtocol.h"
 
-class CELTCodec;
-class OpusCodec;
+#include <mutex>
+#include <vector>
+
 class ClientUser;
 struct OpusDecoder;
 
-class AudioOutputSpeech : public AudioOutputUser {
+class AudioOutputSpeech : public AudioOutputBuffer {
 private:
 	Q_OBJECT
 	Q_DISABLE_COPY(AudioOutputSpeech)
 protected:
+	static std::mutex s_audioCachesMutex;
+	static std::vector< AudioOutputCache > s_audioCaches;
+
+	static void invalidateAudioOutputCache(void *maskedIndex);
+	static std::size_t storeAudioOutputCache(const Mumble::Protocol::AudioData &audioData);
+
 	unsigned int iAudioBufferSize;
 	unsigned int iBufferOffset;
 	unsigned int iBufferFilled;
@@ -48,20 +54,13 @@ protected:
 	JitterBuffer *jbJitter;
 	int iMissCount;
 
-	CELTCodec *cCodec;
-	CELTDecoder *cdDecoder;
-
-	OpusCodec *oCodec;
 	OpusDecoder *opusState;
-
-	SpeexBits sbBits;
-	void *dsSpeex;
 
 	QList< QByteArray > qlFrames;
 
 public:
-	unsigned char ucFlags;
-	MessageHandler::UDPMessageType umtType;
+	Mumble::Protocol::audio_context_t m_audioContext;
+	Mumble::Protocol::AudioCodec m_codec;
 	int iMissedFrames;
 	ClientUser *p;
 
@@ -70,10 +69,10 @@ public:
 	/// @param frameCount Number of frames to decode. frame means a bundle of one sample from each channel.
 	virtual bool prepareSampleBuffer(unsigned int frameCount) Q_DECL_OVERRIDE;
 
-	void addFrameToBuffer(const QByteArray &, unsigned int iBaseSeq);
+	void addFrameToBuffer(const Mumble::Protocol::AudioData &audioData);
 
 	/// @param systemMaxBufferSize maximum number of samples the system audio play back may request each time
-	AudioOutputSpeech(ClientUser *, unsigned int freq, MessageHandler::UDPMessageType type,
+	AudioOutputSpeech(ClientUser *, unsigned int freq, Mumble::Protocol::AudioCodec codec,
 					  unsigned int systemMaxBufferSize);
 	~AudioOutputSpeech() Q_DECL_OVERRIDE;
 };

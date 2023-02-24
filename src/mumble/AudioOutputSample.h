@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2011-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -11,7 +11,7 @@
 #include <sndfile.h>
 #include <speex/speex_resampler.h>
 
-#include "AudioOutputUser.h"
+#include "AudioOutputBuffer.h"
 
 class SoundFile : public QObject {
 private:
@@ -41,7 +41,7 @@ public:
 	sf_count_t read(float *ptr, sf_count_t items);
 };
 
-class AudioOutputSample : public AudioOutputUser {
+class AudioOutputSample : public AudioOutputBuffer {
 private:
 	Q_OBJECT
 	Q_DISABLE_COPY(AudioOutputSample)
@@ -55,6 +55,8 @@ protected:
 
 	bool bLoop;
 	bool bEof;
+
+	float m_volume;
 signals:
 	void playbackFinished();
 
@@ -62,8 +64,8 @@ public:
 	static SoundFile *loadSndfile(const QString &filename);
 	static QString browseForSndfile(QString defaultpath = QString());
 	virtual bool prepareSampleBuffer(unsigned int frameCount) Q_DECL_OVERRIDE;
-	AudioOutputSample(const QString &name, SoundFile *psndfile, bool repeat, unsigned int freq,
-					  unsigned int bufferSize);
+	float getVolume() const;
+	AudioOutputSample(SoundFile *psndfile, float volume, bool repeat, unsigned int freq, unsigned int bufferSize);
 	~AudioOutputSample() Q_DECL_OVERRIDE;
 };
 

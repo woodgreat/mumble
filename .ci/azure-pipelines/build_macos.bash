@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 #
-# Copyright 2019-2021 The Mumble Developers. All rights reserved.
+# Copyright 2020-2023 The Mumble Developers. All rights reserved.
 # Use of this source code is governed by a BSD-style license
 # that can be found in the LICENSE file at the root of the
 # Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -30,25 +30,16 @@
 #  MUMBLE_BUILD_NUMBER_TOKEN           - Access token for the build number page on our server.
 #
 
-if [[ -n "$MUMBLE_BUILD_NUMBER_TOKEN" ]]; then
-	VERSION=$(python "scripts/mumble-version.py" --format version)
-	BUILD_NUMBER=$(curl "https://mumble.info/get-build-number?commit=${BUILD_SOURCEVERSION}&version=${VERSION}&token=${MUMBLE_BUILD_NUMBER_TOKEN}")
-else
-	BUILD_NUMBER=0
-fi
-
-RELEASE_ID=$(python "scripts/mumble-version.py")
+VERSION=$("./scripts/mumble-version.py")
+BUILD_NUMBER=$("./scripts/mumble-build-number.py" --commit "${BUILD_SOURCEVERSION}" --version "${VERSION}" \
+	--password "${MUMBLE_BUILD_NUMBER_TOKEN}" --default 0)
 
 cd $BUILD_BINARIESDIRECTORY
 
 cmake -G Ninja -DCMAKE_TOOLCHAIN_FILE=$MUMBLE_ENVIRONMENT_TOOLCHAIN -DIce_HOME="$MUMBLE_ENVIRONMENT_PATH/installed/x64-osx" \
-      -DCMAKE_BUILD_TYPE=Release -DRELEASE_ID=$RELEASE_ID -DBUILD_NUMBER=$BUILD_NUMBER \
-      -Dtests=ON -Donline-tests=ON -Dstatic=ON -Dsymbols=ON -Dgrpc=ON \
+      -DCMAKE_BUILD_TYPE=Release -DCMAKE_UNITY_BUILD=ON -DBUILD_NUMBER=$BUILD_NUMBER \
+      -Dtests=ON -Dstatic=ON -Dsymbols=ON \
       -Ddisplay-install-paths=ON $BUILD_SOURCESDIRECTORY
 
 cmake --build .
-ctest --verbose
 
-$BUILD_SOURCESDIRECTORY/macx/scripts/osxdist.py --version=$VER --source-dir=$BUILD_SOURCESDIRECTORY --binary-dir=.
-
-mv *.dmg $BUILD_ARTIFACTSTAGINGDIRECTORY

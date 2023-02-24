@@ -1,3 +1,8 @@
+// Copyright 2009-2023 The Mumble Developers. All rights reserved.
+// Use of this source code is governed by a BSD-style license
+// that can be found in the LICENSE file at the root of the
+// Mumble source tree or at <https://www.mumble.info/LICENSE>.
+
 /**
  * Speex resampling test / information.
  */
@@ -10,7 +15,6 @@
 
 #include <QtCore>
 
-#define _USE_MATH_DEFINES
 #include <cmath>
 
 #include <speex/speex_resampler.h>
@@ -126,3 +130,5 @@ int main(int argc, char **argv) {
 
 	return 0;
 }
+
+#undef ITER

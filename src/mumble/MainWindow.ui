@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>671</width>
+    <width>735</width>
     <height>435</height>
    </rect>
   </property>
@@ -47,8 +47,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>671</width>
-     <height>30</height>
+     <width>735</width>
+     <height>32</height>
     </rect>
    </property>
    <widget class="QMenu" name="qmConfig">
@@ -185,6 +185,57 @@
    <addaction name="qaConfigDialog"/>
    <addaction name="separator"/>
    <addaction name="qaFilterToggle"/>
+   <addaction name="separator"/>
+   <addaction name="qaSearch"/>
+  </widget>
+  <widget class="QDockWidget" name="qdwMinimalViewNote">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="floating">
+    <bool>false</bool>
+   </property>
+   <property name="features">
+    <set>QDockWidget::NoDockWidgetFeatures</set>
+   </property>
+   <property name="allowedAreas">
+    <set>Qt::AllDockWidgetAreas</set>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>4</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>You are currently in minimal view but not connected to a server. Use the context menu to connect to a server or disable minimal view.</string>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
   </widget>
   <action name="qaQuit">
    <property name="text">
@@ -226,7 +277,7 @@
     <string>Shows a dialog of registered servers, and also allows quick-connect.</string>
    </property>
    <property name="iconVisibleInMenu">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
   </action>
   <action name="qaServerDisconnect">
@@ -275,7 +326,7 @@
     <string>This will show extended information about the connection to the server.</string>
    </property>
    <property name="iconVisibleInMenu">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
   </action>
   <action name="qaUserKick">
@@ -340,17 +391,6 @@
    </property>
    <property name="whatsThis">
     <string>Silently drops all text messages from the user.</string>
-   </property>
-  </action>
-  <action name="qaUserLocalVolume">
-   <property name="text">
-    <string>Local Volume Adjustment...</string>
-   </property>
-   <property name="toolTip">
-    <string>Locally adjust the user's speech volume.</string>
-   </property>
-   <property name="whatsThis">
-    <string>Opens a dialog with a volume slider. Use this on other users in the same room.</string>
    </property>
   </action>
   <action name="qaUserLocalMute">
@@ -479,9 +519,6 @@
    <property name="text">
     <string>&amp;Mute Self</string>
    </property>
-   <property name="toolTip">
-    <string>Mute yourself</string>
-   </property>
    <property name="whatsThis">
     <string>Mute or unmute yourself. When muted, you will not send any data to the server. Unmuting while deafened will also undeafen.</string>
    </property>
@@ -501,9 +538,6 @@
    </property>
    <property name="text">
     <string>&amp;Deafen Self</string>
-   </property>
-   <property name="toolTip">
-    <string>Deafen yourself</string>
    </property>
    <property name="whatsThis">
     <string>Deafen or undeafen yourself. When deafened, you will not hear anything. Deafening yourself will also mute.</string>
@@ -566,7 +600,7 @@
     <enum>QAction::PreferencesRole</enum>
    </property>
    <property name="iconVisibleInMenu">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
   </action>
   <action name="qaFilterToggle">
@@ -580,10 +614,10 @@
      <activeon>skin:filter_on.svg</activeon>skin:filter_off.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Filter on/off</string>
+    <string>Channel &amp;Filter</string>
    </property>
    <property name="toolTip">
-    <string>Toggle the channel filter (Ctrl+F)</string>
+    <string>Toggle the channel filter (Alt+F)</string>
    </property>
    <property name="whatsThis">
     <string>Enable or disable the filtering of select channels.
@@ -592,7 +626,7 @@ You can mark additional channels for filtering from
 the channel's context menu.</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+F</string>
+    <string>Alt+F</string>
    </property>
    <property name="iconVisibleInMenu">
     <bool>false</bool>
@@ -618,6 +652,17 @@ the channel's context menu.</string>
    </property>
    <property name="whatsThis">
     <string>Shows the Mumble Developer Console, where Mumble's log output can be inspected.</string>
+   </property>
+  </action>
+  <action name="qaPositionalAudioViewer">
+   <property name="text">
+    <string>Positional &amp;Audio Viewer...</string>
+   </property>
+   <property name="toolTip">
+    <string>Show the Positional Audio Viewer</string>
+   </property>
+   <property name="whatsThis">
+    <string>Shows the Positional Audio Viewer. In it the current information used for positional audio can be inspected. Context and identity are also shown.</string>
    </property>
   </action>
   <action name="qaHelpWhatsThis">
@@ -766,6 +811,13 @@ the channel's context menu.</string>
    <property name="whatsThis">
     <string>This will add the user as a friend, so you can recognize him on this and other servers.</string>
    </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>skin:emblems/emblem-favorite.svg</normaloff>skin:emblems/emblem-favorite.svg</iconset>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
   </action>
   <action name="qaUserFriendRemove">
    <property name="text">
@@ -845,12 +897,20 @@ the channel's context menu.</string>
     <string>&amp;Join Channel</string>
    </property>
   </action>
-  <action name="qaChannelFilter">
+  <action name="qaChannelHide">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="text">
     <string>&amp;Hide Channel when Filtering</string>
+   </property>
+  </action>
+  <action name="qaChannelPin">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Pin Channel when Filtering</string>
    </property>
   </action>
   <action name="qaUserCommentView">
@@ -868,6 +928,13 @@ the channel's context menu.</string>
    <property name="toolTip">
     <string>Query server for connection information for user</string>
    </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>skin:Information_icon.svg</normaloff>skin:Information_icon.svg</iconset>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>true</bool>
+   </property>
   </action>
   <action name="qaSelfComment">
    <property name="icon">
@@ -881,7 +948,7 @@ the channel's context menu.</string>
     <string>Change your own comment</string>
    </property>
    <property name="iconVisibleInMenu">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
   </action>
   <action name="qaSelfRegister">
@@ -909,6 +976,9 @@ the channel's context menu.</string>
    </property>
   </action>
   <action name="qaRecording">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset>
      <normaloff>skin:actions/media-record.svg</normaloff>skin:actions/media-record.svg</iconset>
@@ -917,7 +987,7 @@ the channel's context menu.</string>
     <string>Recording</string>
    </property>
    <property name="iconVisibleInMenu">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
   </action>
   <action name="qaShow">
@@ -937,14 +1007,6 @@ the channel's context menu.</string>
    </property>
    <property name="toolTip">
     <string>Listen to this channel without joining it</string>
-   </property>
-  </action>
-  <action name="qaListenerLocalVolume">
-   <property name="text">
-    <string>Local Volume Adjustment...</string>
-   </property>
-   <property name="toolTip">
-    <string>Locally adjust the volume for this virtual ear.</string>
    </property>
   </action>
   <action name="qaTalkingUIToggle">
@@ -978,6 +1040,21 @@ the channel's context menu.</string>
    </property>
    <property name="whatsThis">
     <string>Silently disables Text-To-Speech for all text messages from the user.</string>
+   </property>
+  </action>
+  <action name="qaSearch">
+   <property name="icon">
+    <iconset>
+     <normaloff>skin:magnifier.svg</normaloff>skin:magnifier.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Search</string>
+   </property>
+   <property name="toolTip">
+    <string>Search for a user or channel (Ctrl+F)</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
    </property>
   </action>
  </widget>

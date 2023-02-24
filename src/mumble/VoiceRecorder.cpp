@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2010-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -8,14 +8,11 @@
 #include "AudioOutput.h"
 #include "ClientUser.h"
 #include "ServerHandler.h"
+#include "Global.h"
 
 #include "../Timer.h"
 
 #include <boost/make_shared.hpp>
-
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name
-// (like protobuf 3.7 does). As such, for now, we have to make this our last include.
-#include "Global.h"
 
 VoiceRecorder::RecordBuffer::RecordBuffer(int recordInfoIndex_, boost::shared_array< float > buffer_, int samples_,
 										  quint64 absoluteStartSample_)
@@ -97,10 +94,10 @@ QString VoiceRecorder::expandTemplateVariables(const QString &path, const QStrin
 	QString time(m_recordingStartTime.time().toString(QLatin1String("hh-mm-ss")));
 
 	QString hostname(QLatin1String("Unknown"));
-	if (g.sh && g.uiSession != 0) {
+	if (Global::get().sh && Global::get().uiSession != 0) {
 		unsigned short port;
 		QString uname, pw;
-		g.sh->getConnectionInfo(hostname, port, uname, pw);
+		Global::get().sh->getConnectionInfo(hostname, port, uname, pw);
 	}
 
 	// Create hash which stores the names of the variables with the corresponding values.
@@ -167,7 +164,7 @@ SF_INFO VoiceRecorder::createSoundFileInfo() const {
 	Q_ASSERT(m_config.sampleRate != 0);
 
 	// When adding new formats make sure to properly configure needed additional
-	// behavior after opening the file handle (e.g. to enable clipping).
+	// behavior after opening the file handle (e.Global::get(). to enable clipping).
 
 	// Convert |fmFormat| to a SF_INFO structure for libsndfile.
 	SF_INFO sfinfo;
@@ -215,6 +212,18 @@ SF_INFO VoiceRecorder::createSoundFileInfo() const {
 			qWarning() << "VoiceRecorder: recording started to" << m_config.fileName << "@" << m_config.sampleRate
 					   << "hz in FLAC format";
 			break;
+#ifdef USE_SNDFILE_OPUS
+		case VoiceRecorderFormat::OPUS:
+			sfinfo.frames     = 0;
+			sfinfo.samplerate = m_config.sampleRate;
+			sfinfo.channels   = 1;
+			sfinfo.format     = SF_FORMAT_OGG | SF_FORMAT_OPUS;
+			sfinfo.sections   = 0;
+			sfinfo.seekable   = 0;
+			qWarning() << "VoiceRecorder: recording started to" << m_config.fileName << "@" << m_config.sampleRate
+					   << "hz in OPUS format";
+			break;
+#endif
 	}
 
 	Q_ASSERT(sf_format_check(&sfinfo));
@@ -283,7 +292,7 @@ bool VoiceRecorder::ensureFileIsOpenedFor(SF_INFO &soundFileInfo, boost::shared_
 void VoiceRecorder::run() {
 	Q_ASSERT(!m_recording);
 
-	if (g.sh && g.sh->uiVersion < 0x010203)
+	if (Global::get().sh && Global::get().sh->m_version < Version::fromComponents(1, 2, 3))
 		return;
 
 	SF_INFO soundFileInfo = createSoundFileInfo();
@@ -296,7 +305,8 @@ void VoiceRecorder::run() {
 		m_sleepLock.lock();
 		m_sleepCondition.wait(&m_sleepLock);
 
-		if (!m_recording || m_abort || (g.sh && g.sh->uiVersion < 0x010203)) {
+		if (!m_recording || m_abort
+			|| (Global::get().sh && Global::get().sh->m_version < Version::fromComponents(1, 2, 3))) {
 			m_sleepLock.unlock();
 			break;
 		}
@@ -432,6 +442,10 @@ QString VoiceRecorderFormat::getFormatDescription(VoiceRecorderFormat::Format fm
 			return VoiceRecorder::tr(".au - Uncompressed");
 		case VoiceRecorderFormat::FLAC:
 			return VoiceRecorder::tr(".flac - Lossless compressed");
+#ifdef USE_SNDFILE_OPUS
+		case VoiceRecorderFormat::OPUS:
+			return VoiceRecorder::tr(".opus - Lossy compressed");
+#endif
 		default:
 			return QString();
 	}
@@ -449,6 +463,10 @@ QString VoiceRecorderFormat::getFormatDefaultExtension(VoiceRecorderFormat::Form
 			return QLatin1String("au");
 		case VoiceRecorderFormat::FLAC:
 			return QLatin1String("flac");
+#ifdef USE_SNDFILE_OPUS
+		case VoiceRecorderFormat::OPUS:
+			return QLatin1String("opus");
+#endif
 		default:
 			return QString();
 	}

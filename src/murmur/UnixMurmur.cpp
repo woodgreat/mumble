@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -26,6 +26,8 @@
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <unistd.h>
+
+#include <limits>
 
 QMutex *LimitTest::qm;
 QWaitCondition *LimitTest::qw;
@@ -340,7 +342,13 @@ void UnixMurmur::finalcap() {
 	if (getrlimit(RLIMIT_RTPRIO, &r) != 0) {
 		qCritical("Failed to get priority limits.");
 	} else {
-		qWarning("Resource limits were %ld %ld", r.rlim_cur, r.rlim_max);
+		using ulong_t = unsigned long long int;
+		static_assert(std::numeric_limits< ulong_t >::max() >= std::numeric_limits< rlim_t >::max(),
+					  "rlim_t is unexpectedly large");
+		ulong_t current = r.rlim_cur;
+		ulong_t max     = r.rlim_max;
+		qWarning("Resource limits were %llu %llu", current, max);
+
 		r.rlim_cur = r.rlim_max = 1;
 		if (setrlimit(RLIMIT_RTPRIO, &r) != 0) {
 			qCritical("Failed to set priority limits.");

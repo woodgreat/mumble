@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2009-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -45,6 +45,8 @@ protected:
 	AudioBufferList buflist{};
 	static void propertyChange(void *udata, AudioUnit au, AudioUnitPropertyID prop, AudioUnitScope scope,
 							   AudioUnitElement element);
+	static OSStatus deviceChange(AudioObjectID inObjectID, UInt32 inNumberAddresses,
+								 const AudioObjectPropertyAddress inAddresses[], void *udata);
 	static OSStatus inputCallback(void *udata, AudioUnitRenderActionFlags *flags, const AudioTimeStamp *ts,
 								  UInt32 busnum, UInt32 npackets, AudioBufferList *buflist);
 
@@ -64,6 +66,8 @@ protected:
 	AudioUnit auHAL{};
 	static void propertyChange(void *udata, AudioUnit au, AudioUnitPropertyID prop, AudioUnitScope scope,
 							   AudioUnitElement element);
+	static OSStatus deviceChange(AudioObjectID inObjectID, UInt32 inNumberAddresses,
+								 const AudioObjectPropertyAddress inAddresses[], void *udata);
 	static OSStatus outputCallback(void *udata, AudioUnitRenderActionFlags *flags, const AudioTimeStamp *ts,
 								   UInt32 busnum, UInt32 npackets, AudioBufferList *buflist);
 
@@ -78,6 +82,7 @@ class CoreAudioInputRegistrar : public AudioInputRegistrar {
 public:
 	CoreAudioInputRegistrar();
 	virtual AudioInput *create();
+	virtual const QVariant getDeviceChoice();
 	virtual const QList< audioDevice > getDeviceChoices();
 	virtual void setDeviceChoice(const QVariant &, Settings &);
 	virtual bool canEcho(EchoCancelOptionID echoCancelID, const QString &outputSystem) const;
@@ -88,6 +93,7 @@ class CoreAudioOutputRegistrar : public AudioOutputRegistrar {
 public:
 	CoreAudioOutputRegistrar() : AudioOutputRegistrar(QLatin1String("CoreAudio"), 10) {}
 	virtual AudioOutput *create();
+	virtual const QVariant getDeviceChoice();
 	virtual const QList< audioDevice > getDeviceChoices();
 	virtual void setDeviceChoice(const QVariant &, Settings &);
 	bool canMuteOthers() const;

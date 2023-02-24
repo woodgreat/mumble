@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -12,6 +12,7 @@
 
 #include "Version.h"
 #include "win.h"
+#include "Global.h"
 
 #include <cfloat>
 #include <cmath>
@@ -28,10 +29,6 @@
 #include <share.h> // For share flags for _wfsopen
 #include <shlobj.h>
 #include <shobjidl.h>
-
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name
-// (like protobuf 3.7 does). As such, for now, we have to make this our last include.
-#include "Global.h"
 
 extern "C" {
 void __cpuid(int a[4], int b);
@@ -258,10 +255,10 @@ void os_init() {
 	// Make a copy of the global LogEmitter, such that
 	// os_win.cpp doesn't have to consider the deletion
 	// of the Global object and its LogEmitter object.
-	le = g.le;
+	le = Global::get().le;
 
 #ifdef QT_NO_DEBUG
-	QString console = g.qdBasePath.filePath(QLatin1String("Console.txt"));
+	QString console = Global::get().qdBasePath.filePath(QLatin1String("Console.txt"));
 	fConsole        = _wfsopen(console.toStdWString().c_str(), L"a+", _SH_DENYWR);
 
 	if (fConsole) {
@@ -281,16 +278,14 @@ void os_init() {
 		}
 	}
 
-	QString comment =
-		QString::fromLatin1("%1\n%2\n%3")
-			.arg(QString::fromLatin1(MUMBLE_RELEASE), QString::fromLatin1(MUMTEXT(MUMBLE_VERSION)), hash);
+	QString comment = QString::fromLatin1("%1\n%2").arg(Version::getRelease(), hash);
 
 	wcscpy_s(wcComment, DUMP_BUFFER_SIZE, comment.toStdWString().c_str());
 	musComment.Type       = CommentStreamW;
 	musComment.Buffer     = wcComment;
 	musComment.BufferSize = static_cast< ULONG >(wcslen(wcComment) * sizeof(wchar_t));
 
-	QString dump = g.qdBasePath.filePath(QLatin1String("mumble.dmp"));
+	QString dump = Global::get().qdBasePath.filePath(QLatin1String("mumble.dmp"));
 
 	QFileInfo fi(dump);
 	QDir::root().mkpath(fi.absolutePath());
@@ -300,7 +295,7 @@ void os_init() {
 
 #endif
 
-	g.qdBasePath.mkpath(QLatin1String("Snapshots"));
+	Global::get().qdBasePath.mkpath(QLatin1String("Snapshots"));
 	if (bIsWin7)
 		SetCurrentProcessExplicitAppUserModelID(L"net.sourceforge.mumble.Mumble");
 }
@@ -335,3 +330,7 @@ DWORD WinVerifySslCert(const QByteArray &cert) {
 
 	return errorStatus;
 }
+
+#undef DUMP_BUFFER_SIZE
+#undef HeapEnableTerminationOnCorruption
+#undef MMXSSE

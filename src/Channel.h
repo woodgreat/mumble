@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -15,6 +15,7 @@
 
 #ifdef MUMBLE
 #	include <atomic>
+#	include "ChannelFilterMode.h"
 #endif
 
 class User;
@@ -31,6 +32,8 @@ private:
 	QSet< Channel * > qsUnseen;
 
 public:
+	static constexpr int ROOT_ID = 0;
+
 	int iId;
 	int iPosition;
 	bool bTemporary;
@@ -69,7 +72,12 @@ public:
 
 #ifdef MUMBLE
 	unsigned int uiPermissions;
-	bool bFiltered;
+
+	ChannelFilterMode m_filterMode;
+
+	void setFilterMode(ChannelFilterMode filterMode);
+	void clearFilterMode();
+	bool isFiltered() const;
 
 	static QHash< int, Channel * > c_qhChannels;
 	static QReadWriteLock c_qrwlChannels;
@@ -99,6 +107,20 @@ public:
 	QSet< Channel * > allChildren();
 
 	operator QString() const;
+
+signals:
+	/// Signal emitted whenever a user enters a channel.
+	///
+	/// @param newChannel A pointer to the Channel the user has just entered
+	/// @param prevChannel A pointer to the Channel the user is coming from or nullptr if
+	/// 	there is no such channel.
+	/// @param user A pointer to the User that has triggered this signal
+	void channelEntered(const Channel *newChannel, const Channel *prevChannel, const User *user);
+	/// Signal emitted whenever a user leaves a channel.
+	///
+	/// @param channel A pointer to the Channel the user has left
+	/// @param user A pointer to the User that has triggered this signal
+	void channelExited(const Channel *channel, const User *user);
 };
 
 #endif

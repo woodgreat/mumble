@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -8,6 +8,9 @@
 #include <QtCore/QStandardPaths>
 
 #ifdef Q_OS_WIN
+#	ifndef NOMINMAX
+#		define NOMINMAX
+#	endif
 #	include <shlobj.h>
 #endif
 
@@ -17,59 +20,81 @@
 
 Global *Global::g_global_struct;
 
-#ifndef Q_OS_WIN
-static void migrateDataDir() {
-#	ifdef Q_OS_MAC
-	QString olddir  = QDir::homePath() + QLatin1String("/Library/Preferences/Mumble");
-	QString newdir  = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
-	QString linksTo = QFile::symLinkTarget(olddir);
-	if (!QFile::exists(newdir) && QFile::exists(olddir) && linksTo.isEmpty()) {
-		QDir d;
-		d.mkpath(newdir + QLatin1String("/.."));
-		if (d.rename(olddir, newdir)) {
-			if (d.cd(QDir::homePath() + QLatin1String("/Library/Preferences"))) {
-				if (QFile::link(d.relativeFilePath(newdir), olddir)) {
-					qWarning("Migrated application data directory from '%s' to '%s'", qPrintable(olddir),
-							 qPrintable(newdir));
-					return;
-				}
-			}
-		}
-	} else {
-		/* Data dir has already been migrated. */
+Global &Global::get() {
+	return *g_global_struct;
+}
+
+void Global::migrateDataDir(const QDir &toDir) {
+	if (toDir.exists()) {
+		// The new directory already exists -> don't perform any migration
 		return;
 	}
 
-	qWarning("Application data migration failed.");
-#	endif // Q_OS_MAC
+	QStringList oldPaths;
+
+#ifdef Q_OS_MAC
+	oldPaths << QDir::homePath() + "/Library/Preferences/Mumble";
+#endif
 
 // Qt4 used another data directory on Unix-like systems, to ensure a seamless
 // transition we must first move the users data to the new directory.
-#	if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
-	QString olddir =
-		QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/data/Mumble");
-	QString newdir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QLatin1String("/Mumble");
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
+	oldPaths << QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/data/Mumble";
+#endif
 
-	if (!QFile::exists(newdir) && QFile::exists(olddir)) {
-		QDir d;
-		if (d.rename(olddir, newdir)) {
-			qWarning("Migrated application data directory from '%s' to '%s'", qPrintable(olddir), qPrintable(newdir));
-			return;
+#ifdef Q_OS_WIN
+	// Get AppData dir
+	QString appdata;
+	wchar_t appData[MAX_PATH];
+	if (SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_APPDATA, nullptr, SHGFP_TYPE_CURRENT, appData))) {
+		appdata = QDir::fromNativeSeparators(QString::fromWCharArray(appData));
+
+		if (!appdata.isEmpty()) {
+			appdata.append(QLatin1String("/Mumble"));
+			oldPaths << appdata;
 		}
-	} else {
-		/* Data dir has already been migrated. */
-		return;
+	}
+#endif
+
+	for (const QString &current : oldPaths) {
+		QDir currentDir(current);
+
+		if (currentDir.exists()) {
+			QDir dummy;
+
+			dummy.mkpath(toDir.absolutePath());
+
+			for (const QFileInfo &currentInfo : currentDir.entryInfoList()) {
+				if (currentInfo.fileName() == "." || currentInfo.fileName() == ".."
+					|| currentInfo.canonicalFilePath() == toDir.canonicalPath()) {
+					continue;
+				}
+				if (!dummy.rename(currentInfo.absoluteFilePath(), toDir.absoluteFilePath(currentInfo.fileName()))) {
+					qWarning("Failed at migrating %s", qUtf8Printable(currentInfo.fileName()));
+				}
+				if (currentInfo.fileName() == "mumble.sqlite") {
+					migratedDBPath = QDir(toDir.absoluteFilePath(currentInfo.fileName())).canonicalPath();
+				}
+				if (currentInfo.isDir() && currentInfo.fileName() == "Plugins") {
+					migratedPluginDirPath = { currentInfo.canonicalFilePath(),
+											  QDir(toDir.absoluteFilePath(currentInfo.fileName())).canonicalPath() };
+				}
+			}
+
+			// Only consider the first path in the list (which is expected to be the most recent one)
+			break;
+		}
+
+		qWarning("Dir didn't exist: %s", qUtf8Printable(current));
 	}
 
-	qWarning("Application data migration failed.");
-#	endif // defined(Q_OS_UNIX) && ! defined(Q_OS_MAC)
+	qInfo("Successfully migrated data directory");
 }
-#endif // Q_OS_WIN
 
 Global::Global(const QString &qsConfigPath) {
 	mw              = 0;
 	db              = 0;
-	p               = 0;
+	pluginManager   = 0;
 	nam             = 0;
 	c               = 0;
 	talkingUI       = 0;
@@ -86,24 +111,14 @@ Global::Global(const QString &qsConfigPath) {
 	iAudioBandwidth = -1;
 	iMaxBandwidth   = -1;
 
-	iCodecAlpha  = 0;
-	iCodecBeta   = 0;
-	bPreferAlpha = true;
-#ifdef USE_OPUS
-	bOpus = true;
-#else
-	bOpus = false;
-#endif
-
 	bAttenuateOthers              = false;
 	prioritySpeakerActiveOverride = false;
 
-	bAllowHTML      = true;
-	uiMessageLength = 5000;
-	uiImageLength   = 131072;
-	uiMaxUsers      = 0;
-
-	qs = nullptr;
+	bAllowHTML       = true;
+	uiMessageLength  = 5000;
+	uiImageLength    = 131072;
+	uiMaxUsers       = 0;
+	recordingAllowed = true;
 
 	zeroconf = nullptr;
 	lcd      = nullptr;
@@ -120,54 +135,25 @@ Global::Global(const QString &qsConfigPath) {
 	bDebugDumpInput  = false;
 	bDebugPrintQueue = false;
 
+	channelListenerManager = std::make_unique< ChannelListenerManager >();
+
 #if defined(Q_OS_WIN)
 	QString appdata;
 	wchar_t appData[MAX_PATH];
 #endif
 
-	if (!qsConfigPath.isEmpty()) {
-		QFile inifile(qsConfigPath);
-		qs = new QSettings(inifile.fileName(), QSettings::IniFormat);
-	} else {
-		QStringList qsl;
-		qsl << QCoreApplication::instance()->applicationDirPath();
-		qsl << QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+	if (qsConfigPath.isEmpty()) {
+		qdBasePath.setPath(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));
 
-#if defined(Q_OS_WIN)
-		if (SUCCEEDED(SHGetFolderPath(nullptr, CSIDL_APPDATA, nullptr, SHGFP_TYPE_CURRENT, appData))) {
-			appdata = QDir::fromNativeSeparators(QString::fromWCharArray(appData));
+		migrateDataDir(qdBasePath);
 
-			if (!appdata.isEmpty()) {
-				appdata.append(QLatin1String("/Mumble"));
-				qsl << appdata;
-			}
-		}
-#endif
-
-		foreach (const QString &dir, qsl) {
-			QFile inifile(QString::fromLatin1("%1/mumble.ini").arg(dir));
-			if (inifile.exists() && inifile.permissions().testFlag(QFile::WriteUser)) {
-				qdBasePath.setPath(dir);
-				qs = new QSettings(inifile.fileName(), QSettings::IniFormat);
-				break;
-			}
-		}
-	}
-
-	if (!qs) {
-		qs = new QSettings();
-#if defined(Q_OS_WIN)
-		if (!appdata.isEmpty())
-			qdBasePath.setPath(appdata);
-#else
-		migrateDataDir();
-		qdBasePath.setPath(QStandardPaths::writableLocation(QStandardPaths::DataLocation));
-#endif
 		if (!qdBasePath.exists()) {
 			QDir::root().mkpath(qdBasePath.absolutePath());
 			if (!qdBasePath.exists())
 				qdBasePath = QDir::home();
 		}
+	} else {
+		qdBasePath = QFileInfo(qsConfigPath).absoluteDir();
 	}
 
 	if (!qdBasePath.exists(QLatin1String("Plugins")))
@@ -176,12 +162,6 @@ Global::Global(const QString &qsConfigPath) {
 		qdBasePath.mkpath(QLatin1String("Overlay"));
 	if (!qdBasePath.exists(QLatin1String("Themes")))
 		qdBasePath.mkpath(QLatin1String("Themes"));
-
-	qs->setIniCodec("UTF-8");
-}
-
-Global::~Global() {
-	delete qs;
 }
 
 const char Global::ccHappyEaster[] = {

@@ -1,12 +1,15 @@
+// Copyright 2020-2023 The Mumble Developers. All rights reserved.
+// Use of this source code is governed by a BSD-style license
+// that can be found in the LICENSE file at the root of the
+// Mumble source tree or at <https://www.mumble.info/LICENSE>.
+
 #ifndef AMONGUS_STRUCTS
 #define AMONGUS_STRUCTS
 
 #include <cstdint>
 
 typedef uint32_t ptr_t;
-typedef int32_t sptr_t;
-
-typedef ptr_t il2cpp_array_size_t; // Originally uintptr_t
+typedef uint32_t il2cpp_array_size_t; // uintptr_t
 
 enum class DisconnectReason {
 	ExitGame            = 0x0,
@@ -43,6 +46,11 @@ struct Il2CppType {
 	uint32_t bits;
 };
 
+struct Il2CppObject {
+	ptr_t klass;
+	ptr_t monitor;
+};
+
 struct Il2CppClass_1 {
 	ptr_t image;
 	ptr_t gcDesc;
@@ -55,7 +63,7 @@ struct Il2CppClass_1 {
 	ptr_t declaringType;
 	ptr_t parent;
 	ptr_t genericClass;
-	ptr_t typeDefinition;
+	ptr_t typeMetadataHandle;
 	ptr_t interopData;
 	ptr_t klass;
 	ptr_t fields;
@@ -67,6 +75,39 @@ struct Il2CppClass_1 {
 	ptr_t interfaceOffsets;
 };
 
+struct Dictionary_Item {
+	int32_t hashCode;
+	int32_t next;
+	ptr_t key;
+	ptr_t value;
+};
+
+struct Dictionary_Array {
+	Il2CppObject obj;
+	ptr_t bounds;
+	il2cpp_array_size_t maxLength;
+	Dictionary_Item items[1];
+};
+
+struct Dictionary_Fields {
+	ptr_t buckets;
+	ptr_t entries;
+	int32_t count;
+	int32_t version;
+	int32_t freeList;
+	int32_t freeCount;
+	ptr_t comparer;
+	ptr_t keys;
+	ptr_t values;
+	ptr_t syncRoot;
+};
+
+struct Dictionary_o {
+	ptr_t klass;
+	ptr_t monitor;
+	Dictionary_Fields fields;
+};
+
 struct UnityEngine_Vector2_Fields {
 	float x;
 	float y;
@@ -74,6 +115,16 @@ struct UnityEngine_Vector2_Fields {
 
 struct UnityEngine_Vector2_o {
 	UnityEngine_Vector2_Fields fields;
+};
+
+struct UnityEngine_Vector3_Fields {
+	float x;
+	float y;
+	float z;
+};
+
+struct UnityEngine_Vector3_o {
+	UnityEngine_Vector3_Fields fields;
 };
 
 struct String_Fields {
@@ -88,7 +139,7 @@ struct String_o {
 };
 
 struct UnityEngine_Object_Fields {
-	sptr_t cachedPtr;
+	ptr_t cachedPtr;
 };
 
 struct InnerNet_InnerNetClient_Fields : UnityEngine_Object_Fields {
@@ -96,25 +147,33 @@ struct InnerNet_InnerNetClient_Fields : UnityEngine_Object_Fields {
 	uint32_t netIdCnt;
 	float timer;
 	ptr_t spawnableObjects;
+	ptr_t nonAddressableSpawnableObjects;
 	bool inOnlineScene;
 	ptr_t destroyedObjects;
 	ptr_t allObjects;
 	ptr_t allObjectsFast;
 	ptr_t streams;
+	int32_t msgNum;
 	ptr_t networkAddress;
 	int32_t networkPort;
+	bool useDTLS;
 	ptr_t connection;
 	Mode mode;
+	GameMode gameMode;
 	int32_t gameId;
 	int32_t hostId;
 	int32_t clientId;
 	ptr_t allClients;
+	ptr_t recentClients;
 	DisconnectReason lastDisconnectReason;
 	ptr_t lastCustomDisconnect;
+	uint8_t lastServerChatMode;
 	ptr_t preSpawnDispatcher;
 	ptr_t dispatcher;
 	bool isGamePublic;
 	GameState gameState;
+	bool isConnecting;
+	bool platformSpecificsChecked;
 	ptr_t tempQueue;
 	bool appPaused;
 };
@@ -150,8 +209,6 @@ struct CustomNetworkTransform_o {
 };
 
 struct AmongUsClient_Fields : InnerNet_InnerNetClient_Fields {
-	int32_t autoOpenStore;
-	GameMode gameMode;
 	ptr_t onlineScene;
 	ptr_t mainMenuScene;
 	ptr_t gameDataPrefab;
@@ -162,6 +219,7 @@ struct AmongUsClient_Fields : InnerNet_InnerNetClient_Fields {
 	DiscoverState discoverState;
 	ptr_t disconnectHandlers;
 	ptr_t gameListHandlers;
+	int32_t crossplayPrivilegeError;
 };
 
 struct AmongUsClient_StaticFields {
@@ -182,10 +240,20 @@ struct AmongUsClient_o {
 struct PlayerControl_Fields : InnerNet_InnerNetObject_Fields {
 	int32_t lastStartCounter;
 	uint8_t playerId;
+	ptr_t friendCode;
+	ptr_t puid;
 	float maxReportDistance;
 	bool moveable;
+	ptr_t bodySprites;
+	ptr_t currentBodySprite;
+	ptr_t normalBodySprite;
+	int32_t currentOutfitType;
 	bool inVent;
+	bool protectedByGuardianThisRound;
+	bool shapeshifting;
 	ptr_t cachedData;
+	bool protectedByGuardian;
+	float flashlightAngle;
 	ptr_t footSteps;
 	ptr_t killSfx;
 	ptr_t killAnimations;
@@ -199,18 +267,24 @@ struct PlayerControl_Fields : InnerNet_InnerNetObject_Fields {
 	ptr_t netTransform;
 	ptr_t currentPet;
 	ptr_t hatRenderer;
-	ptr_t myRend;
+	ptr_t visorSlot;
+	ptr_t myAnim;
+	ptr_t horseAnim;
 	ptr_t hitBuffer;
 	ptr_t myTasks;
+	UnityEngine_Vector3_o defaultPlayerScale;
 	ptr_t scannerAnims;
 	ptr_t scannersImages;
+	ptr_t currentRoleAnimations;
 	ptr_t closest;
 	bool isNew;
+	bool isDummy;
+	bool notRealPlayer;
 	ptr_t cache;
 	ptr_t itemsInRange;
 	ptr_t newItemsInRange;
 	uint8_t scannerCount;
-	bool infectedSet;
+	bool roleAssigned;
 };
 
 struct PlayerControl_StaticFields {
@@ -230,16 +304,34 @@ struct PlayerControl_o {
 	PlayerControl_Fields fields;
 };
 
+struct GameData_PlayerOutfit_Fields {
+	bool dontCensorName;
+	int32_t colorId;
+	ptr_t hatId;
+	ptr_t petId;
+	ptr_t skinId;
+	ptr_t visorId;
+	ptr_t namePlateId;
+	ptr_t playerName;
+	ptr_t preCensorName;
+	ptr_t postCensorName;
+};
+
+struct GameData_PlayerOutfit_o {
+	ptr_t klass;
+	ptr_t monitor;
+	GameData_PlayerOutfit_Fields fields;
+};
+
 struct GameData_PlayerInfo_Fields {
 	uint8_t playerId;
-	ptr_t playerName;
-	uint8_t colorId;
-	uint32_t hatId;
-	uint32_t petId;
-	uint32_t skinId;
+	ptr_t friendCode;
+	ptr_t puid;
+	ptr_t outfits;
+	uint32_t playerLevel;
 	bool disconnected;
+	ptr_t role;
 	ptr_t tasks;
-	bool isImpostor;
 	bool isDead;
 	ptr_t object;
 };

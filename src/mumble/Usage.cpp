@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2009-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -29,8 +29,9 @@ Usage::Usage(QObject *p) : QObject(p) {
 }
 
 void Usage::registerUsage() {
-	if (!g.s.bUsage
-		|| g.s.uiUpdateCounter == 0) // Only register usage if allowed by the user and first wizard run has finished
+	if (!Global::get().s.bUsage
+		|| Version::get() < Version::fromComponents(
+			   1, 2, 3)) // Only register usage if allowed by the user and first wizard run has finished
 		return;
 
 	QDomDocument doc;
@@ -44,17 +45,17 @@ void Usage::registerUsage() {
 
 	tag = doc.createElement(QLatin1String("in"));
 	root.appendChild(tag);
-	t = doc.createTextNode(g.s.qsAudioInput);
+	t = doc.createTextNode(Global::get().s.qsAudioInput);
 	tag.appendChild(t);
 
 	tag = doc.createElement(QLatin1String("out"));
 	root.appendChild(tag);
-	t = doc.createTextNode(g.s.qsAudioOutput);
+	t = doc.createTextNode(Global::get().s.qsAudioOutput);
 	tag.appendChild(t);
 
 	tag = doc.createElement(QLatin1String("lcd"));
 	root.appendChild(tag);
-	t = doc.createTextNode(QString::number(g.lcd->hasDevices() ? 1 : 0));
+	t = doc.createTextNode(QString::number(Global::get().lcd->hasDevices() ? 1 : 0));
 	tag.appendChild(t);
 
 	QBuffer *qb = new QBuffer();
@@ -65,7 +66,7 @@ void Usage::registerUsage() {
 	Network::prepareRequest(req);
 	req.setHeader(QNetworkRequest::ContentTypeHeader, QLatin1String("text/xml"));
 
-	QNetworkReply *rep = g.nam->post(req, qb);
+	QNetworkReply *rep = Global::get().nam->post(req, qb);
 	qb->setParent(rep);
 
 	connect(rep, SIGNAL(finished()), rep, SLOT(deleteLater()));

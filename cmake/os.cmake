@@ -1,4 +1,4 @@
-# Copyright 2019-2020 The Mumble Developers. All rights reserved.
+# Copyright 2020-2023 The Mumble Developers. All rights reserved.
 # Use of this source code is governed by a BSD-style license
 # that can be found in the LICENSE file at the root of the
 # Mumble source tree or at <https://www.mumble.info/LICENSE>. 
@@ -32,6 +32,8 @@ if(WIN32)
 	add_definitions(
 		"-DUNICODE"
 		"-DWIN32_LEAN_AND_MEAN"
+		# Prevent Windows headers from defining the macros "min" and "max" that mess up e.g. std::min usage
+		"-DNOMINMAX"
 	)
 else()
 	if(${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")

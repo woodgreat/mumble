@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2010-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -9,11 +9,9 @@
 #	include "Overlay.h"
 #endif
 #include "Utils.h"
+#include "Global.h"
 
 #include <CoreFoundation/CoreFoundation.h>
-
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name (like protobuf 3.7 does). As such, for now, we have to make this our last include.
-#include "Global.h"
 
 char *os_lang = nullptr;
 static FILE *fConsole = nullptr;
@@ -42,9 +40,6 @@ static void mumbleMessageOutputQString(QtMsgType type, const QString &msg) {
 		default:
 			c='X';
 	}
-
-#define LOG(f, msg) fprintf(f, "<%c>%s %s\n", c, \
-		qPrintable(QDateTime::currentDateTime().toString(QLatin1String("yyyy-MM-dd hh:mm:ss.zzz"))), qPrintable(msg))
 
 	QString date = QDateTime::currentDateTime().toString(QLatin1String("yyyy-MM-dd hh:mm:ss.zzz"));
 	QString fmsg = QString::fromLatin1("<%1>%2 %3").arg(c).arg(date).arg(msg);
@@ -117,7 +112,7 @@ static void crashhandler_signals_restore() {
 }
 
 static void crashhandler_init() {
-	QString dump = g.qdBasePath.filePath(QLatin1String("mumble.dmp"));
+	QString dump = Global::get().qdBasePath.filePath(QLatin1String("mumble.dmp"));
 	if (strncpy(crashhandler_fn, dump.toUtf8().data(), PATH_MAX)) {
 		crashhandler_signals_setup();
 		/* todo: Change the behavior of the Apple crash dialog? Maybe? */
@@ -140,7 +135,7 @@ void os_init() {
 	// Make a copy of the global LogEmitter, such that
 	// os_macx.mm doesn't have to consider the deletion
 	// of the Global object and its LogEmitter object.
-	le = g.le;
+	le = Global::get().le;
 
 	if (home) {
 		size_t len = strlen(home) + strlen(logpath) + 1;
@@ -156,6 +151,9 @@ void os_init() {
 
 	/* Query for language setting. OS X's LANG environment variable is determined from the region selected
 	 * in SystemPrefs -> International -> Formats -> Region instead of the system language. We override this
-	 * by always using the system langauge, to get rid of all sorts of nasty langauge inconsistencies. */
+	 * by always using the system language, to get rid of all sorts of nasty language inconsistencies. */
 	query_language();
 }
+
+#undef PATH_MAX
+#undef NSIGS

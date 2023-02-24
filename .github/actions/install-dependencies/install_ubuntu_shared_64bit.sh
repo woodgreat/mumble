@@ -7,7 +7,7 @@ sudo apt -y install \
 	g++-multilib \
 	ninja-build \
 	pkg-config \
-	qt5-default \
+	qtbase5-dev \
 	qttools5-dev \
 	qttools5-dev-tools \
 	libqt5svg5-dev \
@@ -20,13 +20,13 @@ sudo apt -y install \
 	libxi-dev \
 	libasound2-dev \
 	libasound2-plugins \
-	libasound2-plugins-extra\
+	libasound2-plugins-extra \
 	libogg-dev \
 	libsndfile1-dev \
+	libopus-dev \
 	libspeechd-dev \
 	libavahi-compat-libdnssd-dev \
 	libzeroc-ice-dev \
 	zsync \
 	appstream \
-	libgrpc++-dev \
-	protobuf-compiler-grpc
+	libpoco-dev

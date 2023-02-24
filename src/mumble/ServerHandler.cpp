@@ -1,8 +1,9 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
 
+#include <QSslConfiguration>
 #include <QtCore/QtGlobal>
 
 #ifdef Q_OS_WIN
@@ -18,24 +19,28 @@
 #include "Database.h"
 #include "HostAddress.h"
 #include "MainWindow.h"
-#include "Message.h"
 #include "Net.h"
 #include "NetworkConfig.h"
 #include "OSInfo.h"
 #include "PacketDataStream.h"
+#include "ProtoUtils.h"
 #include "RichTextEditor.h"
 #include "SSL.h"
 #include "ServerResolver.h"
 #include "ServerResolverRecord.h"
 #include "User.h"
 #include "Utils.h"
+#include "Global.h"
 
+#include <QPainter>
 #include <QtCore/QtEndian>
 #include <QtGui/QImageReader>
 #include <QtNetwork/QSslConfiguration>
 #include <QtNetwork/QUdpSocket>
 
 #include <openssl/crypto.h>
+
+#include <cassert>
 
 #ifdef Q_OS_WIN
 // <delayimp.h> is not protected with an include guard on MinGW, resulting in
@@ -56,15 +61,16 @@
 #	include <sys/socket.h>
 #endif
 
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name
-// (like protobuf 3.7 does). As such, for now, we have to make this our last include.
-#include "Global.h"
+// Init ServerHandler::nextConnectionID
+int ServerHandler::nextConnectionID = -1;
+QMutex ServerHandler::nextConnectionIDMutex;
 
-ServerHandlerMessageEvent::ServerHandlerMessageEvent(const QByteArray &msg, unsigned int mtype, bool flush)
+ServerHandlerMessageEvent::ServerHandlerMessageEvent(const QByteArray &msg, Mumble::Protocol::TCPMessageType type,
+													 bool flush)
 	: QEvent(static_cast< QEvent::Type >(SERVERSEND_EVENT)) {
-	qbaMsg = msg;
-	uiType = mtype;
-	bFlush = flush;
+	qbaMsg     = msg;
+	this->type = type;
+	bFlush     = flush;
 }
 
 #ifdef Q_OS_WIN
@@ -109,8 +115,15 @@ ServerHandler::ServerHandler() : database(new Database(QLatin1String("ServerHand
 	usPort                  = 0;
 	bUdp                    = true;
 	tConnectionTimeoutTimer = nullptr;
-	uiVersion               = 0;
+	m_version               = Version::UNKNOWN;
 	iInFlightTCPPings       = 0;
+
+	// assign connection ID
+	{
+		QMutexLocker lock(&nextConnectionIDMutex);
+		nextConnectionID++;
+		connectionID = nextConnectionID;
+	}
 
 	// Historically, the qWarning line below initialized OpenSSL for us.
 	// It used to have this comment:
@@ -126,11 +139,11 @@ ServerHandler::ServerHandler() : database(new Database(QLatin1String("ServerHand
 	MumbleSSL::addSystemCA();
 
 	{
-		QList< QSslCipher > ciphers = MumbleSSL::ciphersFromOpenSSLCipherString(g.s.qsSslCiphers);
+		QList< QSslCipher > ciphers = MumbleSSL::ciphersFromOpenSSLCipherString(Global::get().s.qsSslCiphers);
 		if (ciphers.isEmpty()) {
 			qFatal("Invalid 'net/sslciphers' config option. Either the cipher string is invalid or none of the ciphers "
 				   "are available:: \"%s\"",
-				   qPrintable(g.s.qsSslCiphers));
+				   qPrintable(Global::get().s.qsSslCiphers));
 		}
 
 		QSslConfiguration config = QSslConfiguration::defaultConfiguration();
@@ -180,14 +193,24 @@ void ServerHandler::customEvent(QEvent *evt) {
 	}
 }
 
+int ServerHandler::getConnectionID() const {
+	return connectionID;
+}
+
+void ServerHandler::setProtocolVersion(Version::full_t version) {
+	m_version = version;
+
+	m_udpPingEncoder.setProtocolVersion(version);
+	m_udpDecoder.setProtocolVersion(version);
+	m_tcpTunnelDecoder.setProtocolVersion(version);
+}
+
 void ServerHandler::udpReady() {
-	const unsigned int UDP_MAX_SIZE = 2048;
 	while (qusUdp->hasPendingDatagrams()) {
-		char encrypted[UDP_MAX_SIZE];
-		char buffer[UDP_MAX_SIZE];
+		char encrypted[Mumble::Protocol::MAX_UDP_PACKET_SIZE];
 		unsigned int buflen = static_cast< unsigned int >(qusUdp->pendingDatagramSize());
 
-		if (buflen > UDP_MAX_SIZE) {
+		if (buflen > Mumble::Protocol::MAX_UDP_PACKET_SIZE) {
 			// Discard datagrams that exceed our buffer's size as we'd have to trim them down anyways and it is not very
 			// likely that the data is valid in the trimmed down form.
 			// As we're using a maxSize of 0 it is okay to pass nullptr as the data buffer. Qt's docs (5.15) ensures
@@ -213,8 +236,13 @@ void ServerHandler::udpReady() {
 		if (buflen < 5)
 			continue;
 
-		if (!connection->csCrypt->decrypt(reinterpret_cast< const unsigned char * >(encrypted),
-										  reinterpret_cast< unsigned char * >(buffer), buflen)) {
+		gsl::span< Mumble::Protocol::byte > buffer = m_udpDecoder.getBuffer();
+
+		// 4 bytes is the overhead of the encryption
+		assert(buffer.size() >= buflen - 4);
+
+		if (!connection->csCrypt->decrypt(reinterpret_cast< const unsigned char * >(encrypted), buffer.data(),
+										  buflen)) {
 			if (connection->csCrypt->tLastGood.elapsed() > 5000000ULL) {
 				if (connection->csCrypt->tLastRequest.elapsed() > 5000000ULL) {
 					connection->csCrypt->tLastRequest.restart();
@@ -225,47 +253,43 @@ void ServerHandler::udpReady() {
 			continue;
 		}
 
-		PacketDataStream pds(buffer + 1, buflen - 5);
+		if (m_udpDecoder.decode(buffer.subspan(0, buflen - 4))) {
+			switch (m_udpDecoder.getMessageType()) {
+				case Mumble::Protocol::UDPMessageType::Ping: {
+					const Mumble::Protocol::PingData pingData = m_udpDecoder.getPingData();
 
-		MessageHandler::UDPMessageType msgType = static_cast< MessageHandler::UDPMessageType >((buffer[0] >> 5) & 0x7);
-		unsigned int msgFlags                  = buffer[0] & 0x1f;
+					accUDP(static_cast< double >(tTimestamp.elapsed() - pingData.timestamp) / 1000.0);
 
-		switch (msgType) {
-			case MessageHandler::UDPPing: {
-				quint64 t;
-				pds >> t;
-				accUDP(static_cast< double >(tTimestamp.elapsed() - t) / 1000.0);
-			} break;
-			case MessageHandler::UDPVoiceCELTAlpha:
-			case MessageHandler::UDPVoiceCELTBeta:
-			case MessageHandler::UDPVoiceSpeex:
-			case MessageHandler::UDPVoiceOpus:
-				handleVoicePacket(msgFlags, pds, msgType);
-				break;
-			default:
-				break;
+					break;
+				}
+				case Mumble::Protocol::UDPMessageType::Audio: {
+					const Mumble::Protocol::AudioData audioData = m_udpDecoder.getAudioData();
+
+					handleVoicePacket(audioData);
+					break;
+				};
+			}
 		}
 	}
 }
 
-void ServerHandler::handleVoicePacket(unsigned int msgFlags, PacketDataStream &pds,
-									  MessageHandler::UDPMessageType type) {
-	unsigned int uiSession;
-	pds >> uiSession;
-	ClientUser *p     = ClientUser::get(uiSession);
-	AudioOutputPtr ao = g.ao;
-	if (ao && p && !(((msgFlags & 0x1f) == 2) && g.s.bWhisperFriends && p->qsFriendName.isEmpty())) {
-		unsigned int iSeq;
-		pds >> iSeq;
-		QByteArray qba;
-		qba.reserve(pds.left() + 1);
-		qba.append(static_cast< char >(msgFlags));
-		qba.append(pds.dataBlock(pds.left()));
-		ao->addFrameToBuffer(p, qba, iSeq, type);
+void ServerHandler::handleVoicePacket(const Mumble::Protocol::AudioData &audioData) {
+	if (audioData.usedCodec != Mumble::Protocol::AudioCodec::Opus) {
+		qWarning("Dropping audio packet using invalid codec (not Opus): %d", static_cast< int >(audioData.usedCodec));
+		return;
+	}
+
+	ClientUser *sender = ClientUser::get(audioData.senderSession);
+
+	AudioOutputPtr ao = Global::get().ao;
+	if (ao && sender
+		&& !((audioData.targetOrContext == Mumble::Protocol::AudioContext::WHISPER) && Global::get().s.bWhisperFriends
+			 && sender->qsFriendName.isEmpty())) {
+		ao->addFrameToBuffer(sender, audioData);
 	}
 }
 
-void ServerHandler::sendMessage(const char *data, int len, bool force) {
+void ServerHandler::sendMessage(const unsigned char *data, int len, bool force) {
 	STACKVAR(unsigned char, crypto, len + 4);
 
 	QMutexLocker qml(&qmUdp);
@@ -281,12 +305,14 @@ void ServerHandler::sendMessage(const char *data, int len, bool force) {
 		QByteArray qba;
 
 		qba.resize(len + 6);
-		unsigned char *uc                      = reinterpret_cast< unsigned char * >(qba.data());
-		*reinterpret_cast< quint16 * >(&uc[0]) = qToBigEndian(static_cast< quint16 >(MessageHandler::UDPTunnel));
+		unsigned char *uc = reinterpret_cast< unsigned char * >(qba.data());
+		*reinterpret_cast< quint16 * >(&uc[0]) =
+			qToBigEndian(static_cast< quint16 >(Mumble::Protocol::TCPMessageType::UDPTunnel));
 		*reinterpret_cast< quint32 * >(&uc[2]) = qToBigEndian(static_cast< quint32 >(len));
 		memcpy(uc + 6, data, len);
 
-		QApplication::postEvent(this, new ServerHandlerMessageEvent(qba, MessageHandler::UDPTunnel, true));
+		QApplication::postEvent(this,
+								new ServerHandlerMessageEvent(qba, Mumble::Protocol::TCPMessageType::UDPTunnel, true));
 	} else {
 		if (!connection->csCrypt->encrypt(reinterpret_cast< const unsigned char * >(data), crypto, len)) {
 			return;
@@ -295,19 +321,19 @@ void ServerHandler::sendMessage(const char *data, int len, bool force) {
 	}
 }
 
-void ServerHandler::sendProtoMessage(const ::google::protobuf::Message &msg, unsigned int msgType) {
+void ServerHandler::sendProtoMessage(const ::google::protobuf::Message &msg, Mumble::Protocol::TCPMessageType type) {
 	QByteArray qba;
 
 	if (QThread::currentThread() != thread()) {
-		Connection::messageToNetwork(msg, msgType, qba);
-		ServerHandlerMessageEvent *shme = new ServerHandlerMessageEvent(qba, 0, false);
+		Connection::messageToNetwork(msg, type, qba);
+		ServerHandlerMessageEvent *shme = new ServerHandlerMessageEvent(qba, type, false);
 		QApplication::postEvent(this, shme);
 	} else {
 		ConnectionPtr connection(cConnection);
 		if (!connection)
 			return;
 
-		connection->sendMessage(msg, msgType, qba);
+		connection->sendMessage(msg, type, qba);
 	}
 }
 
@@ -339,10 +365,16 @@ void ServerHandler::hostnameResolved() {
 	// Create the list of target host:port pairs
 	// that the ServerHandler should try to connect to.
 	QList< ServerAddress > ql;
+	QHash< ServerAddress, QString > qh;
 	foreach (ServerResolverRecord record, records) {
-		foreach (HostAddress addr, record.addresses()) { ql.append(ServerAddress(addr, record.port())); }
+		foreach (HostAddress addr, record.addresses()) {
+			auto sa = ServerAddress(addr, record.port());
+			ql.append(sa);
+			qh[sa] = record.hostname();
+		}
 	}
 	qlAddresses = ql;
+	qhHostnames = qh;
 
 	// Exit the event loop with 'success' status code,
 	// to continue connecting to the server.
@@ -372,14 +404,14 @@ void ServerHandler::run() {
 		qbaDigest               = QByteArray();
 		bStrong                 = true;
 		qtsSock                 = new QSslSocket(this);
-		qtsSock->setPeerVerifyName(qsHostName);
+		qtsSock->setPeerVerifyName(qhHostnames[saTargetServer]);
 
-		if (!g.s.bSuppressIdentity && CertWizard::validateCert(g.s.kpCertificate)) {
-			qtsSock->setPrivateKey(g.s.kpCertificate.second);
-			qtsSock->setLocalCertificate(g.s.kpCertificate.first.at(0));
+		if (!Global::get().s.bSuppressIdentity && CertWizard::validateCert(Global::get().s.kpCertificate)) {
+			qtsSock->setPrivateKey(Global::get().s.kpCertificate.second);
+			qtsSock->setLocalCertificate(Global::get().s.kpCertificate.first.at(0));
 			QSslConfiguration config       = qtsSock->sslConfiguration();
 			QList< QSslCertificate > certs = config.caCertificates();
-			certs << g.s.kpCertificate.first;
+			certs << Global::get().s.kpCertificate.first;
 			config.setCaCertificates(certs);
 			qtsSock->setSslConfiguration(config);
 		}
@@ -396,15 +428,11 @@ void ServerHandler::run() {
 			qlErrors.clear();
 			qscCert.clear();
 
-			connect(qtsSock, SIGNAL(encrypted()), this, SLOT(serverConnectionConnected()));
-			connect(qtsSock, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this,
-					SLOT(serverConnectionStateChanged(QAbstractSocket::SocketState)));
-			connect(connection.get(), SIGNAL(connectionClosed(QAbstractSocket::SocketError, const QString &)), this,
-					SLOT(serverConnectionClosed(QAbstractSocket::SocketError, const QString &)));
-			connect(connection.get(), SIGNAL(message(unsigned int, const QByteArray &)), this,
-					SLOT(message(unsigned int, const QByteArray &)));
-			connect(connection.get(), SIGNAL(handleSslErrors(const QList< QSslError > &)), this,
-					SLOT(setSslErrors(const QList< QSslError > &)));
+			connect(qtsSock, &QSslSocket::encrypted, this, &ServerHandler::serverConnectionConnected);
+			connect(qtsSock, &QSslSocket::stateChanged, this, &ServerHandler::serverConnectionStateChanged);
+			connect(connection.get(), &Connection::connectionClosed, this, &ServerHandler::serverConnectionClosed);
+			connect(connection.get(), &Connection::message, this, &ServerHandler::message);
+			connect(connection.get(), &Connection::handleSslErrors, this, &ServerHandler::setSslErrors);
 		}
 		bUdp = false;
 
@@ -426,13 +454,13 @@ void ServerHandler::run() {
 		// Setup ping timer;
 		QTimer *ticker = new QTimer(this);
 		connect(ticker, SIGNAL(timeout()), this, SLOT(sendPing()));
-		ticker->start(g.s.iPingIntervalMsec);
+		ticker->start(Global::get().s.iPingIntervalMsec);
 
-		g.mw->rtLast = MumbleProto::Reject_RejectType_None;
+		Global::get().mw->rtLast = MumbleProto::Reject_RejectType_None;
 
 		accUDP = accTCP = accClean;
 
-		uiVersion   = 0;
+		m_version   = Version::UNKNOWN;
 		qsRelease   = QString();
 		qsOS        = QString();
 		qsOSVersion = QString();
@@ -450,9 +478,9 @@ void ServerHandler::run() {
 #ifdef Q_OS_WIN
 			if (hQoS) {
 				if (!QOSRemoveSocketFromFlow(hQoS, 0, dwFlowUDP, 0)) {
-					qWarning(
-						"ServerHandler: Failed to remove UDP from QoS. QOSRemoveSocketFromFlow() failed with error %lu!",
-						GetLastError());
+					qWarning("ServerHandler: Failed to remove UDP from QoS. QOSRemoveSocketFromFlow() failed with "
+							 "error %lu!",
+							 GetLastError());
 				}
 
 				dwFlowUDP = 0;
@@ -545,7 +573,7 @@ void ServerHandler::sendPingInternal() {
 		return;
 	}
 
-	if (g.s.iMaxInFlightTCPPings > 0 && iInFlightTCPPings >= g.s.iMaxInFlightTCPPings) {
+	if (Global::get().s.iMaxInFlightTCPPings > 0 && iInFlightTCPPings >= Global::get().s.iMaxInFlightTCPPings) {
 		serverConnectionClosed(QAbstractSocket::UnknownSocketError, tr("Server is not responding to TCP pings"));
 		return;
 	}
@@ -553,11 +581,14 @@ void ServerHandler::sendPingInternal() {
 	quint64 t = tTimestamp.elapsed();
 
 	if (qusUdp) {
-		unsigned char buffer[256];
-		PacketDataStream pds(buffer + 1, 255);
-		buffer[0] = MessageHandler::UDPPing << 5;
-		pds << t;
-		sendMessage(reinterpret_cast< const char * >(buffer), pds.size() + 1, true);
+		Mumble::Protocol::PingData pingData;
+		pingData.timestamp                    = t;
+		pingData.requestAdditionalInformation = false;
+
+		m_udpPingEncoder.setProtocolVersion(m_version);
+		gsl::span< const Mumble::Protocol::byte > encodedPacket = m_udpPingEncoder.encodePingPacket(pingData);
+
+		sendMessage(encodedPacket.data(), encodedPacket.size(), true);
 	}
 
 	MumbleProto::Ping mpp;
@@ -586,27 +617,20 @@ void ServerHandler::sendPingInternal() {
 	iInFlightTCPPings += 1;
 }
 
-void ServerHandler::message(unsigned int msgType, const QByteArray &qbaMsg) {
+void ServerHandler::message(Mumble::Protocol::TCPMessageType type, const QByteArray &qbaMsg) {
 	const char *ptr = qbaMsg.constData();
-	if (msgType == MessageHandler::UDPTunnel) {
-		if (qbaMsg.length() < 1)
-			return;
-
-		MessageHandler::UDPMessageType umsgType = static_cast< MessageHandler::UDPMessageType >((ptr[0] >> 5) & 0x7);
-		unsigned int msgFlags                   = ptr[0] & 0x1f;
-		PacketDataStream pds(qbaMsg.constData() + 1, qbaMsg.size());
-
-		switch (umsgType) {
-			case MessageHandler::UDPVoiceCELTAlpha:
-			case MessageHandler::UDPVoiceCELTBeta:
-			case MessageHandler::UDPVoiceSpeex:
-			case MessageHandler::UDPVoiceOpus:
-				handleVoicePacket(msgFlags, pds, umsgType);
-				break;
-			default:
-				break;
+	if (type == Mumble::Protocol::TCPMessageType::UDPTunnel) {
+		// audio tunneled through tcp.
+		// since it could happen that we are receiving udp and tcp messages at the same time (e.g. the server used to
+		// send us packages via TCP but has now switched to UDP again and the first UDP packages arrive at the same time
+		// as the last TCP ones), we want to use a dedicated decoder for this (to make sure there is no concurrent
+		// access to the decoder's internal buffer).
+		if (m_tcpTunnelDecoder.decode(
+				{ reinterpret_cast< const Mumble::Protocol::byte * >(ptr), static_cast< std::size_t >(qbaMsg.size()) })
+			&& m_tcpTunnelDecoder.getMessageType() == Mumble::Protocol::UDPMessageType::Audio) {
+			handleVoicePacket(m_tcpTunnelDecoder.getAudioData());
 		}
-	} else if (msgType == MessageHandler::Ping) {
+	} else if (type == Mumble::Protocol::TCPMessageType::Ping) {
 		MumbleProto::Ping msg;
 		if (msg.ParseFromArray(qbaMsg.constData(), qbaMsg.size())) {
 			ConnectionPtr connection(cConnection);
@@ -629,19 +653,21 @@ void ServerHandler::message(unsigned int msgType, const QByteArray &qbaMsg) {
 				bUdp = false;
 				if (!NetworkConfig::TcpModeEnabled()) {
 					if ((connection->csCrypt->uiRemoteGood == 0) && (connection->csCrypt->uiGood == 0))
-						g.mw->msgBox(
+						Global::get().mw->msgBox(
 							tr("UDP packets cannot be sent to or received from the server. Switching to TCP mode."));
 					else if (connection->csCrypt->uiRemoteGood == 0)
-						g.mw->msgBox(tr("UDP packets cannot be sent to the server. Switching to TCP mode."));
+						Global::get().mw->msgBox(
+							tr("UDP packets cannot be sent to the server. Switching to TCP mode."));
 					else
-						g.mw->msgBox(tr("UDP packets cannot be received from the server. Switching to TCP mode."));
+						Global::get().mw->msgBox(
+							tr("UDP packets cannot be received from the server. Switching to TCP mode."));
 
 					database->setUdp(qbaDigest, false);
 				}
 			} else if (!bUdp && (connection->csCrypt->uiRemoteGood > 3) && (connection->csCrypt->uiGood > 3)) {
 				bUdp = true;
 				if (!NetworkConfig::TcpModeEnabled()) {
-					g.mw->msgBox(
+					Global::get().mw->msgBox(
 						tr("UDP packets can be sent to and received from the server. Switching back to UDP mode."));
 
 					database->setUdp(qbaDigest, true);
@@ -649,15 +675,18 @@ void ServerHandler::message(unsigned int msgType, const QByteArray &qbaMsg) {
 			}
 		}
 	} else {
-		ServerHandlerMessageEvent *shme = new ServerHandlerMessageEvent(qbaMsg, msgType, false);
-		QApplication::postEvent(g.mw, shme);
+		ServerHandlerMessageEvent *shme = new ServerHandlerMessageEvent(qbaMsg, type, false);
+		QApplication::postEvent(Global::get().mw, shme);
 	}
 }
 
 void ServerHandler::disconnect() {
 	// Actual TCP object is in a different thread, so signal it
+	// The actual type of this event doesn't matter as we are only abusing the event mechanism to signal the thread to
+	// exit.
 	QByteArray qbaBuffer;
-	ServerHandlerMessageEvent *shme = new ServerHandlerMessageEvent(qbaBuffer, 0, false);
+	ServerHandlerMessageEvent *shme =
+		new ServerHandlerMessageEvent(qbaBuffer, Mumble::Protocol::TCPMessageType::Ping, false);
 	QApplication::postEvent(this, shme);
 }
 
@@ -669,7 +698,7 @@ void ServerHandler::serverConnectionClosed(QAbstractSocket::SocketError err, con
 		return;
 	c->bDisconnectedEmitted = true;
 
-	AudioOutputPtr ao = g.ao;
+	AudioOutputPtr ao = Global::get().ao;
 	if (ao)
 		ao->wipe();
 
@@ -686,6 +715,9 @@ void ServerHandler::serverConnectionClosed(QAbstractSocket::SocketError err, con
 		}
 	}
 
+	// Having 2 signals here that basically fire at the same time is wanted behavior!
+	// See the documentation of "aboutToDisconnect" for an explanation.
+	emit aboutToDisconnect(err, reason);
 	emit disconnected(err, reason);
 
 	exit(0);
@@ -705,7 +737,7 @@ void ServerHandler::serverConnectionStateChanged(QAbstractSocket::SocketState st
 		tConnectionTimeoutTimer = new QTimer();
 		connect(tConnectionTimeoutTimer, SIGNAL(timeout()), this, SLOT(serverConnectionTimeoutOnConnect()));
 		tConnectionTimeoutTimer->setSingleShot(true);
-		tConnectionTimeoutTimer->start(g.s.iConnectionTimeoutDurationMsec);
+		tConnectionTimeoutTimer->start(Global::get().s.iConnectionTimeoutDurationMsec);
 	} else if (state == QAbstractSocket::ConnectedState) {
 		// Start TLS handshake
 		qtsSock->startClientEncryption();
@@ -717,18 +749,25 @@ void ServerHandler::serverConnectionConnected() {
 	if (!connection)
 		return;
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 7, 0)
+	// The ephemeralServerKey property is only a non-null key, if forward secrecy is used.
+	// See also https://doc.qt.io/qt-5/qsslconfiguration.html#ephemeralServerKey
+	connectionUsesPerfectForwardSecrecy = !qtsSock->sslConfiguration().ephemeralServerKey().isNull();
+#endif
+
 	iInFlightTCPPings = 0;
 
 	tConnectionTimeoutTimer->stop();
 
-	if (g.s.bQoS)
+	if (Global::get().s.bQoS)
 		connection->setToS();
 
 	qscCert   = connection->peerCertificateChain();
 	qscCipher = connection->sessionCipher();
 
 	if (!qscCert.isEmpty()) {
-		const QSslCertificate &qsc = qscCert.last();
+		// Get the server's immediate SSL certificate
+		const QSslCertificate &qsc = qscCert.first();
 		qbaDigest                  = sha1(qsc.publicKey().toDer());
 		bUdp                       = database->getUdp(qbaDigest);
 	} else {
@@ -739,14 +778,10 @@ void ServerHandler::serverConnectionConnected() {
 	}
 
 	MumbleProto::Version mpv;
-	mpv.set_release(u8(QLatin1String(MUMBLE_RELEASE)));
+	mpv.set_release(u8(Version::getRelease()));
+	MumbleProto::setVersion(mpv, Version::get());
 
-	unsigned int version = MumbleVersion::getRaw();
-	if (version) {
-		mpv.set_version(version);
-	}
-
-	if (!g.s.bHideOS) {
+	if (!Global::get().s.bHideOS) {
 		mpv.set_os(u8(OSInfo::getOS()));
 		mpv.set_os_version(u8(OSInfo::getOSDisplayableVersion()));
 	}
@@ -761,14 +796,7 @@ void ServerHandler::serverConnectionConnected() {
 	foreach (const QString &qs, tokens)
 		mpa.add_tokens(u8(qs));
 
-	QMap< int, CELTCodec * >::const_iterator i;
-	for (i = g.qmCodecs.constBegin(); i != g.qmCodecs.constEnd(); ++i)
-		mpa.add_celt_versions(i.key());
-#ifdef USE_OPUS
 	mpa.set_opus(true);
-#else
-	mpa.set_opus(false);
-#endif
 	sendMessage(mpa);
 
 	{
@@ -785,7 +813,7 @@ void ServerHandler::serverConnectionConnected() {
 		if (!qusUdp) {
 			qFatal("ServerHandler: qusUdp is unexpectedly a null addr");
 		}
-		if (g.s.bUdpForceTcpAddr) {
+		if (Global::get().s.bUdpForceTcpAddr) {
 			qusUdp->bind(qhaLocal, 0);
 		} else {
 			if (qhaRemote.protocol() == QAbstractSocket::IPv6Protocol) {
@@ -797,7 +825,7 @@ void ServerHandler::serverConnectionConnected() {
 
 		connect(qusUdp, SIGNAL(readyRead()), this, SLOT(udpReady()));
 
-		if (g.s.bQoS) {
+		if (Global::get().s.bQoS) {
 #if defined(Q_OS_UNIX)
 			int val = 0xe0;
 			if (setsockopt(static_cast< int >(qusUdp->socketDescriptor()), IPPROTO_IP, IP_TOS, &val, sizeof(val))) {
@@ -820,8 +848,8 @@ void ServerHandler::serverConnectionConnected() {
 			if (hQoS) {
 				struct sockaddr_in addr;
 				memset(&addr, 0, sizeof(addr));
-				addr.sin_family = AF_INET;
-				addr.sin_port = htons(usPort);
+				addr.sin_family      = AF_INET;
+				addr.sin_port        = htons(usPort);
 				addr.sin_addr.s_addr = htonl(qhaRemote.toIPv4Address());
 
 				dwFlowUDP = 0;
@@ -892,7 +920,7 @@ void ServerHandler::startListeningToChannels(const QList< int > &channelIDs) {
 	}
 
 	MumbleProto::UserState mpus;
-	mpus.set_session(g.uiSession);
+	mpus.set_session(Global::get().uiSession);
 
 	foreach (int currentChannel, channelIDs) {
 		// The naming of the function is a bit unfortunate but what this does is to add
@@ -913,7 +941,7 @@ void ServerHandler::stopListeningToChannels(const QList< int > &channelIDs) {
 	}
 
 	MumbleProto::UserState mpus;
-	mpus.set_session(g.uiSession);
+	mpus.set_session(Global::get().uiSession);
 
 	foreach (int currentChannel, channelIDs) {
 		// The naming of the function is a bit unfortunate but what this does is to add
@@ -983,8 +1011,8 @@ void ServerHandler::sendChannelTextMessage(unsigned int channel, const QString &
 	} else {
 		mptm.add_channel_id(channel);
 
-		if (message_ == QString::fromUtf8(g.ccHappyEaster + 10))
-			g.bHappyEaster = true;
+		if (message_ == QString::fromUtf8(Global::get().ccHappyEaster + 10))
+			Global::get().bHappyEaster = true;
 	}
 	mptm.set_message(u8(message_));
 	sendMessage(mptm);
@@ -1000,7 +1028,7 @@ void ServerHandler::setUserComment(unsigned int uiSession, const QString &commen
 void ServerHandler::setUserTexture(unsigned int uiSession, const QByteArray &qba) {
 	QByteArray texture;
 
-	if ((uiVersion >= 0x010202) || qba.isEmpty()) {
+	if ((m_version >= Version::fromComponents(1, 2, 2)) || qba.isEmpty()) {
 		texture = qba;
 	} else {
 		QByteArray raw = qba;

@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -78,7 +78,7 @@ void Tray::on_ShowLog_triggered() {
 	QTextBrowser *tb = new QTextBrowser();
 	mw->resize(675, 300);
 	mw->setCentralWidget(tb);
-	mw->setWindowTitle(QString::fromLatin1("Murmur -- %1").arg(MUMBLE_RELEASE));
+	mw->setWindowTitle(QString::fromLatin1("Murmur -- %1").arg(Version::getRelease()));
 
 	connect(le, SIGNAL(newLogEntry(const QString &)), tb, SLOT(append(const QString &)));
 

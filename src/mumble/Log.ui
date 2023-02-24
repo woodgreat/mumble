@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>554</width>
-    <height>414</height>
+    <width>657</width>
+    <height>627</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -58,12 +58,17 @@
      </column>
      <column>
       <property name="text">
-       <string>Soundfile</string>
+       <string>Limit</string>
       </property>
      </column>
      <column>
       <property name="text">
        <string>Path</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Soundfile</string>
       </property>
      </column>
     </widget>
@@ -74,45 +79,17 @@
       <string>Text To Speech</string>
      </property>
      <layout class="QGridLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="qlVolume">
-        <property name="text">
-         <string>Volume</string>
-        </property>
-        <property name="buddy">
-         <cstring>qsVolume</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" colspan="3">
-       <widget class="QSlider" name="qsVolume">
+      <item row="2" column="3">
+       <widget class="QCheckBox" name="qcbReadBackOwn">
         <property name="toolTip">
-         <string>Volume of Text-To-Speech Engine</string>
+         <string>If enabled text messages you send will be read back to you with TTS</string>
         </property>
-        <property name="whatsThis">
-         <string>&lt;b&gt;This is the volume used for the speech synthesis.&lt;/b&gt;</string>
-        </property>
-        <property name="maximum">
-         <number>100</number>
-        </property>
-        <property name="singleStep">
-         <number>5</number>
-        </property>
-        <property name="pageStep">
-         <number>20</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="tickPosition">
-         <enum>QSlider::TicksBelow</enum>
-        </property>
-        <property name="tickInterval">
-         <number>5</number>
+        <property name="text">
+         <string>Read back own messages</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
+      <item row="2" column="0">
        <widget class="QLabel" name="qlThreshold">
         <property name="text">
          <string>Length threshold</string>
@@ -122,7 +99,20 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="qcbEnableTTS">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="toolTip">
+         <string>Click to enable Text-to-Speech</string>
+        </property>
+        <property name="text">
+         <string>Enable Text-to-Speech</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
        <widget class="QSpinBox" name="qsbThreshold">
         <property name="toolTip">
          <string>Message length threshold for Text-To-Speech Engine</string>
@@ -144,17 +134,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="3">
-       <widget class="QCheckBox" name="qcbReadBackOwn">
-        <property name="toolTip">
-         <string>If enabled text messages you send will be read back to you with TTS</string>
-        </property>
-        <property name="text">
-         <string>Read back own messages</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
+      <item row="0" column="1">
        <widget class="QCheckBox" name="qcbNoScope">
         <property name="toolTip">
          <string>If enabled, TTS will not dictate the message scope.</string>
@@ -164,7 +144,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
+      <item row="0" column="3">
        <widget class="QCheckBox" name="qcbNoAuthor">
         <property name="toolTip">
          <string>If enabled, TTS will not dictate the message author.</string>
@@ -178,20 +158,200 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="qgbWhisper">
+    <widget class="QGroupBox" name="qgbMessageVolume">
      <property name="title">
-      <string>Whisper</string>
+      <string>Message Volume</string>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <property name="spacing">
+       <number>6</number>
+      </property>
+      <property name="topMargin">
+       <number>9</number>
+      </property>
       <item>
-       <widget class="QCheckBox" name="qcbWhisperFriends">
-        <property name="toolTip">
-         <string>If checked you will only hear whispers from users you added to your friend list.</string>
-        </property>
-        <property name="text">
-         <string>Only accept whispers from friends</string>
-        </property>
-       </widget>
+       <layout class="QGridLayout" name="qgbMessageVolumeGrid">
+        <item row="2" column="2">
+         <widget class="QSpinBox" name="qsbCueVolume">
+          <property name="toolTip">
+           <string>Volume adjustment for audio cues</string>
+          </property>
+          <property name="whatsThis">
+           <string>&lt;b&gt;This is the volume adjustment for audio cues.&lt;/b&gt;&lt;br /&gt;A value of 0 dB means no change to the sound sample.</string>
+          </property>
+          <property name="suffix">
+           <string> dB</string>
+          </property>
+          <property name="minimum">
+           <number>-60</number>
+          </property>
+          <property name="maximum">
+           <number>30</number>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="qlTTSVolume">
+          <property name="text">
+           <string>Text-to-Speech volume</string>
+          </property>
+          <property name="buddy">
+           <cstring>qsTTSVolume</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QSlider" name="qsCueVolume">
+          <property name="toolTip">
+           <string>Volume adjustment for audio cues</string>
+          </property>
+          <property name="whatsThis">
+           <string>&lt;b&gt;This is the volume adjustment for audio cues.&lt;/b&gt;&lt;br /&gt;A value of 0 dB means no change to the sound sample.</string>
+          </property>
+          <property name="minimum">
+           <number>-60</number>
+          </property>
+          <property name="maximum">
+           <number>30</number>
+          </property>
+          <property name="singleStep">
+           <number>1</number>
+          </property>
+          <property name="pageStep">
+           <number>10</number>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="tickPosition">
+           <enum>QSlider::TicksBelow</enum>
+          </property>
+          <property name="tickInterval">
+           <number>10</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="qlNotificationVolume">
+          <property name="text">
+           <string>Notification volume adjustment</string>
+          </property>
+          <property name="margin">
+           <number>0</number>
+          </property>
+          <property name="buddy">
+           <cstring>qsNotificationVolume</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QSpinBox" name="qsbNotificationVolume">
+          <property name="toolTip">
+           <string>Volume adjustment for notification sounds</string>
+          </property>
+          <property name="whatsThis">
+           <string>&lt;b&gt;This is the volume adjustment for notification sounds.&lt;/b&gt;&lt;br /&gt;A value of 0 dB means no change to the sound sample.</string>
+          </property>
+          <property name="suffix">
+           <string> dB</string>
+          </property>
+          <property name="minimum">
+           <number>-60</number>
+          </property>
+          <property name="maximum">
+           <number>30</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QSlider" name="qsNotificationVolume">
+          <property name="toolTip">
+           <string>Volume adjustment for notification sounds</string>
+          </property>
+          <property name="whatsThis">
+           <string>&lt;b&gt;This is the volume adjustment for notification sounds.&lt;/b&gt;&lt;br /&gt;A value of 0 dB means no change to the sound sample.</string>
+          </property>
+          <property name="minimum">
+           <number>-60</number>
+          </property>
+          <property name="maximum">
+           <number>30</number>
+          </property>
+          <property name="singleStep">
+           <number>1</number>
+          </property>
+          <property name="pageStep">
+           <number>10</number>
+          </property>
+          <property name="value">
+           <number>0</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="tickPosition">
+           <enum>QSlider::TicksBelow</enum>
+          </property>
+          <property name="tickInterval">
+           <number>10</number>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QSlider" name="qsTTSVolume">
+          <property name="toolTip">
+           <string>Volume of Text-To-Speech Engine</string>
+          </property>
+          <property name="whatsThis">
+           <string>&lt;b&gt;This is the volume used for the speech synthesis.&lt;/b&gt;</string>
+          </property>
+          <property name="maximum">
+           <number>100</number>
+          </property>
+          <property name="singleStep">
+           <number>5</number>
+          </property>
+          <property name="pageStep">
+           <number>20</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="tickPosition">
+           <enum>QSlider::TicksBelow</enum>
+          </property>
+          <property name="tickInterval">
+           <number>5</number>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="qlCueVolume">
+          <property name="text">
+           <string>Audio cue volume adjustment</string>
+          </property>
+          <property name="margin">
+           <number>0</number>
+          </property>
+          <property name="buddy">
+           <cstring>qsNotificationVolume</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QSpinBox" name="qsbTTSVolume">
+          <property name="suffix">
+           <string> %</string>
+          </property>
+          <property name="maximum">
+           <number>100</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>
@@ -272,6 +432,65 @@ The setting only applies for new messages, the already shown ones will retain th
          <bool>true</bool>
         </property>
        </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="qgbMisc">
+     <property name="title">
+      <string>Misc.</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QCheckBox" name="qcbWhisperFriends">
+        <property name="toolTip">
+         <string>If checked you will only hear whispers from users you added to your friend list.</string>
+        </property>
+        <property name="text">
+         <string>Only accept whispers from friends</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Limit notifications when there are more than</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="qsbMessageLimitUsers">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Number of users that will trigger message limiting functionality.</string>
+          </property>
+          <property name="frame">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>users on the server.</string>
+          </property>
+          <property name="buddy">
+           <cstring>qsbMessageLimitUsers</cstring>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>

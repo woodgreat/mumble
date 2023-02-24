@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2008-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -15,6 +15,9 @@
 #include "Server.h"
 #include "ServerDB.h"
 #include "Version.h"
+
+#include <csignal>
+#include <iostream>
 
 #ifdef Q_OS_WIN
 #	include "About.h"
@@ -165,11 +168,37 @@ void IceStart();
 void IceStop();
 #endif
 
-#ifdef USE_GRPC
-// From MurmurGRPCImpl.cpp.
-void GRPCStart();
-void GRPCStop();
+void cleanup(int signum) {
+	qWarning("Killing running servers");
+
+	meta->killAll();
+
+	qWarning("Shutting down");
+
+#ifdef USE_DBUS
+	delete MurmurDBus::qdbc;
+	MurmurDBus::qdbc = nullptr;
 #endif
+
+#ifdef USE_ICE
+	IceStop();
+#endif
+
+	delete qfLog;
+	qfLog = nullptr;
+
+	delete meta;
+
+	qInstallMessageHandler(nullptr);
+
+#ifdef Q_OS_UNIX
+	if (!Meta::mp.qsPid.isEmpty()) {
+		QFile pid(Meta::mp.qsPid);
+		pid.remove();
+	}
+#endif
+	exit(signum);
+}
 
 int main(int argc, char **argv) {
 	// Check for SSE and MMX, but only in the windows binaries
@@ -283,6 +312,9 @@ int main(int argc, char **argv) {
 			}
 #ifdef Q_OS_UNIX
 		} else if ((arg == "-readsupw")) {
+			// Note that it is essential to set detach = false here. If this is ever to be changed, the code part
+			// handling the readPw = true part has to be moved up so that it is executed before fork is called on Unix
+			// systems.
 			detach = false;
 			readPw = true;
 			if (i + 1 < args.size()) {
@@ -311,8 +343,9 @@ int main(int argc, char **argv) {
 		} else if ((arg == "-v")) {
 			bVerbose = true;
 		} else if ((arg == "-version") || (arg == "--version")) {
-			detach = false;
-			qInfo("%s -- %s", qPrintable(args.at(0)), MUMBLE_RELEASE);
+			// Print version and exit (print to regular std::cout to avoid adding any useless meta-information from
+			// using e.g. qWarning
+			std::cout << "Mumble server version " << Version::getRelease().toStdString() << std::endl;
 			return 0;
 		} else if (args.at(i) == QLatin1String("-license") || args.at(i) == QLatin1String("--license")) {
 #ifdef Q_OS_WIN
@@ -329,7 +362,8 @@ int main(int argc, char **argv) {
 			ad.exec();
 			return 0;
 #else
-			qInfo("%s\n", qPrintable(License::authors()));
+			qInfo("%s\n",
+				  "For a list of authors, please see https://github.com/mumble-voip/mumble/graphs/contributors");
 			return 0;
 #endif
 		} else if (args.at(i) == QLatin1String("-third-party-licenses")
@@ -345,6 +379,7 @@ int main(int argc, char **argv) {
 		} else if ((arg == "-h") || (arg == "-help") || (arg == "--help")) {
 			detach = false;
 			qInfo("Usage: %s [-ini <inifile>] [-supw <password>]\n"
+				  "  --version              Print version information and exit\n"
 				  "  -ini <inifile>         Specify ini file to use.\n"
 				  "  -supw <pw> [srv]       Set password for 'SuperUser' account on server srv.\n"
 #ifdef Q_OS_UNIX
@@ -364,8 +399,8 @@ int main(int argc, char **argv) {
 #endif
 				  "  -wipessl               Remove SSL certificates from database.\n"
 				  "  -wipelogs              Remove all log entries from database.\n"
-				  "  -loggroups             Turns on logging for group changes for all servers."
-				  "  -logacls               Turns on logging for ACL changes for all servers."
+				  "  -loggroups             Turns on logging for group changes for all servers.\n"
+				  "  -logacls               Turns on logging for ACL changes for all servers.\n"
 				  "  -version               Show version information.\n"
 				  "\n"
 				  "  -license               Show Murmur's license.\n"
@@ -460,15 +495,68 @@ int main(int argc, char **argv) {
 	unixhandler.setuid();
 #endif
 
+#ifdef Q_OS_UNIX
+	// It is really important that these fork calls come before creating the
+	// ServerDB object because sqlite uses POSIX locks on Unix systems (see
+	// https://sqlite.org/lockingv3.html#:~:text=SQLite%20uses%20POSIX%20advisory%20locks,then%20database%20corruption%20can%20result.)
+	// POSIX locks are automatically released if a process calls close() on any of
+	// its open file descriptors for that file. If the ServerDB object, which
+	// opens the sqlite database, is created before the fork, then the child will
+	// inherit all open file descriptors and then close them on exit, releasing
+	// all these POSIX locks. If another process (i.e. not murmur) makes any
+	// connections to the database, it will think nobody else is connected
+	// (because nothing is locked) and database corruption can (and likely will!)
+	// ensue. This is particularly nasty if you have WAL mode enabled, because the
+	// WAL file is deleted when the last connection to the database closes.
+	if (detach) {
+		if (fork() != 0) {
+			_exit(0);
+		}
+		setsid();
+		if (fork() != 0) {
+			_exit(0);
+		}
+
+		if (!Meta::mp.qsPid.isEmpty()) {
+			QFile pid(Meta::mp.qsPid);
+			if (pid.open(QIODevice::WriteOnly)) {
+				QFileInfo fi(pid);
+				Meta::mp.qsPid = fi.absoluteFilePath();
+
+				QTextStream out(&pid);
+				out << getpid();
+				pid.close();
+			}
+		}
+
+		if (chdir("/") != 0)
+			fprintf(stderr, "Failed to chdir to /");
+		int fd;
+
+		fd = open("/dev/null", O_RDONLY);
+		dup2(fd, 0);
+		close(fd);
+
+		fd = open("/dev/null", O_WRONLY);
+		dup2(fd, 1);
+		close(fd);
+
+		fd = open("/dev/null", O_WRONLY);
+		dup2(fd, 2);
+		close(fd);
+	}
+	unixhandler.finalcap();
+#endif
+
 	MumbleSSL::addSystemCA();
 
 	ServerDB db;
 
 	meta = new Meta();
 
-	QObject::connect(meta, SIGNAL(started(Server *)), &db, SLOT(clearLastDisconnect(Server *)));
-
 #ifdef Q_OS_UNIX
+	// It doesn't matter that this code comes after the forking because detach is
+	// set to false when readPw is set to true.
 	if (readPw) {
 		char password[256];
 		char *p;
@@ -518,47 +606,6 @@ int main(int argc, char **argv) {
 		ServerDB::wipeLogs();
 	}
 
-#ifdef Q_OS_UNIX
-	if (detach) {
-		if (fork() != 0) {
-			_exit(0);
-		}
-		setsid();
-		if (fork() != 0) {
-			_exit(0);
-		}
-
-		if (!Meta::mp.qsPid.isEmpty()) {
-			QFile pid(Meta::mp.qsPid);
-			if (pid.open(QIODevice::WriteOnly)) {
-				QFileInfo fi(pid);
-				Meta::mp.qsPid = fi.absoluteFilePath();
-
-				QTextStream out(&pid);
-				out << getpid();
-				pid.close();
-			}
-		}
-
-		if (chdir("/") != 0)
-			fprintf(stderr, "Failed to chdir to /");
-		int fd;
-
-		fd = open("/dev/null", O_RDONLY);
-		dup2(fd, 0);
-		close(fd);
-
-		fd = open("/dev/null", O_WRONLY);
-		dup2(fd, 1);
-		close(fd);
-
-		fd = open("/dev/null", O_WRONLY);
-		dup2(fd, 2);
-		close(fd);
-	}
-	unixhandler.finalcap();
-#endif
-
 #ifdef USE_DBUS
 	MurmurDBus::registerTypes();
 
@@ -600,59 +647,19 @@ int main(int argc, char **argv) {
 	IceStart();
 #endif
 
-#ifdef USE_GRPC
-	GRPCStart();
-#else
-	if (!meta->mp.qsGRPCAddress.isEmpty() || !meta->mp.qsGRPCCert.isEmpty() || !meta->mp.qsGRPCKey.isEmpty()) {
-		qWarning(
-			"This version of Murmur was built without gRPC support. Ignoring 'grpc' option from configuration file.");
-	}
-#endif
-
 	meta->getOSInfo();
 
-	int major, minor, patch;
-	QString strver;
-	meta->getVersion(major, minor, patch, strver);
-
-	qWarning("Murmur %d.%d.%d (%s) running on %s: %s: Booting servers", major, minor, patch, qPrintable(strver),
+	qWarning("Murmur %s running on %s: %s: Booting servers", qPrintable(Version::toString(Version::get())),
 			 qPrintable(meta->qsOS), qPrintable(meta->qsOSVersion));
 
 	meta->bootAll();
 
+	signal(SIGTERM, cleanup);
+	signal(SIGINT, cleanup);
+
 	res = a.exec();
 
-	qWarning("Killing running servers");
+	cleanup(0);
 
-	meta->killAll();
-
-	qWarning("Shutting down");
-
-#ifdef USE_DBUS
-	delete MurmurDBus::qdbc;
-	MurmurDBus::qdbc = nullptr;
-#endif
-
-#ifdef USE_ICE
-	IceStop();
-#endif
-
-#ifdef USE_GRPC
-	GRPCStop();
-#endif
-
-	delete qfLog;
-	qfLog = nullptr;
-
-	delete meta;
-
-	qInstallMessageHandler(nullptr);
-
-#ifdef Q_OS_UNIX
-	if (!Meta::mp.qsPid.isEmpty()) {
-		QFile pid(Meta::mp.qsPid);
-		pid.remove();
-	}
-#endif
 	return res;
 }

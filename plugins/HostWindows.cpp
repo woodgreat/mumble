@@ -1,24 +1,28 @@
-// Copyright 2020 The Mumble Developers. All rights reserved.
+// Copyright 2020-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
 
 #include "HostWindows.h"
 
-#include "mumble_plugin_utils.h"
+#include "mumble_positional_audio_utils.h"
 
 #include <windows.h>
 #include <tlhelp32.h>
 
 HostWindows::HostWindows(const procid_t pid) : m_pid(pid) {
+	m_handle = OpenProcess(PROCESS_VM_READ, false, m_pid);
 }
 
 HostWindows::~HostWindows() {
+	if (m_handle) {
+		CloseHandle(m_handle);
+	}
 }
 
 bool HostWindows::peek(const procptr_t address, void *dst, const size_t size) const {
 	SIZE_T read;
-	const auto ok = Toolhelp32ReadProcessMemory(m_pid, reinterpret_cast< void * >(address), dst, size, &read);
+	const auto ok = ReadProcessMemory(m_handle, reinterpret_cast< void * >(address), dst, size, &read);
 	return (ok && read == size);
 }
 

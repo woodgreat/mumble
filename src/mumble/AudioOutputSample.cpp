@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2011-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -123,9 +123,8 @@ sf_count_t SoundFile::vio_tell(void *user_data) {
 	return sf->qfFile.pos();
 }
 
-AudioOutputSample::AudioOutputSample(const QString &name, SoundFile *psndfile, bool loop, unsigned int freq,
-									 unsigned int systemMaxBufferSize)
-	: AudioOutputUser(name) {
+AudioOutputSample::AudioOutputSample(SoundFile *psndfile, float volume, bool loop, unsigned int freq,
+									 unsigned int systemMaxBufferSize) {
 	int err;
 
 	sfHandle       = psndfile;
@@ -163,8 +162,13 @@ AudioOutputSample::AudioOutputSample(const QString &name, SoundFile *psndfile, b
 	}
 
 	iLastConsume = iBufferFilled = 0;
+	m_volume                     = volume;
 	bLoop                        = loop;
 	bEof                         = false;
+}
+
+float AudioOutputSample::getVolume() const {
+	return m_volume;
 }
 
 AudioOutputSample::~AudioOutputSample() {
@@ -228,7 +232,8 @@ bool AudioOutputSample::prepareSampleBuffer(unsigned int frameCount) {
 	iLastConsume = sampleCount;
 
 	// Check if we can satisfy request with current buffer
-	if (iBufferFilled >= sampleCount)
+	// Maximum interaural delay is accounted for to prevent audio glitches
+	if (iBufferFilled >= sampleCount + INTERAURAL_DELAY)
 		return true;
 
 	// Calculate the required buffersize to hold the results
@@ -241,12 +246,12 @@ bool AudioOutputSample::prepareSampleBuffer(unsigned int frameCount) {
 	bool eof = false;
 	sf_count_t read;
 	do {
-		resizeBuffer(iBufferFilled + sampleCount);
+		resizeBuffer(iBufferFilled + sampleCount + INTERAURAL_DELAY);
 
 		// If we need to resample, write to the buffer on stack
 		float *pOut = (srs) ? fOut : pfBuffer + iBufferFilled;
 
-		// Try to read all samples needed to satifsy this request
+		// Try to read all samples needed to satisfy this request
 		if ((read = sfHandle->read(pOut, iInputSamples)) < iInputSamples) {
 			if (sfHandle->error() != SF_ERR_NO_ERROR || !bLoop) {
 				// We reached the eof or encountered an error, stuff with zeroes
@@ -270,7 +275,7 @@ bool AudioOutputSample::prepareSampleBuffer(unsigned int frameCount) {
 		}
 
 		iBufferFilled += outlen * channels;
-	} while (iBufferFilled < sampleCount);
+	} while (iBufferFilled < sampleCount + INTERAURAL_DELAY);
 
 	if (eof && !bEof) {
 		emit playbackFinished();

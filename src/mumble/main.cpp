@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -12,11 +12,13 @@
 #include "Cert.h"
 #include "Database.h"
 #include "DeveloperConsole.h"
+#ifdef Q_OS_WIN
+#	include "GlobalShortcut_win.h"
+#endif
 #include "LCD.h"
 #include "Log.h"
 #include "LogEmitter.h"
 #include "MainWindow.h"
-#include "Plugins.h"
 #include "ServerHandler.h"
 #ifdef USE_ZEROCONF
 #	include "Zeroconf.h"
@@ -29,27 +31,34 @@
 #endif
 #include "ApplicationPalette.h"
 #include "Channel.h"
-#include "ChannelListener.h"
+#include "ChannelListenerManager.h"
 #include "ClientUser.h"
 #include "CrashReporter.h"
 #include "EnvUtils.h"
 #include "License.h"
 #include "MumbleApplication.h"
 #include "NetworkConfig.h"
+#include "PluginInstaller.h"
+#include "PluginManager.h"
+#include "QtWidgetUtils.h"
 #include "SSL.h"
 #include "SocketRPC.h"
 #include "TalkingUI.h"
 #include "Themes.h"
+#include "Translations.h"
 #include "UserLockFile.h"
+#include "Version.h"
 #include "VersionCheck.h"
+#include "Global.h"
 
-#include <QtCore/QLibraryInfo>
+#include <QLocale>
+#include <QScreen>
 #include <QtCore/QProcess>
-#include <QtCore/QStandardPaths>
-#include <QtCore/QTranslator>
 #include <QtGui/QDesktopServices>
 #include <QtWidgets/QMessageBox>
-#include <QScreen>
+
+#include <iostream>
+#include <memory>
 
 #ifdef USE_DBUS
 #	include <QtDBus/QDBusInterface>
@@ -59,9 +68,6 @@
 #	include <shellapi.h>
 #endif
 
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name
-// (like protobuf 3.7 does). As such, for now, we have to make this our last include.
-#include "Global.h"
 
 #ifdef BOOST_NO_EXCEPTIONS
 namespace boost {
@@ -74,59 +80,42 @@ void throw_exception(std::exception const &) {
 extern void os_init();
 extern char *os_lang;
 
-QScreen *screenAt(QPoint point) {
-#if QT_VERSION >= QT_VERSION_CHECK(5,10,0)
-	// screenAt was only introduced in Qt 5.10
-	return QGuiApplication::screenAt(point);
-#else
-	for (QScreen *currentScreen : QGuiApplication::screens()) {
-		if (currentScreen->availableGeometry().contains(point)) {
-			return currentScreen;
-		}
-	}
-
-	return nullptr;
-#endif
-}
-
-bool positionIsOnScreen(QPoint point) {
-	return screenAt(point) != nullptr;
-}
-
 QPoint getTalkingUIPosition() {
 	QPoint talkingUIPos = QPoint(0, 0);
-	if (g.s.qpTalkingUI_Position != Settings::UNSPECIFIED_POSITION && positionIsOnScreen(g.s.qpTalkingUI_Position)) {
+	if (Global::get().s.qpTalkingUI_Position != Settings::UNSPECIFIED_POSITION
+		&& Mumble::QtUtils::positionIsOnScreen(Global::get().s.qpTalkingUI_Position)) {
 		// Restore last position
-		talkingUIPos = g.s.qpTalkingUI_Position;
+		talkingUIPos = Global::get().s.qpTalkingUI_Position;
 	} else {
 		// Place the TalkingUI next to the MainWindow by default
-		const QPoint mainWindowPos = g.mw->pos();
+		const QPoint mainWindowPos = Global::get().mw->pos();
 		const int horizontalBuffer = 10;
-		const QPoint defaultPos = QPoint(mainWindowPos.x() + g.mw->size().width() + horizontalBuffer, mainWindowPos.y());
+		const QPoint defaultPos =
+			QPoint(mainWindowPos.x() + Global::get().mw->size().width() + horizontalBuffer, mainWindowPos.y());
 
-		if (positionIsOnScreen(defaultPos)) {
+		if (Mumble::QtUtils::positionIsOnScreen(defaultPos)) {
 			talkingUIPos = defaultPos;
 		}
 	}
 
 	// We have to ask the TalkingUI to adjust its size in order to get a proper
 	// size from it (instead of a random default one).
-	g.talkingUI->adjustSize();
-	const QSize talkingUISize = g.talkingUI->size();
+	Global::get().talkingUI->adjustSize();
+	const QSize talkingUISize = Global::get().talkingUI->size();
 
 	// The screen should always be found at this point as we have chosen to pos to be on a screen
-	const QScreen *screen = screenAt(talkingUIPos);
-	const QRect screenGeom = screen ? screen->availableGeometry() : QRect(0,0,0,0);
+	const QScreen *screen  = Mumble::QtUtils::screenAt(talkingUIPos);
+	const QRect screenGeom = screen ? screen->availableGeometry() : QRect(0, 0, 0, 0);
 
 	// Check whether the TalkingUI fits on the screen in x-direction
-	if (!positionIsOnScreen(talkingUIPos + QPoint(talkingUISize.width(), 0))) {
+	if (!Mumble::QtUtils::positionIsOnScreen(talkingUIPos + QPoint(talkingUISize.width(), 0))) {
 		int overlap = talkingUIPos.x() + talkingUISize.width() - screenGeom.x() - screenGeom.width();
 
 		// Correct the x coordinate but don't move it below 0
 		talkingUIPos.setX(std::max(talkingUIPos.x() - overlap, 0));
 	}
 	// Check whether the TalkingUI fits on the screen in y-direction
-	if (!positionIsOnScreen(talkingUIPos + QPoint(0, talkingUISize.height()))) {
+	if (!Mumble::QtUtils::positionIsOnScreen(talkingUIPos + QPoint(0, talkingUISize.height()))) {
 		int overlap = talkingUIPos.y() + talkingUISize.height() - screenGeom.y() - screenGeom.height();
 
 		// Correct the x coordinate but don't move it below 0
@@ -172,6 +161,10 @@ int main(int argc, char **argv) {
 	a.setOrganizationDomain(QLatin1String("mumble.sourceforge.net"));
 	a.setQuitOnLastWindowClosed(false);
 
+#if QT_VERSION >= 0x050700
+	a.setDesktopFileName("info.mumble.Mumble");
+#endif
+
 #if QT_VERSION >= 0x050100
 	a.setAttribute(Qt::AA_UseHighDpiPixmaps);
 #endif
@@ -182,16 +175,9 @@ int main(int argc, char **argv) {
 
 	MumbleSSL::initialize();
 
-#ifdef USE_SBCELT
-	{
-		QDir d(a.applicationVersionRootPath());
-		QString helper = d.absoluteFilePath(QString::fromLatin1("sbcelt-helper"));
-		EnvUtils::setenv(QLatin1String("SBCELT_HELPER_BINARY"), helper.toUtf8().constData());
-	}
-#endif
-
 	// This argument has to be parsed first, since it's value is needed to create the global struct,
 	// which other switches are modifying. If it is parsed first, the order of the arguments does not matter.
+	QString settingsFile;
 	QStringList args = a.arguments();
 	const int index  = std::max(args.lastIndexOf(QLatin1String("-c")), args.lastIndexOf(QLatin1String("--config")));
 	if (index >= 0) {
@@ -199,6 +185,7 @@ int main(int argc, char **argv) {
 			QFile inifile(args.at(index + 1));
 			if (inifile.exists() && inifile.permissions().testFlag(QFile::WriteUser)) {
 				Global::g_global_struct = new Global(args.at(index + 1));
+				settingsFile            = args.at(index + 1);
 			} else {
 				printf("%s", qPrintable(MainWindow::tr("Configuration file %1 does not exist or is not writable.\n")
 											.arg(args.at(index + 1))));
@@ -217,8 +204,8 @@ int main(int argc, char **argv) {
 	qsrand(QDateTime::currentDateTime().toTime_t());
 #endif
 
-	g.le = QSharedPointer< LogEmitter >(new LogEmitter());
-	g.c  = new DeveloperConsole();
+	Global::get().le = QSharedPointer< LogEmitter >(new LogEmitter());
+	Global::get().c  = new DeveloperConsole();
 
 	os_init();
 
@@ -226,9 +213,14 @@ int main(int argc, char **argv) {
 	bool suppressIdentity     = false;
 	bool customJackClientName = false;
 	bool bRpcMode             = false;
+	bool printTranslationDirs = false;
 	QString rpcCommand;
 	QUrl url;
+	QDir qdCert(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
+	QStringList extraTranslationDirs;
+	QString localeOverwrite;
 
+	QStringList pluginsToBeInstalled;
 	if (a.arguments().count() > 1) {
 		for (int i = 1; i < args.count(); ++i) {
 			if (args.at(i) == QLatin1String("-h") || args.at(i) == QLatin1String("--help")
@@ -237,24 +229,31 @@ int main(int argc, char **argv) {
 #endif
 			) {
 				QString helpMessage =
-					MainWindow::tr("Usage: mumble [options] [<url>]\n"
+					MainWindow::tr("Usage: mumble [options] [<url> | <plugin_list>]\n"
 								   "\n"
 								   "<url> specifies a URL to connect to after startup instead of showing\n"
 								   "the connection window, and has the following form:\n"
 								   "mumble://[<username>[:<password>]@]<host>[:<port>][/<channel>[/"
 								   "<subchannel>...]][?version=<x.y.z>]\n"
 								   "\n"
+								   "<plugin_list> is a list of plugin files that shall be installed"
+								   "\n"
 								   "The version query parameter has to be set in order to invoke the\n"
 								   "correct client version. It currently defaults to 1.2.0.\n"
 								   "\n"
 								   "Valid options are:\n"
 								   "  -h, --help    Show this help text and exit.\n"
+								   "  --version     Print version information and exit\n"
 								   "  -m, --multiple\n"
 								   "                Allow multiple instances of the client to be started.\n"
 								   "  -c, --config\n"
 								   "                Specify an alternative configuration file.\n"
 								   "                If you use this to run multiple instances of Mumble at once,\n"
 								   "                make sure to set an alternative 'database' value in the config.\n"
+								   "  --default-certificate-dir <dir>\n"
+								   "                Specify an alternative default certificate path.\n"
+								   "                This path is only used if there is no certificate loaded\n"
+								   "                from the settings.\n"
 								   "  -n, --noidentity\n"
 								   "                Suppress loading of identity files (i.e., certificates.)\n"
 								   "  -jn, --jackname <arg>\n"
@@ -276,6 +275,22 @@ int main(int argc, char **argv) {
 								   "  --print-echocancel-queue\n"
 								   "                Print on stdout the echo cancellation queue state\n"
 								   "                (useful for debugging purposes)\n"
+								   "  --translation-dir <dir>\n"
+								   "                Specifies an additional translation directory <dir>\n"
+								   "                in which Mumble will search for translation files that\n"
+								   "                overwrite the bundled ones\n"
+								   "                Directories added this way have higher priority than\n"
+								   "                the default locations used otherwise\n"
+								   "  --print-translation-dirs\n"
+								   "                Print out the paths in which Mumble will search for\n"
+								   "                translation files that overwrite the bundled ones.\n"
+								   "                (Useful for translators testing their translations)\n"
+								   "  --locale <locale>\n"
+								   "                Overwrite the locale in Mumble's settings with a\n"
+								   "                locale that corresponds to the given locale string.\n"
+								   "                If the format is invalid, Mumble will error.\n"
+								   "                Otherwise the locale will be permanently saved to\n"
+								   "                Mumble's settings."
 								   "\n");
 				QString rpcHelpBanner = MainWindow::tr("Remote controlling Mumble:\n"
 													   "\n");
@@ -318,12 +333,12 @@ int main(int argc, char **argv) {
 			} else if (args.at(i) == QLatin1String("-m") || args.at(i) == QLatin1String("--multiple")) {
 				bAllowMultiple = true;
 			} else if (args.at(i) == QLatin1String("-n") || args.at(i) == QLatin1String("--noidentity")) {
-				suppressIdentity      = true;
-				g.s.bSuppressIdentity = true;
+				suppressIdentity                  = true;
+				Global::get().s.bSuppressIdentity = true;
 			} else if (args.at(i) == QLatin1String("-jn") || args.at(i) == QLatin1String("--jackname")) {
 				if (i + 1 < args.count()) {
-					g.s.qsJackClientName = QString(args.at(i + 1));
-					customJackClientName = true;
+					Global::get().s.qsJackClientName = QString(args.at(i + 1));
+					customJackClientName             = true;
 					++i;
 				} else {
 					qCritical("Missing argument for --jackname!");
@@ -331,7 +346,7 @@ int main(int argc, char **argv) {
 				}
 			} else if (args.at(i) == QLatin1String("--window-title-ext")) {
 				if (i + 1 < args.count()) {
-					g.windowTitlePostfix = QString(args.at(i + 1));
+					Global::get().windowTitlePostfix = QString(args.at(i + 1));
 					++i;
 				} else {
 					qCritical("Missing argument for --window-title-ext!");
@@ -341,7 +356,8 @@ int main(int argc, char **argv) {
 				printf("%s\n", qPrintable(License::license()));
 				return 0;
 			} else if (args.at(i) == QLatin1String("-authors") || args.at(i) == QLatin1String("--authors")) {
-				printf("%s\n", qPrintable(License::authors()));
+				printf("%s\n",
+					   "For a list of authors, please see https://github.com/mumble-voip/mumble/graphs/contributors");
 				return 0;
 			} else if (args.at(i) == QLatin1String("-third-party-licenses")
 					   || args.at(i) == QLatin1String("--third-party-licenses")) {
@@ -361,23 +377,88 @@ int main(int argc, char **argv) {
 					return 1;
 				}
 			} else if (args.at(i) == QLatin1String("--dump-input-streams")) {
-				g.bDebugDumpInput = true;
+				Global::get().bDebugDumpInput = true;
 			} else if (args.at(i) == QLatin1String("--print-echocancel-queue")) {
-				g.bDebugPrintQueue = true;
+				Global::get().bDebugPrintQueue = true;
+			} else if (args.at(i) == QLatin1String("-c") || args.at(i) == QLatin1String("--config")) {
+				//	We already parsed these arguments above, so just skip over them here
+				++i;
+			} else if (args.at(i) == QLatin1String("--default-certificate-dir")) {
+				if (i + 1 < args.count()) {
+					qdCert = QDir(args.at(i + 1));
+					// I suppose we should really be checking whether the directory is writable here too,
+					// but there are some subtleties with doing that:
+					// (doc.qt.io/qt-5/qfile.html#platform-specific-issues)
+					// so we can just let things fail down below when this directory is used.
+					if (!qdCert.exists()) {
+						printf("%s", qPrintable(MainWindow::tr("Directory %1 does not exist.\n").arg(args.at(i + 1))));
+						return 1;
+					}
+					++i;
+				} else {
+					qCritical("Missing argument for --default-certificate-dir!");
+					return 1;
+				}
+			} else if (args.at(i) == "--print-translation-dirs") {
+				printTranslationDirs = true;
+			} else if (args.at(i) == "--translation-dir") {
+				if (i + 1 < args.count()) {
+					extraTranslationDirs.append(args.at(i + 1));
+					i++;
+				} else {
+					qCritical("Missing argument for --translation-dir!");
+					return 1;
+				}
+			} else if (args.at(i) == "--locale") {
+				if (i + 1 < args.count()) {
+					localeOverwrite = args.at(i + 1);
+					i++;
+				} else {
+					qCritical("Missing argument for --locale!");
+					return 1;
+				}
+			} else if (args.at(i) == "--version") {
+				// Print version and exit (print to regular std::cout to avoid adding any useless meta-information from
+				// using e.g. qWarning
+				std::cout << "Mumble version " << Version::getRelease().toStdString() << std::endl;
+				return 0;
 			} else {
-				if (!bRpcMode) {
-					QUrl u = QUrl::fromEncoded(args.at(i).toUtf8());
-					if (u.isValid() && (u.scheme() == QLatin1String("mumble"))) {
-						url = u;
-					} else {
-						QFile f(args.at(i));
-						if (f.exists()) {
-							url = QUrl::fromLocalFile(f.fileName());
+				if (PluginInstaller::canBePluginFile(args.at(i))) {
+					pluginsToBeInstalled << args.at(i);
+				} else {
+					if (!bRpcMode) {
+						QUrl u = QUrl::fromEncoded(args.at(i).toUtf8());
+						if (u.isValid() && (u.scheme() == QLatin1String("mumble"))) {
+							url = u;
+						} else {
+							QFile f(args.at(i));
+							if (f.exists()) {
+								url = QUrl::fromLocalFile(f.fileName());
+							}
 						}
 					}
 				}
 			}
 		}
+	}
+
+	if (printTranslationDirs) {
+		QString infoString = QObject::tr("The directories in which Mumble searches for extra translation files are:\n");
+
+		int counter = 1;
+		for (const QString &currentTranslationDir :
+			 Mumble::Translations::getTranslationDirectories(a, extraTranslationDirs)) {
+			infoString += QString::fromLatin1("%1. ").arg(counter) + currentTranslationDir + "\n";
+			counter++;
+		}
+
+#if defined(Q_OS_WIN)
+		QMessageBox::information(nullptr, QObject::tr("Invocation"), infoString);
+#else
+		printf("%s", qUtf8Printable(infoString));
+#endif
+
+		return 0;
 	}
 
 #ifdef USE_DBUS
@@ -466,7 +547,7 @@ int main(int argc, char **argv) {
 	// modes enabled. This gives us exclusive access to the file.
 	// If another Mumble instance attempts to open the file, it will fail,
 	// and that instance will know to terminate itself.
-	UserLockFile userLockFile(g.qdBasePath.filePath(QLatin1String("mumble.lock")));
+	UserLockFile userLockFile(Global::get().qdBasePath.filePath(QLatin1String("mumble.lock")));
 	if (!bAllowMultiple) {
 		if (!userLockFile.acquire()) {
 			qWarning("Another process has already acquired the lock file at '%s'. Terminating...",
@@ -477,7 +558,22 @@ int main(int argc, char **argv) {
 #endif
 
 	// Load preferences
-	g.s.load();
+	if (settingsFile.isEmpty()) {
+		Global::get().s.load();
+	} else {
+		Global::get().s.load(settingsFile);
+	}
+	if (!Global::get().migratedDBPath.isEmpty()) {
+		// We have migrated the DB to a new location. Make sure that the settings hold the correct (new) path and that
+		// this path is written to disk immediately in order to minimize the risk of losing this information due to a
+		// crash.
+		Global::get().s.qsDatabaseLocation = Global::get().migratedDBPath;
+
+		// Also update all plugin settings that might be affected by the migration
+		Global::get().s.migratePluginSettings(Global::get().migratedPluginDirPath);
+
+		Global::get().s.save();
+	}
 
 	// Check whether we need to enable accessibility features
 #ifdef Q_OS_WIN
@@ -488,7 +584,7 @@ int main(int argc, char **argv) {
 		SystemParametersInfo(SPI_GETHIGHCONTRAST, sizeof(HIGHCONTRAST), &hc, 0);
 
 		if (hc.dwFlags & HCF_HIGHCONTRASTON)
-			g.s.bHighContrast = true;
+			Global::get().s.bHighContrast = true;
 	}
 #endif
 
@@ -498,59 +594,62 @@ int main(int argc, char **argv) {
 
 	Themes::apply();
 
-	QString qsSystemLocale = QLocale::system().name();
+	QLocale systemLocale = QLocale::system();
 
 #ifdef Q_OS_MAC
 	if (os_lang) {
-		qWarning("Using Mac OS X system language as locale name");
-		qsSystemLocale = QLatin1String(os_lang);
+		const QLocale macOSLocale = QLocale(QString::fromLatin1(os_lang));
+
+		if (macOSLocale != QLocale::c()) {
+			qWarning("Using Mac OS X system language as locale name");
+			systemLocale = macOSLocale;
+		}
 	}
 #endif
 
-	const QString locale = g.s.qsLanguage.isEmpty() ? qsSystemLocale : g.s.qsLanguage;
-	qWarning("Locale is \"%s\" (System: \"%s\")", qPrintable(locale), qPrintable(qsSystemLocale));
+	QLocale settingsLocale;
 
-	QTranslator translator;
-	if (translator.load(QLatin1String(":mumble_") + locale))
-		a.installTranslator(&translator);
+	if (localeOverwrite.isEmpty()) {
+		settingsLocale = QLocale(Global::get().s.qsLanguage);
+		if (settingsLocale == QLocale::c()) {
+			settingsLocale = systemLocale;
+		}
+	} else {
+		// Manually specified locale overwrite
+		settingsLocale = QLocale(localeOverwrite);
 
-	QTranslator loctranslator;
-	if (loctranslator.load(QLatin1String("mumble_") + locale, a.applicationDirPath()))
-		a.installTranslator(&loctranslator); // Can overwrite strings from bundled mumble translation
+		if (settingsLocale == QLocale::c()) {
+			qFatal("Invalid locale specification \"%s\"", qUtf8Printable(localeOverwrite));
+			return 1;
+		}
 
-	// With modularization of Qt 5 some - but not all - of the qt_<locale>.ts files have become
-	// so-called meta catalogues which no longer contain actual translations but refer to other
-	// more specific ts files like qtbase_<locale>.ts . To successfully load a meta catalogue all
-	// of its referenced translations must be available. As we do not want to bundle them all
-	// we now try to load the old qt_<locale>.ts file first and then fall back to loading
-	// qtbase_<locale>.ts if that failed.
-	//
-	// See http://doc.qt.io/qt-5/linguist-programmers.html#deploying-translations for more information
-	QTranslator qttranslator;
-	// First we try and see if there is a translation packaged with Mumble that shall overwrite any potentially existing
-	// Qt translations. If not, we try to load the qt-translations installed on the host-machine and if that fails as
-	// well, we try to load translations bundled in Mumble. Note: Resource starting with :/ are bundled resources
-	// specified in a .qrc file
-	if (qttranslator.load(QLatin1String(":/mumble_overwrite_qt_") + locale)) {
-		a.installTranslator(&qttranslator);
-	} else if (qttranslator.load(QLatin1String(":/mumble_overwrite_qtbase_") + locale)) {
-		a.installTranslator(&qttranslator);
-	} else if (qttranslator.load(QLatin1String("qt_") + locale,
-								 QLibraryInfo::location(QLibraryInfo::TranslationsPath))) {
-		a.installTranslator(&qttranslator);
-	} else if (qttranslator.load(QLatin1String("qtbase_") + locale,
-								 QLibraryInfo::location(QLibraryInfo::TranslationsPath))) {
-		a.installTranslator(&qttranslator);
-	} else if (qttranslator.load(QLatin1String(":/qt_") + locale)) {
-		a.installTranslator(&qttranslator);
-	} else if (qttranslator.load(QLatin1String(":/qtbase_") + locale)) {
-		a.installTranslator(&qttranslator);
+		// The locale is valid -> save it to the settings
+		Global::get().s.qsLanguage = settingsLocale.nativeLanguageName();
 	}
+
+	if (!pluginsToBeInstalled.isEmpty()) {
+		foreach (QString currentPlugin, pluginsToBeInstalled) {
+			try {
+				PluginInstaller installer(currentPlugin);
+				installer.exec();
+			} catch (const PluginInstallException &e) {
+				qCritical() << qUtf8Printable(e.getMessage());
+			}
+		}
+
+		return 0;
+	}
+
+	qWarning("Locale is \"%s\" (System: \"%s\")", qUtf8Printable(settingsLocale.name()),
+			 qUtf8Printable(systemLocale.name()));
+
+	Mumble::Translations::LifetimeGuard translationGuard =
+		Mumble::Translations::installTranslators(settingsLocale, a, extraTranslationDirs);
 
 	// Initialize proxy settings
 	NetworkConfig::SetupProxy();
 
-	g.nam = new QNetworkAccessManager();
+	Global::get().nam = new QNetworkAccessManager();
 
 #ifndef NO_CRASH_REPORT
 	CrashReporter *cr = new CrashReporter();
@@ -559,19 +658,23 @@ int main(int argc, char **argv) {
 #endif
 
 	// Initialize database
-	g.db = new Database(QLatin1String("main"));
+	Global::get().db = new Database(QLatin1String("main"));
 
 #ifdef USE_ZEROCONF
 	// Initialize zeroconf
-	g.zeroconf = new Zeroconf();
+	Global::get().zeroconf = new Zeroconf();
 #endif
+
+	// PluginManager
+	Global::get().pluginManager = new PluginManager();
+	Global::get().pluginManager->rescanPlugins();
 
 #ifdef USE_OVERLAY
-	g.o = new Overlay();
-	g.o->setActive(g.s.os.bEnable);
+	Global::get().o = new Overlay();
+	Global::get().o->setActive(Global::get().s.os.bEnable);
 #endif
 
-	g.lcd = new LCD();
+	Global::get().lcd = new LCD();
 
 	// Process any waiting events before initializing our MainWindow.
 	// The mumble:// URL support for Mac OS X happens through AppleEvents,
@@ -579,150 +682,141 @@ int main(int argc, char **argv) {
 	a.processEvents();
 
 	// Main Window
-	g.mw = new MainWindow(nullptr);
-	g.mw->show();
+	Global::get().mw = new MainWindow(nullptr);
+	Global::get().mw->show();
 
-	g.talkingUI = new TalkingUI();
+	Global::get().talkingUI = new TalkingUI();
 
 	// Set TalkingUI's position
-	g.talkingUI->move(getTalkingUIPosition());
+	Global::get().talkingUI->move(getTalkingUIPosition());
 
 	// By setting the TalkingUI's position **before** making it visible tends to more reliably include the
 	// window's frame to be included in the positioning calculation on X11 (at least using KDE Plasma)
-	g.talkingUI->setVisible(g.s.bShowTalkingUI);
+	Global::get().talkingUI->setVisible(Global::get().s.bShowTalkingUI);
 
-	QObject::connect(g.mw, &MainWindow::userAddedChannelListener, g.talkingUI, &TalkingUI::on_channelListenerAdded);
-	QObject::connect(g.mw, &MainWindow::userRemovedChannelListener, g.talkingUI, &TalkingUI::on_channelListenerRemoved);
-	QObject::connect(&ChannelListener::get(), &ChannelListener::localVolumeAdjustmentsChanged, g.talkingUI,
-					 &TalkingUI::on_channelListenerLocalVolumeAdjustmentChanged);
+	QObject::connect(Global::get().mw, &MainWindow::userAddedChannelListener, Global::get().talkingUI,
+					 &TalkingUI::on_channelListenerAdded);
+	QObject::connect(Global::get().mw, &MainWindow::userRemovedChannelListener, Global::get().talkingUI,
+					 &TalkingUI::on_channelListenerRemoved);
+	QObject::connect(Global::get().channelListenerManager.get(), &ChannelListenerManager::localVolumeAdjustmentsChanged,
+					 Global::get().talkingUI, &TalkingUI::on_channelListenerLocalVolumeAdjustmentChanged);
 
-	QObject::connect(g.mw, &MainWindow::serverSynchronized, g.talkingUI, &TalkingUI::on_serverSynchronized);
+	QObject::connect(Global::get().mw, &MainWindow::userAddedChannelListener, Global::get().talkingUI,
+					 &TalkingUI::on_channelListenerAdded);
+	QObject::connect(Global::get().mw, &MainWindow::userRemovedChannelListener, Global::get().talkingUI,
+					 &TalkingUI::on_channelListenerRemoved);
+	QObject::connect(Global::get().channelListenerManager.get(), &ChannelListenerManager::localVolumeAdjustmentsChanged,
+					 Global::get().talkingUI, &TalkingUI::on_channelListenerLocalVolumeAdjustmentChanged);
+
+	QObject::connect(Global::get().mw, &MainWindow::serverSynchronized, Global::get().talkingUI,
+					 &TalkingUI::on_serverSynchronized);
 
 	// Initialize logger
 	// Log::log() needs the MainWindow to already exist. Thus creating the Log instance
 	// before the MainWindow one, does not make sense. if you need logging before this
 	// point, use Log::logOrDefer()
-	g.l = new Log();
-	g.l->processDeferredLogs();
+	Global::get().l = new Log();
+	Global::get().l->processDeferredLogs();
 
 #ifdef Q_OS_WIN
 	// Set mumble_mw_hwnd in os_win.cpp.
-	// Used by APIs in ASIOInput and GlobalShortcut_win that require a HWND.
-	mumble_mw_hwnd = GetForegroundWindow();
+	// Used in ASIOInput and GlobalShortcut_win by APIs that require a HWND.
+	mumble_mw_hwnd = reinterpret_cast< HWND >(Global::get().mw->winId());
 #endif
 
 #ifdef USE_DBUS
-	new MumbleDBus(g.mw);
-	QDBusConnection::sessionBus().registerObject(QLatin1String("/"), g.mw);
+	new MumbleDBus(Global::get().mw);
+	QDBusConnection::sessionBus().registerObject(QLatin1String("/"), Global::get().mw);
 	QDBusConnection::sessionBus().registerService(QLatin1String("net.sourceforge.mumble.mumble"));
 #endif
 
 	SocketRPC *srpc = new SocketRPC(QLatin1String("Mumble"));
 
-	g.l->log(Log::Information, MainWindow::tr("Welcome to Mumble."));
-
-	// Plugins
-	g.p = new Plugins(nullptr);
-	g.p->rescanPlugins();
+	Global::get().l->log(Log::Information, MainWindow::tr("Welcome to Mumble."));
 
 	Audio::start();
 
 	a.setQuitOnLastWindowClosed(false);
 
-	// Configuration updates
-	bool runaudiowizard = false;
-	if (g.s.uiUpdateCounter == 0) {
-		// Previous version was an pre 1.2.3 release or this is the first run
-		runaudiowizard = true;
+	if (!Global::get().s.audioWizardShown) {
+		auto wizard = std::make_unique< AudioWizard >(Global::get().mw);
+		wizard->exec();
 
-	} else if (g.s.uiUpdateCounter == 1) {
-		// Previous versions used old idle action style, convert it
-
-		if (g.s.iIdleTime == 5 * 60) { // New default
-			g.s.iaeIdleAction = Settings::Nothing;
-		} else {
-			g.s.iIdleTime     = 60 * qRound(g.s.iIdleTime / 60.); // Round to minutes
-			g.s.iaeIdleAction = Settings::Deafen;                 // Old behavior
-		}
+		Global::get().s.audioWizardShown = true;
 	}
 
-	if (runaudiowizard) {
-		AudioWizard *aw = new AudioWizard(g.mw);
-		aw->exec();
-		delete aw;
-	}
-
-	g.s.uiUpdateCounter = 2;
-
-	if (!CertWizard::validateCert(g.s.kpCertificate)) {
-		QDir qd(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation));
-		QFile qf(qd.absoluteFilePath(QLatin1String("MumbleAutomaticCertificateBackup.p12")));
+	if (!CertWizard::validateCert(Global::get().s.kpCertificate)) {
+		QFile qf(qdCert.absoluteFilePath(QLatin1String("MumbleAutomaticCertificateBackup.p12")));
 		if (qf.open(QIODevice::ReadOnly | QIODevice::Unbuffered)) {
 			Settings::KeyPair kp = CertWizard::importCert(qf.readAll());
 			qf.close();
 			if (CertWizard::validateCert(kp))
-				g.s.kpCertificate = kp;
+				Global::get().s.kpCertificate = kp;
 		}
-		if (!CertWizard::validateCert(g.s.kpCertificate)) {
-			CertWizard *cw = new CertWizard(g.mw);
+		if (!CertWizard::validateCert(Global::get().s.kpCertificate)) {
+			CertWizard *cw = new CertWizard(Global::get().mw);
 			cw->exec();
 			delete cw;
 
-			if (!CertWizard::validateCert(g.s.kpCertificate)) {
-				g.s.kpCertificate = CertWizard::generateNewCert();
+			if (!CertWizard::validateCert(Global::get().s.kpCertificate)) {
+				Global::get().s.kpCertificate = CertWizard::generateNewCert();
 				if (qf.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Unbuffered)) {
-					qf.write(CertWizard::exportCert(g.s.kpCertificate));
+					qf.write(CertWizard::exportCert(Global::get().s.kpCertificate));
 					qf.close();
 				}
 			}
 		}
 	}
 
-	if (QDateTime::currentDateTime().daysTo(g.s.kpCertificate.first.first().expiryDate()) < 14)
-		g.l->log(Log::Warning,
-				 CertWizard::tr("<b>Certificate Expiry:</b> Your certificate is about to expire. You need to renew it, "
-								"or you will no longer be able to connect to servers you are registered on."));
+	if (QDateTime::currentDateTime().daysTo(Global::get().s.kpCertificate.first.first().expiryDate()) < 14)
+		Global::get().l->log(
+			Log::Warning,
+			CertWizard::tr("<b>Certificate Expiry:</b> Your certificate is about to expire. You need to renew it, "
+						   "or you will no longer be able to connect to servers you are registered on."));
 
 #ifdef QT_NO_DEBUG
 	// Only perform the version-check for non-debug builds
-	if (g.s.bUpdateCheck) {
+	if (Global::get().s.bUpdateCheck) {
 		// Use different settings for the version checks depending on whether this is a snapshot build
 		// or a normal release build
 #	ifndef SNAPSHOT_BUILD
 		// release build
-		new VersionCheck(true, g.mw);
+		new VersionCheck(true, Global::get().mw);
 #	else
 		// snapshot build
-		new VersionCheck(false, g.mw, true);
+		new VersionCheck(false, Global::get().mw, true);
 #	endif
 	}
-#else
-	g.mw->msgBox(MainWindow::tr("Skipping version check in debug mode."));
-#endif
-	if (g.s.bPluginCheck) {
-		g.p->checkUpdates();
+
+	if (Global::get().s.bPluginCheck) {
+		Global::get().pluginManager->checkForPluginUpdates();
 	}
+#else  // QT_NO_DEBUG
+	Global::get().mw->msgBox(MainWindow::tr("Skipping version check in debug mode."));
+#endif // QT_NO_DEBUG
 
 	if (url.isValid()) {
 		OpenURLEvent *oue = new OpenURLEvent(url);
-		qApp->postEvent(g.mw, oue);
+		qApp->postEvent(Global::get().mw, oue);
 #ifdef Q_OS_MAC
 	} else if (!a.quLaunchURL.isEmpty()) {
 		OpenURLEvent *oue = new OpenURLEvent(a.quLaunchURL);
-		qApp->postEvent(g.mw, oue);
+		qApp->postEvent(Global::get().mw, oue);
 #endif
 	} else {
-		g.mw->on_qaServerConnect_triggered(true);
+		Global::get().mw->on_qaServerConnect_triggered(true);
 	}
 
-	if (!g.bQuit)
+	if (!Global::get().bQuit)
 		res = a.exec();
 
-	g.s.save();
+	// Indicate that this was a regular shutdown
+	Global::get().s.mumbleQuitNormally = true;
+	Global::get().s.save();
 
 	url.clear();
 
-	ServerHandlerPtr sh = g.sh;
+	ServerHandlerPtr sh = Global::get().sh;
 	if (sh) {
 		if (sh->isRunning()) {
 			url = sh->getServerURL();
@@ -731,9 +825,21 @@ int main(int argc, char **argv) {
 
 		// Wait for the ServerHandler thread to exit before proceeding shutting down. This is so that
 		// all events that the ServerHandler might emit are enqueued into Qt's event loop before we
-		// ask it to pocess all of them below.
-		if (!sh->wait(2000)) {
-			qCritical("main: ServerHandler did not exit within specified time interval");
+		// ask it to process all of them below.
+
+		// We iteratively probe whether the ServerHandler thread has finished yet. If it did
+		// not, we execute pending events in the main loop. This is because the ServerHandler
+		// could be stuck waiting for a function to complete in the main loop (e.g. a plugin
+		// uses the API in the disconnect callback).
+		// We assume that this entire process is done in way under a second.
+		int iterations = 0;
+		while (!sh->wait(10)) {
+			QCoreApplication::processEvents();
+			iterations++;
+
+			if (iterations > 200) {
+				qFatal("ServerHandler does not exit as expected");
+			}
 		}
 	}
 
@@ -745,31 +851,37 @@ int main(int argc, char **argv) {
 
 	delete srpc;
 
-	g.sh.reset();
+	delete Global::get().talkingUI;
+	// Delete the MainWindow before the ServerHandler gets reset in order to allow all callbacks
+	// trggered by this deletion to still access the ServerHandler (atm all these callbacks are in PluginManager.cpp)
+	delete Global::get().mw;
+	Global::get().mw = nullptr; // Make it clear to any destruction code, that MainWindow no longer exists
+
+	Global::get().sh.reset();
+
 	while (sh && !sh.unique())
 		QThread::yieldCurrentThread();
 	sh.reset();
 
-	delete g.talkingUI;
-	delete g.mw;
+	delete Global::get().nam;
+	delete Global::get().lcd;
 
-	delete g.nam;
-	delete g.lcd;
+	delete Global::get().db;
+	delete Global::get().l;
+	Global::get().l = nullptr; // Make it clear to any destruction code that Log no longer exists
 
-	delete g.db;
-	delete g.p;
-	delete g.l;
+	delete Global::get().pluginManager;
 
 #ifdef USE_ZEROCONF
-	delete g.zeroconf;
+	delete Global::get().zeroconf;
 #endif
 
 #ifdef USE_OVERLAY
-	delete g.o;
+	delete Global::get().o;
 #endif
 
-	delete g.c;
-	g.le.clear();
+	delete Global::get().c;
+	Global::get().le.clear();
 
 	DeferInit::run_destroyers();
 
@@ -811,7 +923,7 @@ int main(int argc, char **argv) {
 		if (suppressIdentity)
 			arguments << QLatin1String("--noidentity");
 		if (customJackClientName)
-			arguments << QLatin1String("--jackname ") + g.s.qsJackClientName;
+			arguments << QLatin1String("--jackname ") + Global::get().s.qsJackClientName;
 		if (!url.isEmpty())
 			arguments << url.toString();
 
@@ -820,7 +932,7 @@ int main(int argc, char **argv) {
 #ifdef Q_OS_WIN
 		// Work around bug related to QTBUG-7645. Mumble has uiaccess=true set
 		// on windows which makes normal CreateProcess calls (like Qt uses in
-		// startDetached) fail unless they specifically enable additional priviledges.
+		// startDetached) fail unless they specifically enable additional privileges.
 		// Note that we do not actually require user interaction by UAC nor full admin
 		// rights but only the right token on launch. Here we use ShellExecuteEx
 		// which handles this transparently for us.

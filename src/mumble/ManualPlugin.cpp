@@ -1,9 +1,7 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2016-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
-
-#define _USE_MATH_DEFINES
 
 #include <QtCore/QtCore>
 #include <QtGui/QtGui>
@@ -11,15 +9,15 @@
 
 #include "ManualPlugin.h"
 #include "ui_ManualPlugin.h"
+#include "Global.h"
+
 #include <QPointer>
 
+#include <cmath>
 #include <float.h>
 
-#include "../../plugins/mumble_plugin.h"
-
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name
-// (like protobuf 3.7 does). As such, for now, we have to make this our last include.
-#include "Global.h"
+#define MUMBLE_ALLOW_DEPRECATED_LEGACY_PLUGIN_API
+#include "../../plugins/mumble_legacy_plugin.h"
 
 static QPointer< Manual > mDlg = nullptr;
 static bool bLinkable          = false;
@@ -47,7 +45,7 @@ Manual::Manual(QWidget *p) : QDialog(p) {
 
 	qgvPosition->viewport()->installEventFilter(this);
 	qgvPosition->scale(1.0f, 1.0f);
-	qgsScene = new QGraphicsScene(QRectF(-5.0f, -5.0f, 10.0f, 10.0f), this);
+	m_qgsScene = new QGraphicsScene(QRectF(-5.0f, -5.0f, 10.0f, 10.0f), this);
 
 	const float indicatorDiameter = 4.0f;
 	QPainterPath indicator;
@@ -57,9 +55,9 @@ Manual::Manual(QWidget *p) : QDialog(p) {
 	indicator.moveTo(0, indicatorDiameter / 2);
 	indicator.lineTo(0, indicatorDiameter);
 
-	qgiPosition = qgsScene->addPath(indicator);
+	m_qgiPosition = m_qgsScene->addPath(indicator);
 
-	qgvPosition->setScene(qgsScene);
+	qgvPosition->setScene(m_qgsScene);
 	qgvPosition->fitInView(-5.0f, -5.0f, 10.0f, 10.0f, Qt::KeepAspectRatio);
 
 	qdsbX->setRange(-FLT_MAX, FLT_MAX);
@@ -85,7 +83,7 @@ Manual::Manual(QWidget *p) : QDialog(p) {
 	my.context  = defaultContext.toStdString();
 	my.identity = defaultIdentity.toStdWString();
 
-	qsbSilentUserDisplaytime->setValue(g.s.manualPlugin_silentUserDisplaytime);
+	qsbSilentUserDisplaytime->setValue(Global::get().s.manualPlugin_silentUserDisplaytime);
 
 	updateLoopRunning.store(false);
 }
@@ -105,7 +103,7 @@ bool Manual::eventFilter(QObject *obj, QEvent *evt) {
 				QPointF qpf = qgvPosition->mapToScene(qme->pos());
 				qdsbX->setValue(qpf.x());
 				qdsbZ->setValue(-qpf.y());
-				qgiPosition->setPos(qpf);
+				m_qgiPosition->setPos(qpf);
 			}
 		}
 	}
@@ -139,7 +137,7 @@ void Manual::on_qpbActivated_clicked(bool b) {
 
 void Manual::on_qdsbX_valueChanged(double d) {
 	my.avatar_pos[0] = my.camera_pos[0] = static_cast< float >(d);
-	qgiPosition->setPos(my.avatar_pos[0], -my.avatar_pos[2]);
+	m_qgiPosition->setPos(my.avatar_pos[0], -my.avatar_pos[2]);
 }
 
 void Manual::on_qdsbY_valueChanged(double d) {
@@ -148,7 +146,7 @@ void Manual::on_qdsbY_valueChanged(double d) {
 
 void Manual::on_qdsbZ_valueChanged(double d) {
 	my.avatar_pos[2] = my.camera_pos[2] = static_cast< float >(d);
-	qgiPosition->setPos(my.avatar_pos[0], -my.avatar_pos[2]);
+	m_qgiPosition->setPos(my.avatar_pos[0], -my.avatar_pos[2]);
 }
 
 void Manual::on_qsbAzimuth_valueChanged(int i) {
@@ -210,7 +208,7 @@ void Manual::on_buttonBox_clicked(QAbstractButton *button) {
 }
 
 void Manual::on_qsbSilentUserDisplaytime_valueChanged(int value) {
-	g.s.manualPlugin_silentUserDisplaytime = value;
+	Global::get().s.manualPlugin_silentUserDisplaytime = value;
 }
 
 void Manual::on_speakerPositionUpdate(QHash< unsigned int, Position2D > positions) {
@@ -251,7 +249,7 @@ void Manual::on_speakerPositionUpdate(QHash< unsigned int, Position2D > position
 		} else {
 			// Remove the stale item
 			speakerIt.remove();
-			if (g.s.manualPlugin_silentUserDisplaytime == 0) {
+			if (Global::get().s.manualPlugin_silentUserDisplaytime == 0) {
 				// Delete it immediately
 				delete speakerItem;
 			} else {
@@ -266,8 +264,8 @@ void Manual::on_speakerPositionUpdate(QHash< unsigned int, Position2D > position
 		remainingIt.next();
 
 		const float speakerRadius  = 1.2;
-		QGraphicsItem *speakerItem = qgsScene->addEllipse(-speakerRadius, -speakerRadius, 2 * speakerRadius,
-														  2 * speakerRadius, QPen(), QBrush(Qt::red));
+		QGraphicsItem *speakerItem = m_qgsScene->addEllipse(-speakerRadius, -speakerRadius, 2 * speakerRadius,
+															2 * speakerRadius, QPen(), QBrush(Qt::red));
 
 		Position2D pos = remainingIt.value();
 
@@ -296,14 +294,14 @@ void Manual::on_updateStaleSpeakers() {
 		double elapsedTime =
 			static_cast< std::chrono::duration< double > >(std::chrono::steady_clock::now() - entry.staleSince).count();
 
-		if (elapsedTime >= g.s.manualPlugin_silentUserDisplaytime) {
+		if (elapsedTime >= Global::get().s.manualPlugin_silentUserDisplaytime) {
 			// The item has been around long enough - remove it now
 			staleIt.remove();
 			delete entry.staleItem;
 		} else {
 			// Let the item fade out
-			double opacity = (g.s.manualPlugin_silentUserDisplaytime - elapsedTime)
-							 / static_cast< double >(g.s.manualPlugin_silentUserDisplaytime);
+			double opacity = (Global::get().s.manualPlugin_silentUserDisplaytime - elapsedTime)
+							 / static_cast< double >(Global::get().s.manualPlugin_silentUserDisplaytime);
 			entry.staleItem->setOpacity(opacity);
 		}
 	}
@@ -321,7 +319,7 @@ void Manual::updateTopAndFront(int azimuth, int elevation) {
 	iAzimuth   = azimuth;
 	iElevation = elevation;
 
-	qgiPosition->setRotation(azimuth);
+	m_qgiPosition->setRotation(azimuth);
 
 	double azim = azimuth * M_PI / 180.;
 	double elev = elevation * M_PI / 180.;
@@ -418,4 +416,17 @@ MumblePlugin *ManualPlugin_getMumblePlugin() {
 
 MumblePluginQt *ManualPlugin_getMumblePluginQt() {
 	return &manualqt;
+}
+
+
+/////////// Implementation of the ManualPlugin class //////////////
+ManualPlugin::ManualPlugin(QObject *p) : LegacyPlugin(QString::fromLatin1("manual.builtin"), true, p) {
+}
+
+ManualPlugin::~ManualPlugin() {
+}
+
+void ManualPlugin::resolveFunctionPointers() {
+	m_mumPlug   = &manual;
+	m_mumPlugQt = &manualqt;
 }

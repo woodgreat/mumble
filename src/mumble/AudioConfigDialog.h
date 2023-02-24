@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -15,6 +15,9 @@ class AudioInputDialog : public ConfigWidget, public Ui::AudioInput {
 private:
 	Q_OBJECT
 	Q_DISABLE_COPY(AudioInputDialog)
+
+	void updateAudioCueEnabled();
+
 protected:
 	QTimer *qtTick;
 	void hideEvent(QHideEvent *event) Q_DECL_OVERRIDE;
@@ -38,11 +41,16 @@ public slots:
 	void continuePlayback();
 	void verifyMicrophonePermission();
 
-	void on_qcbPushClick_clicked(bool);
+	void on_qcbEnableCuePTT_clicked();
+	void on_qcbEnableCueVAD_clicked();
 	void on_qpbPushClickBrowseOn_clicked();
 	void on_qpbPushClickBrowseOff_clicked();
 	void on_qpbPushClickPreview_clicked();
 	void on_qpbPushClickReset_clicked();
+
+	void on_qcbMuteCue_clicked(bool);
+	void on_qpbMuteCueBrowse_clicked();
+	void on_qpbMuteCuePreview_clicked();
 
 	void on_qsTransmitHold_valueChanged(int v);
 	void on_qsFrames_valueChanged(int v);
@@ -86,9 +94,13 @@ public slots:
 	void on_qsPacketLoss_valueChanged(int v);
 	void on_qcbLoopback_currentIndexChanged(int v);
 	void on_qsMinDistance_valueChanged(int v);
+	void on_qsbMinimumDistance_valueChanged(double v);
 	void on_qsMaxDistance_valueChanged(int v);
+	void on_qsbMaximumDistance_valueChanged(double v);
 	void on_qsBloom_valueChanged(int v);
-	void on_qsMaxDistVolume_valueChanged(int v);
+	void on_qsbBloom_valueChanged(int v);
+	void on_qsMinimumVolume_valueChanged(int v);
+	void on_qsbMinimumVolume_valueChanged(int v);
 	void on_qcbSystem_currentIndexChanged(int);
 	void on_qcbAttenuateOthersOnTalk_clicked(bool checked);
 	void on_qcbAttenuateOthers_clicked(bool checked);

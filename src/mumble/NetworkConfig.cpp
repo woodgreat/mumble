@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2008-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -7,6 +7,7 @@
 
 #include "MainWindow.h"
 #include "OSInfo.h"
+#include "Global.h"
 
 #include <QSignalBlocker>
 #include <QtNetwork/QHostAddress>
@@ -17,20 +18,17 @@
 #	include <QMessageBox>
 #endif
 
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name
-// (like protobuf 3.7 does). As such, for now, we have to make this our last include.
-#include "Global.h"
-
 const QString NetworkConfig::name = QLatin1String("NetworkConfig");
 
 static ConfigWidget *NetworkConfigNew(Settings &st) {
 	return new NetworkConfig(st);
 }
 
-static ConfigRegistrar registrar(1300, NetworkConfigNew);
+static ConfigRegistrar registrarNetworkConfig(1300, NetworkConfigNew);
 
 NetworkConfig::NetworkConfig(Settings &st) : ConfigWidget(st) {
 	setupUi(this);
+
 	qcbType->setAccessibleName(tr("Type"));
 	qleHostname->setAccessibleName(tr("Hostname"));
 	qlePort->setAccessibleName(tr("Port"));
@@ -75,7 +73,8 @@ void NetworkConfig::load(const Settings &r) {
 
 	const QSignalBlocker blocker(qcbAutoUpdate);
 	loadCheckBox(qcbAutoUpdate, r.bUpdateCheck);
-	loadCheckBox(qcbPluginUpdate, r.bPluginCheck);
+	loadCheckBox(qcbPluginUpdateCheck, r.bPluginCheck);
+	loadCheckBox(qcbPluginAutoUpdate, r.bPluginAutoUpdate);
 	loadCheckBox(qcbUsage, r.bUsage);
 }
 
@@ -94,9 +93,10 @@ void NetworkConfig::save() const {
 	s.qsProxyUsername = qleUsername->text();
 	s.qsProxyPassword = qlePassword->text();
 
-	s.bUpdateCheck = qcbAutoUpdate->isChecked();
-	s.bPluginCheck = qcbPluginUpdate->isChecked();
-	s.bUsage       = qcbUsage->isChecked();
+	s.bUpdateCheck      = qcbAutoUpdate->isChecked();
+	s.bPluginCheck      = qcbPluginUpdateCheck->isChecked();
+	s.bPluginAutoUpdate = qcbPluginAutoUpdate->isChecked();
+	s.bUsage            = qcbUsage->isChecked();
 }
 
 static QNetworkProxy::ProxyType local_to_qt_proxy(Settings::ProxyType pt) {
@@ -114,11 +114,11 @@ static QNetworkProxy::ProxyType local_to_qt_proxy(Settings::ProxyType pt) {
 
 void NetworkConfig::SetupProxy() {
 	QNetworkProxy proxy;
-	proxy.setType(local_to_qt_proxy(g.s.ptProxyType));
-	proxy.setHostName(g.s.qsProxyHost);
-	proxy.setPort(g.s.usProxyPort);
-	proxy.setUser(g.s.qsProxyUsername);
-	proxy.setPassword(g.s.qsProxyPassword);
+	proxy.setType(local_to_qt_proxy(Global::get().s.ptProxyType));
+	proxy.setHostName(Global::get().s.qsProxyHost);
+	proxy.setPort(Global::get().s.usProxyPort);
+	proxy.setUser(Global::get().s.qsProxyUsername);
+	proxy.setPassword(Global::get().s.qsProxyPassword);
 	QNetworkProxy::setApplicationProxy(proxy);
 }
 
@@ -138,7 +138,7 @@ bool NetworkConfig::TcpModeEnabled() {
 	 * itself already is a potential latency killer.
 	 */
 
-	return g.s.ptProxyType != Settings::NoProxy || g.s.bTCPCompat;
+	return Global::get().s.ptProxyType != Settings::NoProxy || Global::get().s.bTCPCompat;
 }
 
 void NetworkConfig::accept() const {
@@ -181,23 +181,20 @@ void NetworkConfig::on_qcbAutoUpdate_stateChanged(int state) {
 QNetworkReply *Network::get(const QUrl &url) {
 	QNetworkRequest req(url);
 	prepareRequest(req);
-	return g.nam->get(req);
+	return Global::get().nam->get(req);
 }
 
 void Network::prepareRequest(QNetworkRequest &req) {
 	req.setAttribute(QNetworkRequest::HttpPipeliningAllowedAttribute, true);
 
 	// Do not send OS information if the corresponding privacy setting is enabled
-	if (g.s.bHideOS) {
+	if (Global::get().s.bHideOS) {
 		req.setRawHeader(QString::fromLatin1("User-Agent").toUtf8(),
-						 QString::fromLatin1("Mozilla/5.0 Mumble/%1 %2")
-							 .arg(QLatin1String(MUMTEXT(MUMBLE_VERSION)), QLatin1String(MUMBLE_RELEASE))
-							 .toUtf8());
+						 QString::fromLatin1("Mozilla/5.0 Mumble/%1").arg(Version::getRelease()).toUtf8());
 	} else {
 		req.setRawHeader(QString::fromLatin1("User-Agent").toUtf8(),
-						 QString::fromLatin1("Mozilla/5.0 (%1; %2) Mumble/%3 %4")
-							 .arg(OSInfo::getOS(), OSInfo::getOSVersion(),
-								  QLatin1String(MUMTEXT(MUMBLE_VERSION)), QLatin1String(MUMBLE_RELEASE))
+						 QString::fromLatin1("Mozilla/5.0 (%1; %2) Mumble/%3")
+							 .arg(OSInfo::getOS(), OSInfo::getOSVersion(), Version::getRelease())
 							 .toUtf8());
 	}
 }

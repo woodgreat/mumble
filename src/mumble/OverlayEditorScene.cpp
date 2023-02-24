@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2010-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -8,7 +8,6 @@
 #include "Channel.h"
 #include "Database.h"
 #include "MainWindow.h"
-#include "Message.h"
 #include "NetworkConfig.h"
 #include "OverlayClient.h"
 #include "OverlayText.h"
@@ -16,6 +15,7 @@
 #include "ServerHandler.h"
 #include "User.h"
 #include "Utils.h"
+#include "Global.h"
 #include "GlobalShortcut.h"
 
 #include <QtGui/QImageReader>
@@ -24,16 +24,12 @@
 #include <QtWidgets/QGraphicsProxyWidget>
 #include <QtWidgets/QGraphicsSceneMouseEvent>
 
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name
-// (like protobuf 3.7 does). As such, for now, we have to make this our last include.
-#include "Global.h"
-
 OverlayEditorScene::OverlayEditorScene(const OverlaySettings &srcos, QObject *p) : QGraphicsScene(p), os(srcos) {
 	tsColor = Settings::Talking;
 	uiZoom  = 2;
 
-	if (g.ocIntercept)
-		uiSize = g.ocIntercept->uiHeight;
+	if (Global::get().ocIntercept)
+		uiSize = Global::get().ocIntercept->uiHeight;
 	else
 		uiSize = 1080.f;
 
@@ -518,8 +514,8 @@ void OverlayEditorScene::updateCursorShape(const QPointF &point) {
 				QGraphicsProxyWidget *qgpw = p->graphicsProxyWidget();
 				if (qgpw) {
 					qgpw->setCursor(cs);
-					if (g.ocIntercept)
-						g.ocIntercept->updateMouse();
+					if (Global::get().ocIntercept)
+						Global::get().ocIntercept->updateMouse();
 				}
 			}
 		}
@@ -778,7 +774,7 @@ void OverlayEditorScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *e) {
 		qfd.setWindowTitle(tr("Pick font"));
 
 		int ret;
-		if (g.ocIntercept) {
+		if (Global::get().ocIntercept) {
 			QGraphicsProxyWidget *qgpw = new QGraphicsProxyWidget(nullptr, Qt::Window);
 			qgpw->setWidget(&qfd);
 
@@ -795,7 +791,7 @@ void OverlayEditorScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *e) {
 			qgpw->setWidget(nullptr);
 			delete qgpw;
 		} else {
-			Qt::WindowFlags wf = g.mw->windowFlags();
+			Qt::WindowFlags wf = Global::get().mw->windowFlags();
 			if (wf.testFlag(Qt::WindowStaysOnTopHint))
 				qfd.setWindowFlags(qfd.windowFlags() | Qt::WindowStaysOnTopHint);
 			ret = qfd.exec();
@@ -869,3 +865,5 @@ Qt::WindowFrameSection OverlayEditorScene::rectSection(const QRectF &qrf, const 
 
 	return Qt::NoSection;
 }
+
+#undef SCALESIZE

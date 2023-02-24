@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2014-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -7,6 +7,7 @@
 
 #include "EnvUtils.h"
 #include "MainWindow.h"
+#include "Global.h"
 #include "GlobalShortcut.h"
 
 #if defined(Q_OS_WIN)
@@ -14,10 +15,6 @@
 #endif
 
 #include <QtGui/QFileOpenEvent>
-
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name
-// (like protobuf 3.7 does). As such, for now, we have to make this our last include.
-#include "Global.h"
 
 MumbleApplication *MumbleApplication::instance() {
 	return static_cast< MumbleApplication * >(QCoreApplication::instance());
@@ -37,10 +34,11 @@ QString MumbleApplication::applicationVersionRootPath() {
 }
 
 void MumbleApplication::onCommitDataRequest(QSessionManager &) {
-	// Make sure the config is saved and supress the ask on quit message
-	if (g.mw) {
-		g.s.save();
-		g.mw->bSuppressAskOnQuit = true;
+	// Make sure the config is saved and suppress the ask on quit message
+	if (Global::get().mw) {
+		Global::get().s.mumbleQuitNormally = true;
+		Global::get().s.save();
+		Global::get().mw->forceQuit = true;
 		qWarning() << "Session likely ending. Suppressing ask on quit";
 	}
 }
@@ -48,10 +46,10 @@ void MumbleApplication::onCommitDataRequest(QSessionManager &) {
 bool MumbleApplication::event(QEvent *e) {
 	if (e->type() == QEvent::FileOpen) {
 		QFileOpenEvent *foe = static_cast< QFileOpenEvent * >(e);
-		if (!g.mw) {
+		if (!Global::get().mw) {
 			this->quLaunchURL = foe->url();
 		} else {
-			g.mw->openUrl(foe->url());
+			Global::get().mw->openUrl(foe->url());
 		}
 		return true;
 	}
@@ -59,43 +57,25 @@ bool MumbleApplication::event(QEvent *e) {
 }
 
 #ifdef Q_OS_WIN
-/// gswForward forwards a native Windows keyboard/mouse message
-/// into GlobalShortcutWin's event stream.
-///
-/// @return  Returns true if the forwarded event was suppressed
-///          by GlobalShortcutWin. Otherwise, returns false.
-static bool gswForward(MSG *msg) {
-	GlobalShortcutWin *gsw = static_cast< GlobalShortcutWin * >(GlobalShortcutEngine::engine);
+bool MumbleApplication::nativeEventFilter(const QByteArray &, void *message, long *) {
+	auto gsw = static_cast< GlobalShortcutWin * >(GlobalShortcutEngine::engine);
 	if (!gsw) {
 		return false;
 	}
-	switch (msg->message) {
-		case WM_LBUTTONDOWN:
-		case WM_LBUTTONUP:
-		case WM_RBUTTONDOWN:
-		case WM_RBUTTONUP:
-		case WM_MBUTTONDOWN:
-		case WM_MBUTTONUP:
-		case WM_XBUTTONDOWN:
-		case WM_XBUTTONUP:
-			return gsw->injectMouseMessage(msg);
-		case WM_KEYDOWN:
-		case WM_KEYUP:
-		case WM_SYSKEYDOWN:
-		case WM_SYSKEYUP:
-			return gsw->injectKeyboardMessage(msg);
-	}
-	return false;
-}
 
-bool MumbleApplication::nativeEventFilter(const QByteArray &, void *message, long *) {
-	MSG *msg = reinterpret_cast< MSG * >(message);
-	if (QThread::currentThread() == thread()) {
-		bool suppress = gswForward(msg);
-		if (suppress) {
-			return true;
-		}
+	auto msg = reinterpret_cast< const MSG * >(message);
+	switch (msg->message) {
+		case WM_INPUT:
+			gsw->injectRawInputMessage(reinterpret_cast< HRAWINPUT >(msg->lParam));
+			break;
+		case WM_INPUT_DEVICE_CHANGE:
+			// We don't care about GIDC_ARRIVAL because we add a device only when we receive input from it.
+			if (msg->wParam == GIDC_REMOVAL) {
+				// The device is not available anymore, free resources allocated for it.
+				gsw->deviceRemoved(reinterpret_cast< const HANDLE >(msg->lParam));
+			}
 	}
+
 	return false;
 }
 #endif

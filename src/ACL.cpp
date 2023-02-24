@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -69,7 +69,7 @@ ChanACL::operator QString() const {
 	}
 
 	if (!aclString.isEmpty()) {
-		// Alos include info about affected user and/or group
+		// Also include info about affected user and/or group
 		if (!qsGroup.isEmpty() && iUserId >= 0) {
 			// both group and user-id are set
 			return QString::fromLatin1("ACL for group \"%1\" and user with ID %2: %3")
@@ -89,7 +89,7 @@ ChanACL::operator QString() const {
 // Check permissions.
 // This will always return true for the superuser,
 // and will return false if a user isn't allowed to
-// traverse to the channel. (Need "read" in all preceeding channels)
+// traverse to the channel. (Need "read" in all preceding channels)
 
 #ifdef MURMUR
 
@@ -148,7 +148,7 @@ QFlags< ChanACL::Perm > ChanACL::effectivePermissions(ServerUser *p, Channel *ch
 
 		foreach (acl, ch->qlACL) {
 			bool matchUser  = (acl->iUserId != -1) && (acl->iUserId == p->iId);
-			bool matchGroup = Group::isMember(chan, ch, acl->qsGroup, p);
+			bool matchGroup = Group::appliesToUser(*chan, *ch, acl->qsGroup, *p);
 			if (matchUser || matchGroup) {
 				if (acl->pAllow & Traverse)
 					traverse = true;

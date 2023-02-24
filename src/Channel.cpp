@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -11,6 +11,12 @@
 #include <QtCore/QStack>
 
 #ifdef MUMBLE
+#	include <queue>
+#	include "PluginManager.h"
+#	include "Global.h"
+#	include "Database.h"
+#	include "ServerHandler.h"
+
 QHash< int, Channel * > Channel::c_qhChannels;
 QReadWriteLock Channel::c_qrwlChannels;
 #endif
@@ -27,11 +33,11 @@ Channel::Channel(int id, const QString &name, QObject *p) : QObject(p) {
 		cParent->addChannel(this);
 #ifdef MUMBLE
 	uiPermissions = 0;
-	bFiltered     = false;
+	m_filterMode  = ChannelFilterMode::NORMAL;
 
 	hasEnterRestrictions.store(false);
 	localUserCanEnter.store(true);
-#endif
+#endif // MUMBLE
 }
 
 Channel::~Channel() {
@@ -66,6 +72,14 @@ Channel *Channel::add(int id, const QString &name) {
 
 	Channel *c = new Channel(id, name, nullptr);
 	c_qhChannels.insert(id, c);
+
+	// We have to use a direct connection here in order to make sure that the user object that gets passed to the
+	// callback does not get invalidated or deleted while the callback is running.
+	QObject::connect(c, &Channel::channelEntered, Global::get().pluginManager, &PluginManager::on_channelEntered,
+					 Qt::DirectConnection);
+	QObject::connect(c, &Channel::channelExited, Global::get().pluginManager, &PluginManager::on_channelExited,
+					 Qt::DirectConnection);
+
 	return c;
 }
 
@@ -73,7 +87,88 @@ void Channel::remove(Channel *c) {
 	QWriteLocker lock(&c_qrwlChannels);
 	c_qhChannels.remove(c->iId);
 }
-#endif
+
+void Channel::setFilterMode(ChannelFilterMode filterMode) {
+	m_filterMode        = filterMode;
+	ServerHandlerPtr sh = Global::get().sh;
+	if (sh) {
+		Global::get().db->setChannelFilterMode(sh->qbaDigest, iId, m_filterMode);
+	}
+}
+
+void Channel::clearFilterMode() {
+	if (m_filterMode != ChannelFilterMode::NORMAL) {
+		setFilterMode(ChannelFilterMode::NORMAL);
+	}
+}
+
+bool Channel::isFiltered() const {
+	if (!Global::get().s.bFilterActive) {
+		// Channel filtering is disabled
+		return false;
+	}
+
+	const Channel *userChannel = nullptr;
+
+	if (Global::get().uiSession != 0) {
+		const ClientUser *user = ClientUser::get(Global::get().uiSession);
+		if (user) {
+			userChannel = user->cChannel;
+		}
+	}
+
+	bool hasUser = false;
+	bool hasHide = false;
+	bool hasPin  = false;
+
+	// Iterate tree down
+	std::queue< const Channel * > channelSearch;
+	channelSearch.push(this);
+
+	while (!channelSearch.empty()) {
+		const Channel *c = channelSearch.front();
+		channelSearch.pop();
+
+		// Never hide channel, if user resides in this channel or a subchannel
+		if (userChannel && c == userChannel) {
+			return false;
+		}
+
+		if (c->m_filterMode == ChannelFilterMode::PIN) {
+			hasPin = true;
+		}
+
+		if (!c->qlUsers.isEmpty()) {
+			hasUser = true;
+		}
+
+		for (const Channel *currentSubChannel : c->qlChannels) {
+			channelSearch.push(currentSubChannel);
+		}
+	}
+
+	// Iterate tree up
+	const Channel *c = this;
+	while (c) {
+		if (c->m_filterMode == ChannelFilterMode::HIDE) {
+			hasHide = true;
+			break;
+		}
+		c = c->cParent;
+	}
+
+	if (hasPin) {
+		return false;
+	}
+
+	if (hasHide) {
+		return true;
+	}
+
+	return Global::get().s.bFilterHidesEmptyChannels && !hasUser;
+}
+
+#endif // MUMBLE
 
 bool Channel::lessThan(const Channel *first, const Channel *second) {
 	if ((first->iPosition != second->iPosition) && (first->cParent == second->cParent))
@@ -159,14 +254,20 @@ void Channel::removeChannel(Channel *c) {
 }
 
 void Channel::addUser(User *p) {
-	if (p->cChannel)
-		p->cChannel->removeUser(p);
+	Channel *prevChannel = p->cChannel;
+
+	if (prevChannel)
+		prevChannel->removeUser(p);
 	p->cChannel = this;
 	qlUsers << p;
+
+	emit channelEntered(this, prevChannel, p);
 }
 
 void Channel::removeUser(User *p) {
 	qlUsers.removeAll(p);
+
+	emit channelExited(this, p);
 }
 
 Channel::operator QString() const {

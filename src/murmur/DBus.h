@@ -1,22 +1,21 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
 
-#ifdef USE_DBUS
-#	ifndef MUMBLE_MURMUR_DBUS_H_
-#		define MUMBLE_MURMUR_DBUS_H_
+#ifndef MUMBLE_MURMUR_DBUS_H_
+#define MUMBLE_MURMUR_DBUS_H_
 
-#		include <QtDBus/QDBusAbstractAdaptor>
-#		include <QtDBus/QDBusConnection>
+#include <QDBusAbstractAdaptor>
+#include <QDBusConnection>
 
-#		include "ACL.h"
-#		include "Channel.h"
-#		include "Group.h"
-#		include "Meta.h"
-#		include "Server.h"
-#		include "ServerDB.h"
-#		include "User.h"
+#include "ACL.h"
+#include "Channel.h"
+#include "Group.h"
+#include "Meta.h"
+#include "Server.h"
+#include "ServerDB.h"
+#include "User.h"
 
 struct Ban;
 class QDBusObjectPath;
@@ -231,12 +230,12 @@ public slots:
 	void setConf(int server_id, const QString &key, const QString &value, const QDBusMessage &);
 	void setSuperUserPassword(int server_id, const QString &pw, const QDBusMessage &);
 	void getLog(int server_id, int min_offset, int max_offset, const QDBusMessage &, QList< LogEntry > &entries);
-	void getVersion(int &major, int &minor, int &patch, QString &string);
+	void getVersion(Version::component_t &major, Version::component_t &minor, Version::component_t &patch,
+					QString &string);
 	void quit();
 signals:
 	void started(int server_id);
 	void stopped(int server_id);
 };
 
-#	endif
 #endif

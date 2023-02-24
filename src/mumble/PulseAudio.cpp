@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -8,9 +8,6 @@
 #include "MainWindow.h"
 #include "Timer.h"
 #include "User.h"
-
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name
-// (like protobuf 3.7 does). As such, for now, we have to make this our last include.
 #include "Global.h"
 
 #ifdef Q_CC_GNU
@@ -40,6 +37,7 @@ class PulseAudioInputRegistrar : public AudioInputRegistrar {
 public:
 	PulseAudioInputRegistrar();
 	virtual AudioInput *create();
+	virtual const QVariant getDeviceChoice();
 	virtual const QList< audioDevice > getDeviceChoices();
 	virtual void setDeviceChoice(const QVariant &, Settings &);
 	virtual bool canEcho(EchoCancelOptionID echoCancelID, const QString &outputSystem) const;
@@ -51,6 +49,7 @@ class PulseAudioOutputRegistrar : public AudioOutputRegistrar {
 public:
 	PulseAudioOutputRegistrar();
 	virtual AudioOutput *create();
+	virtual const QVariant getDeviceChoice();
 	virtual const QList< audioDevice > getDeviceChoices();
 	virtual void setDeviceChoice(const QVariant &, Settings &);
 	bool canMuteOthers() const;
@@ -62,9 +61,6 @@ public:
 	PulseAudioOutputRegistrar *aorPulseAudio;
 	void initialize() {
 		pasys = new PulseAudioSystem();
-		pasys->qmWait.lock();
-		pasys->qwcWait.wait(&pasys->qmWait, 1000);
-		pasys->qmWait.unlock();
 		if (pasys->bPulseIsGood) {
 			airPulseAudio = new PulseAudioInputRegistrar();
 			aorPulseAudio = new PulseAudioOutputRegistrar();
@@ -122,6 +118,14 @@ PulseAudioSystem::PulseAudioSystem() {
 	m_pulseAudio.threaded_mainloop_start(pam);
 
 	bRunning = true;
+
+	std::unique_lock< std::mutex > guard(m_initLock);
+	if (!m_initialized) {
+		// The mutex is atomically released as soon as this thread starts waiting and will be
+		// re-acquired when waking up.
+		// Spurious wake-ups are avoided by checking m_initialized in the given predicate
+		m_initWaiter.wait(guard, [this]() { return m_initialized; });
+	}
 }
 
 PulseAudioSystem::~PulseAudioSystem() {
@@ -132,14 +136,8 @@ PulseAudioSystem::~PulseAudioSystem() {
 	bRunning = false;
 
 	if (bAttenuating) {
-		qmWait.lock();
 		bAttenuating = false;
 		setVolumes();
-		bool success = qwcWait.wait(&qmWait, 1000);
-		if (!success) {
-			qWarning("PulseAudio: Shutdown timeout when attempting to restore volumes.");
-		}
-		qmWait.unlock();
 	}
 	m_pulseAudio.threaded_mainloop_stop(pam);
 	m_pulseAudio.context_disconnect(pacContext);
@@ -148,7 +146,7 @@ PulseAudioSystem::~PulseAudioSystem() {
 }
 
 QString PulseAudioSystem::outputDevice() const {
-	QString odev = g.s.qsPulseAudioOutput;
+	QString odev = Global::get().s.qsPulseAudioOutput;
 	if (odev.isEmpty()) {
 		odev = qsDefaultOutput;
 	}
@@ -159,7 +157,7 @@ QString PulseAudioSystem::outputDevice() const {
 }
 
 QString PulseAudioSystem::inputDevice() const {
-	QString idev = g.s.qsPulseAudioInput;
+	QString idev = Global::get().s.qsPulseAudioInput;
 	if (idev.isEmpty()) {
 		idev = qsDefaultInput;
 	}
@@ -192,8 +190,8 @@ void PulseAudioSystem::eventCallback(pa_mainloop_api *api, pa_defer_event *) {
 	if (!bSourceDone || !bSinkDone || !bServerDone)
 		return;
 
-	AudioInputPtr ai      = g.ai;
-	AudioOutputPtr ao     = g.ao;
+	AudioInputPtr ai      = Global::get().ai;
+	AudioOutputPtr ao     = Global::get().ao;
 	AudioInput *raw_ai    = ai.get();
 	AudioOutput *raw_ao   = ao.get();
 	PulseAudioInput *pai  = dynamic_cast< PulseAudioInput * >(raw_ai);
@@ -231,7 +229,7 @@ void PulseAudioSystem::eventCallback(pa_mainloop_api *api, pa_defer_event *) {
 					do_start = true;
 					break;
 				case PA_STREAM_READY: {
-					if (g.s.iOutputDelay != iDelayCache) {
+					if (Global::get().s.iOutputDelay != iDelayCache) {
 						do_stop = true;
 					} else if (odev != qsOutputCache) {
 						do_stop = true;
@@ -252,13 +250,13 @@ void PulseAudioSystem::eventCallback(pa_mainloop_api *api, pa_defer_event *) {
 			const pa_sample_spec *pss    = m_pulseAudio.stream_get_sample_spec(pasOutput);
 			const size_t sampleSize      = (pss->format == PA_SAMPLE_FLOAT32NE) ? sizeof(float) : sizeof(short);
 			const unsigned int iBlockLen = pao->iFrameSize * pss->channels * static_cast< unsigned int >(sampleSize);
-			buff.tlength                 = iBlockLen * (g.s.iOutputDelay + 1);
+			buff.tlength                 = iBlockLen * (Global::get().s.iOutputDelay + 1);
 			buff.minreq                  = iBlockLen;
 			buff.maxlength               = -1;
 			buff.prebuf                  = -1;
 			buff.fragsize                = iBlockLen;
 
-			iDelayCache   = g.s.iOutputDelay;
+			iDelayCache   = Global::get().s.iOutputDelay;
 			qsOutputCache = odev;
 
 			m_pulseAudio.stream_connect_playback(pasOutput, qPrintable(odev), &buff, PA_STREAM_ADJUST_LATENCY, nullptr,
@@ -323,7 +321,6 @@ void PulseAudioSystem::eventCallback(pa_mainloop_api *api, pa_defer_event *) {
 			qsInputCache = idev;
 
 			m_pulseAudio.stream_connect_record(pasInput, qPrintable(idev), &buff, PA_STREAM_ADJUST_LATENCY);
-
 		}
 	}
 
@@ -334,9 +331,9 @@ void PulseAudioSystem::eventCallback(pa_mainloop_api *api, pa_defer_event *) {
 		bool do_stop        = false;
 		bool do_start       = false;
 
-		if ((!pai || g.s.echoOption == EchoCancelOptionID::DISABLED) && (est == PA_STREAM_READY)) {
+		if ((!pai || Global::get().s.echoOption == EchoCancelOptionID::DISABLED) && (est == PA_STREAM_READY)) {
 			do_stop = true;
-		} else if (pai && g.s.echoOption != EchoCancelOptionID::DISABLED) {
+		} else if (pai && Global::get().s.echoOption != EchoCancelOptionID::DISABLED) {
 			switch (est) {
 				case PA_STREAM_TERMINATED: {
 					if (pasSpeaker)
@@ -347,7 +344,7 @@ void PulseAudioSystem::eventCallback(pa_mainloop_api *api, pa_defer_event *) {
 					if ((pss.format != PA_SAMPLE_FLOAT32NE) && (pss.format != PA_SAMPLE_S16NE))
 						pss.format = PA_SAMPLE_FLOAT32NE;
 					pss.rate = SAMPLE_RATE;
-					if ((pss.channels == 0) || (g.s.echoOption != EchoCancelOptionID::SPEEX_MULTICHANNEL))
+					if ((pss.channels == 0) || (Global::get().s.echoOption != EchoCancelOptionID::SPEEX_MULTICHANNEL))
 						pss.channels = 1;
 
 					pasSpeaker =
@@ -360,7 +357,7 @@ void PulseAudioSystem::eventCallback(pa_mainloop_api *api, pa_defer_event *) {
 					do_start = true;
 					break;
 				case PA_STREAM_READY: {
-					if ((g.s.echoOption == EchoCancelOptionID::SPEEX_MULTICHANNEL) != bEchoMultiCache) {
+					if ((Global::get().s.echoOption == EchoCancelOptionID::SPEEX_MULTICHANNEL) != bEchoMultiCache) {
 						do_stop = true;
 					} else if (edev != qsEchoCache) {
 						do_stop = true;
@@ -386,7 +383,7 @@ void PulseAudioSystem::eventCallback(pa_mainloop_api *api, pa_defer_event *) {
 			buff.prebuf                  = -1;
 			buff.fragsize                = iBlockLen;
 
-			bEchoMultiCache = (g.s.echoOption == EchoCancelOptionID::SPEEX_MULTICHANNEL);
+			bEchoMultiCache = (Global::get().s.echoOption == EchoCancelOptionID::SPEEX_MULTICHANNEL);
 			qsEchoCache     = edev;
 
 			m_pulseAudio.stream_connect_record(pasSpeaker, qPrintable(edev), &buff, PA_STREAM_ADJUST_LATENCY);
@@ -483,7 +480,7 @@ void PulseAudioSystem::write_stream_callback(pa_stream *s, void *userdata) {
 	}
 	const pa_buffer_attr *bufferAttr;
 	if ((bufferAttr = pa.stream_get_buffer_attr(s))) {
-		g.ao->setBufferSize(bufferAttr->maxlength);
+		Global::get().ao->setBufferSize(bufferAttr->maxlength);
 	}
 	pas->wakeup();
 }
@@ -518,7 +515,7 @@ void PulseAudioSystem::read_callback(pa_stream *s, size_t bytes, void *userdata)
 		return;
 	}
 
-	AudioInputPtr ai     = g.ai;
+	AudioInputPtr ai     = Global::get().ai;
 	PulseAudioInput *pai = dynamic_cast< PulseAudioInput * >(ai.get());
 	if (!pai) {
 		if (length > 0) {
@@ -569,14 +566,22 @@ void PulseAudioSystem::write_callback(pa_stream *s, size_t bytes, void *userdata
 	PulseAudioSystem *pas = reinterpret_cast< PulseAudioSystem * >(userdata);
 	Q_ASSERT(s == pas->pasOutput);
 
-	AudioOutputPtr ao     = g.ao;
+	const PulseAudio &pa = pas->m_pulseAudio;
+
+	AudioOutputPtr ao     = Global::get().ao;
 	PulseAudioOutput *pao = dynamic_cast< PulseAudioOutput * >(ao.get());
 
 	if (!pao) {
+		// The AudioSystem pointer is invalid, probably because of an AudioSystem restart.
+		// However, PA expects this callback to return exactly the provided number of
+		// bytes. Failing to do so will cause PA to never call this again,
+		// effectively removing the audio output completely until Mumble is restarted.
+		// See: https://github.com/mumble-voip/mumble/issues/4883
+		// See: https://gitlab.freedesktop.org/pulseaudio/pulseaudio/-/issues/1132
+		unsigned char buffer[bytes] = {};
+		pa.stream_write(s, buffer, bytes, nullptr, 0, PA_SEEK_RELATIVE);
 		return;
 	}
-
-	const auto &pa = pas->m_pulseAudio;
 
 	const pa_sample_spec *pss = pa.stream_get_sample_spec(s);
 	const pa_channel_map *pcm = pa.stream_get_channel_map(pas->pasOutput);
@@ -643,13 +648,13 @@ void PulseAudioSystem::write_callback(pa_stream *s, size_t bytes, void *userdata
 	// do we have some mixed output?
 	if (pao->mix(buffer, samples)) {
 		// attenuate if instructed to or it's in settings
-		pas->bAttenuating = (g.bAttenuateOthers || g.s.bAttenuateOthers);
+		pas->bAttenuating = (Global::get().bAttenuateOthers || Global::get().s.bAttenuateOthers);
 
 	} else {
 		memset(buffer, 0, bytes);
 
 		// attenuate if intructed to (self-activated)
-		pas->bAttenuating = g.bAttenuateOthers;
+		pas->bAttenuating = Global::get().bAttenuateOthers;
 	}
 
 	// if the attenuation state has changed
@@ -666,18 +671,18 @@ void PulseAudioSystem::volume_sink_input_list_callback(pa_context *c, const pa_s
 	const auto &pa        = pas->m_pulseAudio;
 
 	if (eol == 0) {
-		// If we're using the default of "enable attenuation on all ouputs" and output from an application is
+		// If we're using the default of "enable attenuation on all outputs" and output from an application is
 		// loopbacked, both the loopback and the application will be attenuated leading to double attenuation.
-		if (!g.s.bOnlyAttenuateSameOutput && pas->iSinkId > -1 && !strcmp(i->driver, "module-loopback.c")) {
+		if (!Global::get().s.bOnlyAttenuateSameOutput && pas->iSinkId > -1 && !strcmp(i->driver, "module-loopback.c")) {
 			return;
 		}
 		// If we're not attenuating different sinks and the input is not on this sink, don't attenuate. Or,
 		// if the input is a loopback module and connected to Mumble's sink, also ignore it (loopbacks are used to
 		// connect sinks). An attenuated loopback means an indirect application attenuation.
-		if (g.s.bOnlyAttenuateSameOutput && pas->iSinkId > -1) {
+		if (Global::get().s.bOnlyAttenuateSameOutput && pas->iSinkId > -1) {
 			if (int(i->sink) != pas->iSinkId
 				|| (int(i->sink) == pas->iSinkId && !strcmp(i->driver, "module-loopback.c")
-					&& !g.s.bAttenuateLoopbacks)) {
+					&& !Global::get().s.bAttenuateLoopbacks)) {
 				return;
 			}
 		}
@@ -691,7 +696,7 @@ void PulseAudioSystem::volume_sink_input_list_callback(pa_context *c, const pa_s
 			patt.normal_volume     = i->volume;
 
 			// calculate the attenuated volume
-			pa_volume_t adj = static_cast< pa_volume_t >(PA_VOLUME_NORM * g.s.fOtherVolume);
+			pa_volume_t adj = static_cast< pa_volume_t >(PA_VOLUME_NORM * Global::get().s.fOtherVolume);
 			pa.sw_cvolume_multiply_scalar(&patt.attenuated_volume, &i->volume, adj);
 
 			// set it on the sink input
@@ -828,12 +833,6 @@ void PulseAudioSystem::restore_volume_success_callback(pa_context *, int, void *
 	PulseAudioSystem *pas = reinterpret_cast< PulseAudioSystem * >(userdata);
 
 	pas->iRemainingOperations--;
-
-	// if there are no more pending volume adjustments and we're shutting down,
-	// let the main thread know
-	if (!pas->bRunning && pas->iRemainingOperations == 0) {
-		pas->qwcWait.wakeAll();
-	}
 }
 
 void PulseAudioSystem::query() {
@@ -886,11 +885,17 @@ void PulseAudioSystem::contextCallback(pa_context *c) {
 			qWarning("PulseAudio: Connection failure: %s", m_pulseAudio.strerror(m_pulseAudio.context_errno(c)));
 			break;
 		default:
+			// These are other status callbacks we don't care about. However we explicitly want to wait until
+			// one of the status flags listed above are emitted before claiming we are initialized (this callback
+			// will be called multiple times).
 			return;
 	}
-	qmWait.lock();
-	qwcWait.wakeAll();
-	qmWait.unlock();
+
+	{
+		std::unique_lock< std::mutex > guard(m_initLock);
+		m_initialized = true;
+	}
+	m_initWaiter.notify_all();
 }
 
 PulseAudioInputRegistrar::PulseAudioInputRegistrar() : AudioInputRegistrar(QLatin1String("PulseAudio"), 10) {
@@ -902,20 +907,21 @@ AudioInput *PulseAudioInputRegistrar::create() {
 	return new PulseAudioInput();
 }
 
+const QVariant PulseAudioInputRegistrar::getDeviceChoice() {
+	return Global::get().s.qsPulseAudioInput;
+}
+
 const QList< audioDevice > PulseAudioInputRegistrar::getDeviceChoices() {
-	QList< audioDevice > qlReturn;
+	QList< audioDevice > choices;
 
-	QStringList qlInputDevs = pasys->qhInput.keys();
-	std::sort(qlInputDevs.begin(), qlInputDevs.end());
+	QStringList keys = pasys->qhInput.keys();
+	std::sort(keys.begin(), keys.end());
 
-	if (qlInputDevs.contains(g.s.qsPulseAudioInput)) {
-		qlInputDevs.removeAll(g.s.qsPulseAudioInput);
-		qlInputDevs.prepend(g.s.qsPulseAudioInput);
+	for (const auto &key : keys) {
+		choices << audioDevice(pasys->qhInput.value(key), key);
 	}
 
-	foreach (const QString &dev, qlInputDevs) { qlReturn << audioDevice(pasys->qhInput.value(dev), dev); }
-
-	return qlReturn;
+	return choices;
 }
 
 void PulseAudioInputRegistrar::setDeviceChoice(const QVariant &choice, Settings &s) {
@@ -923,8 +929,8 @@ void PulseAudioInputRegistrar::setDeviceChoice(const QVariant &choice, Settings 
 }
 
 bool PulseAudioInputRegistrar::canEcho(EchoCancelOptionID echoOption, const QString &osys) const {
-	return (echoOption == EchoCancelOptionID::SPEEX_MIXED
-	        || echoOption == EchoCancelOptionID::SPEEX_MULTICHANNEL) && (osys == name);
+	return (echoOption == EchoCancelOptionID::SPEEX_MIXED || echoOption == EchoCancelOptionID::SPEEX_MULTICHANNEL)
+		   && (osys == name);
 }
 
 PulseAudioOutputRegistrar::PulseAudioOutputRegistrar() : AudioOutputRegistrar(QLatin1String("PulseAudio"), 10) {
@@ -934,20 +940,21 @@ AudioOutput *PulseAudioOutputRegistrar::create() {
 	return new PulseAudioOutput();
 }
 
+const QVariant PulseAudioOutputRegistrar::getDeviceChoice() {
+	return Global::get().s.qsPulseAudioOutput;
+}
+
 const QList< audioDevice > PulseAudioOutputRegistrar::getDeviceChoices() {
-	QList< audioDevice > qlReturn;
+	QList< audioDevice > choices;
 
-	QStringList qlOutputDevs = pasys->qhOutput.keys();
-	std::sort(qlOutputDevs.begin(), qlOutputDevs.end());
+	QStringList keys = pasys->qhOutput.keys();
+	std::sort(keys.begin(), keys.end());
 
-	if (qlOutputDevs.contains(g.s.qsPulseAudioOutput)) {
-		qlOutputDevs.removeAll(g.s.qsPulseAudioOutput);
-		qlOutputDevs.prepend(g.s.qsPulseAudioOutput);
+	for (const auto &key : keys) {
+		choices << audioDevice(pasys->qhOutput.value(key), key);
 	}
 
-	foreach (const QString &dev, qlOutputDevs) { qlReturn << audioDevice(pasys->qhOutput.value(dev), dev); }
-
-	return qlReturn;
+	return choices;
 }
 
 void PulseAudioOutputRegistrar::setDeviceChoice(const QVariant &choice, Settings &s) {
@@ -1079,3 +1086,6 @@ PulseAudio::PulseAudio() : m_ok(false) {
 
 	m_ok = true;
 }
+
+#undef RESOLVE
+#undef NBLOCKS

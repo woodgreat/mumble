@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -26,7 +26,7 @@ public:
 	/// Whenever you change the DB structure (add a new table, added a new column in a table, etc.)
 	/// you have to increase this version number by one and add the respective "backwards compatibility
 	/// code" into the ServerDB code.
-	static const int DB_STRUCTURE_VERSION = 8;
+	static const int DB_STRUCTURE_VERSION = 9;
 
 	enum ChannelInfo { Channel_Description, Channel_Position, Channel_Max_Users };
 	enum UserInfo {
@@ -68,10 +68,6 @@ public:
 private:
 	static void loadOrSetupMetaPBKDF2IterationCount(QSqlQuery &query);
 	static void writeSUPW(int srvnum, const QString &pwHash, const QString &saltHash, const QVariant &kdfIterations);
-
-public slots:
-	/// Clear last_disconnect date of every user of the server
-	void clearLastDisconnect(Server *);
 };
 
 #endif

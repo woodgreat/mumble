@@ -1,4 +1,4 @@
-# Copyright 2019-2020 The Mumble Developers. All rights reserved.
+# Copyright 2020-2023 The Mumble Developers. All rights reserved.
 # Use of this source code is governed by a BSD-style license
 # that can be found in the LICENSE file at the root of the
 # Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -14,7 +14,7 @@ if(BUILD_OVERLAY_XCOMPILE)
 		LANGUAGES CXX
 	)
 
-	include("${PARENT_SOURCE_DIR}/cmake/compiler.cmake")
+	include("${MUMBLE_SOURCE_ROOT}/cmake/compiler.cmake")
 endif()
 
 set(DX11_PIXEL_SHADERS "overlay11.ps")
@@ -39,6 +39,9 @@ endif()
 remove_definitions("-DUNICODE")
 
 add_library(overlay SHARED)
+
+# The overlay doesn't work well with unity builds
+set_target_properties(overlay PROPERTIES UNITY_BUILD FALSE)
 
 find_program(FXC "fxc" DOC "Effect-Compiler tool")
 if(NOT FXC)
@@ -115,7 +118,7 @@ if(BUILD_OVERLAY_XCOMPILE)
 	target_include_directories(overlay
 		PRIVATE
 			${Boost_INCLUDE_DIRS}
-			${PARENT_SOURCE_DIR}
+			${MUMBLE_SOURCE_ROOT}
 			${CMAKE_CURRENT_BINARY_DIR}
 	)
 else()
@@ -153,8 +156,7 @@ if(64_BIT AND MSVC)
 			CMAKE_GENERATOR ${CMAKE_GENERATOR}
 			CMAKE_ARGS -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
 				"-DVCPKG_TARGET_TRIPLET=x86-windows-static-md"
-				"-DPARENT_SOURCE_DIR=${CMAKE_SOURCE_DIR}"
-				"-DMUMBLE_SOURCE_DIR=${CMAKE_SOURCE_DIR}/src/mumble"
+				"-DMUMBLE_SOURCE_ROOT=${CMAKE_SOURCE_DIR}"
 				"-DMUMBLE_BINARY_DIR=${CMAKE_BINARY_DIR}"
 				"-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
 				# Force MSVC, because CMake prioritizes MinGW over it.
@@ -176,8 +178,7 @@ if(64_BIT AND MSVC)
 				-G ${CMAKE_GENERATOR}
 				-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
 				"-DVCPKG_TARGET_TRIPLET=x86-windows-static-md"
-				"-DPARENT_SOURCE_DIR=${CMAKE_SOURCE_DIR}"
-				"-DMUMBLE_SOURCE_DIR=${CMAKE_SOURCE_DIR}/src/mumble"
+				"-DMUMBLE_SOURCE_ROOT=${CMAKE_SOURCE_DIR}"
 				"-DMUMBLE_BINARY_DIR=${CMAKE_BINARY_DIR}"
 				"-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
 				# Force MSVC, because CMake prioritizes MinGW over it.

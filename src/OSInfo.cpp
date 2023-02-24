@@ -1,4 +1,4 @@
-// Copyright 2005-2021 The Mumble Developers. All rights reserved.
+// Copyright 2009-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -200,9 +200,6 @@ QString OSInfo::getOSDisplayableVersion(const bool appendArch) {
 			return QString();
 		}
 
-		_SYSTEM_INFO si;
-		GetNativeSystemInfo(&si);
-
 		if (ovi.dwMajorVersion == 10) {
 			if (ovi.wProductType == VER_NT_WORKSTATION) {
 				os = QLatin1String("Windows 10");
@@ -327,6 +324,8 @@ QString OSInfo::getOSDisplayableVersion(const bool appendArch) {
 
 		return os;
 	}
+#elif defined(Q_OS_MACOS)
+	const QString os = QLatin1String("macOS ") + getOSVersion();
 #else
 	const QString os = QSysInfo::prettyProductName();
 #endif
@@ -376,8 +375,7 @@ QString OSInfo::getOSVersion() {
 #endif
 }
 
-void OSInfo::fillXml(QDomDocument &doc, QDomElement &root, const QString &os, const QString &osver,
-					 const QList< QHostAddress > &qlBind) {
+void OSInfo::fillXml(QDomDocument &doc, QDomElement &root, const QList< QHostAddress > &qlBind) {
 	QDomElement tag = doc.createElement(QLatin1String("machash"));
 	root.appendChild(tag);
 	QDomText t = doc.createTextNode(getMacHash(qlBind));
@@ -390,17 +388,17 @@ void OSInfo::fillXml(QDomDocument &doc, QDomElement &root, const QString &os, co
 
 	tag = doc.createElement(QLatin1String("version"));
 	root.appendChild(tag);
-	t = doc.createTextNode(QLatin1String(MUMTEXT(MUMBLE_VERSION)));
+	t = doc.createTextNode(Version::getRelease());
 	tag.appendChild(t);
 
 	tag = doc.createElement(QLatin1String("release"));
 	root.appendChild(tag);
-	t = doc.createTextNode(QLatin1String(MUMBLE_RELEASE));
+	t = doc.createTextNode(Version::getRelease());
 	tag.appendChild(t);
 
 	tag = doc.createElement(QLatin1String("os"));
 	root.appendChild(tag);
-	t = doc.createTextNode(os);
+	t = doc.createTextNode(getOS());
 	tag.appendChild(t);
 
 	tag = doc.createElement(QLatin1String("osarch"));
@@ -410,7 +408,7 @@ void OSInfo::fillXml(QDomDocument &doc, QDomElement &root, const QString &os, co
 
 	tag = doc.createElement(QLatin1String("osver"));
 	root.appendChild(tag);
-	t = doc.createTextNode(osver);
+	t = doc.createTextNode(getOSVersion());
 	tag.appendChild(t);
 
 	tag = doc.createElement(QLatin1String("osverbose"));

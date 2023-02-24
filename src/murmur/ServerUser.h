@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2010-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -12,6 +12,7 @@
 #	include "win.h"
 #endif
 
+#include "ClientType.h"
 #include "Connection.h"
 #include "HostAddress.h"
 #include "Timer.h"
@@ -65,7 +66,7 @@ class ServerUser;
 struct WhisperTargetCache {
 	QSet< ServerUser * > channelTargets;
 	QSet< ServerUser * > directTargets;
-	QSet< ServerUser * > listeningTargets;
+	QHash< ServerUser *, VolumeAdjustment > listeningTargets;
 };
 
 class Server;
@@ -108,13 +109,14 @@ protected:
 public:
 	enum State { Connected, Authenticated };
 	State sState;
+	ClientType m_clientType;
 	operator QString() const;
 
 	float dUDPPingAvg, dUDPPingVar;
 	float dTCPPingAvg, dTCPPingVar;
 	quint32 uiUDPPackets, uiTCPPackets;
 
-	unsigned int uiVersion;
+	Version::full_t m_version;
 	QString qsRelease;
 	QString qsOS;
 	QString qsOSVersion;
@@ -147,6 +149,7 @@ public:
 	QMap< QString, QString > qmWhisperRedirect;
 
 	LeakyBucket leakyBucket;
+	LeakyBucket m_pluginMessageBucket;
 
 	int iLastPermissionCheck;
 	QMap< int, unsigned int > qmPermissionSent;

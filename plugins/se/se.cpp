@@ -1,10 +1,12 @@
-// Copyright 2019-2020 The Mumble Developers. All rights reserved.
+// Copyright 2020-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
 
-#include "mumble_plugin.h"
-#include "mumble_plugin_utils.h"
+#define MUMBLE_ALLOW_DEPRECATED_LEGACY_PLUGIN_API
+#include "mumble_legacy_plugin.h"
+
+#include "mumble_positional_audio_utils.h"
 
 #ifdef OS_LINUX
 #	include "ProcessLinux.h"
@@ -12,9 +14,10 @@
 #include "ProcessWindows.h"
 
 #include <cstring>
+#include <memory>
 #include <sstream>
 
-std::unique_ptr< Process > proc;
+std::unique_ptr< ProcessBase > proc;
 
 static bool isWin32 = false;
 
@@ -188,7 +191,7 @@ static bool tryInit(const std::multimap< std::wstring, unsigned long long int > 
 	};
 
 	for (const auto &name : names) {
-		const auto id = Process::find(name, pids);
+		const auto id = ProcessBase::find(name, pids);
 		if (!id) {
 			continue;
 		}

@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -7,6 +7,8 @@
 #define MUMBLE_MURMUR_META_H_
 
 #include "Timer.h"
+
+#include "Version.h"
 
 #ifdef Q_OS_WIN
 #	include "win.h"
@@ -86,11 +88,6 @@ public:
 	QString qsIceEndpoint;
 	QString qsIceSecretRead, qsIceSecretWrite;
 
-	QString qsGRPCAddress;
-	QString qsGRPCCert;
-	QString qsGRPCKey;
-	QString qsGRPCAuthorized;
-
 	QString qsRegName;
 	QString qsRegPassword;
 	QString qsRegHost;
@@ -103,6 +100,11 @@ public:
 
 	unsigned int iMessageLimit;
 	unsigned int iMessageBurst;
+
+	unsigned int iPluginMessageLimit;
+	unsigned int iPluginMessageBurst;
+
+	bool broadcastListenerVolumeAdjustments;
 
 	QSslCertificate qscCert;
 	QSslKey qskKey;
@@ -138,7 +140,7 @@ public:
 	QString qsName;
 #endif
 
-	QVariant qvSuggestVersion;
+	Version::full_t m_suggestVersion;
 	QVariant qvSuggestPositional;
 	QVariant qvSuggestPushToTalk;
 
@@ -146,6 +148,9 @@ public:
 	bool bLogGroupChanges;
 	/// A flag indicating whether changes in ACLs should be logged
 	bool bLogACLChanges;
+
+	/// A flag indicating whether recording is allowed on this server
+	bool allowRecording;
 
 	/// qsAbsSettingsFilePath is the absolute path to
 	/// the murmur.ini used by this Meta instance.
@@ -204,7 +209,8 @@ public:
 	void killAll();
 	void getOSInfo();
 	void connectListener(QObject *);
-	static void getVersion(int &major, int &minor, int &patch, QString &string);
+	static void getVersion(Version::component_t &major, Version::component_t &minor, Version::component_t &patch,
+						   QString &string);
 signals:
 	void started(Server *);
 	void stopped(Server *);

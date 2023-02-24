@@ -1,12 +1,9 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
 
 #include "PAAudio.h"
-
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name
-// (like protobuf 3.7 does). As such, for now, we have to make this our last include.
 #include "Global.h"
 
 #ifdef Q_CC_GNU
@@ -30,6 +27,7 @@ static std::unique_ptr< PortAudioSystem > pas;
 class PortAudioInputRegistrar : public AudioInputRegistrar {
 private:
 	AudioInput *create() Q_DECL_OVERRIDE;
+	const QVariant getDeviceChoice() Q_DECL_OVERRIDE;
 	const QList< audioDevice > getDeviceChoices() Q_DECL_OVERRIDE;
 	void setDeviceChoice(const QVariant &, Settings &) Q_DECL_OVERRIDE;
 	bool canEcho(EchoCancelOptionID echoCancelID, const QString &outputSystem) const Q_DECL_OVERRIDE;
@@ -42,6 +40,7 @@ public:
 class PortAudioOutputRegistrar : public AudioOutputRegistrar {
 private:
 	AudioOutput *create() Q_DECL_OVERRIDE;
+	const QVariant getDeviceChoice() Q_DECL_OVERRIDE;
 	const QList< audioDevice > getDeviceChoices() Q_DECL_OVERRIDE;
 	void setDeviceChoice(const QVariant &, Settings &) Q_DECL_OVERRIDE;
 
@@ -64,8 +63,12 @@ AudioInput *PortAudioInputRegistrar::create() {
 	return new PortAudioInput();
 }
 
+const QVariant PortAudioInputRegistrar::getDeviceChoice() {
+	return Global::get().s.iPortAudioInput;
+}
+
 const QList< audioDevice > PortAudioInputRegistrar::getDeviceChoices() {
-	return pas->enumerateDevices(true, g.s.iPortAudioInput);
+	return pas->enumerateDevices(true);
 }
 
 void PortAudioInputRegistrar::setDeviceChoice(const QVariant &choice, Settings &s) {
@@ -83,8 +86,12 @@ AudioOutput *PortAudioOutputRegistrar::create() {
 	return new PortAudioOutput();
 }
 
+const QVariant PortAudioOutputRegistrar::getDeviceChoice() {
+	return Global::get().s.iPortAudioOutput;
+}
+
 const QList< audioDevice > PortAudioOutputRegistrar::getDeviceChoices() {
-	return pas->enumerateDevices(false, g.s.iPortAudioOutput);
+	return pas->enumerateDevices(false);
 }
 
 void PortAudioOutputRegistrar::setDeviceChoice(const QVariant &choice, Settings &s) {
@@ -93,10 +100,6 @@ void PortAudioOutputRegistrar::setDeviceChoice(const QVariant &choice, Settings 
 
 void PortAudioInit::initialize() {
 	pas.reset(new PortAudioSystem());
-
-	pas->qmWait.lock();
-	pas->qwcWait.wait(&pas->qmWait, 1000);
-	pas->qmWait.unlock();
 
 	if (pas->bOk) {
 		airPortAudio.reset(new PortAudioInputRegistrar());
@@ -175,7 +178,7 @@ PortAudioSystem::~PortAudioSystem() {
 	}
 }
 
-const QList< audioDevice > PortAudioSystem::enumerateDevices(const bool input, const PaDeviceIndex current) {
+const QList< audioDevice > PortAudioSystem::enumerateDevices(const bool input) {
 	QList< audioDevice > audioDevices;
 
 	if (!bOk) {
@@ -201,15 +204,6 @@ const QList< audioDevice > PortAudioSystem::enumerateDevices(const bool input, c
 				audioDevices << audioDevice(
 					QLatin1String(apiInfo->name) + QLatin1String(": ") + QLatin1String(deviceInfo->name), deviceIndex);
 			}
-		}
-	}
-
-	for (auto i = 0; i < audioDevices.count(); ++i) {
-		if (audioDevices.at(i).second == current) {
-			// We want the current device to appear at the top of the list
-			audioDevice audioDevice = audioDevices.takeAt(i);
-			audioDevices.prepend(audioDevice);
-			break;
 		}
 	}
 
@@ -341,14 +335,14 @@ bool PortAudioSystem::stopStream(PaStream *stream) {
 int PortAudioSystem::streamCallback(const void *input, void *output, unsigned long frames,
 									const PaStreamCallbackTimeInfo *, PaStreamCallbackFlags, void *isInput) {
 	if (isInput) {
-		auto const pai = dynamic_cast< PortAudioInput * >(g.ai.get());
+		auto const pai = dynamic_cast< PortAudioInput * >(Global::get().ai.get());
 		if (!pai) {
 			return paAbort;
 		}
 
 		pai->process(frames, input);
 	} else {
-		auto const pao = dynamic_cast< PortAudioOutput * >(g.ao.get());
+		auto const pao = dynamic_cast< PortAudioOutput * >(Global::get().ao.get());
 		if (!pao) {
 			return paAbort;
 		}
@@ -360,7 +354,7 @@ int PortAudioSystem::streamCallback(const void *input, void *output, unsigned lo
 }
 
 PortAudioInput::PortAudioInput() : stream(nullptr) {
-	iMicChannels = pas->openStream(&stream, g.s.iPortAudioInput, iFrameSize, true);
+	iMicChannels = pas->openStream(&stream, Global::get().s.iPortAudioInput, iFrameSize, true);
 	if (!iMicChannels) {
 		qWarning("PortAudioInput: failed to open stream");
 		return;
@@ -411,7 +405,7 @@ void PortAudioInput::run() {
 }
 
 PortAudioOutput::PortAudioOutput() : stream(nullptr) {
-	iChannels = pas->openStream(&stream, g.s.iPortAudioOutput, iFrameSize, false);
+	iChannels = pas->openStream(&stream, Global::get().s.iPortAudioOutput, iFrameSize, false);
 	if (!iChannels) {
 		qWarning("PortAudioOutput: failed to open stream");
 		return;
@@ -465,3 +459,5 @@ void PortAudioOutput::run() {
 	qwcSleep.wait(&qmWait);
 	qmWait.unlock();
 }
+
+#undef RESOLVE

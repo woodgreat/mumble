@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -6,6 +6,7 @@
 #ifndef MUMBLE_MUMBLE_DATABASE_H_
 #define MUMBLE_MUMBLE_DATABASE_H_
 
+#include "Channel.h"
 #include "Settings.h"
 #include "UnresolvedServerAddress.h"
 #include <QSqlDatabase>
@@ -53,9 +54,9 @@ public:
 
 	QString getUserLocalNickname(const QString &hash);
 	void setUserLocalNickname(const QString &hash, const QString &nickname);
-	
-	bool isChannelFiltered(const QByteArray &server_cert_digest, const int channel_id);
-	void setChannelFiltered(const QByteArray &server_cert_digest, const int channel_id, bool hidden);
+
+	ChannelFilterMode getChannelFilterMode(const QByteArray &server_cert_digest, int channel_id);
+	void setChannelFilterMode(const QByteArray &server_cert_digest, int channel_id, ChannelFilterMode filterMode);
 
 	QMap< UnresolvedServerAddress, unsigned int > getPingCache();
 	void setPingCache(const QMap< UnresolvedServerAddress, unsigned int > &cache);
@@ -70,7 +71,7 @@ public:
 	void setTokens(const QByteArray &digest, QStringList &tokens);
 
 	QList< Shortcut > getShortcuts(const QByteArray &digest);
-	bool setShortcuts(const QByteArray &digest, QList< Shortcut > &shortcuts);
+	void setShortcuts(const QByteArray &digest, const QList< Shortcut > &shortcuts);
 
 	void addFriend(const QString &name, const QString &hash);
 	void removeFriend(const QString &hash);
@@ -82,12 +83,6 @@ public:
 
 	bool getUdp(const QByteArray &digest);
 	void setUdp(const QByteArray &digest, bool udp);
-
-	QList< int > getChannelListeners(const QByteArray &digest);
-	void setChannelListeners(const QByteArray &digest, const QSet< int > &channelIDs);
-
-	QHash< int, float > getChannelListenerLocalVolumeAdjustments(const QByteArray &digest);
-	void setChannelListenerLocalVolumeAdjustments(const QByteArray &digest, const QHash< int, float > &volumeMap);
 };
 
 #endif

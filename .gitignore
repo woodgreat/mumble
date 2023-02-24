@@ -6,6 +6,8 @@ release/
 asio/
 local/
 indent.sh
+.vs
+.vscode
 *.pdb
 *.sdf
 *.sln
@@ -45,3 +47,6 @@ doxygen/
 .directory
 build/
 compile_commands.json
+.devcontainer/*
+__pycache__/
+CMakeSettings.json

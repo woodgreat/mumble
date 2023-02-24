@@ -1,11 +1,10 @@
 ![Mumble screenshot](screenshots/Mumble.png)
 
-# Mumble - Open Source voice-chat software 
+# Mumble - Open Source voice-chat software
 
 [![https://www.mumble.info](https://img.shields.io/badge/Website-https%3A%2F%2Fwww.mumble.info-blue?style=for-the-badge)](https://www.mumble.info)
 
-[![#mumble:matrix.org](https://img.shields.io/matrix/mumble:matrix.org?label=%23mumble:matrix.org&style=for-the-badge)](https://riot.im/app/#/room/#mumble:matrix.org)
-[![#mumble@freenode.net](https://img.shields.io/badge/Freenode.net-%23mumble-blue?style=for-the-badge)](https://webchat.freenode.net/#mumble)
+[![#mumble:matrix.org](https://img.shields.io/matrix/mumble:matrix.org?label=%23mumble:matrix.org&style=for-the-badge)](https://matrix.to/#/#mumble:matrix.org)
 
 [![Codacy](https://img.shields.io/codacy/grade/262a5e20c83a40599050e22e700d8a3e?label=Codacy&style=for-the-badge)](https://app.codacy.com/manual/mumble-voip/mumble)
 [![Azure](https://img.shields.io/azure-devops/build/Mumble-VoIP/c819eb06-7b22-4ef3-bbcd-860094454eb3/1?label=Azure&style=for-the-badge)](https://dev.azure.com/Mumble-VoIP/Mumble)
@@ -16,7 +15,7 @@ Mumble is an Open Source, low-latency and high-quality voice-chat program
 written on top of Qt and Opus.
 
 There are two modules in Mumble; the client (mumble) and the server (murmur).
-The client works on Windows, Linux, FreeBSD and macOS,
+The client works on Windows, Linux, FreeBSD, OpenBSD and macOS,
 while the server should work on anything Qt can be installed on.
 
 Please note that with "Windows" we mean 7 and newer.
@@ -30,7 +29,21 @@ The documentation of the project can be found on the [wiki](https://wiki.mumble.
 
 ## Contributing
 
-We always welcome contributions to the project. If you have code that you would like to contribute, please go ahead and create a PR. While doing so, please try to make sure that you follow our [commit guidelines](COMMIT_GUIDELINES.md).
+We always welcome contributions to the project. If you have code that you would like to contribute, please go ahead and create a PR. While doing so,
+please try to make sure that you follow our [commit guidelines](COMMIT_GUIDELINES.md).
+
+If you are new to the Mumble project, you may want to check out the general [introduction to the Mumble source code](docs/dev/TheMumbleSourceCode.md).
+
+### Translating
+
+Mumble supports various languages. We are always looking for qualified people to contribute translations.
+
+We are using Weblate as a translation platform. [Register on Weblate](https://hosted.weblate.org/accounts/register/), and join [our translation project](https://hosted.weblate.org/projects/mumble/).
+
+### Writing plugins
+
+Mumble supports general-purpose plugins that can provide functionality that is not implemented in the main Mumble application. You can find more
+information on how this works and on how these have to be created in the [plugin documentation](docs/dev/plugins/README.md).
 
 ## Building
 
@@ -79,7 +92,7 @@ For more information please see the "Running Murmur" in the Linux/Unix section b
 ### Running Mumble
 
 If you have installed Mumble through your distributon's package
-repostory, you should be able to find Mumble in your start menu. No
+repository, you should be able to find Mumble in your start menu. No
 additional steps necessary.
 
 ### Running Murmur
@@ -102,6 +115,19 @@ murmurd [-supw <password>] [-ini <inifile>] [-fg] [v]
 -fg     Run in the foreground, logging to standard output.
 
 -v      More verbose logging.
+```
+
+#### Build and run from Docker
+
+On recent Docker versions you can build images directly from sources on GitHub:
+```bash
+docker build --pull -t mumble-server github.com/mumble-voip/mumble#master
+```
+Example `--pull`s each time to check for updated base image, then downloads and builds `master` branch.
+
+You can also specify user id (UID) and group id (GID) for the *murmur* user in the image. This allows users who use bind mount volumes to use the same UID/GID in the container as in the host:
+```bash
+docker build --pull -t mumble-server --build-arg UID=1234 --build-arg GID=1234 github.com/mumble-voip/mumble#master
 ```
 
 ### OpenGL Overlay

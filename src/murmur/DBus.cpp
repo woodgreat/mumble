@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -12,7 +12,7 @@
 #include "DBus.h"
 
 #include "Connection.h"
-#include "Message.h"
+#include "QtUtils.h"
 #include "Server.h"
 #include "ServerDB.h"
 #include "ServerUser.h"
@@ -938,6 +938,12 @@ void MetaDBus::quit() {
 	QCoreApplication::instance()->quit();
 }
 
-void MetaDBus::getVersion(int &major, int &minor, int &patch, QString &text) {
+void MetaDBus::getVersion(Version::component_t &major, Version::component_t &minor, Version::component_t &patch,
+						  QString &text) {
 	Meta::getVersion(major, minor, patch, text);
 }
+
+#undef PLAYER_SETUP_VAR
+#undef PLAYER_SETUP
+#undef CHANNEL_SETUP_VAR2
+#undef CHANNEL_SETUP_VAR

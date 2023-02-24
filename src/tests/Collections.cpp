@@ -1,3 +1,8 @@
+// Copyright 2009-2023 The Mumble Developers. All rights reserved.
+// Use of this source code is governed by a BSD-style license
+// that can be found in the LICENSE file at the root of the
+// Mumble source tree or at <https://www.mumble.info/LICENSE>.
+
 /**
  * Benchmark of storage mechanisms; array, vector, Qt collections.
  */
@@ -115,3 +120,6 @@ int main(int argc, char **argv) {
 	}
 	qWarning("QListSet: %lldus insert, %lldus iterate: %d", usins, usiter, sum);
 }
+
+#undef SL
+#undef NE

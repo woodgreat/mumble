@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -23,6 +23,9 @@
 #include <pulse/subscribe.h>
 #include <pulse/thread-mainloop.h>
 #include <pulse/volume.h>
+
+#include <condition_variable>
+#include <mutex>
 
 struct PulseAttenuation {
 	uint32_t index;
@@ -119,6 +122,10 @@ private:
 	Q_OBJECT
 	Q_DISABLE_COPY(PulseAudioSystem)
 protected:
+	bool m_initialized = false;
+	std::mutex m_initLock;
+	std::condition_variable m_initWaiter;
+
 	void wakeup();
 
 	PulseAudio m_pulseAudio;
@@ -177,8 +184,6 @@ public:
 	QHash< QString, QString > qhInput;
 	QHash< QString, QString > qhOutput;
 	bool bPulseIsGood;
-	QMutex qmWait;
-	QWaitCondition qwcWait;
 
 	void wakeup_lock();
 

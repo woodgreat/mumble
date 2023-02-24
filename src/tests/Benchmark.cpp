@@ -1,3 +1,8 @@
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
+// Use of this source code is governed by a BSD-style license
+// that can be found in the LICENSE file at the root of the
+// Mumble source tree or at <https://www.mumble.info/LICENSE>.
+
 /**
  * Provided a target address spawns a specified number of senders/speakers,
  * UDP-listeners and TCP-listeners.
@@ -95,7 +100,7 @@ Client::Client(QObject *p, QHostAddress qha, unsigned short prt, bool send, bool
 
 	MumbleProto::Version mpv;
 	mpv.set_release(u8(QLatin1String("1.2.1 Benchmark")));
-	mpv.set_version(0x010203);
+	mpv.set_version_v1(Version::toLegacyVersion(Version::fromComponents(1, 2, 3)));
 
 	sendMessage(mpv, MessageHandler::Version);
 

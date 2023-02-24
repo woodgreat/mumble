@@ -1,4 +1,4 @@
-// Copyright 2020 The Mumble Developers. All rights reserved.
+// Copyright 2020-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -17,8 +17,8 @@ public class ServerInstaller : MumbleInstall {
 	public ServerInstaller(string version, string arch) {
 		string upgradeGuid = "03E9476F-0F75-4661-BFC9-A9DAEB23D3A0";
 		string[] binaries = {
-			"murmur.exe",
-			"Murmur.ice"
+			"mumble-server.exe",
+			"MumbleServer.ice"
 		};
 
 		string[] licenses = {
@@ -38,7 +38,7 @@ public class ServerInstaller : MumbleInstall {
 			this.Platform = WixSharp.Platform.x86;
 		}
 
-		this.Name = "Mumble (server)";
+		this.Name = "Mumble Server";
 		this.UpgradeCode = Guid.Parse(upgradeGuid);
 		this.Version = new Version(version);
 		this.OutFileName = "mumble_server-" + this.Version + "-" + arch;
@@ -50,7 +50,7 @@ public class ServerInstaller : MumbleInstall {
 		var licenseDir = new Dir("licenses");
 		var menuDir = new Dir(@"%ProgramMenu%");
 		var shortcutDir = new Dir("Mumble");
-		var menuShortcut = new ExeFileShortcut("Murmur", "[INSTALLDIR]murmur.exe", arguments: "");
+		var menuShortcut = new ExeFileShortcut("Mumble Server", "[INSTALLDIR]mumble-server.exe", arguments: "");
 		menuShortcut.IconFile = @"..\icons\murmur.ico";
 		shortcutDir.Shortcuts = new ExeFileShortcut[] { menuShortcut };
 		
@@ -88,7 +88,7 @@ class BuildInstaller
 		bool isAllLangs = false;
 
 		for (int i = 0; i < args.Length; i++) {
-			if (args[i] == "--version" && Regex.IsMatch(args[i + 1], @"^([0-9]+\.){3}[0-9]+$")) {
+			if (args[i] == "--version" && Regex.IsMatch(args[i + 1], @"^([0-9]+\.){2}[0-9]+$")) {
 				version = args[i + 1];
 			}
 

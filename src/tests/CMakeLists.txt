@@ -1,4 +1,4 @@
-# Copyright 2019-2020 The Mumble Developers. All rights reserved.
+# Copyright 2020-2023 The Mumble Developers. All rights reserved.
 # Use of this source code is governed by a BSD-style license
 # that can be found in the LICENSE file at the root of the
 # Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -16,10 +16,15 @@ endmacro()
 
 if(client)
 	use_test("TestXMLTools")
+	if(NOT "${CMAKE_SYSTEM_NAME}" STREQUAL "FreeBSD")
+		# For some reason Qt segfaults when executing this test on FreeBSD without a display (even when using the offscreen plugin)
+		use_test("TestSettingsJSONSerialization")
+	endif()
 endif()
 
 if(server)
 	use_test("TestCrypt")
+	use_test("TestAudioReceiverBuffer")
 endif()
 
 # Shared tests
@@ -28,12 +33,14 @@ use_test("TestCryptographicRandom")
 use_test("TestFFDHE")
 use_test("TestPacketDataStream")
 use_test("TestPasswordGenerator")
+use_test("TestMumbleProtocol")
 use_test("TestSelfSignedCertificate")
 use_test("TestServerAddress")
 use_test("TestSSLLocks")
 use_test("TestStdAbs")
 use_test("TestTimer")
 use_test("TestUnresolvedServerAddress")
+use_test("TestVersion")
 
 if(online-tests)
 	message(STATUS "Including online tests - These will fail if you don't have a working internet connection when running them")

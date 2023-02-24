@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2009-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -7,6 +7,7 @@
 
 #include "AudioOutput.h"
 #include "Channel.h"
+#include "PluginManager.h"
 #include "Global.h"
 
 QHash< unsigned int, ClientUser * > ClientUser::c_qmUsers;
@@ -61,6 +62,10 @@ ClientUser *ClientUser::add(unsigned int uiSession, QObject *po) {
 	ClientUser *p        = new ClientUser(po);
 	p->uiSession         = uiSession;
 	c_qmUsers[uiSession] = p;
+
+	QObject::connect(p, &ClientUser::talkingStateChanged, Global::get().pluginManager,
+					 &PluginManager::on_userTalkingStateChanged);
+
 	return p;
 }
 
@@ -97,7 +102,7 @@ void ClientUser::remove(unsigned int uiSession) {
 	}
 
 	if (p) {
-		AudioOutputPtr ao = g.ao;
+		AudioOutputPtr ao = Global::get().ao;
 		if (ao) {
 			// It is safe to call this function and to give the ClientUser pointer
 			// to it even though we don't hold the lock anymore as it will only take
@@ -107,7 +112,7 @@ void ClientUser::remove(unsigned int uiSession) {
 			// Furthermore ClientUser objects are deleted in UserModel::removeUser which
 			// calls this very function before doing so. Thus the object shouldn't be
 			// deleted before this function returns anyways.
-			ao->removeBuffer(p);
+			ao->removeUser(p);
 		}
 	}
 }
@@ -253,7 +258,7 @@ void ClientUser::setLocalNickname(const QString &nickname) {
 }
 
 bool ClientUser::lessThanOverlay(const ClientUser *first, const ClientUser *second) {
-	if (g.s.os.osSort == OverlaySettings::LastStateChange) {
+	if (Global::get().s.os.osSort == OverlaySettings::LastStateChange) {
 		// Talkers above non-talkers
 		if (first->tsState != Settings::Passive && second->tsState == Settings::Passive)
 			return true;
@@ -287,7 +292,7 @@ bool ClientUser::lessThanOverlay(const ClientUser *first, const ClientUser *seco
 
 	// When sorting for the overlay always place the local users
 	// channel above the others
-	ClientUser *self = c_qmUsers.value(g.uiSession);
+	ClientUser *self = c_qmUsers.value(Global::get().uiSession);
 	if (self) {
 		if (self->cChannel == first->cChannel)
 			return true;
@@ -311,7 +316,7 @@ bool ClientUser::isActive() {
 	if (!tLastTalkStateChange.isStarted())
 		return false;
 
-	return tLastTalkStateChange.elapsed() < g.s.os.uiActiveTime * 1000000U;
+	return tLastTalkStateChange.elapsed() < Global::get().s.os.uiActiveTime * 1000000U;
 }
 
 /* From Channel.h

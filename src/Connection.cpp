@@ -1,10 +1,9 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
 
 #include "Connection.h"
-#include "Message.h"
 #include "Mumble.pb.h"
 #include "SSL.h"
 
@@ -121,7 +120,7 @@ void Connection::socketRead() {
 			unsigned char a_ucBuffer[6];
 
 			qtsSocket->read(reinterpret_cast< char * >(a_ucBuffer), 6);
-			uiType        = qFromBigEndian< quint16 >(&a_ucBuffer[0]);
+			m_type        = static_cast< Mumble::Protocol::TCPMessageType >(qFromBigEndian< quint16 >(&a_ucBuffer[0]));
 			iPacketLength = qFromBigEndian< quint32 >(&a_ucBuffer[2]);
 			iAvailable -= 6;
 		}
@@ -139,7 +138,7 @@ void Connection::socketRead() {
 		iPacketLength        = -1;
 		iAvailable -= iPacketLength;
 
-		emit message(uiType, qbaBuffer);
+		emit message(m_type, qbaBuffer);
 	}
 }
 
@@ -159,7 +158,8 @@ void Connection::socketDisconnected() {
 	emit connectionClosed(QAbstractSocket::UnknownSocketError, QString());
 }
 
-void Connection::messageToNetwork(const ::google::protobuf::Message &msg, unsigned int msgType, QByteArray &cache) {
+void Connection::messageToNetwork(const ::google::protobuf::Message &msg, Mumble::Protocol::TCPMessageType msgType,
+								  QByteArray &cache) {
 #if GOOGLE_PROTOBUF_VERSION >= 3004000
 	int len = msg.ByteSizeLong();
 #else
@@ -176,7 +176,8 @@ void Connection::messageToNetwork(const ::google::protobuf::Message &msg, unsign
 	msg.SerializeToArray(uc + 6, len);
 }
 
-void Connection::sendMessage(const ::google::protobuf::Message &msg, unsigned int msgType, QByteArray &cache) {
+void Connection::sendMessage(const ::google::protobuf::Message &msg, Mumble::Protocol::TCPMessageType msgType,
+							 QByteArray &cache) {
 	if (cache.isEmpty()) {
 		messageToNetwork(msg, msgType, cache);
 	}
@@ -228,11 +229,13 @@ quint16 Connection::localPort() const {
 }
 
 QList< QSslCertificate > Connection::peerCertificateChain() const {
-	const QSslCertificate cert = qtsSocket->peerCertificate();
-	if (cert.isNull())
-		return QList< QSslCertificate >();
-	else
-		return qtsSocket->peerCertificateChain() << cert;
+	// The documentation of QSslSocket::peerCertificateChain() actually says nothing
+	// about the order of the certificates in the chain. The sentence in this functions
+	// documentation is taken from QSslConfiguration::peerCertificateChain().
+	// Through tests and by looking into Qt's source code it was validated,
+	// that these two functions do the same thing.
+	// See mumble-voip/mumble#5280 for more information.
+	return qtsSocket->peerCertificateChain();
 }
 
 QSslCipher Connection::sessionCipher() const {

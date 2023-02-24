@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -12,8 +12,6 @@
 
 #include <cmath>
 
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name
-// (like protobuf 3.7 does). As such, for now, we have to make this our last include.
 #include "Global.h"
 
 // From os_win.cpp.
@@ -25,6 +23,7 @@ class ASIOAudioInputRegistrar : public AudioInputRegistrar {
 public:
 	ASIOAudioInputRegistrar();
 	virtual AudioInput *create();
+	virtual const QVariant getDeviceChoice();
 	virtual const QList< audioDevice > getDeviceChoices();
 	virtual void setDeviceChoice(const QVariant &, Settings &);
 	virtual bool canEcho(EchoCancelOptionID echoCancelID, const QString &outputSystem) const;
@@ -39,17 +38,20 @@ ASIOAudioInputRegistrar::ASIOAudioInputRegistrar() : AudioInputRegistrar(QLatin1
 AudioInput *ASIOAudioInputRegistrar::create() {
 	return new ASIOInput();
 }
-const QList< audioDevice > ASIOAudioInputRegistrar::getDeviceChoices() {
-	QList< audioDevice > qlReturn;
-	return qlReturn;
+
+const QVariant ASIOAudioInputRegistrar::getDeviceChoice() {
+	return {};
 }
 
-bool ASIOAudioInputRegistrar::canEcho(EchoCancelOptionID echoOption, const QString &) const {
-	return (echoOption == EchoCancelOptionID::SPEEX_MIXED
-	        || echoOption == EchoCancelOptionID::SPEEX_MULTICHANNEL);
+const QList< audioDevice > ASIOAudioInputRegistrar::getDeviceChoices() {
+	return {};
 }
 
 void ASIOAudioInputRegistrar::setDeviceChoice(const QVariant &, Settings &) {
+}
+
+bool ASIOAudioInputRegistrar::canEcho(EchoCancelOptionID echoOption, const QString &) const {
+	return (echoOption == EchoCancelOptionID::SPEEX_MIXED || echoOption == EchoCancelOptionID::SPEEX_MULTICHANNEL);
 }
 
 static ConfigWidget *ASIOConfigDialogNew(Settings &st) {
@@ -76,7 +78,7 @@ void ASIOInit::initialize() {
 
 	bool bFound = false;
 
-	if (!g.s.bASIOEnable) {
+	if (!Global::get().s.bASIOEnable) {
 		qWarning("ASIOInput: ASIO forcefully disabled via 'asio/enable' config option.");
 		return;
 	}
@@ -410,7 +412,7 @@ void ASIOConfig::clearQuery() {
 }
 
 ASIOInput::ASIOInput() {
-	QString qsCls = g.s.qsASIOclass;
+	QString qsCls = Global::get().s.qsASIOclass;
 	CLSID clsid;
 
 	iasio   = nullptr;
@@ -419,8 +421,8 @@ ASIOInput::ASIOInput() {
 
 	// Sanity check things first.
 
-	iNumMic     = g.s.qlASIOmic.count();
-	iNumSpeaker = g.s.qlASIOspeaker.count();
+	iNumMic     = Global::get().s.qlASIOmic.count();
+	iNumSpeaker = Global::get().s.qlASIOspeaker.count();
 
 	if ((iNumMic == 0) || (iNumSpeaker == 0)) {
 		QMessageBox::warning(nullptr, QLatin1String("Mumble"),
@@ -482,7 +484,7 @@ ASIOInput::ASIOInput() {
 			int i, idx = 0;
 			for (i = 0; i < iNumMic; i++) {
 				abiInfo[idx].isInput    = true;
-				abiInfo[idx].channelNum = g.s.qlASIOmic[i].toInt();
+				abiInfo[idx].channelNum = Global::get().s.qlASIOmic[i].toInt();
 
 				aciInfo[idx].channel = abiInfo[idx].channelNum;
 				aciInfo[idx].isInput = true;
@@ -493,7 +495,7 @@ ASIOInput::ASIOInput() {
 			}
 			for (i = 0; i < iNumSpeaker; i++) {
 				abiInfo[idx].isInput    = true;
-				abiInfo[idx].channelNum = g.s.qlASIOspeaker[i].toInt();
+				abiInfo[idx].channelNum = Global::get().s.qlASIOspeaker[i].toInt();
 
 				aciInfo[idx].channel = abiInfo[idx].channelNum;
 				aciInfo[idx].isInput = true;

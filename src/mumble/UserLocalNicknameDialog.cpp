@@ -1,4 +1,4 @@
-// Copyright 2020 The Mumble Developers. All rights reserved.
+// Copyright 2020-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -7,17 +7,14 @@
 #include "ClientUser.h"
 #include "Database.h"
 #include "MainWindow.h"
+#include "Global.h"
 
 #include <QtGui/QCloseEvent>
 #include <QtWidgets/QPushButton>
 
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name
-// (like protobuf 3.7 does). As such, for now, we have to make this our last include.
-#include "Global.h"
-
 UserLocalNicknameDialog::UserLocalNicknameDialog(
 	unsigned int sessionId,
-	std::unordered_map< unsigned int, NicknameDialogPtr > &qmUserNicknameTracker)
+	std::unordered_map< unsigned int, qt_unique_ptr< UserLocalNicknameDialog > > &qmUserNicknameTracker)
 	: QDialog(nullptr), m_clientSession(sessionId), m_qmUserNicknameTracker(qmUserNicknameTracker) {
 	setupUi(this);
 
@@ -35,7 +32,7 @@ UserLocalNicknameDialog::UserLocalNicknameDialog(
 		m_originalNickname = qleUserLocalNickname->text();
 	}
 
-	if (g.mw && g.mw->windowFlags() & Qt::WindowStaysOnTopHint) {
+	if (Global::get().mw && Global::get().mw->windowFlags() & Qt::WindowStaysOnTopHint) {
 		// If the main window is set to always be on top of other windows, we should make the
 		// nickname dialog behave the same in order for it to not get hidden behind the main window.
 		setWindowFlags(Qt::WindowStaysOnTopHint);
@@ -49,14 +46,13 @@ void UserLocalNicknameDialog::closeEvent(QCloseEvent *event) {
 
 void UserLocalNicknameDialog::present(
 	unsigned int sessionId,
-	std::unordered_map< unsigned int, NicknameDialogPtr > &qmUserNicknameTracker) {
+	std::unordered_map< unsigned int, qt_unique_ptr< UserLocalNicknameDialog > > &qmUserNicknameTracker) {
 	if (qmUserNicknameTracker.find(sessionId) != qmUserNicknameTracker.end()) {
 		qmUserNicknameTracker.at(sessionId)->show();
 		qmUserNicknameTracker.at(sessionId)->raise();
 	} else {
-		// Make sure to use the custom deleter for QObjects that calls deleteLater() on them instead of using
-		// delete directly as the latter can lead to segmentation faults.
-		NicknameDialogPtr userNickname(new UserLocalNicknameDialog(sessionId, qmUserNicknameTracker), deleteQObject);
+		qt_unique_ptr< UserLocalNicknameDialog > userNickname =
+			make_qt_unique< UserLocalNicknameDialog >(sessionId, qmUserNicknameTracker);
 		userNickname->show();
 		qmUserNicknameTracker.insert(std::make_pair(sessionId, std::move(userNickname)));
 	}
@@ -76,9 +72,9 @@ void UserLocalNicknameDialog::on_qbbUserLocalNickname_clicked(QAbstractButton *b
 		ClientUser *user = ClientUser::get(m_clientSession);
 		if (user) {
 			if (!user->qsHash.isEmpty()) {
-				g.db->setUserLocalNickname(user->qsHash, user->getLocalNickname());
+				Global::get().db->setUserLocalNickname(user->qsHash, user->getLocalNickname());
 			} else {
-				g.mw->logChangeNotPermanent(QObject::tr("Local Nickname Adjustment..."), user);
+				Global::get().mw->logChangeNotPermanent(QObject::tr("Local Nickname Adjustment..."), user);
 			}
 		}
 		UserLocalNicknameDialog::close();

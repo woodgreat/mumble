@@ -1,4 +1,4 @@
-# Copyright 2019-2020 The Mumble Developers. All rights reserved.
+# Copyright 2020-2023 The Mumble Developers. All rights reserved.
 # Use of this source code is governed by a BSD-style license
 # that can be found in the LICENSE file at the root of the
 # Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -13,7 +13,7 @@ target_sources(mumble_exe PRIVATE
 	"mumble_exe.cpp"
 	"Overlay.cpp"
 
-	"${SHARED_SOURCE_DIR}/mumble/mumble.appcompat.manifest"
+	"${CMAKE_SOURCE_DIR}/auxiliary_files/mumble.appcompat.manifest"
 	"${MUMBLE_RC}"
 )
 
@@ -54,10 +54,23 @@ if(packaging)
 		list(APPEND installer_vars "--all-languages")
 	endif()
 
+
 	list(APPEND installer_vars
 		"--version" ${PROJECT_VERSION}
-		"--arch" ${ARCH}
+		"--arch" "${MUMBLE_TARGET_ARCH}"
 	)
+
+	if(overlay)
+		list(APPEND installer_vars
+			"--overlay"
+		)
+	endif()
+
+	if(g15)
+		list(APPEND installer_vars
+			"--g15"
+		)
+	endif()
 
 	file(COPY 
 		${CMAKE_SOURCE_DIR}/installer/MumbleInstall.cs

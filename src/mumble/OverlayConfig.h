@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2014-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -87,7 +87,7 @@ protected slots:
 	void resizeScene(bool force = false);
 
 public:
-	/// The uniqe name of this ConfigWidget
+	/// The unique name of this ConfigWidget
 	static const QString name;
 	OverlayConfig(Settings &st);
 	virtual QString title() const Q_DECL_OVERRIDE;

@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -26,7 +26,6 @@ protected:
 	bool bOk;
 	QMutex qmWait;
 	QLibrary qlPortAudio;
-	QWaitCondition qwcWait;
 
 	static int streamCallback(const void *input, void *output, unsigned long frames, const PaStreamCallbackTimeInfo *,
 							  PaStreamCallbackFlags statusFlags, void *isInput);
@@ -51,7 +50,7 @@ protected:
 	const PaDeviceInfo *(*Pa_GetDeviceInfo)(PaDeviceIndex device);
 
 public:
-	const QList< audioDevice > enumerateDevices(const bool input, const PaDeviceIndex current);
+	const QList< audioDevice > enumerateDevices(const bool input);
 
 	bool isStreamRunning(PaStream *stream);
 

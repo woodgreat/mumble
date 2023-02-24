@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2009-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -9,6 +9,7 @@
 #include "Log.h"
 #include "MainWindow.h"
 #include "Utils.h"
+#include "Global.h"
 
 #include <QMimeData>
 #include <QtCore/QTimer>
@@ -17,10 +18,6 @@
 #include <QtGui/QContextMenuEvent>
 #include <QtGui/QKeyEvent>
 #include <QtWidgets/QScrollBar>
-
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name
-// (like protobuf 3.7 does). As such, for now, we have to make this our last include.
-#include "Global.h"
 
 LogTextBrowser::LogTextBrowser(QWidget *p) : QTextBrowser(p) {
 }
@@ -181,20 +178,20 @@ void ChatbarTextEdit::insertFromMimeData(const QMimeData *source) {
 
 bool ChatbarTextEdit::sendImagesFromMimeData(const QMimeData *source) {
 	if ((source->hasImage() || source->hasUrls())) {
-		if (g.bAllowHTML) {
+		if (Global::get().bAllowHTML) {
 			if (source->hasImage()) {
 				// Process the image pasted onto the chatbar.
-				QImage image = qvariant_cast<QImage>(source->imageData());
+				QImage image = qvariant_cast< QImage >(source->imageData());
 				if (emitPastedImage(image)) {
 					return true;
 				} else {
-					g.l->log(Log::Information, tr("Unable to send image: too large."));
+					Global::get().l->log(Log::Information, tr("Unable to send image: too large."));
 					return false;
 				}
 
 			} else if (source->hasUrls()) {
 				// Process the files dropped onto the chatbar. URLs here should be understood as the URIs of files.
-				QList<QUrl> urlList = source->urls();
+				QList< QUrl > urlList = source->urls();
 
 				int count = 0;
 				for (int i = 0; i < urlList.size(); ++i) {
@@ -206,21 +203,21 @@ bool ChatbarTextEdit::sendImagesFromMimeData(const QMimeData *source) {
 					if (emitPastedImage(image)) {
 						++count;
 					} else {
-						g.l->log(Log::Information, tr("Unable to send image %1: too large.").arg(path));
+						Global::get().l->log(Log::Information, tr("Unable to send image %1: too large.").arg(path));
 					}
 				}
 
 				return (count > 0);
 			}
 		} else {
-			g.l->log(Log::Information, tr("This server does not allow sending images."));
+			Global::get().l->log(Log::Information, tr("This server does not allow sending images."));
 		}
 	}
 	return false;
 }
 
 bool ChatbarTextEdit::emitPastedImage(QImage image) {
-	QString processedImage = Log::imageToImg(image, g.uiImageLength);
+	QString processedImage = Log::imageToImg(image, Global::get().uiImageLength);
 	if (processedImage.length() > 0) {
 		QString imgHtml = QLatin1String("<br />") + processedImage;
 		emit pastedImage(imgHtml);
@@ -240,7 +237,11 @@ bool ChatbarTextEdit::event(QEvent *evt) {
 			const QString msg = toPlainText();
 			if (!msg.isEmpty()) {
 				addToHistory(msg);
-				emit entered(msg);
+				if (kev->modifiers() & Qt::ControlModifier) {
+					emit ctrlEnterPressed(msg);
+				} else {
+					emit entered(msg);
+				}
 			}
 			return true;
 		}
@@ -259,7 +260,8 @@ bool ChatbarTextEdit::event(QEvent *evt) {
 		} else if (kev->key() == Qt::Key_Down && kev->modifiers() == Qt::ControlModifier) {
 			historyDown();
 			return true;
-		} else if (kev->key() == Qt::Key_V && (kev->modifiers() & Qt::ControlModifier) && (kev->modifiers() & Qt::ShiftModifier)) {
+		} else if (kev->key() == Qt::Key_V && (kev->modifiers() & Qt::ControlModifier)
+				   && (kev->modifiers() & Qt::ShiftModifier)) {
 			pasteAndSend_triggered();
 			return true;
 		}

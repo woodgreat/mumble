@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2009-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -11,14 +11,15 @@
 #include "LCD.h"
 #include "Log.h"
 #include "MainWindow.h"
-#include "Message.h"
 #ifdef USE_OVERLAY
 #	include "Overlay.h"
 #endif
-#include "ChannelListener.h"
+#include "ChannelListenerManager.h"
 #include "ServerHandler.h"
 #include "Usage.h"
 #include "User.h"
+#include "VolumeAdjustment.h"
+#include "Global.h"
 
 #include <QtCore/QMimeData>
 #include <QtCore/QStack>
@@ -26,10 +27,6 @@
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QToolTip>
 #include <QtWidgets/QWhatsThis>
-
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name
-// (like protobuf 3.7 does). As such, for now, we have to make this our last include.
-#include "Global.h"
 
 QHash< const Channel *, ModelItem * > ModelItem::c_qhChannels;
 QHash< const ClientUser *, ModelItem * > ModelItem::c_qhUsers;
@@ -223,10 +220,10 @@ QString ModelItem::hash() const {
 
 		chash.addData(cChan->qsName.toUtf8());
 		chash.addData(QString::number(cChan->iId).toUtf8());
-		if (g.sh && g.sh->isRunning()) {
+		if (Global::get().sh && Global::get().sh->isRunning()) {
 			QString host, user, pw;
 			unsigned short port;
-			g.sh->getConnectionInfo(host, port, user, pw);
+			Global::get().sh->getConnectionInfo(host, port, user, pw);
 			chash.addData(host.toUtf8());
 			chash.addData(QString::number(port).toUtf8());
 		}
@@ -258,17 +255,18 @@ UserModel::UserModel(QObject *p) : QAbstractItemModel(p) {
 	qiComment         = QIcon(QLatin1String("skin:comment.svg"));
 	qiCommentSeen     = QIcon(QLatin1String("skin:comment_seen.svg"));
 	qiFilter          = QIcon(QLatin1String("skin:filter.svg"));
+	qiPin             = QIcon(QLatin1String("skin:pin.svg"));
 	qiLock_locked     = QIcon(QLatin1String("skin:lock_locked.svg"));
 	qiLock_unlocked   = QIcon(QLatin1String("skin:lock_unlocked.svg"));
 	qiEar             = QIcon(QLatin1String("skin:ear.svg"));
 
-	ModelItem::bUsersTop = g.s.bUserTop;
+	ModelItem::bUsersTop = Global::get().s.bUserTop;
 
 	uiSessionComment    = 0;
 	iChannelDescription = -1;
 	bClicked            = false;
 
-	miRoot = new ModelItem(Channel::get(0));
+	miRoot = new ModelItem(Channel::get(Channel::ROOT_ID));
 }
 
 UserModel::~UserModel() {
@@ -401,7 +399,7 @@ QString UserModel::stringIndex(const QModelIndex &idx) const {
 }
 
 QModelIndex UserModel::getSelectedIndex() const {
-	QTreeView *v = g.mw->qtvUsers;
+	QTreeView *v = Global::get().mw->qtvUsers;
 	if (v) {
 		QItemSelectionModel *sel = v->selectionModel();
 
@@ -419,7 +417,7 @@ QVariant UserModel::data(const QModelIndex &idx, int role) const {
 
 	Channel *c        = item->cChan;
 	ClientUser *p     = item->pUser;
-	ClientUser *pSelf = ClientUser::get(g.uiSession);
+	ClientUser *pSelf = ClientUser::get(Global::get().uiSession);
 
 	if (!c && !p) {
 		return QVariant();
@@ -464,14 +462,14 @@ QVariant UserModel::data(const QModelIndex &idx, int role) const {
 				}
 				break;
 			case Qt::FontRole:
-				if ((idx.column() == 0) && (p->uiSession == g.uiSession)) {
-					QFont f = g.mw->font();
+				if ((idx.column() == 0) && (p->uiSession == Global::get().uiSession)) {
+					QFont f = Global::get().mw->font();
 					f.setBold(!f.bold());
 					f.setItalic(item->isListener);
 					return f;
 				}
 				if (item->isListener) {
-					QFont f = g.mw->font();
+					QFont f = Global::get().mw->font();
 					f.setItalic(true);
 					return f;
 				}
@@ -496,7 +494,7 @@ QVariant UserModel::data(const QModelIndex &idx, int role) const {
 				// ClientUser doesn't contain a push-to-mute
 				// state because it isn't sent to the server.
 				// We can show the icon only for the local user.
-				if (p == pSelf && g.bPushToMute && !item->isListener)
+				if (p == pSelf && Global::get().bPushToMute && !item->isListener)
 					l << qiMutedPushToMute;
 				if (p->bMute || item->isListener)
 					l << qiMutedServer;
@@ -524,8 +522,8 @@ QVariant UserModel::data(const QModelIndex &idx, int role) const {
 		switch (role) {
 			case Qt::DecorationRole:
 				if (idx.column() == 0) {
-					if (g.uiSession && qsLinked.contains(c)) {
-						if (ClientUser::get(g.uiSession)->cChannel == c)
+					if (Global::get().uiSession && qsLinked.contains(c)) {
+						if (ClientUser::get(Global::get().uiSession)->cChannel == c)
 							return qiActiveChannel;
 						else
 							return qiLinkedChannel;
@@ -535,7 +533,7 @@ QVariant UserModel::data(const QModelIndex &idx, int role) const {
 				break;
 			case Qt::DisplayRole:
 				if (idx.column() == 0) {
-					if (!g.s.bShowUserCount || item->iUsers == 0)
+					if (!Global::get().s.bShowUserCount || item->iUsers == 0)
 						return c->qsName;
 
 					return QString::fromLatin1("%1 (%2)").arg(c->qsName).arg(item->iUsers);
@@ -543,8 +541,17 @@ QVariant UserModel::data(const QModelIndex &idx, int role) const {
 				if (!c->qbaDescHash.isEmpty())
 					l << (item->bCommentSeen ? qiCommentSeen : qiComment);
 
-				if (c->bFiltered)
-					l << (qiFilter);
+				switch (c->m_filterMode) {
+					case ChannelFilterMode::HIDE:
+						l << (qiFilter);
+						break;
+					case ChannelFilterMode::PIN:
+						l << (qiPin);
+						break;
+					case ChannelFilterMode::NORMAL:
+						// NOOP
+						break;
+				}
 
 				// Show a lock icon for enter restricted channels
 				if (c->hasEnterRestrictions.load()) {
@@ -556,11 +563,11 @@ QVariant UserModel::data(const QModelIndex &idx, int role) const {
 				}
 				return l;
 			case Qt::FontRole:
-				if (g.uiSession) {
-					Channel *home = ClientUser::get(g.uiSession)->cChannel;
+				if (Global::get().uiSession) {
+					Channel *home = ClientUser::get(Global::get().uiSession)->cChannel;
 
 					if ((c == home) || qsLinked.contains(c)) {
-						QFont f = g.mw->font();
+						QFont f = Global::get().mw->font();
 						if (qsLinked.count() > 1)
 							f.setItalic(!f.italic());
 						if (c == home)
@@ -570,7 +577,7 @@ QVariant UserModel::data(const QModelIndex &idx, int role) const {
 				}
 				break;
 			case Qt::BackgroundRole:
-				if ((c->iId == 0) && g.sh && g.sh->isStrong()) {
+				if ((c->iId == 0) && Global::get().sh && Global::get().sh->isStrong()) {
 					QColor qc(Qt::green);
 					qc.setAlpha(32);
 					return qc;
@@ -611,14 +618,14 @@ QVariant UserModel::otherRoles(const QModelIndex &idx, int role) const {
 						QString qsImage;
 						if (!p->qbaTextureHash.isEmpty()) {
 							if (p->qbaTexture.isEmpty()) {
-								p->qbaTexture = g.db->blob(p->qbaTextureHash);
+								p->qbaTexture = Global::get().db->blob(p->qbaTextureHash);
 								if (p->qbaTexture.isEmpty()) {
 									MumbleProto::RequestBlob mprb;
 									mprb.add_session_texture(p->uiSession);
-									g.sh->sendMessage(mprb);
+									Global::get().sh->sendMessage(mprb);
 								} else {
 #ifdef USE_OVERLAY
-									g.o->verifyTexture(p);
+									Global::get().o->verifyTexture(p);
 #endif
 								}
 							}
@@ -647,13 +654,13 @@ QVariant UserModel::otherRoles(const QModelIndex &idx, int role) const {
 								return p->qsName;
 						} else {
 							if (p->qsComment.isEmpty()) {
-								p->qsComment = QString::fromUtf8(g.db->blob(p->qbaCommentHash));
+								p->qsComment = QString::fromUtf8(Global::get().db->blob(p->qbaCommentHash));
 								if (p->qsComment.isEmpty()) {
 									const_cast< UserModel * >(this)->uiSessionComment = p->uiSession;
 
 									MumbleProto::RequestBlob mprb;
 									mprb.add_session_comment(p->uiSession);
-									g.sh->sendMessage(mprb);
+									Global::get().sh->sendMessage(mprb);
 									return QVariant();
 								}
 							}
@@ -670,13 +677,13 @@ QVariant UserModel::otherRoles(const QModelIndex &idx, int role) const {
 							return c->qsName;
 						} else {
 							if (c->qsDesc.isEmpty()) {
-								c->qsDesc = QString::fromUtf8(g.db->blob(c->qbaDescHash));
+								c->qsDesc = QString::fromUtf8(Global::get().db->blob(c->qbaDescHash));
 								if (c->qsDesc.isEmpty()) {
 									const_cast< UserModel * >(this)->iChannelDescription = c->iId;
 
 									MumbleProto::RequestBlob mprb;
 									mprb.add_channel_description(c->iId);
-									g.sh->sendMessage(mprb);
+									Global::get().sh->sendMessage(mprb);
 									return QVariant();
 								}
 							}
@@ -704,8 +711,6 @@ QVariant UserModel::otherRoles(const QModelIndex &idx, int role) const {
 												   "valign=\"middle\">%4</td></tr>"
 												   "<tr><td><img src=\"skin:talking_off.svg\" height=64 /></td><td "
 												   "valign=\"middle\">%5</td></tr>"
-												   "<tr><td><img src=\"skin:talking_muted.svg\" height=64 /></td><td "
-												   "valign=\"middle\">%6</td></tr>"
 												   "<tr><td><img src=\"skin:talking_muted.svg\" height=64 /></td><td "
 												   "valign=\"middle\">%6</td></tr>"
 												   "<tr><td><img src=\"skin:ear.svg\" height=64 /></td><td "
@@ -780,15 +785,18 @@ QVariant UserModel::otherRoles(const QModelIndex &idx, int role) const {
 												   "valign=\"middle\">%11</td></tr>"
 												   "<tr><td><img src=\"skin:filter.svg\" height=64 /></td><td "
 												   "valign=\"middle\">%12</td></tr>"
-												   "<tr><td><img src=\"skin:lock_locked.svg\" height=64 /></td><td "
+												   "<tr><td><img src=\"skin:pin.svg\" height=64 /></td><td "
 												   "valign=\"middle\">%13</td></tr>"
-												   "<tr><td><img src=\"skin:lock_unlocked.svg\" height=64 /></td><td "
+												   "<tr><td><img src=\"skin:lock_locked.svg\" height=64 /></td><td "
 												   "valign=\"middle\">%14</td></tr>"
+												   "<tr><td><img src=\"skin:lock_unlocked.svg\" height=64 /></td><td "
+												   "valign=\"middle\">%15</td></tr>"
 												   "</table>")
 							.arg(tr("This shows the flags the channel has, if any:"),
 								 tr("Channel has a new comment set (click to show)"),
 								 tr("Channel has a comment set, which you've already seen. (click to show)"),
 								 tr("Channel will be hidden when filtering is enabled"),
+								 tr("Channel will be pinned when filtering is enabled"),
 								 tr("Channel has access restrictions so that you can't enter it"),
 								 tr("Channel has access restrictions but you can enter nonetheless"));
 			}
@@ -871,7 +879,7 @@ ModelItem *UserModel::moveItem(ModelItem *oldparent, ModelItem *newparent, Model
 	// Check whether the moved item is currently selected and if so, store it as a persistent
 	// model index in active. Also clear the selection as we're going to mess with the active
 	// item.
-	QTreeView *v             = g.mw->qtvUsers;
+	QTreeView *v             = Global::get().mw->qtvUsers;
 	QItemSelectionModel *sel = v->selectionModel();
 	QPersistentModelIndex active;
 	QModelIndex oindex = createIndex(oldrow, 0, oldItem);
@@ -967,7 +975,7 @@ void UserModel::expandAll(Channel *c) {
 	}
 	while (!chans.isEmpty()) {
 		c = chans.pop();
-		g.mw->qtvUsers->setExpanded(index(c), true);
+		Global::get().mw->qtvUsers->setExpanded(index(c), true);
 	}
 }
 
@@ -975,7 +983,7 @@ void UserModel::collapseEmpty(Channel *c) {
 	while (c) {
 		ModelItem *mi = ModelItem::c_qhChannels.value(c);
 		if (mi->iUsers == 0)
-			g.mw->qtvUsers->setExpanded(index(c), false);
+			Global::get().mw->qtvUsers->setExpanded(index(c), false);
 		else
 			break;
 		c = c->cParent;
@@ -983,17 +991,17 @@ void UserModel::collapseEmpty(Channel *c) {
 }
 
 void UserModel::ensureSelfVisible() {
-	if (!g.uiSession)
+	if (!Global::get().uiSession)
 		return;
 
-	g.mw->qtvUsers->scrollTo(index(ClientUser::get(g.uiSession)));
+	Global::get().mw->qtvUsers->scrollTo(index(ClientUser::get(Global::get().uiSession)));
 }
 
 void UserModel::recheckLinks() {
-	if (!g.uiSession)
+	if (!Global::get().uiSession)
 		return;
 
-	ClientUser *clientUser = ClientUser::get(g.uiSession);
+	ClientUser *clientUser = ClientUser::get(Global::get().uiSession);
 	if (!clientUser)
 		return;
 
@@ -1036,7 +1044,7 @@ ClientUser *UserModel::addUser(unsigned int id, const QString &name) {
 	connect(p, &ClientUser::localVolumeAdjustmentsChanged, this, &UserModel::userStateChanged);
 	connect(p, &ClientUser::localNicknameChanged, this, &UserModel::userStateChanged);
 
-	Channel *c       = Channel::get(0);
+	Channel *c       = Channel::get(Channel::ROOT_ID);
 	ModelItem *citem = ModelItem::c_qhChannels.value(c);
 
 	item->parent = citem;
@@ -1055,6 +1063,8 @@ ClientUser *UserModel::addUser(unsigned int id, const QString &name) {
 
 	updateOverlay();
 
+	emit userAdded(p->uiSession);
+
 	return p;
 }
 
@@ -1062,8 +1072,8 @@ void UserModel::removeUser(ClientUser *p) {
 	// First remove all listener proxies this user has at the moment
 	removeChannelListener(p);
 
-	if (g.uiSession && p->uiSession == g.uiSession)
-		g.uiSession = 0;
+	if (Global::get().uiSession && p->uiSession == Global::get().uiSession)
+		Global::get().uiSession = 0;
 	Channel *c       = p->cChannel;
 	ModelItem *item  = ModelItem::c_qhUsers.value(p);
 	ModelItem *citem = ModelItem::c_qhChannels.value(c);
@@ -1085,10 +1095,12 @@ void UserModel::removeUser(ClientUser *p) {
 		citem = citem->parent;
 	}
 
-	if (g.s.ceExpand == Settings::ChannelsWithUsers)
+	if (Global::get().s.ceExpand == Settings::ChannelsWithUsers)
 		collapseEmpty(c);
 
 	updateOverlay();
+
+	emit userRemoved(p->uiSession);
 
 	delete p;
 	delete item;
@@ -1102,7 +1114,7 @@ void UserModel::moveUser(ClientUser *p, Channel *np) {
 
 	item = moveItem(opi, pi, item);
 
-	if (p->uiSession == g.uiSession) {
+	if (p->uiSession == Global::get().uiSession) {
 		ensureSelfVisible();
 		recheckLinks();
 	}
@@ -1116,7 +1128,7 @@ void UserModel::moveUser(ClientUser *p, Channel *np) {
 		pi = pi->parent;
 	}
 
-	if (g.s.ceExpand == Settings::ChannelsWithUsers) {
+	if (Global::get().s.ceExpand == Settings::ChannelsWithUsers) {
 		expandAll(np);
 		collapseEmpty(oc);
 	}
@@ -1166,27 +1178,28 @@ void UserModel::setComment(ClientUser *cu, const QString &comment) {
 		cu->qsComment = comment;
 
 		if (!comment.isEmpty()) {
-			g.db->setBlob(cu->qbaCommentHash, cu->qsComment.toUtf8());
+			Global::get().db->setBlob(cu->qbaCommentHash, cu->qsComment.toUtf8());
 			if (cu->uiSession == uiSessionComment) {
 				uiSessionComment   = 0;
 				item->bCommentSeen = false;
 				if (bClicked) {
-					QRect r = g.mw->qtvUsers->visualRect(index(cu));
-					QWhatsThis::showText(g.mw->qtvUsers->viewport()->mapToGlobal(r.bottomRight()),
-										 data(index(cu, 0), Qt::ToolTipRole).toString(), g.mw->qtvUsers);
+					QRect r = Global::get().mw->qtvUsers->visualRect(index(cu));
+					QWhatsThis::showText(Global::get().mw->qtvUsers->viewport()->mapToGlobal(r.bottomRight()),
+										 data(index(cu, 0), Qt::ToolTipRole).toString(), Global::get().mw->qtvUsers);
 				} else {
-					QToolTip::showText(QCursor::pos(), data(index(cu, 0), Qt::ToolTipRole).toString(), g.mw->qtvUsers);
+					QToolTip::showText(QCursor::pos(), data(index(cu, 0), Qt::ToolTipRole).toString(),
+									   Global::get().mw->qtvUsers);
 				}
 			} else if (cu->uiSession == ~uiSessionComment) {
 				uiSessionComment = 0;
-				if (cu->uiSession == g.uiSession) {
-					QTimer::singleShot(0, g.mw, SLOT(on_qaSelfComment_triggered()));
+				if (cu->uiSession == Global::get().uiSession) {
+					QTimer::singleShot(0, Global::get().mw, SLOT(on_qaSelfComment_triggered()));
 				} else {
-					g.mw->cuContextUser = cu;
-					QTimer::singleShot(0, g.mw, SLOT(on_qaUserCommentView_triggered()));
+					Global::get().mw->cuContextUser = cu;
+					QTimer::singleShot(0, Global::get().mw, SLOT(on_qaUserCommentView_triggered()));
 				}
 			} else {
-				item->bCommentSeen = g.db->seenComment(item->hash(), cu->qbaCommentHash);
+				item->bCommentSeen = Global::get().db->seenComment(item->hash(), cu->qbaCommentHash);
 				newstate           = item->bCommentSeen ? 2 : 1;
 			}
 		} else {
@@ -1209,7 +1222,7 @@ void UserModel::setCommentHash(ClientUser *cu, const QByteArray &hash) {
 		cu->qsComment      = QString();
 		cu->qbaCommentHash = hash;
 
-		item->bCommentSeen = g.db->seenComment(item->hash(), cu->qbaCommentHash);
+		item->bCommentSeen = Global::get().db->seenComment(item->hash(), cu->qbaCommentHash);
 		newstate           = item->bCommentSeen ? 2 : 1;
 
 		if (oldstate != newstate) {
@@ -1230,20 +1243,21 @@ void UserModel::setComment(Channel *c, const QString &comment) {
 		c->qsDesc = comment;
 
 		if (!comment.isEmpty()) {
-			g.db->setBlob(c->qbaDescHash, c->qsDesc.toUtf8());
+			Global::get().db->setBlob(c->qbaDescHash, c->qsDesc.toUtf8());
 
 			if (c->iId == iChannelDescription) {
 				iChannelDescription = -1;
 				item->bCommentSeen  = false;
 				if (bClicked) {
-					QRect r = g.mw->qtvUsers->visualRect(index(c));
-					QWhatsThis::showText(g.mw->qtvUsers->viewport()->mapToGlobal(r.bottomRight()),
-										 data(index(c, 0), Qt::ToolTipRole).toString(), g.mw->qtvUsers);
+					QRect r = Global::get().mw->qtvUsers->visualRect(index(c));
+					QWhatsThis::showText(Global::get().mw->qtvUsers->viewport()->mapToGlobal(r.bottomRight()),
+										 data(index(c, 0), Qt::ToolTipRole).toString(), Global::get().mw->qtvUsers);
 				} else {
-					QToolTip::showText(QCursor::pos(), data(index(c, 0), Qt::ToolTipRole).toString(), g.mw->qtvUsers);
+					QToolTip::showText(QCursor::pos(), data(index(c, 0), Qt::ToolTipRole).toString(),
+									   Global::get().mw->qtvUsers);
 				}
 			} else {
-				item->bCommentSeen = g.db->seenComment(item->hash(), c->qbaDescHash);
+				item->bCommentSeen = Global::get().db->seenComment(item->hash(), c->qbaDescHash);
 				newstate           = item->bCommentSeen ? 2 : 1;
 			}
 		} else {
@@ -1266,7 +1280,7 @@ void UserModel::setCommentHash(Channel *c, const QByteArray &hash) {
 		c->qsDesc      = QString();
 		c->qbaDescHash = hash;
 
-		item->bCommentSeen = g.db->seenComment(item->hash(), hash);
+		item->bCommentSeen = Global::get().db->seenComment(item->hash(), hash);
 		newstate           = item->bCommentSeen ? 2 : 1;
 
 		if (oldstate != newstate) {
@@ -1288,9 +1302,9 @@ void UserModel::seenComment(const QModelIndex &idx) {
 	emit dataChanged(idx, idx);
 
 	if (item->pUser)
-		g.db->setSeenComment(item->hash(), item->pUser->qbaCommentHash);
+		Global::get().db->setSeenComment(item->hash(), item->pUser->qbaCommentHash);
 	else
-		g.db->setSeenComment(item->hash(), item->cChan->qbaDescHash);
+		Global::get().db->setSeenComment(item->hash(), item->cChan->qbaDescHash);
 }
 
 void UserModel::renameChannel(Channel *c, const QString &name) {
@@ -1306,6 +1320,8 @@ void UserModel::renameChannel(Channel *c, const QString &name) {
 
 		moveItem(pi, pi, item);
 	}
+
+	emit channelRenamed(c->iId);
 }
 
 void UserModel::repositionChannel(Channel *c, const int position) {
@@ -1341,8 +1357,11 @@ Channel *UserModel::addChannel(int id, Channel *p, const QString &name) {
 	citem->qlChildren.insert(row, item);
 	endInsertRows();
 
-	if (g.s.ceExpand == Settings::AllChannels)
-		g.mw->qtvUsers->setExpanded(index(item), true);
+	if (Global::get().s.ceExpand == Settings::AllChannels)
+		Global::get().mw->qtvUsers->setExpanded(index(item), true);
+
+
+	emit channelAdded(c->iId);
 
 	return c;
 }
@@ -1418,7 +1437,7 @@ void UserModel::setSelectedChannelListener(unsigned int userSession, int channel
 		return;
 	}
 
-	QTreeView *v = g.mw->qtvUsers;
+	QTreeView *v = Global::get().mw->qtvUsers;
 	if (v) {
 		v->setCurrentIndex(idx);
 	}
@@ -1461,7 +1480,7 @@ void UserModel::removeChannelListener(ModelItem *item, ModelItem *citem) {
 		citem = citem->parent;
 	}
 
-	if (g.s.ceExpand == Settings::ChannelsWithUsers)
+	if (Global::get().s.ceExpand == Settings::ChannelsWithUsers)
 		collapseEmpty(c);
 
 	updateOverlay();
@@ -1504,6 +1523,8 @@ bool UserModel::removeChannel(Channel *c, const bool onlyIfUnoccupied) {
 
 	Channel::remove(c);
 
+	emit channelRemoved(c->iId);
+
 	delete item;
 	delete c;
 	return true;
@@ -1527,7 +1548,7 @@ void UserModel::moveChannel(Channel *c, Channel *p) {
 
 	ensureSelfVisible();
 
-	if (g.s.ceExpand == Settings::ChannelsWithUsers) {
+	if (Global::get().s.ceExpand == Settings::ChannelsWithUsers) {
 		collapseEmpty(oc);
 	}
 }
@@ -1609,7 +1630,7 @@ void UserModel::setSelectedUser(unsigned int session) {
 		return;
 	}
 
-	QTreeView *v = g.mw->qtvUsers;
+	QTreeView *v = Global::get().mw->qtvUsers;
 	if (v) {
 		v->setCurrentIndex(idx);
 	}
@@ -1653,7 +1674,7 @@ void UserModel::setSelectedChannel(int id) {
 		return;
 	}
 
-	QTreeView *v = g.mw->qtvUsers;
+	QTreeView *v = Global::get().mw->qtvUsers;
 	if (v) {
 		v->setCurrentIndex(idx);
 	}
@@ -1690,17 +1711,13 @@ void UserModel::on_channelListenerLocalVolumeAdjustmentChanged(int channelID, fl
 	Q_UNUSED(oldValue);
 	Q_UNUSED(newValue);
 
-	const QModelIndex idx = channelListenerIndex(ClientUser::get(g.uiSession), Channel::get(channelID));
+	const QModelIndex idx = channelListenerIndex(ClientUser::get(Global::get().uiSession), Channel::get(channelID));
 	emit dataChanged(idx, idx);
 }
 
-void UserModel::toggleChannelFiltered(Channel *c) {
+void UserModel::forceVisualUpdate(Channel *c) {
 	QModelIndex idx;
 	if (c) {
-		c->bFiltered = !c->bFiltered;
-
-		ServerHandlerPtr sh = g.sh;
-		g.db->setChannelFiltered(sh->qbaDigest, c->iId, c->bFiltered);
 		idx = index(c);
 	}
 
@@ -1761,7 +1778,7 @@ bool UserModel::dropMimeData(const QMimeData *md, Qt::DropAction, int row, int c
 
 	Channel *c;
 	if (!p.isValid()) {
-		c = Channel::get(0);
+		c = Channel::get(Channel::ROOT_ID);
 	} else {
 		c = getChannel(p);
 	}
@@ -1774,18 +1791,19 @@ bool UserModel::dropMimeData(const QMimeData *md, Qt::DropAction, int row, int c
 	if (!isChannel) {
 		// User dropped somewhere
 		int ret;
-		switch (g.s.ceUserDrag) {
+		switch (Global::get().s.ceUserDrag) {
 			case Settings::Ask:
-				ret =
-					QMessageBox::question(g.mw, QLatin1String("Mumble"), tr("Are you sure you want to drag this user?"),
-										  QMessageBox::Yes, QMessageBox::No);
+				ret = QMessageBox::question(Global::get().mw, QLatin1String("Mumble"),
+											tr("Are you sure you want to drag this user?"), QMessageBox::Yes,
+											QMessageBox::No);
 
 				if (ret == QMessageBox::No)
 					return false;
 				break;
 			case Settings::DoNothing:
-				g.l->log(Log::Information,
-						 MainWindow::tr("You have User Dragging set to \"Do Nothing\" so the user wasn't moved."));
+				Global::get().l->log(
+					Log::Information,
+					MainWindow::tr("You have User Dragging set to \"Do Nothing\" so the user wasn't moved."));
 				return false;
 				break;
 			case Settings::Move:
@@ -1794,13 +1812,13 @@ bool UserModel::dropMimeData(const QMimeData *md, Qt::DropAction, int row, int c
 		MumbleProto::UserState mpus;
 		mpus.set_session(uiSession);
 		mpus.set_channel_id(c->iId);
-		g.sh->sendMessage(mpus);
+		Global::get().sh->sendMessage(mpus);
 	} else if (c->iId != iId) {
 		// Channel dropped somewhere (not on itself)
 		int ret;
-		switch (g.s.ceChannelDrag) {
+		switch (Global::get().s.ceChannelDrag) {
 			case Settings::Ask:
-				ret = QMessageBox::question(g.mw, QLatin1String("Mumble"),
+				ret = QMessageBox::question(Global::get().mw, QLatin1String("Mumble"),
 											tr("Are you sure you want to drag this channel?"), QMessageBox::Yes,
 											QMessageBox::No);
 
@@ -1808,7 +1826,7 @@ bool UserModel::dropMimeData(const QMimeData *md, Qt::DropAction, int row, int c
 					return false;
 				break;
 			case Settings::DoNothing:
-				g.l->log(
+				Global::get().l->log(
 					Log::Information,
 					MainWindow::tr("You have Channel Dragging set to \"Do Nothing\" so the channel wasn't moved."));
 				return false;
@@ -1816,7 +1834,8 @@ bool UserModel::dropMimeData(const QMimeData *md, Qt::DropAction, int row, int c
 			case Settings::Move:
 				break;
 			default:
-				g.l->log(Log::CriticalError, MainWindow::tr("Unknown Channel Drag mode in UserModel::dropMimeData."));
+				Global::get().l->log(Log::CriticalError,
+									 MainWindow::tr("Unknown Channel Drag mode in UserModel::dropMimeData."));
 				return false;
 				break;
 		}
@@ -1905,7 +1924,7 @@ bool UserModel::dropMimeData(const QMimeData *md, Qt::DropAction, int row, int c
 					} else {
 						// Not enough space, other channels have to be moved
 						if (static_cast< long long >(pi->channelAt(ilast)->iPosition) + 40 > INT_MAX) {
-							QMessageBox::critical(g.mw, QLatin1String("Mumble"),
+							QMessageBox::critical(Global::get().mw, QLatin1String("Mumble"),
 												  tr("Cannot perform this movement automatically, please reset the "
 													 "numeric sorting indicators or adjust it manually."));
 							return false;
@@ -1916,7 +1935,7 @@ bool UserModel::dropMimeData(const QMimeData *md, Qt::DropAction, int row, int c
 								MumbleProto::ChannelState mpcs;
 								mpcs.set_channel_id(tmp->iId);
 								mpcs.set_position(tmp->iPosition + 40);
-								g.sh->sendMessage(mpcs);
+								Global::get().sh->sendMessage(mpcs);
 							}
 						}
 						inewpos = upper->iPosition + 20;
@@ -1926,7 +1945,7 @@ bool UserModel::dropMimeData(const QMimeData *md, Qt::DropAction, int row, int c
 		}
 
 		if (inewpos > INT_MAX || inewpos < INT_MIN) {
-			QMessageBox::critical(g.mw, QLatin1String("Mumble"),
+			QMessageBox::critical(Global::get().mw, QLatin1String("Mumble"),
 								  tr("Cannot perform this movement automatically, please reset the numeric sorting "
 									 "indicators or adjust it manually."));
 			return false;
@@ -1937,17 +1956,18 @@ bool UserModel::dropMimeData(const QMimeData *md, Qt::DropAction, int row, int c
 		if (dropped->parent() != c)
 			mpcs.set_parent(c->iId);
 		mpcs.set_position(static_cast< int >(inewpos));
-		g.sh->sendMessage(mpcs);
+		Global::get().sh->sendMessage(mpcs);
 	}
 
 	return true;
+#undef NAMECMPCHANNEL
 }
 
 void UserModel::updateOverlay() const {
 #ifdef USE_OVERLAY
-	g.o->updateOverlay();
+	Global::get().o->updateOverlay();
 #endif
-	g.lcd->updateUserView();
+	Global::get().lcd->updateUserView();
 }
 
 
@@ -1957,17 +1977,19 @@ QString UserModel::createDisplayString(const ClientUser &user, bool isChannelLis
 	// the volume adjustment differently.
 	float volumeAdjustment = 1.0f;
 	if (isChannelListener) {
-		if (parentChannel && user.uiSession == g.uiSession) {
+		if (parentChannel && user.uiSession == Global::get().uiSession) {
 			// Only the listener of the local user can have a volume adjustment
-			volumeAdjustment = ChannelListener::getListenerLocalVolumeAdjustment(parentChannel->iId);
+			volumeAdjustment =
+				Global::get()
+					.channelListenerManager->getListenerVolumeAdjustment(user.uiSession, parentChannel->iId)
+					.factor;
 		}
 	} else {
 		volumeAdjustment = user.getLocalVolumeAdjustments();
 	}
 
 	// Transform the adjustment into dB
-	// *2 == 6 dB
-	int localVolumeDecibel = std::round(log2f(volumeAdjustment) * 6);
+	int localVolumeDecibel = VolumeAdjustment::toIntegerDBAdjustment(volumeAdjustment);
 
 	// Create a friend-tag
 	QString friendTag;
@@ -1980,12 +2002,12 @@ QString UserModel::createDisplayString(const ClientUser &user, bool isChannelLis
 
 	// Create a tag that indicates the volume adjustments
 	QString volumeTag;
-	if (std::abs(localVolumeDecibel) > 0 && g.s.bShowVolumeAdjustments) {
+	if (std::abs(localVolumeDecibel) > 0 && Global::get().s.bShowVolumeAdjustments) {
 		volumeTag = QString::asprintf("|%+d|", localVolumeDecibel);
 	}
 
 	QString displayString;
-	if (!g.s.bShowNicknamesOnly || nickname.isEmpty()) {
+	if (!Global::get().s.bShowNicknamesOnly || nickname.isEmpty()) {
 		displayString += user.qsName;
 	} else {
 		displayString += nickname;
@@ -1995,7 +2017,8 @@ QString UserModel::createDisplayString(const ClientUser &user, bool isChannelLis
 		displayString += " " + friendTag;
 	}
 
-	if (!g.s.bShowNicknamesOnly && !nickname.isEmpty() && user.qsName.compare(nickname, Qt::CaseInsensitive) != 0) {
+	if (!Global::get().s.bShowNicknamesOnly && !nickname.isEmpty()
+		&& user.qsName.compare(nickname, Qt::CaseInsensitive) != 0) {
 		displayString += " " + QString::fromLatin1("[%1]").arg(nickname);
 	}
 

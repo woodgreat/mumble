@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2007-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -96,7 +96,7 @@ quint64 Timer::now() {
 #elif defined(Q_OS_UNIX)
 #	include <errno.h>
 #	include <string.h>
-#	include <sys/time.h>
+#	include <time.h>
 #	include <unistd.h>
 #	if defined(_POSIX_TIMERS) && defined(_POSIX_MONOTONIC_CLOCK)
 quint64 Timer::now() {

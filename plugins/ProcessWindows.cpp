@@ -1,13 +1,13 @@
-// Copyright 2020 The Mumble Developers. All rights reserved.
+// Copyright 2020-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
 
 #include "ProcessWindows.h"
 
-#include "mumble_plugin_win32_internals.h"
+#include "mumble_positional_audio_win32_internals.h"
 
-ProcessWindows::ProcessWindows(const procid_t id, const std::string &name) : Process(id, name) {
+ProcessWindows::ProcessWindows(const procid_t id, const std::string &name) : ProcessBase(id, name) {
 	const auto mods = modules();
 	const auto iter = mods.find(name);
 	if (iter == mods.cend()) {
@@ -44,7 +44,7 @@ ProcessWindows::~ProcessWindows() {
 }
 
 template< typename ImageNtHeaders >
-static procptr_t exportedSymbol(const Process &proc, const std::string &symbol, const procptr_t module) {
+static procptr_t exportedSymbol(const ProcessBase &proc, const std::string &symbol, const procptr_t module) {
 	const auto dos = proc.peek< ImageDosHeader >(module);
 	if (!(dos.magic[0] == 'M' && dos.magic[1] == 'Z')) {
 		return 0;

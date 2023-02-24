@@ -1,12 +1,16 @@
-# Copyright 2019-2020 The Mumble Developers. All rights reserved.
+# Copyright 2020-2023 The Mumble Developers. All rights reserved.
 # Use of this source code is governed by a BSD-style license
 # that can be found in the LICENSE file at the root of the
 # Mumble source tree or at <https://www.mumble.info/LICENSE>.
 
 # Overlay payload for UNIX-like systems.
 
+include(CheckIncludeFile)
+
 if(${CMAKE_SYSTEM_PROCESSOR} STREQUAL "x86_64" OR ${CMAKE_SYSTEM_PROCESSOR} STREQUAL "amd64")
-	option(overlay-xcompile "Build 32 bit overlay library, necessary for the overlay to work with 32 bit processes." ON)
+	if(NOT ${CMAKE_SYSTEM_NAME} STREQUAL "OpenBSD")
+		option(overlay-xcompile "Build 32 bit overlay library, necessary for the overlay to work with 32 bit processes." ON)
+	endif()
 endif()
 
 add_library(overlay_gl SHARED "overlay.c")
@@ -19,6 +23,9 @@ set_target_properties(overlay_gl
 )
 
 if(NOT APPLE)
+	find_pkg(gl REQUIRED)
+	target_include_directories(overlay_gl PRIVATE ${gl_INCLUDE_DIRS})
+
 	target_link_options(overlay_gl BEFORE
 		PRIVATE
 			"-Wl,-z,lazy"
@@ -94,7 +101,7 @@ if(NOT APPLE)
 		endif()
 	endif()
 else()
-	add_subdirectory("${3RDPARTY_DIR}/mach-override-build" "${CMAKE_CURRENT_BINARY_DIR}/mach-override")
+	add_subdirectory("${3RDPARTY_DIR}/mach-override-build" "${CMAKE_CURRENT_BINARY_DIR}/mach-override" EXCLUDE_FROM_ALL)
 
 	find_library(LIB_COREFOUNDATION "CoreFoundation")
 
@@ -122,8 +129,3 @@ endif()
 # install native overlay library
 install(TARGETS overlay_gl LIBRARY DESTINATION "${MUMBLE_INSTALL_LIBDIR}")
 
-# install overlay script
-install(PROGRAMS "${CMAKE_SOURCE_DIR}/scripts/mumble-overlay" DESTINATION "${MUMBLE_INSTALL_SCRIPTDIR}")
-
-# install overlay man-files
-install(FILES "${CMAKE_SOURCE_DIR}/man/mumble-overlay.1" DESTINATION "${MUMBLE_INSTALL_MANDIR}" COMPONENT doc)

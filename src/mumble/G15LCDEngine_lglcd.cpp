@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2009-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -21,7 +21,7 @@ static LCDEngine *G15LCDEngineNew() {
 	return new G15LCDEngineLGLCD();
 }
 
-static LCDEngineRegistrar registrar(G15LCDEngineNew);
+static LCDEngineRegistrar registrarG15LCD_lglcd(G15LCDEngineNew);
 
 G15LCDEngineLGLCD::G15LCDEngineLGLCD() : LCDEngine() {
 	DWORD dwErr;
@@ -157,3 +157,11 @@ QString G15LCDDeviceLGLCD::name() const {
 QSize G15LCDDeviceLGLCD::size() const {
 	return QSize(G15_MAX_WIDTH, G15_MAX_HEIGHT);
 }
+
+#undef G15_MAX_DEV
+#undef G15_MAX_WIDTH
+#undef G15_MAX_HEIGHT
+#undef G15_MAX_BPP
+#undef G15_MAX_FBMEM
+#undef G15_MAX_FBMEM_BITS
+#undef G15_WIDGET_NAME

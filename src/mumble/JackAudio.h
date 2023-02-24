@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2018-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -44,7 +44,6 @@ protected:
 	uint8_t users;
 	QMutex qmWait;
 	QLibrary qlJack;
-	QWaitCondition qwcWait;
 	jack_client_t *client;
 
 	static int processCallback(jack_nframes_t frames, void *);

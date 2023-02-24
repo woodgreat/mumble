@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="zh_CN" version="2.1">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="zh_CN">
 <context>
     <name>ACLEditor</name>
     <message>
@@ -468,6 +470,17 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
 </context>
 <context>
+    <name>ALSAEnumerator</name>
+    <message>
+        <source>Getting name (longname) of the sound card failed: %1</source>
+        <translation>获取声卡完整名称失败：%1</translation>
+    </message>
+    <message>
+        <source>Getting name of the sound card failed: %1</source>
+        <translation>获取声卡名称失败：%1</translation>
+    </message>
+</context>
+<context>
     <name>ASIOConfig</name>
     <message>
         <source>%1 (version %2)</source>
@@ -601,10 +614,6 @@ This value allows you to set the maximum number of users allowed in the channel.
         <translation>关于 Mumble</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;Mumble (%1)&lt;/h3&gt;&lt;p&gt;%3&lt;/p&gt;&lt;p&gt;&lt;b&gt;A voice-chat utility for gamers&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;tt&gt;&lt;a href=&quot;%2&quot;&gt;%2&lt;/a&gt;&lt;/tt&gt;&lt;/p&gt;</source>
-        <translation>&lt;h3&gt;Mumble (%1)&lt;/h3&gt;&lt;p&gt;%3&lt;/p&gt;&lt;p&gt;&lt;b&gt;面向游戏玩家的语音聊天工具&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;tt&gt;&lt;a href=&quot;%2&quot;&gt;%2&lt;/a&gt;&lt;/tt&gt;&lt;/p&gt;</translation>
-    </message>
-    <message>
         <source>&amp;About Mumble</source>
         <translation>关于 Mumble(&amp;A)</translation>
     </message>
@@ -635,6 +644,14 @@ This value allows you to set the maximum number of users allowed in the channel.
     <message>
         <source>Third-party license agreements</source>
         <translation>第三方许可</translation>
+    </message>
+    <message>
+        <source>&lt;h3&gt;Mumble (%1)&lt;/h3&gt;&lt;p&gt;%3&lt;/p&gt;&lt;p&gt;&lt;b&gt;An Open Source, low-latency, high quality voice-chat utility&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;tt&gt;&lt;a href=&quot;%2&quot;&gt;%2&lt;/a&gt;&lt;/tt&gt;&lt;/p&gt;</source>
+        <translation>&lt;h3&gt;Mumble（%1）&lt;/h3&gt;&lt;p&gt;%3&lt;/p&gt;&lt;p&gt;&lt;b&gt;一款开放源代码、低延迟、高音质的语音聊天工具&lt;/b&gt;&lt;/p&gt;&lt;p&gt;&lt;tt&gt;&lt;a href=&quot;%2&quot;&gt;%2&lt;/a&gt;&lt;/tt&gt;&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>For a list of authors, please see &lt;a href=&quot;https://github.com/mumble-voip/mumble/graphs/contributors&quot;&gt;https://github.com/mumble-voip/mumble/graphs/contributors&lt;/a&gt;</source>
+        <translation>作者列表，请见 &lt;a href=&quot;https://github.com/mumble-voip/mumble/graphs/contributors&quot;&gt;https://github.com/mumble-voip/mumble/graphs/contributors&lt;/a&gt;</translation>
     </message>
 </context>
 <context>
@@ -892,18 +909,6 @@ This value allows you to set the maximum number of users allowed in the channel.
         <translation>其他</translation>
     </message>
     <message>
-        <source>Audible audio cue when starting or stopping to transmit</source>
-        <translation>开始或停止传输时发出提示音</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;This enables transmission audio cues.&lt;/b&gt;&lt;br /&gt;Setting this will give you a short audio beep when you start and stop transmitting.</source>
-        <translation>&lt;b&gt;启用传输状态提示音&lt;/b&gt;&lt;br /&gt;设置在开始传输音频和停止传输音频时播放的简短提示音。</translation>
-    </message>
-    <message>
-        <source>Audio cue</source>
-        <translation>音频提示</translation>
-    </message>
-    <message>
         <source>Gets played when starting to transmit</source>
         <translation>开始传输时播放</translation>
     </message>
@@ -973,7 +978,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Enable Opus&apos; low-delay mode when the quality is set to &lt;b&gt;64 kb/s&lt;/b&gt; or higher. </source>
-        <translation>当质量设置为 &lt;b&gt;64 千比特/秒&lt;/b&gt;或更高时，启用 Opus 的低延迟模式。</translation>
+        <translation>当音质设置为 &lt;b&gt;64 千比特/秒&lt;/b&gt;或更高时，启用 Opus 的低延迟模式。 </translation>
     </message>
     <message>
         <source>If checked, Mumble will enable Opus&apos; low-delay mode when the quality is set to &lt;b&gt;64 kbit/s&lt;/b&gt; or higher. Low-delay mode decreases latency by &lt;b&gt;~15 milliseconds&lt;/b&gt; in the round trip. This mode may require an higher bitrate to preserve the same quality, in comparison with the music and VOIP modes.</source>
@@ -1010,6 +1015,46 @@ This value allows you to set the maximum number of users allowed in the channel.
     <message>
         <source>Speex suppression strength</source>
         <translation>Speex 抑制强度</translation>
+    </message>
+    <message>
+        <source>Mute cue</source>
+        <translation>静音提示</translation>
+    </message>
+    <message>
+        <source>Br&amp;owse...</source>
+        <translation>浏览(&amp;O)...</translation>
+    </message>
+    <message>
+        <source>Pre&amp;view</source>
+        <translation>预览(&amp;V)</translation>
+    </message>
+    <message>
+        <source>Audio cue when using...</source>
+        <translation>当使用功能时播放音频提示…</translation>
+    </message>
+    <message>
+        <source>Audible audio cue when starting or stopping to transmit using Push To Talk</source>
+        <translation>当开始或停止按键发言时播放音频提示</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;This enables transmission audio cues when using Push To Talk.&lt;/b&gt;&lt;br /&gt;Setting this will give you a short audio beep when you start and stop transmitting.</source>
+        <translation>&lt;b&gt;这会在使用按键发言时启用传输状态音频提示。&lt;/b&gt;&lt;br /&gt;如果设置，您在开始或停止传输时会听到简短的提示音频。</translation>
+    </message>
+    <message>
+        <source>Push To Talk</source>
+        <translation>按键发言</translation>
+    </message>
+    <message>
+        <source>Audible audio cue when starting or stopping to transmit using Voice Activity</source>
+        <translation>当开始或停止语音激活时播放音频提示</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;This enables transmission audio cues when using Voice Activity.&lt;/b&gt;&lt;br /&gt;Setting this will give you a short audio beep when you start and stop transmitting.</source>
+        <translation>&lt;b&gt;这会在使用语音激活时启用传输状态音频提示。&lt;/b&gt;&lt;br /&gt;如果设置，您在开始或停止传输时会听到简短的提示音频。</translation>
+    </message>
+    <message>
+        <source>Voice Activity</source>
+        <translation>语音激活</translation>
     </message>
 </context>
 <context>
@@ -1140,7 +1185,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Disable echo cancellation.</source>
-        <translation>禁用回声消除</translation>
+        <translation>禁用回声消除。</translation>
     </message>
 </context>
 <context>
@@ -1190,10 +1235,6 @@ This value allows you to set the maximum number of users allowed in the channel.
         <translation>&lt;b&gt;设置抖动缓冲区的最小安全边际。&lt;/b&gt;&lt;br /&gt;所有传入的音频都被缓冲，抖动缓冲区不断尝试将缓冲区推进到您的网络最低的可持续限度，以尽可能降低延迟。这将设置要使用的最小缓冲区大小。如果您听到的句子开头抖动较大，请增大这个值。</translation>
     </message>
     <message>
-        <source>Minimum distance to user before sound volume decreases</source>
-        <translation>语音音量开始减小的最小用户距离</translation>
-    </message>
-    <message>
         <source>This sets the minimum distance for sound calculations. The volume of other users&apos; speech will not decrease until they are at least this far away from you.</source>
         <translation>设置声音计算的最小距离。在其他用户与您的距离超出这个值之前，他们的语音音量不会被减小。</translation>
     </message>
@@ -1215,7 +1256,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>&lt;b&gt;This adjusts the volume of incoming speech.&lt;/b&gt;&lt;br /&gt;Note that if you increase this beyond 100%, audio will be distorted.</source>
-        <translation>&lt;/b&gt;调整传入的语音音量&lt;/b&gt;&lt;br /&gt;注意，如果您将这个值增大到超过 100%，音频将会失真。</translation>
+        <translation>&lt;b&gt;调整传入的语音音量&lt;/b&gt;&lt;br /&gt;注意，如果您将这个值增大到超过 100%，音频将会失真。</translation>
     </message>
     <message>
         <source>Output Delay</source>
@@ -1229,10 +1270,6 @@ This value allows you to set the maximum number of users allowed in the channel.
         <source>The connected &quot;speakers&quot; are actually headphones</source>
         <oldsource>The connected &quot;speakers&quot; are actually headphones.</oldsource>
         <translation>已连接的“扬声器”实际上是耳机</translation>
-    </message>
-    <message>
-        <source>Factor for sound volume decrease</source>
-        <translation>音量减小因子</translation>
     </message>
     <message>
         <source>Bloom</source>
@@ -1265,10 +1302,6 @@ This value allows you to set the maximum number of users allowed in the channel.
     <message>
         <source>Maximum Distance</source>
         <translation>最大距离</translation>
-    </message>
-    <message>
-        <source>Maximum distance, beyond which speech volume won&apos;t decrease</source>
-        <translation>语音音量不再减小的最大用户距离</translation>
     </message>
     <message>
         <source>Minimum Volume</source>
@@ -1317,7 +1350,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>Attenuate applications by...</source>
-        <translation>减小其他应用音量</translation>
+        <translation>减小其他应用音量...</translation>
     </message>
     <message>
         <source>Attenuation of other applications during speech</source>
@@ -1415,6 +1448,18 @@ This value allows you to set the maximum number of users allowed in the channel.
         <source>Attenuation</source>
         <translation>衰减</translation>
     </message>
+    <message>
+        <source> %</source>
+        <translation> %</translation>
+    </message>
+    <message>
+        <source> m</source>
+        <translation> 米</translation>
+    </message>
+    <message>
+        <source>Positional audio cannot work with mono output devices!</source>
+        <translation>位置音频无法在单声道输出设备上使用！</translation>
+    </message>
 </context>
 <context>
     <name>AudioOutputDialog</name>
@@ -1441,10 +1486,6 @@ This value allows you to set the maximum number of users allowed in the channel.
     <message>
         <source>%1 %</source>
         <translation>%1 %</translation>
-    </message>
-    <message>
-        <source>%1 m</source>
-        <translation>%1 米</translation>
     </message>
     <message>
         <source>Output system</source>
@@ -1498,6 +1539,22 @@ This value allows you to set the maximum number of users allowed in the channel.
         <source>Loopback</source>
         <translation>回放</translation>
     </message>
+    <message>
+        <source>Distance at which audio volume from another player starts decreasing</source>
+        <translation>其他玩家音频音量开始减小的距离</translation>
+    </message>
+    <message>
+        <source>Distance at which a player&apos;s audio volume has reached its minimum value</source>
+        <translation>其他玩家音频音量达到最小值的距离</translation>
+    </message>
+    <message>
+        <source>The minimum volume a player&apos;s audio will fade out to with increasing distance. Set to 0% for it to fade into complete silence for a realistic maximum hearing distance.</source>
+        <translation>玩家距离增大时，其音频减弱不会超过此最低音量。设置为 0% 时，超出最大可听见距离的玩家将会被完全静音。</translation>
+    </message>
+    <message>
+        <source>If an audio source is close enough, blooming will cause the audio to be played on all speakers more or less regardless of their position (albeit with lower volume)</source>
+        <translation>如果音源足够接近，音频会或多或少地在所有扬声器中播放，无论它们的位置如何（尽管音量较低）</translation>
+    </message>
 </context>
 <context>
     <name>AudioOutputSample</name>
@@ -1547,7 +1604,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>This shows the peak power of the speakers in the last frame (20 ms). Unless you are using a multi-channel sampling method (such as ASIO) with speaker channels configured, this will be 0. If you have such a setup configured, and this still shows 0 while you&apos;re playing audio from other programs, your setup is not working.</source>
-        <oldsource>This shows the peak power in the last frame (20 ms) of the speakers. Unless you are using a multi-channel sampling method (such as ASIO) with speaker channels configured, this will be 0. If you have such a setup configured, and this still shows 0 while you're playing audio from other programs, your setup is not working.</oldsource>
+        <oldsource>This shows the peak power in the last frame (20 ms) of the speakers. Unless you are using a multi-channel sampling method (such as ASIO) with speaker channels configured, this will be 0. If you have such a setup configured, and this still shows 0 while you&apos;re playing audio from other programs, your setup is not working.</oldsource>
         <translation>显示最后一帧（20 毫秒）扬声器的峰值功率。除非您配置了扬声器通道的多通道采样方法（例如 ASIO），否则将为 0。如果您进行了这样的配置，并且当您用其他应用程序播放音频时仍然显示 0，则说明您的设置无效。</translation>
     </message>
     <message>
@@ -1764,7 +1821,7 @@ This value allows you to set the maximum number of users allowed in the channel.
     </message>
     <message>
         <source>&lt;p&gt;
-To keep latency to an absolute minimum, it's important to buffer as little audio as possible on the soundcard. However, many soundcards report that they require a much smaller buffer than what they can actually work with, so the only way to set this value is to try and fail.
+To keep latency to an absolute minimum, it&apos;s important to buffer as little audio as possible on the soundcard. However, many soundcards report that they require a much smaller buffer than what they can actually work with, so the only way to set this value is to try and fail.
 &lt;/p&gt;
 &lt;p&gt;
 You should hear a voice sample. Change the slider below to the lowest value which gives &lt;b&gt;no&lt;/b&gt; interruptions or jitter in the sound. Please note that local echo is disabled during this test.
@@ -1788,7 +1845,7 @@ You should hear a voice sample. Change the slider below to the lowest value whic
     </message>
     <message>
         <source>&lt;p&gt;
-Open your sound control panel and go to the recording settings. Make sure the microphone is selected as active input with maximum recording volume. If there's an option to enable a &quot;Microphone boost&quot; make sure it's checked.
+Open your sound control panel and go to the recording settings. Make sure the microphone is selected as active input with maximum recording volume. If there&apos;s an option to enable a &quot;Microphone boost&quot; make sure it&apos;s checked.
 &lt;/p&gt;
 &lt;p&gt;
 Speak loudly, as when you are annoyed or excited. Decrease the volume in the sound control panel until the bar below stays as high as possible in the blue and green but &lt;b&gt;not&lt;/b&gt; the red zone while you speak.
@@ -1797,7 +1854,8 @@ Speak loudly, as when you are annoyed or excited. Decrease the volume in the sou
         <translation>&lt;p&gt;
 打开操作系统的声音控制面板，前往“录制”设置。确保“麦克风”是当前激活的输入，并且录制音量为最大，如果有“麦克风加强”选项，那么也请启用。
 &lt;/p&gt;
-&lt;p&gt;现在对着麦克风大声说话，并同时逐渐降低“麦克风”面板中的音量，直到下方的指示条在您说话时始终处于蓝色和绿色区域，而&lt;b&gt;不会&lt;/b&gt;到达红色区域。
+&lt;p&gt;
+现在对着麦克风大声说话，并同时逐渐降低“麦克风”面板中的音量，直到下方的指示条在您说话时始终处于蓝色和绿色区域，而&lt;b&gt;不会&lt;/b&gt;到达红色区域。
 &lt;/p&gt;
 </translation>
     </message>
@@ -1818,7 +1876,7 @@ Speak loudly, as when you are annoyed or excited. Decrease the volume in the sou
 Congratulations. You should now be ready to enjoy a richer sound experience with Mumble.
 &lt;/p&gt;
 &lt;p&gt;
-Mumble is under continuous development, and the development team wants to focus on the features that benefit the most users. To this end, Mumble supports submitting anonymous statistics about your configuration to the developers. These statistics are essential for future development, and also make sure the features you use aren't deprecated.
+Mumble is under continuous development, and the development team wants to focus on the features that benefit the most users. To this end, Mumble supports submitting anonymous statistics about your configuration to the developers. These statistics are essential for future development, and also make sure the features you use aren&apos;t deprecated.
 &lt;/p&gt;
 </source>
         <translation>&lt;p&gt;
@@ -1871,7 +1929,7 @@ Mumble 仍在持续开发中，开发团队希望能专注于大多数用户需�
     </message>
     <message>
         <source>Next you need to adjust the following slider. The first few utterances you say should end up in the green area (definitive speech). While talking, you should stay inside the yellow (might be speech) and when you&apos;re not talking, everything should be in the red (definitively not speech).</source>
-        <oldsource>Next you need to adjust the following two sliders. The first few utterances you say should end up in the green area (definitive speech). While talking, you should stay inside the yellow (might be speech) and when you're not talking, everything should be in the red (definitively not speech).</oldsource>
+        <oldsource>Next you need to adjust the following two sliders. The first few utterances you say should end up in the green area (definitive speech). While talking, you should stay inside the yellow (might be speech) and when you&apos;re not talking, everything should be in the red (definitively not speech).</oldsource>
         <translation>然后我们来调节下方的滑块，使您说的前几个音节能让上方的指示条达到绿色区域（明确发言）；当您正在说话时，指示条应该在黄色区域（疑似发言）；当您不说话时，指示条应该处于红色区域（明确不发言）。</translation>
     </message>
     <message>
@@ -1964,14 +2022,14 @@ Mumble 仍在持续开发中，开发团队希望能专注于大多数用户需�
     </message>
     <message>
         <source>&lt;p&gt;
-Open your sound control panel and go to the recording settings. Make sure the microphone is selected as active input with maximum recording volume. If there's an option to enable a &quot;Microphone boost&quot; make sure it's checked.
+Open your sound control panel and go to the recording settings. Make sure the microphone is selected as active input with maximum recording volume. If there&apos;s an option to enable a &quot;Microphone boost&quot; make sure it&apos;s checked.
 &lt;/p&gt;
 &lt;p&gt;
 Speak loudly, as when you are annoyed or excited. Decrease the volume in the sound control panel until the bar below stays as high as possible in the striped and the empty but &lt;b&gt;not&lt;/b&gt; the crisscrossed zone while you speak.
 &lt;/p&gt;
 </source>
         <oldsource>&lt;p&gt;
-Open your sound control panel and go to the recording settings. Make sure the microphone is selected as active input with maximum recording volume. If there's an option to enable a &quot;Microphone boost&quot; make sure it's checked.
+Open your sound control panel and go to the recording settings. Make sure the microphone is selected as active input with maximum recording volume. If there&apos;s an option to enable a &quot;Microphone boost&quot; make sure it&apos;s checked.
 &lt;/p&gt;
 &lt;p&gt;
 Speak loudly, as when you are annoyed or excited. Decrease the volume in the sound control panel until the bar below stays as high as possible in the striped and the empty but &lt;b&gt;not&lt;/b&gt; the criss-crossed zone while you speak.
@@ -1981,7 +2039,8 @@ Speak loudly, as when you are annoyed or excited. Decrease the volume in the sou
         <translation>&lt;p&gt;
 打开操作系统的声音控制面板，前往“录制”设置。确保“麦克风”是当前激活的输入，并且录制音量为最大，如果有“麦克风加强”选项，那么也请启用。
 &lt;/p&gt;
-&lt;p&gt;现在对着麦克风大声说话，并同时逐渐降低“麦克风”面板中的音量，直到下方的指示条在您说话时始终处于条纹和空白区域，而&lt;b&gt;不会&lt;/b&gt;到达网格区域。
+&lt;p&gt;
+现在对着麦克风大声说话，并同时逐渐降低“麦克风”面板中的音量，直到下方的指示条在您说话时始终处于条纹和空白区域，而&lt;b&gt;不会&lt;/b&gt;到达网格区域。
 &lt;/p&gt;
 </translation>
     </message>
@@ -2192,7 +2251,9 @@ Speak loudly, as when you are annoyed or excited. Decrease the volume in the sou
     </message>
     <message numerus="yes">
         <source>Ban List - %n Ban(s)</source>
-        <translation><numerusform>封禁列表 - %n 个封禁</numerusform></translation>
+        <translation>
+            <numerusform>封禁列表 - %n 个封禁</numerusform>
+        </translation>
     </message>
     <message>
         <source>Search</source>
@@ -2460,7 +2521,7 @@ Speak loudly, as when you are annoyed or excited. Decrease the volume in the sou
         <source>&lt;p&gt;You already have a certificate stored in Mumble, and you are about to replace it.&lt;/p&gt;
 &lt;p&gt;If you are upgrading to a certificate issued to you by a trusted CA and the email addresses match your current certificate, this is completely safe, and servers you connect to will automatically recognize the strong certificate for your email address.
 &lt;/p&gt;
-&lt;p&gt;If this is not the case, you will no longer be recognized by any server you previously have authenticated with. If you haven't been registered on any server yet, this is nothing to worry about.
+&lt;p&gt;If this is not the case, you will no longer be recognized by any server you previously have authenticated with. If you haven&apos;t been registered on any server yet, this is nothing to worry about.
 &lt;/p&gt;
 &lt;p&gt;
 Are you sure you wish to replace your certificate?
@@ -2572,7 +2633,7 @@ Are you sure you wish to replace your certificate?
     </message>
     <message>
         <source>&lt;p&gt;Mumble can use certificates to authenticate with servers. Using certificates avoids passwords, meaning you don&apos;t need to disclose any password to the remote site. It also enables very easy user registration and a client side friends list independent of servers.&lt;/p&gt;&lt;p&gt;While Mumble can work without certificates, the majority of servers will expect you to have one.&lt;/p&gt;&lt;p&gt;Creating a new certificate automatically is sufficient for most use cases. But Mumble also supports certificates representing trust in the users ownership of an email address. These certificates are issued by third parties. For more information see our &lt;a href=&quot;http://mumble.info/certificate.php&quot;&gt;user certificate documentation&lt;/a&gt;. &lt;/p&gt;</source>
-        <translation>&lt;p&gt;Mumble 可以使用证书来登录服务器。使用证书代替密码来登陆，意味着您无需向远程站点透露密码。这让注册过程更加简单，并且您可以在客户端管理独立于服务端的好友列表。&lt;/p&gt;&lt;p&gt;尽管证书对于 Mumble 不是必须的，但大部分服务器仍然希望您拥有一个证书。&lt;/p&gt;&lt;p&gt;一般来说，直接创建一个新证书即可，但 Mumble 也支持认证由第三方签发的、证明用户电子邮件地址所有权的证书。要获取更多信息，可以查看我们的&lt;a href=&quot;http://mumble.info/certificate.php&quot;&gt;用户证书文档&lt;/a&gt;。&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;Mumble 可以使用证书来登录服务器。使用证书代替密码来登录，意味着您无需向远程站点透露密码。这让注册过程更加简单，并且您可以在客户端管理独立于服务端的好友列表。&lt;/p&gt;&lt;p&gt;尽管证书对于 Mumble 不是必须的，但大部分服务器仍然希望您拥有一个证书。&lt;/p&gt;&lt;p&gt;一般来说，直接创建一个新证书即可，但 Mumble 也支持认证由第三方签发的、证明用户电子邮件地址所有权的证书。要获取更多信息，可以查看我们的&lt;a href=&quot;http://mumble.info/certificate.php&quot;&gt;用户证书文档&lt;/a&gt;。&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -2651,7 +2712,7 @@ Are you sure you wish to replace your certificate?
     </message>
     <message>
         <source>This represents the permission to link channels. Users in linked channels hear each other, as long as the speaking user has the &lt;i&gt;speak&lt;/i&gt; privilege in the channel of the listener. You need the link privilege in both channels to create a link, but just in either channel to remove it.</source>
-        <translation>允许链接频道。只要说话的用户拥有对应频道的说话权限，被链接的频道内的用户就可以听到彼此的说话。您需要同时拥有两个频道的链接权限才能创建频道链接，但是只要拥有其中一个频道的链接权限就能删除此链接。</translation>
+        <translation>允许链接频道。只要说话的用户拥有对应频道的&lt;i&gt;说话&lt;/i&gt;权限，被链接的频道内的用户就可以听到彼此的说话。您需要同时拥有两个频道的链接权限才能创建频道链接，但是只要拥有其中一个频道的链接权限就能删除此链接。</translation>
     </message>
     <message>
         <source>This represents the permission to write text messages to other users in this channel.</source>
@@ -2851,6 +2912,10 @@ Are you sure you wish to replace your certificate?
         <source>This button will restore the defaults for all settings.</source>
         <translation>将所有设置恢复为默认值。</translation>
     </message>
+    <message>
+        <source>Defaults (All)</source>
+        <translation>默认值（所有）</translation>
+    </message>
 </context>
 <context>
     <name>ConnectDialog</name>
@@ -2863,60 +2928,8 @@ Are you sure you wish to replace your certificate?
         <translation>输入用户名</translation>
     </message>
     <message>
-        <source>Adding host %1</source>
-        <translation>添加主机 %1</translation>
-    </message>
-    <message>
         <source>Servername</source>
         <translation>服务器名</translation>
-    </message>
-    <message>
-        <source>Hostname</source>
-        <translation>主机名</translation>
-    </message>
-    <message>
-        <source>Bonjour name</source>
-        <translation>Bonjour 名称</translation>
-    </message>
-    <message>
-        <source>Port</source>
-        <translation>端口</translation>
-    </message>
-    <message>
-        <source>Addresses</source>
-        <translation>地址</translation>
-    </message>
-    <message>
-        <source>Website</source>
-        <translation>网页</translation>
-    </message>
-    <message>
-        <source>Packet loss</source>
-        <translation>丢包</translation>
-    </message>
-    <message>
-        <source>Ping (80%)</source>
-        <translation>Ping（80%）</translation>
-    </message>
-    <message>
-        <source>%1 ms</source>
-        <translation>%1 毫秒</translation>
-    </message>
-    <message>
-        <source>Ping (95%)</source>
-        <translation>Ping（95%）</translation>
-    </message>
-    <message>
-        <source>Bandwidth</source>
-        <translation>带宽</translation>
-    </message>
-    <message>
-        <source>%1 kbit/s</source>
-        <translation>%1 千比特/秒</translation>
-    </message>
-    <message>
-        <source>&amp;Connect</source>
-        <translation>连接(&amp;C)</translation>
     </message>
     <message>
         <source>Unknown</source>
@@ -2925,10 +2938,6 @@ Are you sure you wish to replace your certificate?
     <message>
         <source>Users</source>
         <translation>用户数</translation>
-    </message>
-    <message>
-        <source>Version</source>
-        <translation>版本</translation>
     </message>
     <message>
         <source>Failed to fetch server list</source>
@@ -3046,6 +3055,66 @@ Are you sure you wish to replace your certificate?
         <source>&lt;p&gt;To measure the latency (ping) of public servers and determine the number of active users, your IP address must be transmitted to each public server.&lt;/p&gt;&lt;p&gt;Do you consent to the transmission of your IP address? If you answer no, the public server list will be deactivated. However, you can reactivate it at any time in the network settings.&lt;/p&gt;</source>
         <translation>&lt;p&gt;为了获取公共服务器的延迟（Ping）和在线用户数，您的 IP 地址必须被发送到所有公共服务器。&lt;/p&gt;&lt;p&gt;您同意传输您的 IP 地址吗？如果您不同意，公共服务器列表会被禁用。但您随时可以在网络设置内重新启用它。&lt;/p&gt;</translation>
     </message>
+    <message>
+        <source>C&amp;onnect</source>
+        <translation>连接(&amp;O)</translation>
+    </message>
+    <message>
+        <source>Adding host %1</source>
+        <translation>添加主机 %1</translation>
+    </message>
+    <message>
+        <source>Hostname</source>
+        <translation>主机名</translation>
+    </message>
+    <message>
+        <source>Bonjour name</source>
+        <translation>Bonjour 名称</translation>
+    </message>
+    <message>
+        <source>Port</source>
+        <translation>端口</translation>
+    </message>
+    <message>
+        <source>Website</source>
+        <translation>网页</translation>
+    </message>
+    <message>
+        <source>Packet loss</source>
+        <translation>丢包</translation>
+    </message>
+    <message>
+        <source>Ping (80%)</source>
+        <translation>Ping（80%）</translation>
+    </message>
+    <message>
+        <source>%1 ms</source>
+        <translation>%1 毫秒</translation>
+    </message>
+    <message>
+        <source>Ping (95%)</source>
+        <translation>Ping（95%）</translation>
+    </message>
+    <message>
+        <source>Bandwidth</source>
+        <translation>带宽</translation>
+    </message>
+    <message>
+        <source>%1 kbit/s</source>
+        <translation>%1 千比特/秒</translation>
+    </message>
+    <message>
+        <source>Version</source>
+        <translation>版本</translation>
+    </message>
+    <message>
+        <source>IPv4 address</source>
+        <translation>IPv4 地址</translation>
+    </message>
+    <message>
+        <source>IPv6 address</source>
+        <translation>IPv6 地址</translation>
+    </message>
 </context>
 <context>
     <name>ConnectDialogEdit</name>
@@ -3070,7 +3139,7 @@ Are you sure you wish to replace your certificate?
         <source>&lt;b&gt;Address&lt;/b&gt;&lt;br/&gt;
 Internet address of the server. This can be a normal hostname, an IPv4/IPv6 address or a Bonjour service identifier. Bonjour service identifiers have to be prefixed with a &apos;@&apos; to be recognized by Mumble.</source>
         <oldsource>&lt;b&gt;Address&lt;/b&gt;&lt;/br&gt;
-Internet address of the server. This can be a normal hostname, an ipv4/6 address or a bonjour service identifier. Bonjour service identifiers have to be prefixed with a '@' to be recognized by Mumble.</oldsource>
+Internet address of the server. This can be a normal hostname, an ipv4/6 address or a bonjour service identifier. Bonjour service identifiers have to be prefixed with a &apos;@&apos; to be recognized by Mumble.</oldsource>
         <translation>&lt;b&gt;地址&lt;/b&gt;&lt;br/&gt;
 服务器的 Internet 地址，可以是普通的主机名、IPv4/IPv6 地址或者一个 Bonjour 服务 ID。Bonjour 服务 ID 必须以“@”为前缀，Mumble 才能识别。</translation>
     </message>
@@ -3219,14 +3288,6 @@ Label of the server. This is what the server will be named like in your server l
         <translation>崩溃报告上传失败</translation>
     </message>
     <message>
-        <source>We&apos;re really sorry, but it appears the crash upload has failed with error %1 %2. Please inform a developer.</source>
-        <translation>非常抱歉，发送崩溃报告因错误 %1 %2 而失败。请通知开发者。</translation>
-    </message>
-    <message>
-        <source>This really isn&apos;t funny, but apparently there&apos;s a bug in the crash reporting code, and we&apos;ve failed to upload the report. You may inform a developer about error %1</source>
-        <translation>这并不有趣，显然崩溃报告代码中存在漏洞，所以无法成功发送报告。您可以将错误 %1 告知开发者</translation>
-    </message>
-    <message>
         <source>Uploading crash report</source>
         <translation>正在上传崩溃报告</translation>
     </message>
@@ -3234,12 +3295,20 @@ Label of the server. This is what the server will be named like in your server l
         <source>Abort upload</source>
         <translation>取消上传</translation>
     </message>
+    <message>
+        <source>HTTP error %1: &quot;%2&quot;</source>
+        <translation>HTTP 错误 %1：“%2”</translation>
+    </message>
+    <message>
+        <source>Internal error encountered in CrashReporter.cpp: Received network reply does not contain an HTTP status code. Please inform a developer about error code %1</source>
+        <translation>CrashReporter.cpp 发生了内部错误：接收的网络响应不包含 HTTP 状态码。请联系开发者提供错误代码 %1</translation>
+    </message>
 </context>
 <context>
     <name>Database</name>
     <message>
         <source>The database &apos;%1&apos; is read-only. Mumble cannot store server settings (i.e. SSL certificates) until you fix this problem.</source>
-        <oldsource>The database '%1' is read-only. Mumble can not store server settings (ie. SSL certificates) until you fix this problem.</oldsource>
+        <oldsource>The database &apos;%1&apos; is read-only. Mumble can not store server settings (ie. SSL certificates) until you fix this problem.</oldsource>
         <translation>数据库“%1”是只读的。在修复此错误前，Mumble 将无法保存服务器设置（即 SSL 证书）。</translation>
     </message>
     <message>
@@ -3340,14 +3409,6 @@ Label of the server. This is what the server will be named like in your server l
         <translation>其他快捷键引擎</translation>
     </message>
     <message>
-        <source>&lt;b&gt;Enable Windows hooks&lt;/b&gt;.&lt;br /&gt;This enables the Windows hooks shortcut engine. Using this engine allows Mumble to suppress keypresses and mouse clicks.</source>
-        <translation>&lt;b&gt;启用 Windows 钩子&lt;/b&gt;。&lt;br /&gt;这将启用 Windows 钩子快捷键引擎。 启用此引擎可使 Mumble 屏蔽按键和鼠标点击。</translation>
-    </message>
-    <message>
-        <source>Enable Windows hooks</source>
-        <translation>启用 Windows 钩子</translation>
-    </message>
-    <message>
         <source>&lt;b&gt;Enable GKey&lt;/b&gt;.&lt;br /&gt;This setting enables support for the GKey shortcut engine, for &quot;G&quot;-keys found on Logitech keyboards.</source>
         <translation>&lt;b&gt;启用 GKey&lt;/b&gt;。&lt;br /&gt;此设置启用对 GKey 快捷键引擎的支持，用于 Logitech 键盘上的 G 键。</translation>
     </message>
@@ -3374,6 +3435,10 @@ Without this option enabled, using Mumble&apos;s global shortcuts in privileged 
     <message>
         <source>Enable shortcuts in privileged applications</source>
         <translation>在特权应用中启用快捷键</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mumble&apos;s Global Shortcuts system does currently not work properly in combination with the Wayland protocol. For more information, visit &lt;a href=&quot;https://github.com/mumble-voip/mumble/issues/5257&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0057ae;&quot;&gt;https://github.com/mumble-voip/mumble/issues/5257&lt;/span&gt;&lt;/a&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Mumble 的全局快捷键系统目前不能在 Wayland 接口下正常工作。要了解更多信息，请访问 &lt;a href=&quot;https://github.com/mumble-voip/mumble/issues/5257&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0057ae;&quot;&gt;https://github.com/mumble-voip/mumble/issues/5257&lt;/span&gt;&lt;/a&gt;。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -3646,13 +3711,6 @@ This field describes the size of an LCD device. The size is given either in pixe
     </message>
 </context>
 <context>
-    <name>ListenerLocalVolumeDialog</name>
-    <message>
-        <source>Adjusting local volume for listening to %1</source>
-        <translation>调整监听 %1 的本地音量</translation>
-    </message>
-</context>
-<context>
     <name>Log</name>
     <message>
         <source>Debug</source>
@@ -3816,6 +3874,14 @@ This field describes the size of an LCD device. The size is given either in pixe
         <source>User stopped listening to channel</source>
         <translation>用户停止监听频道</translation>
     </message>
+    <message>
+        <source>Plugin message</source>
+        <translation>插件消息</translation>
+    </message>
+    <message>
+        <source>[embedded content]</source>
+        <translation>[嵌入内容]</translation>
+    </message>
 </context>
 <context>
     <name>LogConfig</name>
@@ -3903,10 +3969,6 @@ This field describes the size of an LCD device. The size is given either in pixe
         <translation>语音播报</translation>
     </message>
     <message>
-        <source>Volume</source>
-        <translation>音量</translation>
-    </message>
-    <message>
         <source>Volume of Text-To-Speech Engine</source>
         <translation>语音播报引擎的音量</translation>
     </message>
@@ -3929,10 +3991,6 @@ This field describes the size of an LCD device. The size is given either in pixe
     <message>
         <source> Characters</source>
         <translation> 字符</translation>
-    </message>
-    <message>
-        <source>Whisper</source>
-        <translation>密语</translation>
     </message>
     <message>
         <source>If checked you will only hear whispers from users you added to your friend list.</source>
@@ -4018,6 +4076,94 @@ The setting only applies for new messages, the already shown ones will retain th
         <source>Chat message margins</source>
         <translation>聊天消息间距</translation>
     </message>
+    <message>
+        <source>Limit</source>
+        <translation>限制</translation>
+    </message>
+    <message>
+        <source>Misc.</source>
+        <translation>杂项</translation>
+    </message>
+    <message>
+        <source>Number of users that will trigger message limiting functionality.</source>
+        <translation>触发消息限制功能所需用户数。</translation>
+    </message>
+    <message>
+        <source>users on the server.</source>
+        <translation>时，限制通知数量。</translation>
+    </message>
+    <message>
+        <source>Limit notifications when there are more than</source>
+        <translation>当服务器上的用户数超过</translation>
+    </message>
+    <message>
+        <source>User limit for message limiting</source>
+        <translation>消息限制用户数</translation>
+    </message>
+    <message>
+        <source>Click here to toggle message limiting for all events - If using this option be sure to change the user limit below.</source>
+        <translation>点击此处开关所有事件的消息限制——使用此选项时，请确保修改下方的用户限制。</translation>
+    </message>
+    <message>
+        <source>Toggle message limiting behavior for %1 events </source>
+        <translation>开关 %1 事件的消息限制 </translation>
+    </message>
+    <message>
+        <source>Click to enable Text-to-Speech</source>
+        <translation>点击启用语音播报</translation>
+    </message>
+    <message>
+        <source>Enable Text-to-Speech</source>
+        <translation>启用语音播报</translation>
+    </message>
+    <message>
+        <source>Click here to toggle limiting for %1 events.&lt;br /&gt;If checked, notifications for this event type will not be played when the user count on the server exceeds the set threshold.</source>
+        <translation>点击这里切换 %1 事件的限制。&lt;br /&gt;勾选后，当服务器上的用户数量达到设置的阈值时，此事件类型的提醒将不会触发。</translation>
+    </message>
+    <message>
+        <source>Message Volume</source>
+        <translation>消息音量</translation>
+    </message>
+    <message>
+        <source>Volume adjustment for audio cues</source>
+        <translation>音频提示的音量调节</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;This is the volume adjustment for audio cues.&lt;/b&gt;&lt;br /&gt;A value of 0 dB means no change to the sound sample.</source>
+        <translation>&lt;b&gt;音频提示的音量调节。&lt;/b&gt;&lt;br /&gt;0 分贝表示不改变声音样本。</translation>
+    </message>
+    <message>
+        <source> dB</source>
+        <translation> 分贝</translation>
+    </message>
+    <message>
+        <source>Text-to-Speech volume</source>
+        <translation>语音播报音量</translation>
+    </message>
+    <message>
+        <source>Notification volume adjustment</source>
+        <translation>通知音量调节</translation>
+    </message>
+    <message>
+        <source>Volume adjustment for notification sounds</source>
+        <translation>通知声音的音量调节</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;This is the volume adjustment for notification sounds.&lt;/b&gt;&lt;br /&gt;A value of 0 dB means no change to the sound sample.</source>
+        <translation>&lt;b&gt;通知声音的音量调节。&lt;/b&gt;&lt;br /&gt;0 分贝表示不改变声音样本。</translation>
+    </message>
+    <message>
+        <source>Audio cue volume adjustment</source>
+        <translation>音频提示音量调节</translation>
+    </message>
+    <message>
+        <source> %</source>
+        <translation> %</translation>
+    </message>
+    <message>
+        <source>Notification sound volume adjustment</source>
+        <translation>通知声音音量调节</translation>
+    </message>
 </context>
 <context>
     <name>LookConfig</name>
@@ -4073,10 +4219,6 @@ The setting only applies for new messages, the already shown ones will retain th
     <message>
         <source>Users above Channels</source>
         <translation>用户显示在频道上方</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;If set, will verify you want to quit if connected.&lt;/b&gt;</source>
-        <translation>&lt;b&gt;如果选中，在您已连接服务器时退出需要确认。&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Show number of users in each channel</source>
@@ -4142,14 +4284,6 @@ The setting only applies for new messages, the already shown ones will retain th
     <message>
         <source>Channel Dragging</source>
         <translation>频道拖动</translation>
-    </message>
-    <message>
-        <source>Ask whether to close or minimize when quitting Mumble.</source>
-        <translation>在退出 Mumble 时，询问您要关闭还是最小化。</translation>
-    </message>
-    <message>
-        <source>Ask on quit while connected</source>
-        <translation>在已连接服务器时确认退出</translation>
     </message>
     <message>
         <source>Always On Top</source>
@@ -4305,7 +4439,7 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>String to separate a channel name from its parent&apos;s.</source>
-        <translation>分隔当前频道与父频道名称的字符</translation>
+        <translation>分隔当前频道与父频道名称的字符。</translation>
     </message>
     <message>
         <source>Channel separator</source>
@@ -4417,7 +4551,7 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>Whether to show all of the local user&apos;s listeners (ears) in the TalkingUI (and thereby also the channels they are in). </source>
-        <translation>是否在对话界面显示本地用户的所有监听者（以及他们所在频道）。</translation>
+        <translation>是否在对话界面显示本地用户的所有监听者（以及他们所在频道）。 </translation>
     </message>
     <message>
         <source>Show local user&apos;s listeners (ears)</source>
@@ -4430,6 +4564,62 @@ The setting only applies for new messages, the already shown ones will retain th
     <message>
         <source>Show nicknames only</source>
         <translation>仅显示昵称</translation>
+    </message>
+    <message>
+        <source>Channel Hierarchy String</source>
+        <translation>频道层级字符串</translation>
+    </message>
+    <message>
+        <source>Search</source>
+        <translation>搜索</translation>
+    </message>
+    <message>
+        <source>The action to perform when a user is activated (via double-click or enter) in the search dialog.</source>
+        <translation>在搜索对话框中，用户被激活时（双击或 Enter 键）执行的操作。</translation>
+    </message>
+    <message>
+        <source>Action (User):</source>
+        <translation>操作（用户）：</translation>
+    </message>
+    <message>
+        <source>The action to perform when a channel is activated (via double-click or enter) in the search dialog.</source>
+        <translation>在搜索对话框中，频道被激活时（双击或 Enter 键）执行的操作。</translation>
+    </message>
+    <message>
+        <source>Action (Channel):</source>
+        <translation>操作（频道）：</translation>
+    </message>
+    <message>
+        <source>Quit Behavior</source>
+        <translation>退出行为</translation>
+    </message>
+    <message>
+        <source>This setting controls the behavior of clicking on the X in the top right corner.</source>
+        <translation>此设置控制点击右上角 X 的行为。</translation>
+    </message>
+    <message>
+        <source>This setting controls the behavior when closing Mumble. You can choose between being asked for confirmation, minimize instead if closing or just closing without any additional prompt. Optionally, the first two options can only apply when you are currently connected to a server (in that case, Mumble will quit without asking, when not connected to any server).</source>
+        <translation>此设置控制关闭 Mumble 的行为。您可以选择请求确认、关闭时最小化或不确认直接退出。或者，前两个选项可以仅在连接到服务器时生效（如果此时 Mumble 没有连接到任何服务器，则不确认直接退出）。</translation>
+    </message>
+    <message>
+        <source>Always Ask</source>
+        <translation>总是询问</translation>
+    </message>
+    <message>
+        <source>Ask when connected</source>
+        <translation>连接服务器时询问</translation>
+    </message>
+    <message>
+        <source>Always Minimize</source>
+        <translation>总是最小化</translation>
+    </message>
+    <message>
+        <source>Minimize when connected</source>
+        <translation>连接服务器时最小化</translation>
+    </message>
+    <message>
+        <source>Always Quit</source>
+        <translation>总是退出</translation>
     </message>
 </context>
 <context>
@@ -4523,10 +4713,6 @@ The setting only applies for new messages, the already shown ones will retain th
         <translation>关闭</translation>
     </message>
     <message>
-        <source>Mumble is currently connected to a server. Do you want to Close or Minimize it?</source>
-        <translation>Mumble 已连接到服务器。您要关闭或者最小化吗？</translation>
-    </message>
-    <message>
         <source>Mute Self</source>
         <comment>Global Shortcut</comment>
         <translation>开关自己的麦克风</translation>
@@ -4579,20 +4765,12 @@ The setting only applies for new messages, the already shown ones will retain th
         <translation>文件不存在</translation>
     </message>
     <message>
-        <source>File is not a configuration file.</source>
-        <translation>文件不是配置文件。</translation>
-    </message>
-    <message>
         <source>Settings merged from file.</source>
         <translation>从文件合并设置。</translation>
     </message>
     <message>
         <source>URL scheme is not &apos;mumble&apos;</source>
         <translation>URL 协议不是“mumble”</translation>
-    </message>
-    <message>
-        <source>This version of Mumble can&apos;t handle URLs for Mumble version %1.%2.%3</source>
-        <translation>当前版本的 Mumble 无法处理用于 Mumble %1.%2.%3 的 URL</translation>
     </message>
     <message>
         <source>Connecting to %1</source>
@@ -4615,56 +4793,12 @@ The setting only applies for new messages, the already shown ones will retain th
         <translation>传输模式设置为连续发言</translation>
     </message>
     <message>
-        <source>&lt;p&gt;%1 (%2)&lt;br /&gt;%3&lt;/p&gt;</source>
-        <translation>&lt;p&gt;%1（%2）&lt;br /&gt;%3&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;h2&gt;Voice channel&lt;/h2&gt;&lt;p&gt;Encrypted with 128 bit OCB-AES128&lt;br /&gt;%1 ms average latency (%4 deviation)&lt;/p&gt;</source>
-        <translation>&lt;h2&gt;语音信道&lt;/h2&gt;&lt;p&gt;使用 128 位 OCB-AES128 算法加密&lt;br /&gt;平均延迟 %1 毫秒（%4 误差）&lt;/p&gt;</translation>
-    </message>
-    <message>
         <source>Register yourself as %1</source>
         <translation>以 %1 身份注册自己</translation>
     </message>
     <message>
         <source>&lt;p&gt;You are about to register yourself on this server. This action cannot be undone, and your username cannot be changed once this is done. You will forever be known as &apos;%1&apos; on this server.&lt;/p&gt;&lt;p&gt;Are you sure you want to register yourself?&lt;/p&gt;</source>
         <translation>&lt;p&gt;您将要在服务器上注册自己，此操作无法撤销，用户名注册后无法修改，“%1”将一直作为您在此服务器的用户名。&lt;/p&gt;&lt;p&gt;确认注册自己？&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;h2&gt;Version&lt;/h2&gt;&lt;p&gt;Protocol %1&lt;/p&gt;</source>
-        <translation>&lt;h2&gt;版本&lt;/h2&gt;&lt;p&gt;协议 %1&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;No build information or OS version available&lt;/p&gt;</source>
-        <translation>&lt;p&gt;无可用的构建信息或操作系统版本&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>The connection is encrypted and authenticated using %1 and uses %2 as the key exchange mechanism (%3)</source>
-        <translation>该连接使用 %1 算法进行加密和身份认证，并使用 %2 作为密钥交换机制（%3）</translation>
-    </message>
-    <message>
-        <source>The connection is encrypted using %1, with %2 for message authentication and %3 as the key exchange mechanism (%4)</source>
-        <translation>该连接使用 %1 算法进行加密，使用 %2 进行消息认证，并使用 %3 作为密钥交换机制（%4）</translation>
-    </message>
-    <message>
-        <source>The connection is secured by the cipher suite that OpenSSL identifies as %1</source>
-        <translation>该连接由 OpenSSL 标识为 %1 的密码套件保护</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;The connection provides perfect forward secrecy&lt;/p&gt;</source>
-        <translation>&lt;p&gt;该连接已提供完美的前向安全性&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;The connection does not provide perfect forward secrecy&lt;/p&gt;</source>
-        <translation>&lt;p&gt;该连接未提供完美的前向安全性&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;h2&gt;Control channel&lt;/h2&gt;&lt;p&gt;The connection uses %1&lt;/p&gt;%2%3&lt;p&gt;%4 ms average latency (%5 deviation)&lt;/p&gt;&lt;p&gt;Remote host %6 (port %7)&lt;/p&gt;</source>
-        <translation>&lt;h2&gt;控制信道&lt;/h2&gt;&lt;p&gt;该连接使用 %1&lt;/p&gt;%2%3&lt;p&gt;平均延迟 %4 毫秒（%5 误差）&lt;/p&gt;&lt;p&gt;远程主机 %6（端口 %7）&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Voice channel is sent over control channel</source>
-        <translation>语音信道通过控制信道发送</translation>
     </message>
     <message>
         <source>Register user %1</source>
@@ -4716,12 +4850,12 @@ The setting only applies for new messages, the already shown ones will retain th
     </message>
     <message>
         <source>&lt;center&gt;Type message to channel &apos;%1&apos; here&lt;/center&gt;</source>
-        <oldsource>Type message to channel '%1' here</oldsource>
+        <oldsource>Type message to channel &apos;%1&apos; here</oldsource>
         <translation>&lt;center&gt;在此输入发送到频道“%1”的消息&lt;/center&gt;</translation>
     </message>
     <message>
         <source>&lt;center&gt;Type message to user &apos;%1&apos; here&lt;/center&gt;</source>
-        <oldsource>Type message to user '%1' here</oldsource>
+        <oldsource>Type message to user &apos;%1&apos; here</oldsource>
         <translation>&lt;center&gt;在此输入发送给用户“%1”的消息&lt;/center&gt;</translation>
     </message>
     <message>
@@ -4811,10 +4945,6 @@ The setting only applies for new messages, the already shown ones will retain th
         <translation>按键发言</translation>
     </message>
     <message>
-        <source>Mumble - Minimal View -- %1</source>
-        <translation>Mumble - 简洁视图 -- %1</translation>
-    </message>
-    <message>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
@@ -4841,46 +4971,6 @@ The setting only applies for new messages, the already shown ones will retain th
     <message>
         <source>Transmit Mode set to Push-to-Talk</source>
         <translation>传输模式设置为按键发言</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Connected users: %1/%2&lt;/p&gt;</source>
-        <translation>&lt;p&gt;已连接用户：%1/%2&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>UDP Statistics</source>
-        <translation>UDP 统计</translation>
-    </message>
-    <message>
-        <source>To Server</source>
-        <translation>发送到服务器</translation>
-    </message>
-    <message>
-        <source>From Server</source>
-        <translation>从服务器接收</translation>
-    </message>
-    <message>
-        <source>Good</source>
-        <translation>良好</translation>
-    </message>
-    <message>
-        <source>Late</source>
-        <translation>延迟</translation>
-    </message>
-    <message>
-        <source>Lost</source>
-        <translation>丢失</translation>
-    </message>
-    <message>
-        <source>Resync</source>
-        <translation>重新同步</translation>
-    </message>
-    <message>
-        <source>&lt;h2&gt;Audio bandwidth&lt;/h2&gt;&lt;p&gt;Maximum %1 kbit/s&lt;br /&gt;Current %2 kbit/s&lt;br /&gt;Codec: %3&lt;/p&gt;</source>
-        <translation>&lt;h2&gt;音频带宽&lt;/h2&gt;&lt;p&gt;最大 %1 千比特/秒&lt;br /&gt;当前 %2 千比特/秒&lt;br /&gt;编解码器：%3&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Mumble Server Information</source>
-        <translation>Mumble 服务器信息</translation>
     </message>
     <message>
         <source>&amp;View Certificate</source>
@@ -5011,7 +5101,9 @@ The setting only applies for new messages, the already shown ones will retain th
         <source>Wrong certificate or password for registered user. If you are
 certain this user is protected by a password please retry.
 Otherwise abort and check your certificate and username.</source>
-        <translation>已注册用户的证书或者密码错误。如果您的确是被密码保护的用户，请重试。否则请退出并检查您的证书与用户名。</translation>
+        <translation>已注册用户的证书或者密码错误。如果您
+的确是被密码保护的用户，请重试。否则
+请退出并检查您的证书与用户名。</translation>
     </message>
     <message>
         <source>Wrong password</source>
@@ -5658,10 +5750,6 @@ Otherwise abort and check your certificate and username.</source>
         <translation>服务器</translation>
     </message>
     <message>
-        <source>Failed to load Opus, it will not be available for audio encoding/decoding.</source>
-        <translation>加载 Opus 失败，无法进行音频编解码。</translation>
-    </message>
-    <message>
         <source>The server requests minimum client version %1</source>
         <translation>服务器要求客户端版本至少为 %1</translation>
     </message>
@@ -5708,10 +5796,6 @@ Otherwise abort and check your certificate and username.</source>
     <message>
         <source>%1 unmuted by %2.</source>
         <translation>%2 开启了 %1 麦克风。</translation>
-    </message>
-    <message>
-        <source>Unable to find matching CELT codecs with other clients. You will not be able to talk to all users.</source>
-        <translation>无法找到与其他客户端匹配的 CELT 编解码器。您将无法与所有用户交谈。</translation>
     </message>
     <message>
         <source>You were muted and deafened by %1.</source>
@@ -5907,21 +5991,14 @@ Otherwise abort and check your certificate and username.</source>
         <translation>使您可以编辑服务端的 IP 封禁列表。</translation>
     </message>
     <message>
-        <source>&amp;Filter on/off</source>
-        <translation>切换筛选(&amp;F)</translation>
-    </message>
-    <message>
-        <source>Toggle the channel filter (Ctrl+F)</source>
-        <translation>开关频道筛选器 (Ctrl+F)</translation>
-    </message>
-    <message>
         <source>Enable or disable the filtering of select channels.
 By default all empty channels will be filtered.
 You can mark additional channels for filtering from
 the channel&apos;s context menu.</source>
         <translation>对所选频道启用或禁用筛选。
 默认情况下，所有空频道会被隐藏。
-您可以通过频道的右键菜单将频道标记为筛选时隐藏。</translation>
+您可以通过频道的右键菜单将频道标记为
+筛选时隐藏。</translation>
     </message>
     <message>
         <source>Ctrl+F</source>
@@ -5934,14 +6011,6 @@ the channel&apos;s context menu.</source>
     <message>
         <source>Reset the avatar of the selected user.</source>
         <translation>重置所选用户的头像。</translation>
-    </message>
-    <message>
-        <source>Locally adjust the user&apos;s speech volume.</source>
-        <translation>本地调整用户的语音音量。</translation>
-    </message>
-    <message>
-        <source>Opens a dialog with a volume slider. Use this on other users in the same room.</source>
-        <translation>打开一个带有音量滑块的对话框。需要对同一频道的其他用户使用。</translation>
     </message>
     <message>
         <source>&amp;Developer</source>
@@ -5969,15 +6038,15 @@ the channel&apos;s context menu.</source>
     </message>
     <message>
         <source>&amp;Connect...</source>
-        <translation>连接(&amp;C)…</translation>
+        <translation>连接(&amp;C)...</translation>
     </message>
     <message>
         <source>&amp;Ban list...</source>
-        <translation>封禁列表(&amp;B)…</translation>
+        <translation>封禁列表(&amp;B)...</translation>
     </message>
     <message>
         <source>&amp;Information...</source>
-        <translation>服务器信息(&amp;I)…</translation>
+        <translation>服务器信息(&amp;I)...</translation>
     </message>
     <message>
         <source>&amp;Kick...</source>
@@ -5986,10 +6055,6 @@ the channel&apos;s context menu.</source>
     <message>
         <source>&amp;Ban...</source>
         <translation>封禁(&amp;B)...</translation>
-    </message>
-    <message>
-        <source>Local Volume Adjustment...</source>
-        <translation>本地音量调整...</translation>
     </message>
     <message>
         <source>Send &amp;Message...</source>
@@ -6013,7 +6078,7 @@ the channel&apos;s context menu.</source>
     </message>
     <message>
         <source>&amp;Settings...</source>
-        <translation>设置(&amp;S)…</translation>
+        <translation>设置(&amp;S)...</translation>
     </message>
     <message>
         <source>&amp;Audio Wizard...</source>
@@ -6100,10 +6165,6 @@ the channel&apos;s context menu.</source>
         <translation>监听频道而无需加入</translation>
     </message>
     <message>
-        <source>Locally adjust the volume for this virtual ear.</source>
-        <translation>本地调整此监听的音量。</translation>
-    </message>
-    <message>
         <source>&amp;Listener</source>
         <translation>监听者(&amp;L)</translation>
     </message>
@@ -6153,7 +6214,7 @@ the channel&apos;s context menu.</source>
     </message>
     <message>
         <source>Joins the channel of this user.</source>
-        <translation>加入此用户所在的频道</translation>
+        <translation>加入此用户所在的频道。</translation>
     </message>
     <message>
         <source>Channels and users</source>
@@ -6206,93 +6267,13 @@ the channel&apos;s context menu.</source>
 </translation>
     </message>
     <message>
-        <source>Usage: mumble [options] [&lt;url&gt;]
-
-&lt;url&gt; specifies a URL to connect to after startup instead of showing
-the connection window, and has the following form:
-mumble://[&lt;username&gt;[:&lt;password&gt;]@]&lt;host&gt;[:&lt;port&gt;][/&lt;channel&gt;[/&lt;subchannel&gt;...]][?version=&lt;x.y.z&gt;]
-
-The version query parameter has to be set in order to invoke the
-correct client version. It currently defaults to 1.2.0.
-
-Valid options are:
-  -h, --help    Show this help text and exit.
-  -m, --multiple
-                Allow multiple instances of the client to be started.
-  -c, --config
-                Specify an alternative configuration file.
-                If you use this to run multiple instances of Mumble at once,
-                make sure to set an alternative 'database' value in the config.
-  -n, --noidentity
-                Suppress loading of identity files (i.e., certificates.)
-  -jn, --jackname &lt;arg&gt;
-                Set custom Jack client name.
-  --license
-                Show the Mumble license.
-  --authors
-                Show the Mumble authors.
-  --third-party-licenses
-                Show licenses for third-party software used by Mumble.
-  --window-title-ext &lt;arg&gt;
-                Sets a custom window title extension.
-  --dump-input-streams
-                Dump PCM streams at various parts of the input chain
-                (useful for debugging purposes)
-                - raw microphone input
-                - speaker readback for echo cancelling
-                - processed microphone input
-  --print-echocancel-queue
-                Print on stdout the echo cancellation queue state
-                (useful for debugging purposes)
-
-</source>
-        <translation>用法：mumble [选项] [&lt;URL&gt;]
-
-&lt;URL&gt; 指定启动时连接的 URL，而不是显示连接窗口，URL 的格式为：
-mumble://[&lt;用户名&gt;[:&lt;密码&gt;]@]&lt;主机名&gt;[:&lt;端口&gt;][/&lt;频道名&gt;[/&lt;子频道名&gt;...]][?version=&lt;x.y.z&gt;]
-
-必须设置 version 请求参数以调用正确的客户端版本，当前的默认值为 1.2.0。
-
-可用的选项：
-  -h, --help    显示此帮助信息并退出。
-  -m, --multiple
-                允许启动多个客户端实例。
-  -c, --config
-                指定替代配置文件。
-                如果您使用此参数同时运行多个 Mumble 实例，
-                请确保在配置文件内设置替代 &apos;database&apos; 选项。
-  -n, --noidentity
-                禁止加载身份认证文件（即证书）。
-  -jn, --jackname &lt;参数&gt;
-                设置自定义 Jack 客户端名称。
-  --license
-                显示 Mumble 许可。
-  --authors
-                显示 Mumble 作者。
-  --third-party-licenses
-                显示 Mumble 使用的第三方软件的许可。
-  --window-title-ext &lt;参数&gt;
-                设置自定义窗口标题后缀名。
-  --dump-input-streams
-                转储输入链上各部分的 PCM 流。
-                （适用于调试目的）
-                - 原始麦克风输入
-                - 扬声器回声消除重读取
-                - 已处理麦克风输入
-  --print-echocancel-queue
-                向标准输出打印回声消除队列状态。
-                （适用于调试目的）
-
-</translation>
-    </message>
-    <message>
         <source>Hide/show main window</source>
         <comment>Global Shortcut</comment>
         <translation>隐藏/显示主界面</translation>
     </message>
     <message>
         <source>&amp;Set Nickname...</source>
-        <translation>设置昵称(&amp;S)</translation>
+        <translation>设置昵称(&amp;S)...</translation>
     </message>
     <message>
         <source>Set a local nickname</source>
@@ -6306,7 +6287,7 @@ mumble://[&lt;用户名&gt;[:&lt;密码&gt;]@]&lt;主机名&gt;[:&lt;端口&gt;]
         <source>Usage: mumble rpc &lt;action&gt; [options]
 
 It is possible to remote control a running instance of Mumble by using
-the 'mumble rpc' command.
+the &apos;mumble rpc&apos; command.
 
 Valid actions are:
   mute
@@ -6329,7 +6310,8 @@ Valid actions are:
 </source>
         <translation>用法：mumble rpc &lt;操作&gt; [选项]
 
-可以通过“mumble rpc”命令远程控制一个正在运行的 Mumble 实例。
+可以通过“mumble rpc”命令
+远程控制一个正在运行的 Mumble 实例。
 
 可用的操作：
   mute
@@ -6350,6 +6332,181 @@ Valid actions are:
                 停止发言
 
 </translation>
+    </message>
+    <message>
+        <source>Directory %1 does not exist.
+</source>
+        <translation>文件夹 %1 不存在。
+</translation>
+    </message>
+    <message>
+        <source>Toggle TalkingUI</source>
+        <comment>Global shortcut</comment>
+        <translation>开关对话界面</translation>
+    </message>
+    <message>
+        <source>Toggles the visibility of the TalkingUI.</source>
+        <comment>Global Shortcut</comment>
+        <translation>切换对话界面的可见性。</translation>
+    </message>
+    <message>
+        <source>Toggle the channel filter (Alt+F)</source>
+        <translation>开关频道筛选器 (Alt+F)</translation>
+    </message>
+    <message>
+        <source>Alt+F</source>
+        <translation>Alt+F</translation>
+    </message>
+    <message>
+        <source>Search</source>
+        <translation>搜索</translation>
+    </message>
+    <message>
+        <source>Search for a user or channel (Ctrl+F)</source>
+        <translation>搜索用户或频道 (Ctrl+F)</translation>
+    </message>
+    <message>
+        <source>Toggle search dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>开关搜索对话框</translation>
+    </message>
+    <message>
+        <source>This will open or close the search dialog depending on whether it is currently opened already</source>
+        <translation>根据当前的开启状态打开或关闭搜索对话框</translation>
+    </message>
+    <message>
+        <source>Unmute yourself</source>
+        <translation>打开自己的麦克风</translation>
+    </message>
+    <message>
+        <source>Undeafen yourself</source>
+        <translation>打开自己的扬声器</translation>
+    </message>
+    <message>
+        <source>Positional &amp;Audio Viewer...</source>
+        <translation>位置音频查看器(&amp;A)...</translation>
+    </message>
+    <message>
+        <source>Show the Positional Audio Viewer</source>
+        <translation>显示位置音频查看器</translation>
+    </message>
+    <message>
+        <source>Shows the Positional Audio Viewer. In it the current information used for positional audio can be inspected. Context and identity are also shown.</source>
+        <translation>显示位置音频查看器。可以在其中检查位置音频的当前信息，包括上下文和标识符。</translation>
+    </message>
+    <message>
+        <source>Mumble - Minimal View</source>
+        <translation>Mumble - 最小化视图</translation>
+    </message>
+    <message>
+        <source>Invalid settings file encountered.</source>
+        <translation>遇到无效设置文件。</translation>
+    </message>
+    <message>
+        <source>You are currently in minimal view but not connected to a server. Use the context menu to connect to a server or disable minimal view.</source>
+        <translation>您当前处于简洁模式但尚未连接服务器。您可以通过上下文菜单连接服务器或禁用简洁模式。</translation>
+    </message>
+    <message>
+        <source>Local Volume Adjustment:</source>
+        <translation>本地音量调整：</translation>
+    </message>
+    <message>
+        <source>This version of Mumble can&apos;t handle URLs for Mumble version %1</source>
+        <translation>当前版本的 Mumble 无法处理用于 Mumble %1 的 URL</translation>
+    </message>
+    <message>
+        <source>Listen to Channel</source>
+        <comment>Global Shortcut</comment>
+        <translation>监听频道</translation>
+    </message>
+    <message>
+        <source>Toggles listening to the given channel.</source>
+        <comment>Global Shortcut</comment>
+        <translation>切换指定频道的监听状态。</translation>
+    </message>
+    <message>
+        <source>Server instructed us to use an audio codec different from Opus, which is no longer supported. Disconnecting...</source>
+        <translation>服务器指示我们使用不再支持的非 Opus 音频编解码器。正在断开连接……</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to close Mumble? Perhaps you prefer to minimize it instead?</source>
+        <translation>您确定要关闭 Mumble 吗？可能您更愿意最小化？</translation>
+    </message>
+    <message>
+        <source>Remember this setting</source>
+        <translation>记住此设置</translation>
+    </message>
+    <message>
+        <source>Channel &amp;Filter</source>
+        <translation>频道筛选器(&amp;F)</translation>
+    </message>
+    <message>
+        <source>&amp;Pin Channel when Filtering</source>
+        <translation>筛选时固定频道(&amp;P)</translation>
+    </message>
+    <message>
+        <source>Usage: mumble [options] [&lt;url&gt; | &lt;plugin_list&gt;]
+
+&lt;url&gt; specifies a URL to connect to after startup instead of showing
+the connection window, and has the following form:
+mumble://[&lt;username&gt;[:&lt;password&gt;]@]&lt;host&gt;[:&lt;port&gt;][/&lt;channel&gt;[/&lt;subchannel&gt;...]][?version=&lt;x.y.z&gt;]
+
+&lt;plugin_list&gt; is a list of plugin files that shall be installed
+The version query parameter has to be set in order to invoke the
+correct client version. It currently defaults to 1.2.0.
+
+Valid options are:
+  -h, --help    Show this help text and exit.
+  --version     Print version information and exit
+  -m, --multiple
+                Allow multiple instances of the client to be started.
+  -c, --config
+                Specify an alternative configuration file.
+                If you use this to run multiple instances of Mumble at once,
+                make sure to set an alternative &apos;database&apos; value in the config.
+  --default-certificate-dir &lt;dir&gt;
+                Specify an alternative default certificate path.
+                This path is only used if there is no certificate loaded
+                from the settings.
+  -n, --noidentity
+                Suppress loading of identity files (i.e., certificates.)
+  -jn, --jackname &lt;arg&gt;
+                Set custom Jack client name.
+  --license
+                Show the Mumble license.
+  --authors
+                Show the Mumble authors.
+  --third-party-licenses
+                Show licenses for third-party software used by Mumble.
+  --window-title-ext &lt;arg&gt;
+                Sets a custom window title extension.
+  --dump-input-streams
+                Dump PCM streams at various parts of the input chain
+                (useful for debugging purposes)
+                - raw microphone input
+                - speaker readback for echo cancelling
+                - processed microphone input
+  --print-echocancel-queue
+                Print on stdout the echo cancellation queue state
+                (useful for debugging purposes)
+  --translation-dir &lt;dir&gt;
+                Specifies an additional translation directory &lt;dir&gt;
+                in which Mumble will search for translation files that
+                overwrite the bundled ones
+                Directories added this way have higher priority than
+                the default locations used otherwise
+  --print-translation-dirs
+                Print out the paths in which Mumble will search for
+                translation files that overwrite the bundled ones.
+                (Useful for translators testing their translations)
+  --locale &lt;locale&gt;
+                Overwrite the locale in Mumble&apos;s settings with a
+                locale that corresponds to the given locale string.
+                If the format is invalid, Mumble will error.
+                Otherwise the locale will be permanently saved to
+                Mumble&apos;s settings.
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6376,7 +6533,7 @@ Valid actions are:
     </message>
     <message>
         <source>m</source>
-        <translation> 米</translation>
+        <translation>米</translation>
     </message>
     <message>
         <source>Heading</source>
@@ -6619,10 +6776,6 @@ Valid actions are:
         <translation>启动时自动连接上次的服务器</translation>
     </message>
     <message>
-        <source>Download plugin and overlay updates on startup</source>
-        <translation>启动时下载插件和游戏内界面更新</translation>
-    </message>
-    <message>
         <source>Privacy</source>
         <translation>隐私</translation>
     </message>
@@ -6631,7 +6784,7 @@ Valid actions are:
         <translation>阻止向 Mumble 服务器和网页服务器发送操作系统信息</translation>
     </message>
     <message>
-        <source>&lt;b&gt;Don't send OS information to servers&lt;/b&gt;&lt;br/&gt;
+        <source>&lt;b&gt;Don&apos;t send OS information to servers&lt;/b&gt;&lt;br/&gt;
 Prevents the client from sending potentially identifying information about the operating system to the Mumble server and web servers.</source>
         <translation>&lt;b&gt;请勿向服务器发送操作系统信息&lt;/b&gt;&lt;br/&gt;
 阻止客户端向 Mumble 服务器和网页服务器发送潜在的操作系统识别信息。</translation>
@@ -6647,6 +6800,14 @@ Prevents the client from sending potentially identifying information about the o
     <message>
         <source>Hide public server list</source>
         <translation>隐藏公共服务器列表</translation>
+    </message>
+    <message>
+        <source>Check for plugin updates on startup</source>
+        <translation>启动时检查插件更新</translation>
+    </message>
+    <message>
+        <source>Automatically download and install plugin updates</source>
+        <translation>自动下载并安装插件更新</translation>
     </message>
 </context>
 <context>
@@ -6866,7 +7027,7 @@ To upgrade these files to their latest versions, click the button below.</source
     </message>
     <message>
         <source>Load…</source>
-        <translation>加载...</translation>
+        <translation>加载…</translation>
     </message>
     <message>
         <source>Save your overlay settings to file</source>
@@ -6874,7 +7035,7 @@ To upgrade these files to their latest versions, click the button below.</source
     </message>
     <message>
         <source>Save…</source>
-        <translation>保存...</translation>
+        <translation>保存…</translation>
     </message>
     <message>
         <source>Set the overlay font.</source>
@@ -7202,31 +7363,205 @@ To upgrade these files to their latest versions, click the button below.</source
         <translation>名称</translation>
     </message>
     <message>
-        <source>Enabled</source>
+        <source>Enable</source>
         <translation>启用</translation>
+    </message>
+    <message>
+        <source>PA</source>
+        <translation>PA</translation>
+    </message>
+    <message>
+        <source>KeyEvents</source>
+        <translation>键盘事件</translation>
+    </message>
+    <message>
+        <source>Install a plugin from a local file</source>
+        <translation>从本地文件安装插件</translation>
+    </message>
+    <message>
+        <source>Install plugin...</source>
+        <translation>安装插件...</translation>
+    </message>
+    <message>
+        <source>Unload the currently selected plugin. This will remove it from the plugin list for the current session.</source>
+        <translation>取消加载已选插件。插件将会从插件列表中删除，直到本次会话结束。</translation>
+    </message>
+    <message>
+        <source>Unload</source>
+        <translation>取消加载</translation>
+    </message>
+    <message>
+        <source>The plugin was installed successfully</source>
+        <translation>成功安装此插件</translation>
+    </message>
+    <message>
+        <source>Unable to deactivate all requested features for plugin &quot;%1&quot;</source>
+        <translation>无法关闭所有插件“%1”要求的功能</translation>
+    </message>
+    <message>
+        <source>Unable to load plugin &quot;%1&quot;</source>
+        <translation>无法加载插件“%1”</translation>
+    </message>
+    <message>
+        <source>Whether the positional audio feature of this plugin should be enabled</source>
+        <translation>是否应该启用此插件的位置音频功能</translation>
+    </message>
+    <message>
+        <source>This plugin does not provide support for positional audio</source>
+        <translation>此插件未提供位置音频支持</translation>
+    </message>
+    <message>
+        <source>Whether this plugin has the permission to be listening to all keyboard events that occur while Mumble has focus</source>
+        <translation>此插件是否有权限在 Mumble 获得焦点时监听所有键盘事件</translation>
+    </message>
+    <message>
+        <source>Whether this plugin should be enabled</source>
+        <translation>是否应该启用此插件</translation>
     </message>
 </context>
 <context>
-    <name>Plugins</name>
+    <name>PluginInstaller</name>
     <message>
-        <source>Skipping plugin update in debug mode.</source>
-        <translation>在调试模式跳过插件更新。</translation>
+        <source>PluginInstaller</source>
+        <translation>插件安装器</translation>
     </message>
     <message>
-        <source>Downloaded new or updated plugin to %1.</source>
-        <translation>下载新版或升级插件到 %1。</translation>
+        <source>You are about to install the plugin listed below. Do you wish to proceed?</source>
+        <translation>您即将安装下列插件。确定要继续吗？</translation>
     </message>
     <message>
-        <source>Failed to install new plugin to %1.</source>
-        <translation>安装新插件到 %1 失败。</translation>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Name:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;名称：&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>%1 lost link.</source>
-        <translation>%1 链接丢失。</translation>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Version:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;版本：&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <source>%1 linked.</source>
-        <translation>%1 已链接。</translation>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Author(s):&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;作者：&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Description:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;描述：&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&amp;No</source>
+        <translation>否(&amp;N)</translation>
+    </message>
+    <message>
+        <source>&amp;Yes</source>
+        <translation>是(&amp;Y)</translation>
+    </message>
+    <message>
+        <source>The file &quot;%1&quot; is not a valid plugin file!</source>
+        <translation>文件“%1”不是有效的插件文件！</translation>
+    </message>
+    <message>
+        <source>Unable to load plugin &quot;%1&quot; - check the plugin interface!</source>
+        <translation>无法加载插件“%1”，请检查插件接口！</translation>
+    </message>
+    <message>
+        <source>Unable to delete old plugin at &quot;%1&quot;</source>
+        <translation>无法删除旧插件“%1”</translation>
+    </message>
+    <message>
+        <source>Unable to copy plugin library from &quot;%1&quot; to &quot;%2&quot;</source>
+        <translation>无法从“%1”复制插件库到“%2”</translation>
+    </message>
+    <message>
+        <source>Unable to move plugin library to &quot;%1&quot;</source>
+        <translation>无法移动插件库到“%1”</translation>
+    </message>
+    <message>
+        <source>Unable to locate the plugin manifest (manifest.xml)</source>
+        <translation>无法定位插件清单文件（manifest.xml）</translation>
+    </message>
+    <message>
+        <source>Error while processing manifest: %1</source>
+        <translation>处理清单文件错误：%1</translation>
+    </message>
+    <message>
+        <source>Unable to find plugin for the current OS (&quot;%1&quot;) and architecture (&quot;%2&quot;)</source>
+        <translation>无法找到匹配当前操作系统（“%1”）和架构（“%2”）的插件</translation>
+    </message>
+    <message>
+        <source>Unable to locate plugin library specified in manifest (&quot;%1&quot;) in the bundle</source>
+        <translation>无法在插件包中定位到清单文件所指定的插件库（“%1”）</translation>
+    </message>
+    <message>
+        <source>Overwrite plugin?</source>
+        <translation>覆盖插件？</translation>
+    </message>
+    <message>
+        <source>The new plugin &quot;%1&quot; (%2) is about to overwrite the already installed plugin &quot;%3&quot; (%4). Do you wish to proceed?</source>
+        <translation>新插件“%1”（%2）即将覆盖已安装的插件“%3”（%4）。您要继续吗？</translation>
+    </message>
+</context>
+<context>
+    <name>PluginManager</name>
+    <message>
+        <source>%1 lost link</source>
+        <translation>%1 失去链接</translation>
+    </message>
+    <message>
+        <source>%1 linked</source>
+        <translation>%1 已链接</translation>
+    </message>
+    <message>
+        <source>Plugin &quot;%1&quot; encountered a permanent error in positional data gathering</source>
+        <translation>插件“%1”在收集位置数据时遇到永久性错误</translation>
+    </message>
+    <message>
+        <source>Non-plugin found in plugin directory: &quot;%1&quot;</source>
+        <translation>在插件目录中发现非插件：“%1”</translation>
+    </message>
+    <message>
+        <source>Failed at loading manual plugin: %1</source>
+        <translation>手动加载插件失败：%1</translation>
+    </message>
+</context>
+<context>
+    <name>PluginUpdater</name>
+    <message>
+        <source>PluginUpdater</source>
+        <translation>插件更新器</translation>
+    </message>
+    <message>
+        <source>The following plugins can be updated.</source>
+        <translation>以下插件可以更新。</translation>
+    </message>
+    <message>
+        <source>Select all</source>
+        <translation>全选</translation>
+    </message>
+    <message>
+        <source>Plugin</source>
+        <translation>插件</translation>
+    </message>
+    <message>
+        <source>Download-URL</source>
+        <translation>下载链接</translation>
+    </message>
+    <message>
+        <source>Do you want to update the selected plugins?</source>
+        <translation>您要更新已选插件吗？</translation>
+    </message>
+    <message>
+        <source>Unable to download plugin update for &quot;%1&quot; from &quot;%2&quot; (%3)</source>
+        <translation>无法从“%2”下载插件“%1”的更新（%3）</translation>
+    </message>
+    <message>
+        <source>Update for plugin &quot;%1&quot; failed due to too many redirects</source>
+        <translation>由于重定向过多，更新插件“%1”失败</translation>
+    </message>
+    <message>
+        <source>Unable to download plugin update for &quot;%1&quot; from &quot;%2&quot; (HTTP status code %3)</source>
+        <translation>无法从“%2”下载插件“%1”的更新（HTTP 状态码 %3）</translation>
+    </message>
+    <message>
+        <source>Successfully updated plugin &quot;%1&quot;</source>
+        <translation>成功更新插件“%1”</translation>
     </message>
 </context>
 <context>
@@ -7234,6 +7569,61 @@ To upgrade these files to their latest versions, click the button below.</source
     <message>
         <source>Default device</source>
         <translation>默认设备</translation>
+    </message>
+</context>
+<context>
+    <name>PositionalAudioViewer</name>
+    <message>
+        <source>Positional Audio Viewer</source>
+        <translation>位置音频查看器</translation>
+    </message>
+    <message>
+        <source>Camera direction</source>
+        <translation>摄像机方向</translation>
+    </message>
+    <message>
+        <source>X</source>
+        <translation>X</translation>
+    </message>
+    <message>
+        <source>Y</source>
+        <translation>Y</translation>
+    </message>
+    <message>
+        <source>Z</source>
+        <translation>Z</translation>
+    </message>
+    <message>
+        <source>Player position</source>
+        <translation>玩家位置</translation>
+    </message>
+    <message>
+        <source>Player axis</source>
+        <translation>玩家轴线</translation>
+    </message>
+    <message>
+        <source>Player direction</source>
+        <translation>玩家方向</translation>
+    </message>
+    <message>
+        <source>Camera axis</source>
+        <translation>摄像机轴线</translation>
+    </message>
+    <message>
+        <source>Camera position</source>
+        <translation>摄像机位置</translation>
+    </message>
+    <message>
+        <source>Info</source>
+        <translation>信息</translation>
+    </message>
+    <message>
+        <source>Context</source>
+        <translation>上下文</translation>
+    </message>
+    <message>
+        <source>Identity</source>
+        <translation>标识符</translation>
     </message>
 </context>
 <context>
@@ -7265,10 +7655,6 @@ To upgrade these files to their latest versions, click the button below.</source
 <context>
     <name>QObject</name>
     <message>
-        <source>CodecInit: Failed to load Opus, it will not be available for encoding/decoding audio.</source>
-        <translation>CodecInit: 加载 Opus 失败，无法进行音频编解码。</translation>
-    </message>
-    <message>
         <source>Talking UI</source>
         <translation>对话界面</translation>
     </message>
@@ -7277,7 +7663,7 @@ To upgrade these files to their latest versions, click the button below.</source
         <translation>回声消除不支持“%1”输入与“%2”输出接口的组合。</translation>
     </message>
     <message>
-        <source>&lt;p&gt;If you're using Linux this is most likely because you are using a version from your distribution's package repository that have their own update cycles.&lt;/p&gt;&lt;p&gt;If you want to always have the most recent Mumble version, you should consider using a different method of installation.
+        <source>&lt;p&gt;If you&apos;re using Linux this is most likely because you are using a version from your distribution&apos;s package repository that have their own update cycles.&lt;/p&gt;&lt;p&gt;If you want to always have the most recent Mumble version, you should consider using a different method of installation.
 See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;the Mumble wiki&lt;/a&gt; for what alternatives there are.&lt;/p&gt;</source>
         <translation>&lt;p&gt;如果您正在使用 Linux，这很可能是因为您使用的版本来自发行版的软件包仓库，它们有自己的更新周期。&lt;/p&gt;&lt;p&gt;如果您希望始终使用最新版本的 Mumble，就应该考虑使用其他安装方式。
 阅读 &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;Mumble Wiki&lt;/a&gt; 了解具体方式。&lt;/p&gt;</translation>
@@ -7304,7 +7690,7 @@ See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;th
     </message>
     <message>
         <source>&lt;p&gt;You&apos;re using a Mumble version that &lt;b&gt;explicitly disabled&lt;/b&gt; update-checks.&lt;/p&gt;&lt;p&gt;This means that the update notification you might receive by using this option will &lt;b&gt;most likely be meaningless&lt;/b&gt; for you.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;您正在使用&lt;b&gt;显式禁用&lt;/b&gt;更新检查的 Mumble 版本。&lt;p&gt;这意味着您通过此选项收到的更新提醒对您来说&lt;b&gt;很可能是无意义的&lt;/b&gt;。&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;您正在使用&lt;b&gt;显式禁用&lt;/b&gt;更新检查的 Mumble 版本。&lt;/p&gt;&lt;p&gt;这意味着您通过此选项收到的更新提醒对您来说&lt;b&gt;很可能是无意义的&lt;/b&gt;。&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Talking (muted)</source>
@@ -7367,16 +7753,8 @@ See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;th
         <translation>默认设备</translation>
     </message>
     <message>
-        <source>This option works best when using built-in microphone and speaker.</source>
-        <translation>使用内置麦克风和扬声器时，此选项效果最佳。</translation>
-    </message>
-    <message>
         <source>Access to the microphone was denied. Please allow Mumble to use the microphone by changing the settings in System Preferences -&gt; Security &amp; Privacy -&gt; Privacy -&gt; Microphone.</source>
         <translation>访问麦克风的权限被拒绝。请您前往“系统偏好设置 -&gt; 安全性与隐私 -&gt; 隐私 -&gt; 麦克风”，允许 Mumble 使用麦克风。</translation>
-    </message>
-    <message>
-        <source>Access to the microphone was denied due to system restrictions. You will not be ableto use the microphone in this session.</source>
-        <translation>由于系统限制，访问麦克风的权限被拒绝。在本次会话中您将无法使用麦克风。</translation>
     </message>
     <message>
         <source>If enabled this tries to cancel out echo from the audio stream.</source>
@@ -7407,8 +7785,64 @@ See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;th
         <translation>多通道回声消除提供更好的回声消除效果，但是消耗的 CPU 资源较多，您可能需要先尝试使用混合模式。</translation>
     </message>
     <message>
-        <source>Acoustic echo cancellation provided by Apple.</source>
-        <translation>由苹果提供的声学回声消除。</translation>
+        <source>The provided URL uses an invalid version format: &quot;%1&quot;</source>
+        <translation>提供的 URL 版本格式无效：“%1”</translation>
+    </message>
+    <message>
+        <source>The directories in which Mumble searches for extra translation files are:
+</source>
+        <translation>Mumble 搜索额外翻译文件的文件夹：
+</translation>
+    </message>
+    <message>
+        <source>Invocation</source>
+        <translation>调用</translation>
+    </message>
+    <message>
+        <source>EXPERIMENTAL: Acoustic echo cancellation (Apple).</source>
+        <translation>实验性：声学回声消除（Apple）。</translation>
+    </message>
+    <message>
+        <source>The support for this option is experimental only! This option works best when using built-in microphone and speaker.</source>
+        <translation>此选项的支持是实验性的！使用内置麦克风和扬声器时，此选项效果最佳。</translation>
+    </message>
+    <message>
+        <source>Shortcuts migration incomplete</source>
+        <translation>快捷键迁移未完成</translation>
+    </message>
+    <message>
+        <source>Unfortunately %1 shortcut(s) could not be migrated.
+You can register them again.</source>
+        <translation>很不幸，无法迁移 %1 个快捷键。
+您可以重新设置它们。</translation>
+    </message>
+    <message>
+        <source>Potentially broken settings</source>
+        <translation>可能损坏的设置</translation>
+    </message>
+    <message>
+        <source>Load backup settings?</source>
+        <translation>加载备份设置吗？</translation>
+    </message>
+    <message>
+        <source>It seems that Mumble did not perform a normal shutdown. If you did not intentionally kill the application, this could mean that the used settings caused a crash. Do you want to load the setting&apos;s backup instead?</source>
+        <translation>看起来 Mumble 没有正常退出。如果您并非有意强行结束此应用，则可能是因为某些设置导致的崩溃。您要改为加载设置备份吗？</translation>
+    </message>
+    <message>
+        <source>The backed-up settings also seem to have been saved without Mumble exiting normally (potentially indicating a crash).</source>
+        <translation>备份的设置看起来也是在 Mumble 没有正常退出的情况下保存的（可能表示发生了崩溃）。</translation>
+    </message>
+    <message>
+        <source>If you experience repeated crashes with these settings, you might have to manually delete the settings files at &lt;pre&gt;%1&lt;/pre&gt; and &lt;pre&gt;%2&lt;/pre&gt; in order to reset all settings to their default value.</source>
+        <translation>如果您在使用此设置时遇到多次重复崩溃，就可能需要手动删除位于 &lt;pre&gt;％1&lt;/pre&gt; 和 &lt;pre&gt;％2&lt;/pre&gt; 处的配置文件，来将所有设置重置为默认值。</translation>
+    </message>
+    <message>
+        <source>Access to the microphone was denied due to system restrictions. You will not be able to use the microphone in this session.</source>
+        <translation>由于系统限制，对麦克风的访问已被禁止。您在这次会话中将无法使用麦克风。</translation>
+    </message>
+    <message>
+        <source>Unknown Version</source>
+        <translation>未知版本</translation>
     </message>
 </context>
 <context>
@@ -7494,6 +7928,72 @@ See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;th
     </message>
 </context>
 <context>
+    <name>Search::SearchDialog</name>
+    <message>
+        <source>None</source>
+        <translation>无</translation>
+    </message>
+    <message>
+        <source>Join</source>
+        <translation>加入</translation>
+    </message>
+</context>
+<context>
+    <name>SearchDialog</name>
+    <message>
+        <source>Search</source>
+        <translation>搜索</translation>
+    </message>
+    <message>
+        <source>Enter search String...</source>
+        <translation>输入搜索关键词……</translation>
+    </message>
+    <message>
+        <source>Options</source>
+        <translation>选项</translation>
+    </message>
+    <message>
+        <source>Whether to search for users</source>
+        <translation>是否搜索用户</translation>
+    </message>
+    <message>
+        <source>&amp;Users</source>
+        <translation>用户(&amp;U)</translation>
+    </message>
+    <message>
+        <source>Whether the search should be performed case-sensitively</source>
+        <translation>搜索是否区分大小写</translation>
+    </message>
+    <message>
+        <source>Case-&amp;sensitive</source>
+        <translation>区分大小写(&amp;S)</translation>
+    </message>
+    <message>
+        <source>Options:</source>
+        <translation>选项：</translation>
+    </message>
+    <message>
+        <source>Whether the search string should be interpreted as a regular expression</source>
+        <translation>搜索关键词是否应该作为正则表达式解析</translation>
+    </message>
+    <message>
+        <source>&amp;RegEx</source>
+        <translation>正则表达式(&amp;R)</translation>
+    </message>
+    <message>
+        <source>&amp;Channels</source>
+        <translation>频道(&amp;C)</translation>
+    </message>
+    <message>
+        <source>Search for:</source>
+        <translation>搜索范围：</translation>
+    </message>
+    <message>
+        <source>Whether to search for channels</source>
+        <translation>是否搜索频道</translation>
+    </message>
+</context>
+<context>
     <name>ServerHandler</name>
     <message>
         <source>Unable to resolve hostname</source>
@@ -7522,6 +8022,149 @@ See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;th
     <message>
         <source>Connection timed out</source>
         <translation>连接超时</translation>
+    </message>
+</context>
+<context>
+    <name>ServerInformation</name>
+    <message>
+        <source>Server information</source>
+        <translation>服务器信息</translation>
+    </message>
+    <message>
+        <source>Server Information</source>
+        <translation>服务器信息</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Host:&lt;/b&gt;</source>
+        <translation>&lt;b&gt;主机：&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Port:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;端口：&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Users&lt;/b&gt;:</source>
+        <translation>&lt;b&gt;用户&lt;/b&gt;：</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Protocol:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;协议：&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Release:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;版本：&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;OS:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;操作系统：&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>Audio</source>
+        <translation>音频</translation>
+    </message>
+    <message>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Allowed:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;允许：&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Current:&lt;/b&gt;</source>
+        <translation>&lt;b&gt;当前：&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Codec:&lt;/b&gt;</source>
+        <translation>&lt;b&gt;编解码器：&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>Connection details</source>
+        <translation>连接详情</translation>
+    </message>
+    <message>
+        <source>UDP (Voice)</source>
+        <translation>UDP（语音信道）</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Encryption:&lt;/b&gt;</source>
+        <translation>&lt;b&gt;加密算法：&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Avg. latency:&lt;/b&gt;</source>
+        <translation>&lt;b&gt;平均延迟：&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>Statistics</source>
+        <translation>统计</translation>
+    </message>
+    <message>
+        <source>Good</source>
+        <translation>良好</translation>
+    </message>
+    <message>
+        <source>Late</source>
+        <translation>延迟</translation>
+    </message>
+    <message>
+        <source>Lost</source>
+        <translation>丢失</translation>
+    </message>
+    <message>
+        <source>Resync</source>
+        <translation>重新同步</translation>
+    </message>
+    <message>
+        <source>Outgoing</source>
+        <translation>发送</translation>
+    </message>
+    <message>
+        <source>Incoming</source>
+        <translation>接收</translation>
+    </message>
+    <message>
+        <source>Voice packets is currently sent over TCP.</source>
+        <translation>语音包当前通过 TCP 发送。</translation>
+    </message>
+    <message>
+        <source>TCP (Control)</source>
+        <translation>TCP（控制信道）</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;TLS version:&lt;/b&gt;</source>
+        <translation>&lt;b&gt;TLS 版本：&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;Cipher suite:&lt;/b&gt;</source>
+        <translation>&lt;b&gt;密码套件：&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;forward secrecy&gt;</source>
+        <translation>&lt;前向加密&gt;</translation>
+    </message>
+    <message>
+        <source>&amp;View certificate</source>
+        <translation>查看证书(&amp;V)</translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation>确认(&amp;O)</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>未知</translation>
+    </message>
+    <message>
+        <source>Whether the connection supports perfect forward secrecy (PFS).</source>
+        <translation>此连接是否支持完美的前向加密（PFS）。</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;PFS:&lt;/b&gt;</source>
+        <translation>&lt;b&gt;PFS：&lt;/b&gt;</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation>是</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>否</translation>
     </message>
 </context>
 <context>
@@ -7572,6 +8215,10 @@ See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;th
         <source>Press to show button combination</source>
         <translation>点击显示组合键</translation>
     </message>
+    <message>
+        <source>&lt; Unknown Channel &gt;</source>
+        <translation>&lt; 未知频道 &gt;</translation>
+    </message>
 </context>
 <context>
     <name>ShortcutTargetDialog</name>
@@ -7600,7 +8247,7 @@ See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;th
     </message>
     <message>
         <source>, </source>
-        <translation>，</translation>
+        <translation>, </translation>
     </message>
     <message>
         <source>Root</source>
@@ -7683,7 +8330,7 @@ See &lt;a href=&quot;https://wiki.mumble.info/wiki/Installing_Mumble&quot;&gt;th
     <message>
         <source>&lt;b&gt;This is an editable list of access tokens on the connected server.&lt;/b&gt;
 &lt;br /&gt;
-An access token is a text string, which can be used as a password for very simple access management on channels. Mumble will remember the tokens you've used and resend them to the server next time you reconnect, so you don't have to enter these every time.
+An access token is a text string, which can be used as a password for very simple access management on channels. Mumble will remember the tokens you&apos;ve used and resend them to the server next time you reconnect, so you don&apos;t have to enter these every time.
 </source>
         <translation>&lt;b&gt;这是包含已连接服务器上访问令牌的可编辑列表。&lt;/b&gt;
 &lt;br /&gt;
@@ -7751,7 +8398,9 @@ An access token is a text string, which can be used as a password for very simpl
     </message>
     <message numerus="yes">
         <source>Registered users: %n account(s)</source>
-        <translation><numerusform>已注册用户：%n 个帐户</numerusform></translation>
+        <translation>
+            <numerusform>已注册用户：%n 个帐户</numerusform>
+        </translation>
     </message>
     <message>
         <source>Search</source>
@@ -7787,10 +8436,6 @@ An access token is a text string, which can be used as a password for very simpl
     <message>
         <source>IP Address</source>
         <translation>IP 地址</translation>
-    </message>
-    <message>
-        <source>CELT Versions</source>
-        <translation>CELT 版本</translation>
     </message>
     <message>
         <source>Details...</source>
@@ -7870,7 +8515,7 @@ An access token is a text string, which can be used as a password for very simpl
     </message>
     <message>
         <source>, </source>
-        <translation>，</translation>
+        <translation>, </translation>
     </message>
     <message>
         <source>%1 (%2)</source>
@@ -7914,6 +8559,10 @@ An access token is a text string, which can be used as a password for very simpl
     <message>
         <source>Ping deviation</source>
         <translation>误差</translation>
+    </message>
+    <message>
+        <source>Warning: The server seems to report a truncated protocol version for this client. (See: &lt;a href=&quot;https://github.com/mumble-voip/mumble/issues/5827/&quot;&gt;Issue #5827&lt;/a&gt;)</source>
+        <translation>警告：此服务器报告的客户端协议版本似乎被截断了。（详见：&lt;a href=&quot;https://github.com/mumble-voip/mumble/issues/5827/&quot;&gt;Issue #5827&lt;/a&gt;）</translation>
     </message>
 </context>
 <context>
@@ -7960,33 +8609,6 @@ An access token is a text string, which can be used as a password for very simpl
     <message>
         <source>Adjusting local nickname for %1</source>
         <translation>调整 %1 的本地昵称</translation>
-    </message>
-</context>
-<context>
-    <name>UserLocalVolumeDialog</name>
-    <message>
-        <source>Local volume for other users</source>
-        <translation>其他用户本地音量</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Adjust the volume of other users locally&lt;/b&gt;&lt;br /&gt;Mumble supports adjusting the volume of other users locally.</source>
-        <translation>&lt;b&gt;调整其他用户的本地音量&lt;/b&gt;&lt;br /&gt;Mumble 支持在本地调整其他用户的语音音量。</translation>
-    </message>
-    <message>
-        <source>Adjusting local volume for %1</source>
-        <translation>调整 %1 的本地音量</translation>
-    </message>
-    <message>
-        <source> dB</source>
-        <translation> 分贝</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use the slider or the text box to change the volume of the user.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-weight:600;&quot;&gt;Attention!&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Increasing the volume of a user too much can permanently damage your hearing. It may also increase the background noise of the user.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;使用滑块或文本框改变此用户的音量。&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;font-weight:600;&quot;&gt;注意！&lt;/span&gt;&lt;/p&gt;&lt;p&gt;过度增大用户的音量可能会永久性地损害您的听力。同时也可能会增大此用户的背景噪声。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>User volume</source>
-        <translation>用户音量</translation>
     </message>
 </context>
 <context>
@@ -8118,7 +8740,7 @@ An access token is a text string, which can be used as a password for very simpl
     </message>
     <message>
         <source>Talking while being muted on your end</source>
-        <translation>正在说话，但您已对其静音。</translation>
+        <translation>正在说话，但您已对其静音</translation>
     </message>
     <message>
         <source>This is a channel listener. The corresponding user hears everything you say in this channel.</source>
@@ -8126,11 +8748,15 @@ An access token is a text string, which can be used as a password for very simpl
     </message>
     <message>
         <source>Channel has access restrictions so that you can&apos;t enter it</source>
-        <translation>频道具有访问限制，您无法进入。</translation>
+        <translation>频道具有访问限制，您无法进入</translation>
     </message>
     <message>
         <source>Channel has access restrictions but you can enter nonetheless</source>
-        <translation>频道具有访问限制，但您仍可以进入。</translation>
+        <translation>频道具有访问限制，但您仍可以进入</translation>
+    </message>
+    <message>
+        <source>Channel will be pinned when filtering is enabled</source>
+        <translation>启用频道筛选时，此频道会被固定</translation>
     </message>
 </context>
 <context>
@@ -8278,6 +8904,10 @@ An access token is a text string, which can be used as a password for very simpl
         <source>.flac - Lossless compressed</source>
         <translation>.flac - 无损压缩</translation>
     </message>
+    <message>
+        <source>.opus - Lossy compressed</source>
+        <translation>.opus - 有损压缩</translation>
+    </message>
 </context>
 <context>
     <name>VoiceRecorderDialog</name>
@@ -8386,6 +9016,21 @@ Please contact your server administrator for further information.</source>
     <message>
         <source>Downmix</source>
         <translation>缩混</translation>
+    </message>
+    <message>
+        <source>Unable to start recording - the audio output is miconfigured (0Hz sample rate)</source>
+        <translation>无法开始录音 - 音频输出配置错误（采样率为 0Hz）</translation>
+    </message>
+</context>
+<context>
+    <name>VolumeSliderWidgetAction</name>
+    <message>
+        <source>Slider for volume adjustment</source>
+        <translation>音量调整滑块</translation>
+    </message>
+    <message>
+        <source>Volume Adjustment</source>
+        <translation>音量调整</translation>
     </message>
 </context>
 <context>

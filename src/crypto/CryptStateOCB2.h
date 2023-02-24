@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2020-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -8,8 +8,9 @@
 
 #include "CryptState.h"
 
-#include <openssl/aes.h>
+#include <openssl/evp.h>
 
+#define AES_BLOCK_SIZE 16
 #define AES_KEY_SIZE_BITS 128
 #define AES_KEY_SIZE_BYTES (AES_KEY_SIZE_BITS / 8)
 
@@ -17,7 +18,7 @@
 class CryptStateOCB2 : public CryptState {
 public:
 	CryptStateOCB2();
-	~CryptStateOCB2(){};
+	~CryptStateOCB2() noexcept override;
 
 	virtual bool isValid() const Q_DECL_OVERRIDE;
 	virtual void genKey() Q_DECL_OVERRIDE;
@@ -43,8 +44,10 @@ private:
 	unsigned char decrypt_iv[AES_BLOCK_SIZE];
 	unsigned char decrypt_history[0x100];
 
-	AES_KEY encrypt_key;
-	AES_KEY decrypt_key;
+	EVP_CIPHER_CTX *enc_ctx_ocb_enc;
+	EVP_CIPHER_CTX *dec_ctx_ocb_enc;
+	EVP_CIPHER_CTX *enc_ctx_ocb_dec;
+	EVP_CIPHER_CTX *dec_ctx_ocb_dec;
 };
 
 

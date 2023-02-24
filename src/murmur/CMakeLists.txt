@@ -1,4 +1,4 @@
-# Copyright 2019-2020 The Mumble Developers. All rights reserved.
+# Copyright 2020-2023 The Mumble Developers. All rights reserved.
 # Use of this source code is governed by a BSD-style license
 # that can be found in the LICENSE file at the root of the
 # Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -10,18 +10,18 @@ set(MURMUR_PLIST "${CMAKE_CURRENT_BINARY_DIR}/murmur.plist")
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/murmur.plist.in" "${MURMUR_PLIST}")
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/murmur.rc.in" "${MURMUR_RC}")
 
-set(GRPC_FILE "${CMAKE_CURRENT_SOURCE_DIR}/MurmurRPC.proto")
-set(ICE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/Murmur.ice")
+set(ICE_FILE "${CMAKE_CURRENT_SOURCE_DIR}/MumbleServer.ice")
 
 include(qt-utils)
 
-option(grpc "Build support for gRPC." OFF)
 option(ice "Build support for Ice RPC." ON)
 
 find_pkg(Qt5 COMPONENTS Sql REQUIRED)
 
 set(MURMUR_SOURCES
 	"main.cpp"
+	"AudioReceiverBuffer.cpp"
+	"AudioReceiverBuffer.h"
 	"Cert.cpp"
 	"Messages.cpp"
 	"Meta.cpp"
@@ -41,21 +41,25 @@ set(MURMUR_SOURCES
 	"${SHARED_SOURCE_DIR}/ACL.h"
 	"${SHARED_SOURCE_DIR}/Channel.cpp"
 	"${SHARED_SOURCE_DIR}/Channel.h"
-	"${SHARED_SOURCE_DIR}/ChannelListener.cpp"
-	"${SHARED_SOURCE_DIR}/ChannelListener.h"
+	"${SHARED_SOURCE_DIR}/ChannelListenerManager.cpp"
+	"${SHARED_SOURCE_DIR}/ChannelListenerManager.h"
 	"${SHARED_SOURCE_DIR}/Connection.cpp"
 	"${SHARED_SOURCE_DIR}/Connection.h"
 	"${SHARED_SOURCE_DIR}/Group.cpp"
 	"${SHARED_SOURCE_DIR}/Group.h"
+	"${SHARED_SOURCE_DIR}/User.cpp"
+	"${SHARED_SOURCE_DIR}/User.h"
 )
 
 if(WIN32)
-	add_executable(murmur WIN32 ${MURMUR_SOURCES})
+	add_executable(mumble-server WIN32 ${MURMUR_SOURCES})
 else()
-	add_executable(murmur ${MURMUR_SOURCES})
+	add_executable(mumble-server ${MURMUR_SOURCES})
 endif()
 
-set_target_properties(murmur
+set_property(TARGET mumble-server PROPERTY INTERPROCEDURAL_OPTIMIZATION ${lto})
+
+set_target_properties(mumble-server
 	PROPERTIES
 		AUTOMOC ON
 		RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
@@ -65,48 +69,48 @@ set(AUTOGEN_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/murmur_autogen")
 message(STATUS "File: ${AUTOGEN_BUILD_DIR}")
 set_source_files_properties("${AUTOGEN_BUILD_DIR}/mocs_compilation.cpp" PROPERTIES COMPILE_FLAGS "-w")
 
-target_compile_definitions(murmur
+target_compile_definitions(mumble-server
 	PRIVATE
 		"MURMUR"
 		"QT_RESTRICTED_CAST_FROM_ASCII"
 )
 
-target_include_directories(murmur PRIVATE
+target_include_directories(mumble-server PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR} # This is required for includes in current folder to be found by files from the shared directory.
 	${SHARED_SOURCE_DIR}
 )
 
-target_link_libraries(murmur PRIVATE shared Qt5::Sql)
+target_link_libraries(mumble-server PRIVATE shared Qt5::Sql)
 
 if(static)
 	# MariaDB and MySQL
 	if(TARGET Qt5::QMYSQLDriverPlugin)
-		include_qt_plugin(murmur PRIVATE "QMYSQLDriverPlugin")
-		target_link_libraries(murmur PRIVATE Qt5::QMYSQLDriverPlugin)
+		include_qt_plugin(mumble-server PRIVATE "QMYSQLDriverPlugin")
+		target_link_libraries(mumble-server PRIVATE Qt5::QMYSQLDriverPlugin)
 	endif()
 	# Open DataBase Connectivity
 	if(TARGET Qt5::QODBCDriverPlugin)
-		include_qt_plugin(murmur PRIVATE "QODBCDriverPlugin")
-		target_link_libraries(murmur PRIVATE Qt5::QODBCDriverPlugin)
+		include_qt_plugin(mumble-server PRIVATE "QODBCDriverPlugin")
+		target_link_libraries(mumble-server PRIVATE Qt5::QODBCDriverPlugin)
 		if(WIN32)
 			find_library(LIB_ODBC32 "odbc32")
-			target_link_libraries(murmur PRIVATE ${LIB_ODBC32})
+			target_link_libraries(mumble-server PRIVATE ${LIB_ODBC32})
 		endif()
 	endif()
 	# PostgreSQL
 	if(TARGET Qt5::QPSQLDriverPlugin)
-		include_qt_plugin(murmur PRIVATE "QPSQLDriverPlugin")
-		target_link_libraries(murmur PRIVATE Qt5::QPSQLDriverPlugin)
+		include_qt_plugin(mumble-server PRIVATE "QPSQLDriverPlugin")
+		target_link_libraries(mumble-server PRIVATE Qt5::QPSQLDriverPlugin)
 	endif()
 	# SQLite
 	if(TARGET Qt5::QSQLiteDriverPlugin)
-		include_qt_plugin(murmur PRIVATE "QSQLiteDriverPlugin")
-		target_link_libraries(murmur PRIVATE Qt5::QSQLiteDriverPlugin)
+		include_qt_plugin(mumble-server PRIVATE "QSQLiteDriverPlugin")
+		target_link_libraries(mumble-server PRIVATE Qt5::QSQLiteDriverPlugin)
 	endif()
 endif()
 
 if(WIN32)
-	target_sources(murmur
+	target_sources(mumble-server
 		PRIVATE
 			"About.cpp"
 			"About.h"
@@ -114,13 +118,18 @@ if(WIN32)
 			"Tray.h"
 			"murmur.qrc"
 
-			"${SHARED_SOURCE_DIR}/mumble/mumble.appcompat.manifest"
+			"${CMAKE_SOURCE_DIR}/auxiliary_files/mumble.appcompat.manifest"
 			"${MURMUR_RC}"
+	)
+
+	set_target_properties(mumble-server
+		PROPERTIES
+			AUTORCC ON
 	)
 
 	find_pkg(Qt5 COMPONENTS Widgets REQUIRED)
 
-	target_link_libraries(murmur 
+	target_link_libraries(mumble-server 
 		PRIVATE 
 			Qt5::Widgets
 			dbghelp.lib
@@ -129,11 +138,11 @@ if(WIN32)
 	)
 
 	if(static AND TARGET Qt5::QWindowsIntegrationPlugin)
-		include_qt_plugin(murmur PRIVATE QWindowsIntegrationPlugin)
-		target_link_libraries(murmur PRIVATE Qt5::QWindowsIntegrationPlugin)
+		include_qt_plugin(mumble-server PRIVATE QWindowsIntegrationPlugin)
+		target_link_libraries(mumble-server PRIVATE Qt5::QWindowsIntegrationPlugin)
 	endif()
 else()
-	target_sources(murmur
+	target_sources(mumble-server
 		PRIVATE
 			"UnixMurmur.cpp"
 			"UnixMurmur.h"
@@ -141,32 +150,30 @@ else()
 
 	if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 		find_library(CAP_LIBRARY NAMES cap)
-		target_link_libraries(murmur PRIVATE ${CAP_LIBRARY})
+		target_link_libraries(mumble-server PRIVATE ${CAP_LIBRARY})
 	endif()
-
-	set_target_properties(murmur PROPERTIES OUTPUT_NAME "murmurd")
 endif()
 
 if(zeroconf)
 	if(NOT APPLE)
 		find_pkg(avahi-compat-libdns_sd QUIET)
 		if(avahi-compat-libdns_sd_FOUND)
-			target_include_directories(murmur PRIVATE ${avahi-compat-libdns_sd_INCLUDE_DIRS})
-			target_link_libraries(murmur PRIVATE ${avahi-compat-libdns_sd_LIBRARIES})
+			target_include_directories(mumble-server PRIVATE ${avahi-compat-libdns_sd_INCLUDE_DIRS})
+			target_link_libraries(mumble-server PRIVATE ${avahi-compat-libdns_sd_LIBRARIES})
 		else()
 			find_library(LIB_DNSSD "dnssd")
 			if(${LIB_DNSSD} STREQUAL "LIB_DNSSD-NOTFOUND")
 				message(FATAL_ERROR "DNS-SD library not found!")
 			endif()
-			target_link_libraries(murmur PRIVATE ${LIB_DNSSD})
+			target_link_libraries(mumble-server PRIVATE ${LIB_DNSSD})
 		endif()
 	endif()
 
-	target_compile_definitions(murmur PRIVATE "USE_ZEROCONF")
+	target_compile_definitions(mumble-server PRIVATE "USE_ZEROCONF")
 
-	target_include_directories(murmur PRIVATE "${3RDPARTY_DIR}/qqbonjour")
+	target_include_directories(mumble-server PRIVATE "${3RDPARTY_DIR}/qqbonjour")
 
-	target_sources(murmur
+	target_sources(mumble-server
 		PRIVATE
 			"Zeroconf.cpp"
 			"Zeroconf.h"
@@ -178,89 +185,17 @@ if(zeroconf)
 	)
 endif()
 
-if(dbus AND NOT WIN32 AND NOT APPLE)
+if(NOT WIN32 AND NOT APPLE)
 	find_pkg(Qt5 COMPONENTS DBus REQUIRED)
 
-	target_sources(murmur
+	target_sources(mumble-server
 		PRIVATE
 			"DBus.cpp"
 			"DBus.h"
 	)
 
-	target_compile_definitions(murmur PRIVATE "USE_DBUS")
-	target_link_libraries(murmur PRIVATE Qt5::DBus)
-endif()
-
-if(grpc)
-	# "gRPC" is the name of the official gRPC target whereas "GRPC" is the one used by our custom FindGRPC.cmake in 
-	# the cmake sub-dir at the project's root.
-	find_pkg("gRPC;GRPC" REQUIRED)
-
-	protobuf_generate(LANGUAGE cpp TARGET murmur PROTOS ${GRPC_FILE} OUT_VAR BUILT_GRPC_FILES)
-
-	add_subdirectory("${SHARED_SOURCE_DIR}/murmur_grpcwrapper_protoc_plugin" "${CMAKE_CURRENT_BINARY_DIR}/murmur_grpcwrapper_protoc_plugin")
-
-	get_filename_component(GRPC_FILE_NAME ${GRPC_FILE} NAME_WE)
-
-	add_custom_command(
-		OUTPUT "MurmurRPC.proto.Wrapper.cpp"
-		COMMAND protobuf::protoc
-		ARGS "--plugin=$<TARGET_FILE:protoc-gen-murmur-grpcwrapper>" "-I${CMAKE_CURRENT_SOURCE_DIR}" "--murmur-grpcwrapper_out=${CMAKE_CURRENT_BINARY_DIR}" ${GRPC_FILE}
-		DEPENDS protobuf::protoc protoc-gen-murmur-grpcwrapper ${GRPC_FILE}
-		COMMENT "Generating gRPC wrapper"
-		VERBATIM
-		# protoc doesn't seem to parse the plugin path correctly on Windows: it only finds the executable when in the current directory or in PATH.
-		WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/murmur_grpcwrapper_protoc_plugin"
-	)
-
-	set(GRPC_GENERATED_FILES
-		"MurmurRPC.grpc.pb.cc"
-		"MurmurRPC.grpc.pb.h"
-	)
-
-	add_custom_command(
-		OUTPUT ${GRPC_GENERATED_FILES}
-		COMMAND protobuf::protoc
-		ARGS "--plugin=protoc-gen-grpc=$<TARGET_FILE:gRPC::grpc_cpp_plugin>" "-I${CMAKE_CURRENT_SOURCE_DIR}" "--grpc_out=${CMAKE_CURRENT_BINARY_DIR}" ${GRPC_FILE}
-		DEPENDS protobuf::protoc gRPC::grpc_cpp_plugin ${GRPC_FILE}
-		COMMENT "Running gRPC compiler"
-		VERBATIM
-	)
-
-	# Disable warnings for the generated source files
-	foreach(CURRENT_FILE IN LISTS GRPC_GENERATED_FILES BUILT_GRPC_FILES)
-		set_source_files_properties("${CURRENT_FILE}" PROPERTIES COMPILE_FLAGS "-w")
-	endforeach()
-
-	add_custom_target(generate-grpc-files
-		DEPENDS
-			"MurmurRPC.proto.Wrapper.cpp"
-			${GRPC_GENERATED_FILES}
-	)
-
-	add_dependencies(murmur generate-grpc-files)
-
-	target_sources(murmur
-		PRIVATE
-			"MurmurGRPCImpl.cpp"
-			"MurmurGRPCImpl.h"
-			${GRPC_GENERATED_FILES}
-	)
-
-	if(NOT MSVC)
-		# Disable the unused parameter warning for this file as it implicitly includes one of the generated
-		# files that contains a lot of unused parameters that would otherwise create a warning.
-		set_source_files_properties("MurmurGRPCImpl.cpp" PROPERTIES COMPILE_FLAGS "-Wno-unused-parameter")
-	endif()
-
-	target_compile_definitions(murmur PRIVATE "USE_GRPC")
-	target_include_directories(murmur PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-
-	target_link_libraries(murmur PRIVATE gRPC::grpc++)
-
-	if (TARGET gRPC::gpr)
-		target_link_libraries(murmur PRIVATE gRPC::gpr)
-	endif()
+	target_compile_definitions(mumble-server PUBLIC "USE_DBUS")
+	target_link_libraries(mumble-server PRIVATE Qt5::DBus)
 endif()
 
 if(ice)
@@ -299,25 +234,40 @@ if(ice)
 		VERBATIM
 	)
 
+	add_custom_target(generate_murmur_ice_wrapper
+		DEPENDS "MumbleServerIceWrapper.cpp" 
+	)
+	add_dependencies(mumble-server generate_murmur_ice_wrapper)
+	add_custom_command(
+		OUTPUT "MumbleServerIceWrapper.cpp"
+		COMMAND ${PYTHON_INTERPRETER}
+		ARGS "${CMAKE_SOURCE_DIR}/scripts/generateIceWrapper.py" -i "${ICE_FILE}"
+			-g "${ICE_FILE_NAME}.h" -o "MumbleServerIceWrapper.cpp" -q
+		DEPENDS ${ICE_GENERATED_FILES}
+		COMMENT "Generating MumbleServerIceWrapper"
+	)
+	# Even though the file is a .cpp, it is still being included in MumbleServerIce.cpp
+	target_include_directories(mumble-server PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
+
 	# We explicitly tell CMake not to call any autogen tools (e.g. MOC) for the generated files.
 	# @ref https://cmake.org/cmake/help/latest/policy/CMP0071.html
 	set_property(SOURCE ${ICE_GENERATED_FILES} PROPERTY SKIP_AUTOGEN ON)
 
-	target_sources(murmur
+	target_sources(mumble-server
 		PRIVATE
-			"MurmurIce.cpp"
-			"MurmurIce.h"
+			"MumbleServerIce.cpp"
+			"MumbleServerIce.h"
 			${ICE_GENERATED_FILES}
 	)
-	target_compile_definitions(murmur
+	target_compile_definitions(mumble-server
 		PRIVATE
 			"USE_ICE"
 			"ICE_STATIC_LIBS"
 	)
 
-	target_include_directories(murmur PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+	target_include_directories(mumble-server PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
-	target_link_libraries(murmur
+	target_link_libraries(mumble-server
 		PRIVATE
 			Ice::Ice
 			Ice::IceSSL
@@ -326,18 +276,10 @@ if(ice)
 			$<TARGET_NAME_IF_EXISTS:Ice::IceUtil>
 	)
 	
-	file(COPY "Murmur.ice" DESTINATION ${CMAKE_BINARY_DIR})
+	file(COPY "${ICE_FILE}" DESTINATION ${CMAKE_BINARY_DIR})
 endif()
 
-install(TARGETS murmur RUNTIME DESTINATION "${MUMBLE_INSTALL_EXECUTABLEDIR}" COMPONENT mumble_server)
-
-file(COPY "${CMAKE_SOURCE_DIR}/scripts/murmur.ini" DESTINATION ${CMAKE_BINARY_DIR})
-
-if(UNIX)
-	# Install Murmur man files
-	install(FILES "${CMAKE_SOURCE_DIR}/man/murmurd.1" DESTINATION "${MUMBLE_INSTALL_MANDIR}" COMPONENT doc)
-	install(FILES "${CMAKE_SOURCE_DIR}/man/murmur-user-wrapper.1" DESTINATION "${MUMBLE_INSTALL_MANDIR}" COMPONENT doc)
-endif()
+install(TARGETS mumble-server RUNTIME DESTINATION "${MUMBLE_INSTALL_EXECUTABLEDIR}" COMPONENT mumble_server)
 
 if(packaging)
 	if(WIN32)
@@ -347,7 +289,7 @@ if(packaging)
 
 		list(APPEND installer_vars
 			"--version" ${PROJECT_VERSION}
-			"--arch" ${ARCH}
+			"--arch" ${MUMBLE_TARGET_ARCH}
 		)
 
 		file(COPY
@@ -357,7 +299,7 @@ if(packaging)
 				${CMAKE_BINARY_DIR}/installer/server
 		)
 
-		add_custom_command(TARGET murmur
+		add_custom_command(TARGET mumble-server
 			POST_BUILD
 			COMMAND cscs.exe -cd MumbleInstall.cs 
 			COMMAND cscs.exe ServerInstaller.cs ${installer_vars}

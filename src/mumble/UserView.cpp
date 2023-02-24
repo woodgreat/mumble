@@ -1,4 +1,4 @@
-// Copyright 2005-2020 The Mumble Developers. All rights reserved.
+// Copyright 2009-2023 The Mumble Developers. All rights reserved.
 // Use of this source code is governed by a BSD-style license
 // that can be found in the LICENSE file at the root of the
 // Mumble source tree or at <https://www.mumble.info/LICENSE>.
@@ -11,21 +11,20 @@
 #include "MainWindow.h"
 #include "ServerHandler.h"
 #include "UserModel.h"
+#include "Global.h"
 
 #include <QtGui/QDesktopServices>
 #include <QtGui/QHelpEvent>
 #include <QtGui/QPainter>
 #include <QtWidgets/QWhatsThis>
 
-// We define a global macro called 'g'. This can lead to issues when included code uses 'g' as a type or parameter name
-// (like protobuf 3.7 does). As such, for now, we have to make this our last include.
-#include "Global.h"
-
-const int UserDelegate::FLAG_ICON_DIMENSION = 16;
-const int UserDelegate::FLAG_ICON_PADDING   = 1;
-const int UserDelegate::FLAG_DIMENSION      = 18;
-
 UserDelegate::UserDelegate(QObject *p) : QStyledItemDelegate(p) {
+}
+
+void UserDelegate::adjustIcons(int iconTotalDimension, int iconIconPadding, int iconIconDimension) {
+	m_iconTotalDimension = iconTotalDimension;
+	m_iconIconPadding    = iconIconPadding;
+	m_iconIconDimension  = iconIconDimension;
 }
 
 void UserDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const {
@@ -65,8 +64,8 @@ void UserDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, 
 	// draw background
 	style->drawPrimitive(QStyle::PE_PanelItemViewItem, &o, painter, o.widget);
 
-	// resize rect to exclude the flag icons
-	o.rect = option.rect.adjusted(0, 0, -FLAG_DIMENSION * ql.count(), 0);
+	// resize rect to exclude the icons
+	o.rect = option.rect.adjusted(0, 0, -m_iconTotalDimension * ql.count(), 0);
 
 	// draw icon
 	QRect decorationRect = style->subElementRect(QStyle::SE_ItemViewItemDecoration, &o, o.widget);
@@ -78,14 +77,14 @@ void UserDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, 
 	painter->setFont(o.font);
 	style->drawItemText(painter, textRect, o.displayAlignment, o.palette, true, itemText, colorRole);
 
-	// draw flag icons to original rect
-	QRect ps = QRect(option.rect.right() - (ql.size() * FLAG_DIMENSION), option.rect.y(), ql.size() * FLAG_DIMENSION,
-					 option.rect.height());
+	// draw icons to original rect
+	QRect ps = QRect(option.rect.right() - (ql.size() * m_iconTotalDimension), option.rect.y(),
+					 ql.size() * m_iconTotalDimension, option.rect.height());
 
 	for (int i = 0; i < ql.size(); ++i) {
 		QRect r = ps;
-		r.setSize(QSize(FLAG_ICON_DIMENSION, FLAG_ICON_DIMENSION));
-		r.translate(i * FLAG_DIMENSION + FLAG_ICON_PADDING, FLAG_ICON_PADDING);
+		r.setSize(QSize(m_iconIconDimension, m_iconIconDimension));
+		r.translate(i * m_iconTotalDimension + m_iconIconPadding, m_iconIconPadding);
 		QRect p = QStyle::alignedRect(option.direction, option.decorationAlignment, r.size(), r);
 		qvariant_cast< QIcon >(ql[i]).paint(painter, p, option.decorationAlignment, iconMode, QIcon::On);
 	}
@@ -99,27 +98,38 @@ bool UserDelegate::helpEvent(QHelpEvent *evt, QAbstractItemView *view, const QSt
 		const QAbstractItemModel *m      = index.model();
 		const QModelIndex firstColumnIdx = index.sibling(index.row(), 1);
 		QVariant data                    = m->data(firstColumnIdx);
-		QList< QVariant > flagList       = data.toList();
-		const int offset                 = flagList.size() * -FLAG_DIMENSION;
-		const int firstFlagPos           = option.rect.topRight().x() + offset;
+		QList< QVariant > iconList       = data.toList();
+		const int offset                 = iconList.size() * -m_iconTotalDimension;
+		const int firstIconPos           = option.rect.topRight().x() + offset;
 
-		if (evt->pos().x() >= firstFlagPos) {
+		if (evt->pos().x() >= firstIconPos) {
 			return QStyledItemDelegate::helpEvent(evt, view, option, firstColumnIdx);
 		}
 	}
 	return QStyledItemDelegate::helpEvent(evt, view, option, index);
 }
 
-UserView::UserView(QWidget *p) : QTreeView(p) {
-	setItemDelegate(new UserDelegate(this));
+UserView::UserView(QWidget *p) : QTreeView(p), m_userDelegate(make_qt_unique< UserDelegate >(this)) {
+	adjustIcons();
+	setItemDelegate(m_userDelegate.get());
 
-	qtSearch = new QTimer(this);
-	qtSearch->setInterval(QApplication::keyboardInputInterval());
-	qtSearch->setSingleShot(true);
+	// Because in Qt fonts take some time to initialize properly, we have to delay the call
+	// to adjustIcons a bit in order to give the fonts the necessary time (so we can read out
+	// the actual font details).
+	QTimer::singleShot(0, [this]() { adjustIcons(); });
 
 	connect(this, SIGNAL(doubleClicked(const QModelIndex &)), this, SLOT(nodeActivated(const QModelIndex &)));
+}
 
-	connect(qtSearch, SIGNAL(timeout()), this, SLOT(selectSearchResult()));
+void UserView::adjustIcons() {
+	// Calculate the icon size for status icons based on font size
+	// This should automaticially adjust size when the user has
+	// display scaling enabled
+	m_iconTotalDimension  = QFontMetrics(font()).height();
+	int iconIconPadding   = 1;
+	int iconIconDimension = m_iconTotalDimension - (2 * iconIconPadding);
+	m_userDelegate->adjustIcons(m_iconTotalDimension, iconIconPadding, iconIconDimension);
+	viewport()->update();
 }
 
 /**
@@ -139,7 +149,7 @@ bool UserView::event(QEvent *evt) {
 
 /**
  * This function is used to create custom behaviour when clicking
- * on user/channel flags (e.g. showing the comment)
+ * on user/channel icons (e.Global::get(). showing the comment)
  */
 void UserView::mouseReleaseEvent(QMouseEvent *evt) {
 	QPoint clickPosition = evt->pos();
@@ -153,55 +163,62 @@ void UserView::mouseReleaseEvent(QMouseEvent *evt) {
 		// This is the x offset of the _beginning_ of the comment icon starting from the
 		// right.
 		// Thus if the comment icon is the last icon that is displayed, this is equal to
-		// the negative width of a flag's width (which it is initialized to here). For
-		// every flag that is displayed to the right of the comment flag, we have to subtract
-		// UserDelegate::FLAG_DIMENSION once.
-		int commentFlagPxOffset = -UserDelegate::FLAG_DIMENSION;
+		// the negative width of a icon's width (which it is initialized to here). For
+		// every icon that is displayed to the right of the comment icon, we have to subtract
+		// m_iconTotalDimension once.
+		int commentIconPxOffset = -m_iconTotalDimension;
 		bool hasComment         = false;
 
 		if (clientUser && !clientUser->qbaCommentHash.isEmpty()) {
 			hasComment = true;
 
 			if (clientUser->bLocalIgnore)
-				commentFlagPxOffset -= UserDelegate::FLAG_DIMENSION;
+				commentIconPxOffset -= m_iconTotalDimension;
 			if (clientUser->bRecording)
-				commentFlagPxOffset -= UserDelegate::FLAG_DIMENSION;
+				commentIconPxOffset -= m_iconTotalDimension;
 			if (clientUser->bPrioritySpeaker)
-				commentFlagPxOffset -= UserDelegate::FLAG_DIMENSION;
+				commentIconPxOffset -= m_iconTotalDimension;
 			if (clientUser->bMute)
-				commentFlagPxOffset -= UserDelegate::FLAG_DIMENSION;
+				commentIconPxOffset -= m_iconTotalDimension;
 			if (clientUser->bSuppress)
-				commentFlagPxOffset -= UserDelegate::FLAG_DIMENSION;
+				commentIconPxOffset -= m_iconTotalDimension;
 			if (clientUser->bSelfMute)
-				commentFlagPxOffset -= UserDelegate::FLAG_DIMENSION;
+				commentIconPxOffset -= m_iconTotalDimension;
 			if (clientUser->bLocalMute)
-				commentFlagPxOffset -= UserDelegate::FLAG_DIMENSION;
+				commentIconPxOffset -= m_iconTotalDimension;
 			if (clientUser->bSelfDeaf)
-				commentFlagPxOffset -= UserDelegate::FLAG_DIMENSION;
+				commentIconPxOffset -= m_iconTotalDimension;
 			if (clientUser->bDeaf)
-				commentFlagPxOffset -= UserDelegate::FLAG_DIMENSION;
+				commentIconPxOffset -= m_iconTotalDimension;
 			if (!clientUser->qsFriendName.isEmpty())
-				commentFlagPxOffset -= UserDelegate::FLAG_DIMENSION;
+				commentIconPxOffset -= m_iconTotalDimension;
 			if (clientUser->iId >= 0)
-				commentFlagPxOffset -= UserDelegate::FLAG_DIMENSION;
+				commentIconPxOffset -= m_iconTotalDimension;
 
 		} else if (channel && !channel->qbaDescHash.isEmpty()) {
 			hasComment = true;
 
-			if (channel->bFiltered)
-				commentFlagPxOffset -= UserDelegate::FLAG_DIMENSION;
+			switch (channel->m_filterMode) {
+				case ChannelFilterMode::PIN:
+				case ChannelFilterMode::HIDE:
+					commentIconPxOffset -= m_iconTotalDimension;
+					break;
+				case ChannelFilterMode::NORMAL:
+					// NOOP
+					break;
+			}
 
 			if (channel->hasEnterRestrictions) {
-				commentFlagPxOffset -= UserDelegate::FLAG_DIMENSION;
+				commentIconPxOffset -= m_iconTotalDimension;
 			}
 		}
 
 		if (hasComment) {
 			QRect r                    = visualRect(idx);
-			const int commentFlagPxPos = r.topRight().x() + commentFlagPxOffset;
+			const int commentIconPxPos = r.topRight().x() + commentIconPxOffset;
 
-			if ((clickPosition.x() >= commentFlagPxPos)
-				&& (clickPosition.x() <= (commentFlagPxPos + UserDelegate::FLAG_DIMENSION))) {
+			if ((clickPosition.x() >= commentIconPxPos)
+				&& (clickPosition.x() <= (commentIconPxPos + m_iconTotalDimension))) {
 				// Clicked comment icon
 				QString str = userModel->data(idx, Qt::ToolTipRole).toString();
 				if (str.isEmpty()) {
@@ -227,108 +244,21 @@ void UserView::nodeActivated(const QModelIndex &idx) {
 	UserModel *um = static_cast< UserModel * >(model());
 	ClientUser *p = um->getUser(idx);
 	if (p) {
-		g.mw->openTextMessageDialog(p);
+		Global::get().mw->openTextMessageDialog(p);
 		return;
 	}
 
 	Channel *c = um->getChannel(idx);
 	if (c) {
 		// if a channel is activated join it
-		g.sh->joinChannel(g.uiSession, c->iId);
+		Global::get().sh->joinChannel(Global::get().uiSession, c->iId);
 	}
 }
 
-/**
- * This implementation provides a recursive realtime search over
- * the whole channel tree. It also features delayed selection
- * with with automatic expanding of folded channels.
- */
-void UserView::keyboardSearch(const QString &search) {
-	if (qtSearch->isActive()) {
-		qpmiSearch = QPersistentModelIndex();
-		qtSearch->stop();
-	}
-
-	bool forceSkip = false;
-
-	if (tSearch.restart() > (QApplication::keyboardInputInterval() * 1000ULL)) {
-		qsSearch  = QString();
-		forceSkip = true;
-	}
-
-	bool isBackspace = (search.length() == 1) && (search.at(0).row() == 0) && (search.at(0).cell() == 8);
-	if (isBackspace) {
-		if (!qsSearch.isEmpty())
-			qsSearch = qsSearch.left(qsSearch.length() - 1);
-	} else {
-		qsSearch += search;
-	}
-
-	// Try default search (which doesn't recurse non-expanded items) and see if it returns something "valid"
-	QTreeView::keyboardSearch(search);
-	QModelIndex start = currentIndex();
-	if (start.isValid() && model()->data(start, Qt::DisplayRole).toString().startsWith(qsSearch, Qt::CaseInsensitive))
-		return;
-
-	if (forceSkip && start.isValid())
-		start = indexBelow(start);
-
-	if (!start.isValid())
-		start = model()->index(0, 0, QModelIndex());
-
-	QModelIndexList qmil = model()->match(start, Qt::DisplayRole, qsSearch, 1,
-										  Qt::MatchFlags(Qt::MatchStartsWith | Qt::MatchWrap | Qt::MatchRecursive));
-	if (qmil.count() == 0)
-		qmil = model()->match(start, Qt::DisplayRole, qsSearch, 1,
-							  Qt::MatchFlags(Qt::MatchContains | Qt::MatchWrap | Qt::MatchRecursive));
-
-	if (qmil.isEmpty())
-		return;
-
-	QModelIndex qmi = qmil.at(0);
-
-	QModelIndex p = qmi.parent();
-	bool visible  = true;
-	while (visible && p.isValid()) {
-		visible = visible && isExpanded(p);
-		p       = p.parent();
-	}
-
-	if (visible)
-		selectionModel()->setCurrentIndex(qmi, QItemSelectionModel::ClearAndSelect);
-	else {
-		qpmiSearch = qmi;
-		qtSearch->start();
-	}
-}
-
-void UserView::selectSearchResult() {
-	if (qpmiSearch.isValid()) {
-		selectionModel()->setCurrentIndex(qpmiSearch, QItemSelectionModel::ClearAndSelect);
-	}
-	qpmiSearch = QPersistentModelIndex();
-}
-
-bool channelHasUsers(const Channel *c) {
-	if (c->qlUsers.isEmpty() == false)
-		return true;
-
-	int i;
-
-	for (i = 0; i < c->qlChannels.count(); i++) {
-		if (channelHasUsers(c->qlChannels[i]))
-			return true;
-	}
-	return false;
-}
-
-static bool channelFiltered(const Channel *c) {
-	while (c) {
-		if (c->bFiltered)
-			return true;
-		c = c->cParent;
-	}
-	return false;
+void UserView::keyboardSearch(const QString &) {
+	// Disable keyboard search for the UserView in order to prevent jumping wildly through the
+	// UI just because the user has accidentally typed something on their keyboard.
+	return;
 }
 
 void UserView::updateChannel(const QModelIndex &idx) {
@@ -345,36 +275,7 @@ void UserView::updateChannel(const QModelIndex &idx) {
 	}
 
 	if (c && idx.parent().isValid()) {
-		if (g.s.bFilterActive == false) {
-			setRowHidden(idx.row(), idx.parent(), false);
-		} else {
-			bool isChannelUserIsIn = false;
-
-			// Check whether user resides in this channel or a subchannel
-			if (g.uiSession != 0) {
-				const ClientUser *user = ClientUser::get(g.uiSession);
-				if (user) {
-					Channel *chan = user->cChannel;
-					while (chan) {
-						if (chan == c) {
-							isChannelUserIsIn = true;
-							break;
-						}
-						chan = chan->cParent;
-					}
-				}
-			}
-
-			if (channelFiltered(c) && !isChannelUserIsIn) {
-				setRowHidden(idx.row(), idx.parent(), true);
-			} else {
-				if (g.s.bFilterHidesEmptyChannels && !channelHasUsers(c)) {
-					setRowHidden(idx.row(), idx.parent(), true);
-				} else {
-					setRowHidden(idx.row(), idx.parent(), false);
-				}
-			}
-		}
+		setRowHidden(idx.row(), idx.parent(), c->isFiltered());
 	}
 }
 
