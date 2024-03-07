@@ -2075,7 +2075,7 @@ Speak loudly, as when you are annoyed or excited. Decrease the volume in the sou
         <translation>&lt;b&gt;音频采用的输出方式。&lt;/b&gt;</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is the audio tuning wizard for Mumble. This will help you correctly set the input levels of your sound card, and also set the correct parameters for sound processing in Mumble. &lt;/p&gt;&lt;p&gt;Please be aware that as long as this wizard is active, audio will be looped locally to allow you to listen to it, and no audio will be sent to the server. &lt;/p&gt;&lt;p&gt;Note that you can cancel this wizard at any time without it having an effect on your current audio systems. The settings are only once this wizard has been completed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is the audio tuning wizard for Mumble. This will help you correctly set the input levels of your sound card, and also set the correct parameters for sound processing in Mumble. &lt;/p&gt;&lt;p&gt;Please be aware that as long as this wizard is active, audio will be looped locally to allow you to listen to it, and no audio will be sent to the server. &lt;/p&gt;&lt;p&gt;Note that you can cancel this wizard at any time without it having an effect on your current audio systems. The settings are only applied once this wizard has been completed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;这是 Mumble 的音频设置向导。它将帮助您正确地设置您的声卡的输入电平，以及正确的 Mumble 声音处理参数。&lt;/p&gt;&lt;p&gt;请注意，在整个设置过程中，音频将采用本地回放的方式使您能听到，而且没有任何音频会被发送到服务器。&lt;/p&gt;&lt;p&gt;您可以随时退出此向导，而不会影响您的音频设置。设置只会在向导完成时被保存。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
@@ -4621,6 +4621,18 @@ The setting only applies for new messages, the already shown ones will retain th
         <source>Always Quit</source>
         <translation>总是退出</translation>
     </message>
+    <message>
+        <source> seconds</source>
+        <translation> 秒</translation>
+    </message>
+    <message>
+        <source>If this is checked, users will always be visible in the TalkingUI (regardless of talking state).</source>
+        <translation>选中时，用户将总在对话界面内可见（无论是否在发言）。</translation>
+    </message>
+    <message>
+        <source>Always keep users visible</source>
+        <translation>用户总是可见</translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -6568,6 +6580,205 @@ mumble://[&lt;用户名&gt;[:&lt;密码&gt;]@]&lt;主机名&gt;[:&lt;端口&gt;]
                 永久保存到 Mumble 设置中。
 </translation>
     </message>
+    <message>
+        <source>Connect to a server</source>
+        <comment>Global Shortcut</comment>
+        <translation>连接到服务器</translation>
+    </message>
+    <message>
+        <source>This will open the server connection dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>这会打开服务器连接对话框</translation>
+    </message>
+    <message>
+        <source>Disconnect from server</source>
+        <comment>Global Shortcut</comment>
+        <translation>断开与服务器的连接</translation>
+    </message>
+    <message>
+        <source>This will disconnect you from the server</source>
+        <comment>Global Shortcut</comment>
+        <translation>这会断开您与服务器的连接</translation>
+    </message>
+    <message>
+        <source>Open server information</source>
+        <comment>Global Shortcut</comment>
+        <translation>打开服务器信息</translation>
+    </message>
+    <message>
+        <source>This will show information about the server connection</source>
+        <comment>Global Shortcut</comment>
+        <translation>这会显示服务器连接的信息</translation>
+    </message>
+    <message>
+        <source>Open server tokens</source>
+        <comment>Global Shortcut</comment>
+        <translation>打开服务器令牌</translation>
+    </message>
+    <message>
+        <source>This will open the server tokens dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>这会打开服务器令牌对话框</translation>
+    </message>
+    <message>
+        <source>Open server user list</source>
+        <comment>Global Shortcut</comment>
+        <translation>打开服务器用户列表</translation>
+    </message>
+    <message>
+        <source>This will open the server user list dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>这会打开服务器用户列表对话框</translation>
+    </message>
+    <message>
+        <source>Open server ban list</source>
+        <comment>Global Shortcut</comment>
+        <translation>打开服务器封禁列表</translation>
+    </message>
+    <message>
+        <source>This will open the server ban list dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>这会打开服务器封禁列表对话框</translation>
+    </message>
+    <message>
+        <source>Toggle priority speaker</source>
+        <comment>Global Shortcut</comment>
+        <translation>切换优先发言人状态</translation>
+    </message>
+    <message>
+        <source>This will enable/disable the priority speaker</source>
+        <comment>Global Shortcut</comment>
+        <translation>这会启用/禁用优先发言人状态</translation>
+    </message>
+    <message>
+        <source>Open recording dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>打开录音对话框</translation>
+    </message>
+    <message>
+        <source>This will open the recording dialog</source>
+        <translation>这会打开录音对话框</translation>
+    </message>
+    <message>
+        <source>Change comment</source>
+        <comment>Global Shortcut</comment>
+        <translation>修改简介</translation>
+    </message>
+    <message>
+        <source>This will open the change comment dialog</source>
+        <translation>这会打开修改简介对话框</translation>
+    </message>
+    <message>
+        <source>Change avatar</source>
+        <comment>Global Shortcut</comment>
+        <translation>修改头像</translation>
+    </message>
+    <message>
+        <source>This will open your file explorer to change your avatar image on this server</source>
+        <translation>这会打开您的文件资源管理器，以修改您在此服务器上的头像图片</translation>
+    </message>
+    <message>
+        <source>Remove avatar</source>
+        <comment>Global Shortcut</comment>
+        <translation>删除头像</translation>
+    </message>
+    <message>
+        <source>This will reset your avatar on the server</source>
+        <translation>这会重置您在服务器上的头像</translation>
+    </message>
+    <message>
+        <source>Register on the server</source>
+        <comment>Global Shortcut</comment>
+        <translation>在服务器上注册</translation>
+    </message>
+    <message>
+        <source>This will register you on the server</source>
+        <translation>这会在服务器上为您注册</translation>
+    </message>
+    <message>
+        <source>Audio statistics</source>
+        <comment>Global Shortcut</comment>
+        <translation>音频统计</translation>
+    </message>
+    <message>
+        <source>This will open the audio statistics dialog</source>
+        <translation>这会打开音频统计对话框</translation>
+    </message>
+    <message>
+        <source>Open settings</source>
+        <comment>Global Shortcut</comment>
+        <translation>打开设置</translation>
+    </message>
+    <message>
+        <source>This will open the settings dialog</source>
+        <translation>这会打开设置对话框</translation>
+    </message>
+    <message>
+        <source>Start audio wizard</source>
+        <comment>Global Shortcut</comment>
+        <translation>启动音频向导</translation>
+    </message>
+    <message>
+        <source>This will open the audio wizard dialog</source>
+        <translation>这会打开音频向导对话框</translation>
+    </message>
+    <message>
+        <source>Start certificate wizard</source>
+        <comment>Global Shortcut</comment>
+        <translation>启动证书向导</translation>
+    </message>
+    <message>
+        <source>This will open the certificate wizard dialog</source>
+        <translation>这会打开证书向导对话框</translation>
+    </message>
+    <message>
+        <source>Toggle text to speech</source>
+        <comment>Global Shortcut</comment>
+        <translation>切换语音播报</translation>
+    </message>
+    <message>
+        <source>This will enable/disable the text to speech</source>
+        <translation>这会启用/禁用语音播报</translation>
+    </message>
+    <message>
+        <source>Open about dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>打开关于对话框</translation>
+    </message>
+    <message>
+        <source>This will open the about dialog</source>
+        <translation>这会打开关于对话框</translation>
+    </message>
+    <message>
+        <source>Open about Qt dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>打开关于 Qt 对话框</translation>
+    </message>
+    <message>
+        <source>This will open the about Qt dialog</source>
+        <translation>这会打开关于 Qt 对话框</translation>
+    </message>
+    <message>
+        <source>Check for update</source>
+        <comment>Global Shortcut</comment>
+        <translation>检查更新</translation>
+    </message>
+    <message>
+        <source>This will check if mumble is up to date</source>
+        <translation>这会检查 Mumble 是否为最新版</translation>
+    </message>
+    <message>
+        <source>That sound was the mute cue. It activates when you speak while muted. Would you like to keep it enabled?</source>
+        <translation>此声音是静音提示。您在静音时发言会激活它。您希望保持启用吗？</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation>是</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>否</translation>
+    </message>
 </context>
 <context>
     <name>Manual</name>
@@ -7578,7 +7789,7 @@ To upgrade these files to their latest versions, click the button below.</source
     </message>
     <message>
         <source>Non-plugin found in plugin directory: &quot;%1&quot; (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>在插件目录发现非插件：“%1”（%2）</translation>
     </message>
 </context>
 <context>
@@ -8967,6 +9178,10 @@ An access token is a text string, which can be used as a password for very simpl
     <message>
         <source>.opus - Lossy compressed</source>
         <translation>.opus - 有损压缩</translation>
+    </message>
+    <message>
+        <source>.mp3 - Lossy compressed</source>
+        <translation>.mp3 - 有损压缩</translation>
     </message>
 </context>
 <context>

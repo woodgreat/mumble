@@ -846,7 +846,7 @@ Określa maksymalną dozwoloną liczbę użytkowników na tym kanale. Jeżeli wa
     </message>
     <message>
         <source>&lt;b&gt;This shows the current speech detection settings.&lt;/b&gt;&lt;br /&gt;You can change the settings from the Settings dialog or from the Audio Wizard.</source>
-        <translation>&lt;b&gt;Wyświetla aktualne ustawienia wykrywania mowy.&lt;/b&gt;&lt;br /&gt;Możesz zmienić te ustawienia w Konfiguracji lub w Kreatorze ustawień dźwięku.</translation>
+        <translation>&lt;b&gt;Wyświetla obecny sposób detekcji głosu.&lt;/b&gt;&lt;br /&gt;Możesz zmienić sposób detekcji w oknie Konfiguracja lub korzystając z kreatora ustawień dźwięku.</translation>
     </message>
     <message>
         <source>Signal values below this count as silence</source>
@@ -1685,7 +1685,7 @@ Określa maksymalną dozwoloną liczbę użytkowników na tym kanale. Jeżeli wa
     </message>
     <message>
         <source>&lt;b&gt;This shows the current speech detection settings.&lt;/b&gt;&lt;br /&gt;You can change the settings from the Settings dialog or from the Audio Wizard.</source>
-        <translation>&lt;b&gt;Wyświetla obecny sposób detekcji głosu.&lt;/b&gt;&lt;br /&gt;Możesz zmienić sposób detekcji w Konfiguracji lub korzystając z Kreatora ustawień dźwięku.</translation>
+        <translation>&lt;b&gt;Wyświetla obecny sposób detekcji głosu.&lt;/b&gt;&lt;br /&gt;Możesz zmienić sposób detekcji w oknie Konfiguracja lub korzystając z kreatora ustawień dźwięku.</translation>
     </message>
     <message>
         <source>Signal and noise power spectrum</source>
@@ -2075,7 +2075,7 @@ Mów głośno, tak jakbyś był wkurzony lub podekscytowany. Zmniejsz głośnoś
         <translation>&lt;b&gt;Jest to metoda wyjściowa używana do dźwięku.&lt;/b&gt;</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is the audio tuning wizard for Mumble. This will help you correctly set the input levels of your sound card, and also set the correct parameters for sound processing in Mumble. &lt;/p&gt;&lt;p&gt;Please be aware that as long as this wizard is active, audio will be looped locally to allow you to listen to it, and no audio will be sent to the server. &lt;/p&gt;&lt;p&gt;Note that you can cancel this wizard at any time without it having an effect on your current audio systems. The settings are only once this wizard has been completed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is the audio tuning wizard for Mumble. This will help you correctly set the input levels of your sound card, and also set the correct parameters for sound processing in Mumble. &lt;/p&gt;&lt;p&gt;Please be aware that as long as this wizard is active, audio will be looped locally to allow you to listen to it, and no audio will be sent to the server. &lt;/p&gt;&lt;p&gt;Note that you can cancel this wizard at any time without it having an effect on your current audio systems. The settings are only applied once this wizard has been completed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Jest to kreator ustawień dźwięku Mumble. Kreator pomoże ci w odpowiednim skonfigurowaniu twojej karty dźwiękowej oraz w doborze odpowiednich ustawień przetwarzania dźwięku w Mumble. &lt;/p&gt;&lt;p&gt;Zwróć uwagę na to, że podczas kolejnych kroków będziesz słyszeć sam siebie, ale nie martw się, żaden z użytkowników cię nie usłyszy, gdy kreator jest otwarty. &lt;/p&gt;&lt;p&gt;Pamiętaj, że możesz anulować ten kreator w dowolnym momencie, bez wpływu na obecne systemy dźwięku. Ustawienia zostaną wprowadzone dopiero po zakończeniu pracy tego kreatora.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
@@ -4623,6 +4623,18 @@ Ustawienie dotyczy tylko nowych wiadomości, te już pokazane zachowają poprzed
         <source>Always Quit</source>
         <translation>Zawsze zamykaj</translation>
     </message>
+    <message>
+        <source> seconds</source>
+        <translation> sekundy</translation>
+    </message>
+    <message>
+        <source>If this is checked, users will always be visible in the TalkingUI (regardless of talking state).</source>
+        <translation>Jeśli ta opcja jest zaznaczona, użytkownicy będą zawsze widoczni w Interfejsie mówiących (niezależnie od stanu rozmowy).</translation>
+    </message>
+    <message>
+        <source>Always keep users visible</source>
+        <translation>Zawsze utrzymuj widoczność użytkowników</translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -6570,6 +6582,205 @@ Prawidłowe opcje to:
                 ustawieniach Mumble.
 </translation>
     </message>
+    <message>
+        <source>Connect to a server</source>
+        <comment>Global Shortcut</comment>
+        <translation>Połącz z serwerem</translation>
+    </message>
+    <message>
+        <source>This will open the server connection dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>Spowoduje to otwarcie okna dialogowego połączenia z serwerem</translation>
+    </message>
+    <message>
+        <source>Disconnect from server</source>
+        <comment>Global Shortcut</comment>
+        <translation>Rozłącz od serwera</translation>
+    </message>
+    <message>
+        <source>This will disconnect you from the server</source>
+        <comment>Global Shortcut</comment>
+        <translation>Spowoduje to rozłączenie od serwera</translation>
+    </message>
+    <message>
+        <source>Open server information</source>
+        <comment>Global Shortcut</comment>
+        <translation>Otwórz informacje o serwerze</translation>
+    </message>
+    <message>
+        <source>This will show information about the server connection</source>
+        <comment>Global Shortcut</comment>
+        <translation>Spowoduje to wyświetlenie informacji o połączeniu z serwerem</translation>
+    </message>
+    <message>
+        <source>Open server tokens</source>
+        <comment>Global Shortcut</comment>
+        <translation>Otwórz tokeny serwera</translation>
+    </message>
+    <message>
+        <source>This will open the server tokens dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>Spowoduje to otwarcie okna dialogowego tokenów serwera</translation>
+    </message>
+    <message>
+        <source>Open server user list</source>
+        <comment>Global Shortcut</comment>
+        <translation>Otwórz listę użytkowników serwera</translation>
+    </message>
+    <message>
+        <source>This will open the server user list dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>Spowoduje to otwarcie okna dialogowego z listą użytkowników serwera</translation>
+    </message>
+    <message>
+        <source>Open server ban list</source>
+        <comment>Global Shortcut</comment>
+        <translation>Otwórz listę banów na serwerze</translation>
+    </message>
+    <message>
+        <source>This will open the server ban list dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>Spowoduje to otwarcie okna dialogowego z listą banów na serwerze</translation>
+    </message>
+    <message>
+        <source>Toggle priority speaker</source>
+        <comment>Global Shortcut</comment>
+        <translation>Przełącz nadrzędnego mówcę</translation>
+    </message>
+    <message>
+        <source>This will enable/disable the priority speaker</source>
+        <comment>Global Shortcut</comment>
+        <translation>Spowoduje to włączenie/wyłączenie nadrzędnego mówcy</translation>
+    </message>
+    <message>
+        <source>Open recording dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>Otwórz okno nagrywania</translation>
+    </message>
+    <message>
+        <source>This will open the recording dialog</source>
+        <translation>Spowoduje to otwarcie okna dialogowego nagrywania</translation>
+    </message>
+    <message>
+        <source>Change comment</source>
+        <comment>Global Shortcut</comment>
+        <translation>Zmień komentarz</translation>
+    </message>
+    <message>
+        <source>This will open the change comment dialog</source>
+        <translation>Spowoduje to otwarcie okna dialogowego zmiany komentarza</translation>
+    </message>
+    <message>
+        <source>Change avatar</source>
+        <comment>Global Shortcut</comment>
+        <translation>Zmień awatar</translation>
+    </message>
+    <message>
+        <source>This will open your file explorer to change your avatar image on this server</source>
+        <translation>Spowoduje to otwarcie eksploratora plików w celu zmiany obrazu awatara na tym serwerze</translation>
+    </message>
+    <message>
+        <source>Remove avatar</source>
+        <comment>Global Shortcut</comment>
+        <translation>Usuń awatar</translation>
+    </message>
+    <message>
+        <source>This will reset your avatar on the server</source>
+        <translation>Spowoduje to zresetowanie Twojego awatara na serwerze</translation>
+    </message>
+    <message>
+        <source>Register on the server</source>
+        <comment>Global Shortcut</comment>
+        <translation>Zarejestruj się na serwerze</translation>
+    </message>
+    <message>
+        <source>This will register you on the server</source>
+        <translation>Spowoduje to zarejestrowanie Cię na serwerze</translation>
+    </message>
+    <message>
+        <source>Audio statistics</source>
+        <comment>Global Shortcut</comment>
+        <translation>Statystyki audio</translation>
+    </message>
+    <message>
+        <source>This will open the audio statistics dialog</source>
+        <translation>Spowoduje to otwarcie okna dialogowego statystyk audio</translation>
+    </message>
+    <message>
+        <source>Open settings</source>
+        <comment>Global Shortcut</comment>
+        <translation>Otwórz ustawienia</translation>
+    </message>
+    <message>
+        <source>This will open the settings dialog</source>
+        <translation>Spowoduje to otwarcie okna dialogowego ustawień</translation>
+    </message>
+    <message>
+        <source>Start audio wizard</source>
+        <comment>Global Shortcut</comment>
+        <translation>Uruchom kreator ustawień dźwięku</translation>
+    </message>
+    <message>
+        <source>This will open the audio wizard dialog</source>
+        <translation>Spowoduje to otwarcie okna dialogowego kreatora ustawień dźwięku</translation>
+    </message>
+    <message>
+        <source>Start certificate wizard</source>
+        <comment>Global Shortcut</comment>
+        <translation>Uruchom kreator certyfikatów</translation>
+    </message>
+    <message>
+        <source>This will open the certificate wizard dialog</source>
+        <translation>Spowoduje to otwarcie okna dialogowego kreatora certyfikatów</translation>
+    </message>
+    <message>
+        <source>Toggle text to speech</source>
+        <comment>Global Shortcut</comment>
+        <translation>Przełącz tekst na mowę</translation>
+    </message>
+    <message>
+        <source>This will enable/disable the text to speech</source>
+        <translation>Spowoduje to włączenie/wyłączenie tekstu na mowę</translation>
+    </message>
+    <message>
+        <source>Open about dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>Otwórz okno dialogowe informacji o programie</translation>
+    </message>
+    <message>
+        <source>This will open the about dialog</source>
+        <translation>Spowoduje to otwarcie okna dialogowego informacji o programie</translation>
+    </message>
+    <message>
+        <source>Open about Qt dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>Otwórz okno dialogowe informacji o Qt</translation>
+    </message>
+    <message>
+        <source>This will open the about Qt dialog</source>
+        <translation>Spowoduje to otwarcie okna dialogowego informacji o Qt</translation>
+    </message>
+    <message>
+        <source>Check for update</source>
+        <comment>Global Shortcut</comment>
+        <translation>Sprawdź aktualizacje</translation>
+    </message>
+    <message>
+        <source>This will check if mumble is up to date</source>
+        <translation>Spowoduje to sprawdzenie, czy program Mumble jest aktualny</translation>
+    </message>
+    <message>
+        <source>That sound was the mute cue. It activates when you speak while muted. Would you like to keep it enabled?</source>
+        <translation>Ten dźwięk był niemym sygnałem. Włącza się, gdy mówisz po wyciszeniu. Czy chcesz, aby była on włączony?</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation>Tak</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>Nie</translation>
+    </message>
 </context>
 <context>
     <name>Manual</name>
@@ -7580,7 +7791,7 @@ Aby uaktualnić pliki do najnowszych wersji, kliknij przycisk poniżej.</transla
     </message>
     <message>
         <source>Non-plugin found in plugin directory: &quot;%1&quot; (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Znaleziono plik niebędący wtyczką w katalogu wtyczek: &quot;%1&quot; (%2)</translation>
     </message>
 </context>
 <context>
@@ -8971,6 +9182,10 @@ Token dostępu to ciąg tekstowy, który może służyć jako hasło do bardzo p
     <message>
         <source>.opus - Lossy compressed</source>
         <translation>.opus - Stratna kompresja</translation>
+    </message>
+    <message>
+        <source>.mp3 - Lossy compressed</source>
+        <translation>.mp3 - Stratna kompresja</translation>
     </message>
 </context>
 <context>

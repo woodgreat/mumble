@@ -132,11 +132,7 @@ extern int os_early_init();
 extern HWND mumble_mw_hwnd;
 #endif // Q_OS_WIN
 
-#if defined(Q_OS_WIN) && !defined(MUMBLEAPP_DLL)
-extern "C" __declspec(dllexport) int main(int argc, char **argv) {
-#else
 int main(int argc, char **argv) {
-#endif
 	int res = 0;
 
 #if defined(Q_OS_WIN)
@@ -471,7 +467,8 @@ int main(int argc, char **argv) {
 		if (_wgetenv_s(&reqSize, nullptr, 0, L"PATH") != 0) {
 			qWarning() << "Failed to get PATH. Not adding application directory to PATH. DBus bindings may not work.";
 		} else if (reqSize > 0) {
-			STACKVAR(wchar_t, buff, reqSize + 1);
+			std::vector< wchar_t > buff;
+			buff.resize(reqSize + 1);
 			if (_wgetenv_s(&reqSize, buff, reqSize, L"PATH") != 0) {
 				qWarning()
 					<< "Failed to get PATH. Not adding application directory to PATH. DBus bindings may not work.";
@@ -480,7 +477,9 @@ int main(int argc, char **argv) {
 					QString::fromLatin1("%1;%2")
 						.arg(QDir::toNativeSeparators(MumbleApplication::instance()->applicationVersionRootPath()))
 						.arg(QString::fromWCharArray(buff));
-				STACKVAR(wchar_t, buffout, path.length() + 1);
+				static std::vector< wchar_t > outBuffer;
+				outBuffer.resize(path.length() + 1);
+				wchar_t *buffout = outBuffer.data();
 				path.toWCharArray(buffout);
 				if (_wputenv_s(L"PATH", buffout) != 0) {
 					qWarning() << "Failed to set PATH. DBus bindings may not work.";
@@ -693,13 +692,6 @@ int main(int argc, char **argv) {
 	// By setting the TalkingUI's position **before** making it visible tends to more reliably include the
 	// window's frame to be included in the positioning calculation on X11 (at least using KDE Plasma)
 	Global::get().talkingUI->setVisible(Global::get().s.bShowTalkingUI);
-
-	QObject::connect(Global::get().mw, &MainWindow::userAddedChannelListener, Global::get().talkingUI,
-					 &TalkingUI::on_channelListenerAdded);
-	QObject::connect(Global::get().mw, &MainWindow::userRemovedChannelListener, Global::get().talkingUI,
-					 &TalkingUI::on_channelListenerRemoved);
-	QObject::connect(Global::get().channelListenerManager.get(), &ChannelListenerManager::localVolumeAdjustmentsChanged,
-					 Global::get().talkingUI, &TalkingUI::on_channelListenerLocalVolumeAdjustmentChanged);
 
 	QObject::connect(Global::get().mw, &MainWindow::userAddedChannelListener, Global::get().talkingUI,
 					 &TalkingUI::on_channelListenerAdded);
@@ -958,31 +950,3 @@ int main(int argc, char **argv) {
 	}
 	return res;
 }
-
-#if defined(Q_OS_WIN) && defined(MUMBLEAPP_DLL)
-extern "C" __declspec(dllexport) int MumbleMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR cmdArg, int cmdShow) {
-	Q_UNUSED(instance)
-	Q_UNUSED(prevInstance)
-	Q_UNUSED(cmdArg)
-	Q_UNUSED(cmdShow)
-
-	int argc;
-	wchar_t **argvW = CommandLineToArgvW(GetCommandLineW(), &argc);
-	if (!argvW) {
-		return -1;
-	}
-
-	QVector< QByteArray > argvS;
-	argvS.reserve(argc);
-
-	QVector< char * > argvV(argc, nullptr);
-	for (int i = 0; i < argc; ++i) {
-		argvS.append(QString::fromWCharArray(argvW[i]).toLocal8Bit());
-		argvV[i] = argvS.back().data();
-	}
-
-	LocalFree(argvW);
-
-	return main(argc, argvV.data());
-}
-#endif

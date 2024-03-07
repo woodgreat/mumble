@@ -190,6 +190,7 @@ void LogConfig::updateSelectAllButtons() {
 		}
 	}
 
+	const QSignalBlocker blocker(qtwMessages);
 	allMessagesItem->setCheckState(ColConsole, allConsoleChecked ? Qt::Checked : Qt::Unchecked);
 	allMessagesItem->setCheckState(ColNotification, allNotificationChecked ? Qt::Checked : Qt::Unchecked);
 	allMessagesItem->setCheckState(ColHighlight, allHighlightChecked ? Qt::Checked : Qt::Unchecked);
@@ -280,7 +281,7 @@ void LogConfig::save() const {
 		}
 		if (i->checkState(ColStaticSound) == Qt::Checked)
 			v |= Settings::LogSoundfile;
-		s.qmMessages[mt]      = v;
+		s.qmMessages[mt]      = static_cast< unsigned int >(v);
 		s.qmMessageSounds[mt] = i->text(ColStaticSoundPath);
 	}
 	s.iMaxLogBlocks       = qsbMaxBlocks->value();
@@ -406,10 +407,6 @@ Log::Log(QObject *p) : QObject(p) {
 #endif
 	uiLastId = 0;
 	qdDate   = QDate::currentDate();
-
-	// remove gap above first chat message; the gaps below
-	// each chat message are handled within `Log::log`.
-	Global::get().mw->qteLog->document()->firstBlock().setVisible(false);
 }
 
 // Display order in settingsscreen, allows to insert new events without breaking config-compatibility with older
@@ -671,7 +668,7 @@ QString Log::validHtml(const QString &html, QTextCursor *tc) {
 		}
 	}
 
-	int messageSize = s.width() * s.height();
+	int messageSize = static_cast< int >(s.width() * s.height());
 	int allowedSize = 2048 * 2048;
 
 	if (messageSize > allowedSize) {
@@ -726,14 +723,34 @@ void Log::log(MsgType mt, const QString &console, const QString &terse, bool own
 
 		LogTextBrowser *tlog     = Global::get().mw->qteLog;
 		const int oldscrollvalue = tlog->getLogScroll();
-		const bool scroll        = (oldscrollvalue == tlog->getLogScrollMaximum());
+		// Restore the previous scroll position after inserting a new message
+		// if the message was not sent by the user AND the chat log is not
+		// scrolled all the way down.
+		const bool restoreScroll = !(ownMessage || tlog->isScrolledToBottom());
+
+		// A newline is inserted after each frame, but this spaces out the
+		// log entries too much, so the line height is set to zero to reduce
+		// the space between log entries. This line height is only set for the
+		// blank lines between entries, not for entries themselves.
+		//
+		// NOTE: All further log entries must go in a new text frame.
+		// Otherwise, they will not display correctly as a result of having
+		// line height equal to 0 for the current block.
+		QTextBlockFormat bf = tc.blockFormat();
+		bf.setLineHeight(0, QTextBlockFormat::FixedHeight);
+		bf.setTopMargin(0);
+		bf.setBottomMargin(0);
+
+		// Set the line height of the leading blank line to zero
+		tc.setBlockFormat(bf);
 
 		if (qdDate != dt.date()) {
 			qdDate = dt.date();
-			tc.insertBlock();
+			tc.insertFrame(qttf);
 			tc.insertHtml(
-				tr("[Date changed to %1]\n").arg(qdDate.toString(Qt::DefaultLocaleShortDate).toHtmlEscaped()));
+				tr("[Date changed to %1]\n").arg(QLocale().toString(qdDate, QLocale::ShortFormat).toHtmlEscaped()));
 			tc.movePosition(QTextCursor::End);
+			tc.setBlockFormat(bf);
 		}
 
 		// Convert CRLF to unix-style LF and old mac-style LF (single \r) to unix-style as well
@@ -760,31 +777,12 @@ void Log::log(MsgType mt, const QString &console, const QString &terse, bool own
 		tc.movePosition(QTextCursor::End);
 		Global::get().mw->qteLog->setTextCursor(tc);
 
-		// Qt's document model for [Rich Text Documents][RT] is based on blocks and frames.
-		// You always have a root frame and at least one block per frame:
-		//
-		// [Document]
-		//     +--> [Root frame]
-		//               +--> [Block]
-		//               +--> [Frame]
-		//               +--> [Block]
-		//               +--> [Frame]
-		//               +--> [Block]
-		//
-		// [RT]: https://doc.qt.io/qt-5/richtext-structure.html
-		//
-		// However, the issue is that the blocks between the frames are mandatory. They lead
-		// to additional gaps, especially on Windows, where `QTextCursor::setBlockCharFormat`
-		// cannot be used to decrease the trailing block's size.
-		//
-		// Fortunately, the `tlog`/`LogTextBrowser` is a `QTextBrowser` with a `QDocument*`.
-		// This allows us to hide the last block created by `QTextCursor::insertFrame()`.
-		tlog->document()->lastBlock().setVisible(false);
+		// Set the line height of the trailing blank line to zero
+		tc.setBlockFormat(bf);
 
-		if (scroll || ownMessage)
-			tlog->scrollLogToBottom();
-		else
+		if (restoreScroll) {
 			tlog->setLogScroll(oldscrollvalue);
+		}
 	}
 
 	if (!ownMessage) {
@@ -925,64 +923,13 @@ QVariant LogDocument::loadResource(int type, const QUrl &url) {
 		return QByteArray();
 	}
 
+	// Only accept data URLs, not external resources
+	if (url.isValid() && url.scheme() == QLatin1String("data")) {
+		return QTextDocument::loadResource(type, url);
+	}
+
 	QImage qi(1, 1, QImage::Format_Mono);
 	addResource(type, url, qi);
 
-	if (!url.isValid()) {
-		return qi;
-	}
-
-	if (url.scheme() != QLatin1String("data")) {
-		return qi;
-	}
-
-	QNetworkReply *rep = Network::get(url);
-	connect(rep, SIGNAL(finished()), this, SLOT(finished()));
-
-	// Handle data URLs immediately without a roundtrip to the event loop.
-	// We need this to perform proper validation for data URL images when
-	// a LogDocument is used inside Log::validHtml().
-	QCoreApplication::sendPostedEvents(rep, 0);
-
 	return qi;
-}
-
-void LogDocument::finished() {
-	QNetworkReply *rep = qobject_cast< QNetworkReply * >(sender());
-
-	if (rep->error() == QNetworkReply::NoError) {
-		QByteArray ba = rep->readAll();
-		QByteArray fmt;
-		QImage qi;
-
-		// Sniff the format instead of relying on the MIME type.
-		// There are many misconfigured servers out there and
-		// Mumble has historically sniffed the received data
-		// instead of strictly requiring a correct Content-Type.
-		if (RichTextImage::isValidImage(ba, fmt)) {
-			if (qi.loadFromData(ba, fmt)) {
-				addResource(QTextDocument::ImageResource, rep->request().url(), qi);
-
-				// Force a re-layout of the QTextEdit the next
-				// time we enter the event loop.
-				// We must not trigger a re-layout immediately.
-				// Doing so can trigger crashes deep inside Qt
-				// if the QTextDocument has just been set on the
-				// text edit widget.
-				QTextEdit *qte = qobject_cast< QTextEdit * >(parent());
-				if (qte) {
-					QEvent *e = new QEvent(QEvent::FontChange);
-					QApplication::postEvent(qte, e);
-
-					e = new LogDocumentResourceAddedEvent();
-					QApplication::postEvent(qte, e);
-				}
-			}
-		}
-	}
-
-	rep->deleteLater();
-}
-
-LogDocumentResourceAddedEvent::LogDocumentResourceAddedEvent() : QEvent(LogDocumentResourceAddedEvent::Type) {
 }

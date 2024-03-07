@@ -34,6 +34,8 @@ find_pkg(OpenSSL
 
 find_pkg(Protobuf REQUIRED)
 
+add_compile_options(${MUMBLE_COMPILER_FLAGS})
+
 add_library(shared STATIC)
 
 protobuf_generate(LANGUAGE cpp TARGET shared PROTOS ${PROTO_FILE} OUT_VAR BUILT_PROTO_FILES)
@@ -217,8 +219,8 @@ else()
 	# GSL since version 3)
 	find_pkg("Microsoft.GSL")
 
-	if (TARGET GSL)
-		target_link_libraries(shared PUBLIC GSL)
+	if (TARGET Microsoft.GSL::GSL)
+		target_link_libraries(shared PUBLIC Microsoft.GSL::GSL)
 	else()
 		# If the above failed, it could mean that there is an installation of GSL < v3.0 on this system, which does not yet
 		# provide cmake support for finding it. Thus, we have to use our custom Find-script.

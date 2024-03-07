@@ -23,7 +23,7 @@ static QPointer< Manual > mDlg = nullptr;
 static bool bLinkable          = false;
 static bool bActive            = true;
 
-static int iAzimuth   = 180;
+static int iAzimuth   = 0;
 static int iElevation = 0;
 
 static const QString defaultContext  = QString::fromLatin1("Mumble");
@@ -52,8 +52,8 @@ Manual::Manual(QWidget *p) : QDialog(p) {
 	// The center of the indicator's circle will represent the current position
 	indicator.addEllipse(QRectF(-indicatorDiameter / 2, -indicatorDiameter / 2, indicatorDiameter, indicatorDiameter));
 	// A line will indicate the indicator's orientation (azimuth)
-	indicator.moveTo(0, indicatorDiameter / 2);
-	indicator.lineTo(0, indicatorDiameter);
+	indicator.moveTo(0, -indicatorDiameter / 2);
+	indicator.lineTo(0, -indicatorDiameter);
 
 	m_qgiPosition = m_qgsScene->addPath(indicator);
 
@@ -263,7 +263,7 @@ void Manual::on_speakerPositionUpdate(QHash< unsigned int, Position2D > position
 	while (remainingIt.hasNext()) {
 		remainingIt.next();
 
-		const float speakerRadius  = 1.2;
+		const float speakerRadius  = 1.2f;
 		QGraphicsItem *speakerItem = m_qgsScene->addEllipse(-speakerRadius, -speakerRadius, 2 * speakerRadius,
 															2 * speakerRadius, QPen(), QBrush(Qt::red));
 

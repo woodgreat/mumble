@@ -181,17 +181,8 @@ private:
 public:
 	LogDocument(QObject *p = nullptr);
 	QVariant loadResource(int, const QUrl &) Q_DECL_OVERRIDE;
-public slots:
-	void finished();
 };
 
-class LogDocumentResourceAddedEvent : public QEvent {
-public:
-	static const QEvent::Type Type = static_cast< QEvent::Type >(20145);
-
-	LogDocumentResourceAddedEvent();
-};
-
-Q_DECLARE_METATYPE(Log::MsgType);
+Q_DECLARE_METATYPE(Log::MsgType)
 
 #endif

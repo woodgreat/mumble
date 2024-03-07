@@ -2075,7 +2075,7 @@ Tala högt, som om du är irriterad eller upphetsad. Minska volymen i kontrollpa
         <translation>&lt;b&gt;Detta är utmatningsmetoden för att använda till ljudet.&lt;/b&gt;</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is the audio tuning wizard for Mumble. This will help you correctly set the input levels of your sound card, and also set the correct parameters for sound processing in Mumble. &lt;/p&gt;&lt;p&gt;Please be aware that as long as this wizard is active, audio will be looped locally to allow you to listen to it, and no audio will be sent to the server. &lt;/p&gt;&lt;p&gt;Note that you can cancel this wizard at any time without it having an effect on your current audio systems. The settings are only once this wizard has been completed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is the audio tuning wizard for Mumble. This will help you correctly set the input levels of your sound card, and also set the correct parameters for sound processing in Mumble. &lt;/p&gt;&lt;p&gt;Please be aware that as long as this wizard is active, audio will be looped locally to allow you to listen to it, and no audio will be sent to the server. &lt;/p&gt;&lt;p&gt;Note that you can cancel this wizard at any time without it having an effect on your current audio systems. The settings are only applied once this wizard has been completed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Detta är guiden för ljudinställning av Mumble. Den hjälper dig att ställa in ingångsnivåerna för ditt ljudkort på rätt sätt och även ställa in rätt parametrar för ljudbehandling i Mumble. &lt;/p&gt;&lt;p&gt;Observera att så länge den här guiden är aktiv kommer ljudet att loopas lokalt för att du ska kunna lyssna på det, och inget ljud kommer att skickas till servern. &lt;/p&gt;&lt;p&gt;Du kan avbryta den här guiden när som helst utan att det påverkar dina nuvarande ljudsystem. Inställningarna är först när den här guiden har slutförts.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
@@ -3559,7 +3559,7 @@ Om det här alternativet inte är aktiverat fungerar det inte att använda Mumbl
     </message>
     <message>
         <source>Shout to Linked channels</source>
-        <translation>Skrik till länkade kanaler</translation>
+        <translation>Ropa till länkade kanaler</translation>
     </message>
     <message>
         <source>Shout to subchannels</source>
@@ -3587,7 +3587,7 @@ Om det här alternativet inte är aktiverat fungerar det inte att använda Mumbl
     </message>
     <message>
         <source>Shout to linked channels</source>
-        <translation>Skrik till länkade kanaler</translation>
+        <translation>Ropa till länkade kanaler</translation>
     </message>
     <message>
         <source>Channel</source>
@@ -4621,6 +4621,18 @@ Inställningen gäller endast för nya meddelanden, de redan visade meddelandena
     <message>
         <source>Always Quit</source>
         <translation>Avsluta alltid</translation>
+    </message>
+    <message>
+        <source> seconds</source>
+        <translation> sekunder</translation>
+    </message>
+    <message>
+        <source>If this is checked, users will always be visible in the TalkingUI (regardless of talking state).</source>
+        <translation>Om detta är markerat kommer användarna alltid att vara synliga i TalkingUI (oavsett samtalstillstånd).</translation>
+    </message>
+    <message>
+        <source>Always keep users visible</source>
+        <translation>Håll alltid användarna synliga</translation>
     </message>
 </context>
 <context>
@@ -6514,7 +6526,7 @@ för att visa anslutningsfönstret och sätts enligt följande:
 mumble://[&lt;användarnamn&gt;[:&lt;lösenord&gt;]@]&lt;host&gt;[:&lt;port&gt;][/&lt;kanal&gt;[/&lt;underkanal&gt;...]][?version=&lt;x.y.z&gt;]
 
 &lt;plugin_list&gt; är en lista över pluginfiler som ska installeras.
-Version query-parametern måste sättas för att starta rätt klientversion.
+Version förfrågningsparametern måste sättas för att starta rätt klientversion.
 I nuläget är 1.2.0 standard.
 
 Giltiga värden för options är:
@@ -6524,7 +6536,7 @@ Giltiga värden för options är:
                 Tillåt flera klientinstanser att startas.
   -c, --config
                 Sätt en alternativ konfigurationsfil.
-                Om du använder detta för att köra flera Mumbleinstanser samtidigt,
+                Om du använder detta för att köra flera Mumble-instanser samtidigt,
                 se till att &apos;database&apos;-värdet i konfigurationen skiljer sig.
   --default-certificate-dir &lt;dir&gt;
                 Sätt en annan förvald certifikatsökväg.
@@ -6543,13 +6555,13 @@ Giltiga värden för options är:
                 Sätt en annan ändelse för fönstertiteln.
   --dump-input-streams
                 Dumpa PCM-strömmar vid diverse delar av input-kedjan.
-                (användbart vid debugging)
+                (användbart vid avlusning)
                 - rå mikrofoninput
                 - högtalardata för ekoreducering
                 - bearbetad mikrofoninput
   --print-echocancel-queue
                 Skriv läget för ekoreduceringkön till stdout
-                (användbart för debugging)
+                (användbart för avlusning)
   --translation-dir &lt;dir&gt;
                 Sätter en till översättningsmapp, &lt;dir&gt;
                 som Mumble kommer leta efter översättningsfiler i
@@ -6561,12 +6573,211 @@ Giltiga värden för options är:
                 översättningsfiler som skriver över de medföljande.
                 (Användbart för översättare som testar sina översättningar)
   --locale &lt;locale&gt;
-                Skriv över locale-inställingen i Mumble med en
+                Skriv över locale-inställningen i Mumble med en
                 locale som matchar den givna strängen.
                 Ett fel kommer uppstå om formatet är ogiltigt,
                 annars kommer localen sparas permanent i
                 Mumbles inställningar.
 </translation>
+    </message>
+    <message>
+        <source>Connect to a server</source>
+        <comment>Global Shortcut</comment>
+        <translation>Anslut till en server</translation>
+    </message>
+    <message>
+        <source>This will open the server connection dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>Detta kommer att öppna serveranslutningsdialogrutan</translation>
+    </message>
+    <message>
+        <source>Disconnect from server</source>
+        <comment>Global Shortcut</comment>
+        <translation>Koppla från servern</translation>
+    </message>
+    <message>
+        <source>This will disconnect you from the server</source>
+        <comment>Global Shortcut</comment>
+        <translation>Detta kommer att koppla bort dig från servern</translation>
+    </message>
+    <message>
+        <source>Open server information</source>
+        <comment>Global Shortcut</comment>
+        <translation>Öppna server information</translation>
+    </message>
+    <message>
+        <source>This will show information about the server connection</source>
+        <comment>Global Shortcut</comment>
+        <translation>Detta visar information om serveranslutningen</translation>
+    </message>
+    <message>
+        <source>Open server tokens</source>
+        <comment>Global Shortcut</comment>
+        <translation>Öppna server tokens</translation>
+    </message>
+    <message>
+        <source>This will open the server tokens dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>Detta öppnar dialogrutan för servertokens</translation>
+    </message>
+    <message>
+        <source>Open server user list</source>
+        <comment>Global Shortcut</comment>
+        <translation>Öppna server användarlista</translation>
+    </message>
+    <message>
+        <source>This will open the server user list dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>Detta öppnar dialogrutan för serveranvändarlistan</translation>
+    </message>
+    <message>
+        <source>Open server ban list</source>
+        <comment>Global Shortcut</comment>
+        <translation>Öppna serverförbudslistan</translation>
+    </message>
+    <message>
+        <source>This will open the server ban list dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>Detta öppnar dialogrutan för serverförbudslistan</translation>
+    </message>
+    <message>
+        <source>Toggle priority speaker</source>
+        <comment>Global Shortcut</comment>
+        <translation>Växla prioriterad talare</translation>
+    </message>
+    <message>
+        <source>This will enable/disable the priority speaker</source>
+        <comment>Global Shortcut</comment>
+        <translation>Detta kommer att aktivera/avaktivera prioriterad talare</translation>
+    </message>
+    <message>
+        <source>Open recording dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>Öppna inspelningsdialogrutan</translation>
+    </message>
+    <message>
+        <source>This will open the recording dialog</source>
+        <translation>Detta öppnar dialogrutan för inspelning</translation>
+    </message>
+    <message>
+        <source>Change comment</source>
+        <comment>Global Shortcut</comment>
+        <translation>Ändra kommentar</translation>
+    </message>
+    <message>
+        <source>This will open the change comment dialog</source>
+        <translation>Detta öppnar dialogrutan för att ändra kommentar</translation>
+    </message>
+    <message>
+        <source>Change avatar</source>
+        <comment>Global Shortcut</comment>
+        <translation>Ändra avatar</translation>
+    </message>
+    <message>
+        <source>This will open your file explorer to change your avatar image on this server</source>
+        <translation>Detta öppnar din filutforskare för att ändra din avatarbild på den här servern</translation>
+    </message>
+    <message>
+        <source>Remove avatar</source>
+        <comment>Global Shortcut</comment>
+        <translation>Ta bort avatar</translation>
+    </message>
+    <message>
+        <source>This will reset your avatar on the server</source>
+        <translation>Detta kommer att återställa din avatar på servern</translation>
+    </message>
+    <message>
+        <source>Register on the server</source>
+        <comment>Global Shortcut</comment>
+        <translation>Registrera dig på denna server</translation>
+    </message>
+    <message>
+        <source>This will register you on the server</source>
+        <translation>Detta kommer att registrera dig på denna server</translation>
+    </message>
+    <message>
+        <source>Audio statistics</source>
+        <comment>Global Shortcut</comment>
+        <translation>Ljudstatistik</translation>
+    </message>
+    <message>
+        <source>This will open the audio statistics dialog</source>
+        <translation>Detta öppnar dialogrutan för ljudstatistik</translation>
+    </message>
+    <message>
+        <source>Open settings</source>
+        <comment>Global Shortcut</comment>
+        <translation>Öppna inställningar</translation>
+    </message>
+    <message>
+        <source>This will open the settings dialog</source>
+        <translation>Detta öppnar dialogrutan för inställningar</translation>
+    </message>
+    <message>
+        <source>Start audio wizard</source>
+        <comment>Global Shortcut</comment>
+        <translation>Starta ljudguiden</translation>
+    </message>
+    <message>
+        <source>This will open the audio wizard dialog</source>
+        <translation>Detta kommer att öppna dialogrutan för ljudguiden</translation>
+    </message>
+    <message>
+        <source>Start certificate wizard</source>
+        <comment>Global Shortcut</comment>
+        <translation>Starta certifikatguiden</translation>
+    </message>
+    <message>
+        <source>This will open the certificate wizard dialog</source>
+        <translation>Detta öppnar dialogrutan för certifikatguiden</translation>
+    </message>
+    <message>
+        <source>Toggle text to speech</source>
+        <comment>Global Shortcut</comment>
+        <translation>Växla text till tal</translation>
+    </message>
+    <message>
+        <source>This will enable/disable the text to speech</source>
+        <translation>Detta kommer att aktivera/inaktivera text till tal</translation>
+    </message>
+    <message>
+        <source>Open about dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>Öppna dialogrutan om</translation>
+    </message>
+    <message>
+        <source>This will open the about dialog</source>
+        <translation>Detta öppnar dialogrutan Om</translation>
+    </message>
+    <message>
+        <source>Open about Qt dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>Öppna om Qt dialogrutan</translation>
+    </message>
+    <message>
+        <source>This will open the about Qt dialog</source>
+        <translation>Detta öppnar dialogrutan om Qt</translation>
+    </message>
+    <message>
+        <source>Check for update</source>
+        <comment>Global Shortcut</comment>
+        <translation>Kolla efter uppdateringar</translation>
+    </message>
+    <message>
+        <source>This will check if mumble is up to date</source>
+        <translation>Detta kontrollerar om mumble är uppdaterat</translation>
+    </message>
+    <message>
+        <source>That sound was the mute cue. It activates when you speak while muted. Would you like to keep it enabled?</source>
+        <translation>Det ljudet var den tysta signalen. Den aktiveras när du talar medan ljudet är tyst. Vill du behålla det aktiverat?</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation>Ja</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>Nej</translation>
     </message>
 </context>
 <context>
@@ -7578,7 +7789,7 @@ Tryck på knappen nedan för att uppgradera dessa filer till de senaste versione
     </message>
     <message>
         <source>Non-plugin found in plugin directory: &quot;%1&quot; (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Icke-plugin hittades i plugin-katalogen: &quot;%1&quot; (%2)</translation>
     </message>
 </context>
 <context>
@@ -8415,7 +8626,7 @@ En token är en textsträng, som kan användas som ett lösenord för enkel till
     </message>
     <message>
         <source>Tokens</source>
-        <translation>Tokens</translation>
+        <translation>Kontrollsträng</translation>
     </message>
 </context>
 <context>
@@ -8968,6 +9179,10 @@ En token är en textsträng, som kan användas som ett lösenord för enkel till
     <message>
         <source>.opus - Lossy compressed</source>
         <translation>.opus - Destruktiv komprimering</translation>
+    </message>
+    <message>
+        <source>.mp3 - Lossy compressed</source>
+        <translation>.mp3 - Destruktiv komprimering</translation>
     </message>
 </context>
 <context>

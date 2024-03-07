@@ -107,6 +107,7 @@ Global::Global(const QString &qsConfigPath) {
 	bCenterPosition = false;
 	bPosTest        = false;
 	bInAudioWizard  = false;
+	inConfigUI      = false;
 	iAudioPathTime  = 0;
 	iAudioBandwidth = -1;
 	iMaxBandwidth   = -1;
@@ -136,11 +137,6 @@ Global::Global(const QString &qsConfigPath) {
 	bDebugPrintQueue = false;
 
 	channelListenerManager = std::make_unique< ChannelListenerManager >();
-
-#if defined(Q_OS_WIN)
-	QString appdata;
-	wchar_t appData[MAX_PATH];
-#endif
 
 	if (qsConfigPath.isEmpty()) {
 		qdBasePath.setPath(QStandardPaths::writableLocation(QStandardPaths::AppDataLocation));

@@ -18,6 +18,7 @@ using WixSharp.CommonTasks;
 public struct Features {
 	public bool overlay;
 	public bool g15;
+	public bool rnnoise;
 }
 
 public class ClientInstaller : MumbleInstall {
@@ -86,11 +87,13 @@ public class ClientInstaller : MumbleInstall {
 			// 64 bit
 			this.Platform = WixSharp.Platform.x64;
 			binaries = new List<string>() {
-				"rnnoise.dll",
 				"speexdsp.dll",
 				"mumble.exe",
-				"mumble_app.dll",
 			};
+
+			if (features.rnnoise) {
+				binaries.Add("rnnoise.dll");
+			}
 
 			if (features.overlay) {
 				binaries.Add("mumble_ol.dll");
@@ -106,11 +109,13 @@ public class ClientInstaller : MumbleInstall {
 			// 32 bit
 			this.Platform = WixSharp.Platform.x86;
 			binaries = new List<string>() {
-				"rnnoise.dll",
 				"speexdsp.dll",
 				"mumble.exe",
-				"mumble_app.dll",
 			};
+
+			if (features.rnnoise) {
+				binaries.Add("rnnoise.dll");
+			}
 
 			if (features.overlay) {
 				binaries.Add("mumble_ol.dll");
@@ -215,6 +220,10 @@ class BuildInstaller
 
 			if (args[i] == "--overlay") {
 				features.overlay = true;
+			}
+
+			if (args[i] == "--rnnoise") {
+				features.rnnoise = true;
 			}
 		}
 

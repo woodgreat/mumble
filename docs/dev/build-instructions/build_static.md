@@ -42,7 +42,8 @@ their README file.
 
 Once vcpkg is installed on your system, you have to switch into the directory vcpkg is installed in and then install the following packages:
 ```
-qt5-base
+qt5-base[mysqlplugin]
+qt5-base[postgresqlplugin]
 qt5-svg
 qt5-tools
 qt5-translations
@@ -53,9 +54,10 @@ libvorbis
 libogg
 libflac
 libsndfile
-libmariadb
+protobuf
 zlib
 ```
+On Windows, you'll also have to install the `mdnsresponder` package.
 
 The command for installing a package is `vcpkg install <packageName> --triplet <triplet>` where `<packageName>` is to be replaced with the name of the
 package you want to install and `<triplet>` is the desired target triplet. We recommend using these triplets:
@@ -72,9 +74,9 @@ Therefore if you are on Windows, you'd install `qt5-base` as `vcpkg install qt5-
 vcpkg to install `zeroc-ice`. At the moment Ice can't be built using cmake though and therefore there does not exists a native vcpkg port (install
 target) for it.
 
-Instead you'll have to copy the entire [zeroc-ice directory](../../../helpers/vcpkg/ports/zeroc-ice) (not only the contents!) to `<vcpkg dir>/ports/`
+Instead you'll have to copy the entire [zeroc-ice directory](../../../helpers/vcpkg/ports/zeroc-ice-mumble) (not only the contents!) to `<vcpkg dir>/ports/`
 where `<vcpkg dir>` is the directory you installed vcpkg into. This will make our custom ice port available to be installed via vcpkg. Just install
-as a regular vcpkg package named `zeroc-ice`.
+as a regular vcpkg package named `zeroc-ice-mumble`.
 
 Note: The custom port uses our [own fork](https://github.com/mumble-voip/ice) of Ice that includes support for cmake.
 
@@ -253,7 +255,7 @@ Ref: https://github.com/microsoft/vcpkg/issues/13217
 When installing the dependency zlib via vcpkg, it may fail to locate the include file `afxres.h` (when building its mdnsresponder dependency).
 
 ```
-dll.rc(10): fatal error RC1015: cannot open include file 'afxres.h'. [[…]\vcpkg\buildtrees\mdnsresponder\src\ponder-878-e7e3a9a271.clean\mDNSWindows\DLL\dnssd.vcxproj]
+dll.rc(10): fatal error RC1015: cannot open include file 'afxres.h'.
 ```
 
 To resolve this, ensure MFC has been installed in your Visual Studio installation.

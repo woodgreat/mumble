@@ -4,14 +4,12 @@
 # Mumble source tree or at <https://www.mumble.info/LICENSE>.
 
 set(MUMBLE_RC "${CMAKE_CURRENT_BINARY_DIR}/mumble.rc")
-set(MUMBLE_DLL_RC "${CMAKE_CURRENT_BINARY_DIR}/mumble_dll.rc")
 set(MUMBLE_PLIST "${CMAKE_CURRENT_BINARY_DIR}/mumble.plist")
 
 set(MUMBLE_ICON "${CMAKE_SOURCE_DIR}/icons/mumble.ico")
 set(MUMBLE_ICNS "${CMAKE_SOURCE_DIR}/icons/mumble.icns")
 
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/mumble.rc.in" "${MUMBLE_RC}")
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/mumble_dll.rc.in" "${MUMBLE_DLL_RC}")
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/mumble.plist.in" "${MUMBLE_PLIST}")
 
 include(qt-utils)
@@ -23,7 +21,7 @@ option(translations "Include languages other than English." ON)
 option(bundle-qt-translations "Bundle Qt's translations as well" ${static}) 
 
 option(bundled-speex "Build the included version of Speex instead of looking for one on the system." ON)
-option(rnnoise "Use RNNoise for machine learning noise reduction." ON)
+option(rnnoise "Use RNNoise for machine learning noise reduction." OFF)
 option(bundled-rnnoise "Build the included version of RNNoise instead of looking for one on the system." ${rnnoise})
 option(bundled-json "Build the included version of nlohmann_json instead of looking for one on the system" ON)
 
@@ -291,6 +289,8 @@ set(MUMBLE_SOURCES
 
 	"widgets/CompletablePage.cpp"
 	"widgets/CompletablePage.h"
+	"widgets/EventFilters.cpp"
+	"widgets/EventFilters.h"
 	"widgets/MUComboBox.cpp"
 	"widgets/MUComboBox.h"
 	"widgets/MultiStyleWidgetWrapper.cpp"
@@ -317,11 +317,13 @@ set(MUMBLE_SOURCES
 	"${SHARED_SOURCE_DIR}/User.cpp"
 	"${SHARED_SOURCE_DIR}/User.h"
 
-	"${3RDPARTY_DIR}/smallft/smallft.cpp"
-
 	"mumble.qrc"
 	"${CMAKE_SOURCE_DIR}/themes/DefaultTheme.qrc"
 )
+
+add_library(smallft STATIC "${3RDPARTY_DIR}/smallft/smallft.cpp")
+target_include_directories(smallft PUBLIC "${3RDPARTY_DIR}/smallft")
+target_disable_warnings(smallft)
 
 add_custom_command(
 	OUTPUT "${CMAKE_BINARY_DIR}/mumble_flags.qrc"
@@ -332,43 +334,33 @@ add_custom_command(
 list(APPEND MUMBLE_SOURCES "${CMAKE_BINARY_DIR}/mumble_flags.qrc")
 
 add_library(mumble_client_object_lib OBJECT ${MUMBLE_SOURCES})
+target_link_libraries(mumble_client_object_lib PUBLIC smallft)
 
-if(static AND WIN32)
-	# On Windows, building a static client means building the main app into a DLL.
-	add_library(mumble SHARED "main.cpp")
-	target_compile_definitions(mumble_client_object_lib PUBLIC "MUMBLEAPP_DLL")
-
-	set_target_properties(mumble PROPERTIES OUTPUT_NAME "mumble_app")
-	if(MINGW)
-		# Remove "lib" prefix.
-		set_target_properties(mumble PROPERTIES PREFIX "")
-	endif()
-
-	target_sources(mumble_client_object_lib PRIVATE "${MUMBLE_DLL_RC}")
-
-	add_subdirectory("${SHARED_SOURCE_DIR}/mumble_exe" "${CMAKE_BINARY_DIR}/mumble_exe")
+if(WIN32 AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+	# We don't want the console to appear in release builds.
+	add_executable(mumble WIN32 "main.cpp")
 else()
 	add_executable(mumble "main.cpp")
+endif()
 
-	if(WIN32)
-		target_sources(mumble_client_object_lib
-			PRIVATE
-				"${CMAKE_SOURCE_DIR}/auxiliary_files/mumble.appcompat.manifest"
-				"${MUMBLE_RC}"
-		)
+if(WIN32)
+	target_sources(mumble_client_object_lib
+		PRIVATE
+			"${CMAKE_SOURCE_DIR}/auxiliary_files/mumble.appcompat.manifest"
+			"${MUMBLE_RC}"
+	)
 
-		if(elevation)
-			set_property(TARGET mumble APPEND_STRING PROPERTY LINK_FLAGS " /MANIFESTUAC:\"level=\'asInvoker\' uiAccess=\'true\'\"")
-		endif()
-	elseif(APPLE)
-		set_target_properties(mumble
-			PROPERTIES
-				OUTPUT_NAME "Mumble"
-				MACOSX_BUNDLE TRUE
-				RESOURCE ${MUMBLE_ICNS}
-				MACOSX_BUNDLE_INFO_PLIST ${MUMBLE_PLIST}
-		)
+	if(elevation)
+		set_property(TARGET mumble APPEND_STRING PROPERTY LINK_FLAGS " /MANIFESTUAC:\"level=\'asInvoker\' uiAccess=\'true\'\"")
 	endif()
+elseif(APPLE)
+	set_target_properties(mumble
+		PROPERTIES
+			OUTPUT_NAME "Mumble"
+			MACOSX_BUNDLE TRUE
+			RESOURCE ${MUMBLE_ICNS}
+			MACOSX_BUNDLE_INFO_PLIST ${MUMBLE_PLIST}
+	)
 endif()
 
 add_custom_command(
@@ -427,7 +419,6 @@ target_include_directories(mumble_client_object_lib
 		${CMAKE_CURRENT_SOURCE_DIR} # This is required for includes in current folder to be found by files from the shared directory.
 		"widgets"
 		${SHARED_SOURCE_DIR}
-		"${3RDPARTY_DIR}/smallft"
 		"${PLUGINS_DIR}"
 )
 
@@ -502,7 +493,8 @@ endif()
 
 if(bundled-json)
 	set(JSON_BuildTests OFF CACHE INTERNAL "")
-	set(JSON_ImplicitConversions OFF CACHE INTERNAL "")
+	set(JSON_ImplicitConversions ON CACHE INTERNAL "")
+	set(JSON_SystemInclude ON CACHE INTERNAL "")
 	add_subdirectory("${3RDPARTY_DIR}/nlohmann_json/" "${CMAKE_CURRENT_BINARY_DIR}/nlohmann_json/" EXCLUDE_FROM_ALL)
 else()
 	find_pkg("nlohmann_json" REQUIRED)
@@ -517,6 +509,13 @@ if("${sndfile_VERSION}" VERSION_GREATER_EQUAL "1.0.29")
 	target_compile_definitions(mumble_client_object_lib PUBLIC USE_SNDFILE_OPUS)
 else()
 	message(WARNING "libsndfile is missing Opus-support -> No Opus-format recording")
+endif()
+
+# Check if sndfile version supports mp3
+if("${sndfile_VERSION}" VERSION_GREATER_EQUAL "1.1.0")
+	target_compile_definitions(mumble_client_object_lib PUBLIC USE_SNDFILE_MP3)
+else()
+	message(WARNING "libsndfile is missing Mp3-support -> No Mp3-format recording")
 endif()
 
 # Look for various targets as they are named differently on different platforms
@@ -732,6 +731,7 @@ else()
 endif()
 
 if(rnnoise)
+	message(WARNING "Using RNNoise is discouraged and can lead to unforeseen behavior, including crashes at runtime due to the RNNoise library exposing Opus/CELT symbols")
 	target_compile_definitions(mumble_client_object_lib PRIVATE "USE_RNNOISE")
 
 	if(bundled-rnnoise)
@@ -1144,3 +1144,50 @@ endif()
 target_include_directories(${TARGET_NAME} INTERFACE
   $<BUILD_INTERFACE:${AUTOGEN_INCLUDE_DIR}>
 )
+
+if(packaging AND WIN32)
+	set(overlay ON)
+	set(plugins ON)
+
+	if(translations)
+		list(APPEND installer_vars "--all-languages")
+	endif()
+
+
+	list(APPEND installer_vars
+		"--version" ${PROJECT_VERSION}
+		"--arch" "${MUMBLE_TARGET_ARCH}"
+	)
+
+	if(overlay)
+		list(APPEND installer_vars
+			"--overlay"
+		)
+	endif()
+
+	if(g15)
+		list(APPEND installer_vars
+			"--g15"
+		)
+	endif()
+
+	if(rnnoise)
+		list(APPEND installer_vars
+			"--rnnoise"
+		)
+	endif()
+
+	file(COPY
+		${CMAKE_SOURCE_DIR}/installer/MumbleInstall.cs
+		${CMAKE_SOURCE_DIR}/installer/ClientInstaller.cs
+		DESTINATION
+			${CMAKE_BINARY_DIR}/installer/client
+	)
+
+	add_custom_command(TARGET mumble
+		POST_BUILD
+		COMMAND cscs.exe -cd MumbleInstall.cs
+		COMMAND cscs.exe ClientInstaller.cs ${installer_vars}
+		WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/installer/client
+	)
+endif()

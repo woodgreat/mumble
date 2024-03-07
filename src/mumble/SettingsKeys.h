@@ -46,6 +46,7 @@ const SettingsKey TRANSMIT_CUE_START_KEY                      = { "transmit_cue_
 const SettingsKey TRANSMIT_CUE_STOP_KEY                       = { "transmit_cue_stop" };
 const SettingsKey PLAY_MUTE_CUE_KEY                           = { "play_mute_cue" };
 const SettingsKey MUTE_CUE_KEY                                = { "mute_cue" };
+const SettingsKey MUTE_CUE_POPUP_SHOWN                        = { "mute_cue_popup_shown" };
 const SettingsKey AUDIO_QUALITY_KEY                           = { "audio_quality" };
 const SettingsKey LOUDNESS_KEY                                = { "loudness" };
 const SettingsKey VOLUME_KEY                                  = { "volume" };
@@ -223,6 +224,7 @@ const SettingsKey CRASH_EMAIL_ADDRESS_KEY                = { "crash_report_email
 // TalkingUI
 const SettingsKey TALKINGUI_POSITION_KEY                   = { "talkingui_position" };
 const SettingsKey SHOW_TALKINGUI_KEY                       = { "display_talkingui" };
+const SettingsKey TALKINGUI_USERS_ALWAYS_VISIBLE_KEY       = { "users_always_visible" };
 const SettingsKey TALKINGUI_LOCAL_USER_STAYS_VISIBLE_KEY   = { "local_user_stays_visible" };
 const SettingsKey TALKINGUI_ABBREVIATE_CHANNEL_NAMES_KEY   = { "abbreviate_channel_names" };
 const SettingsKey TALKINGUI_ABBREVIATE_CURRENT_CHANNEL_KEY = { "abbreviate_current_channel_name" };
@@ -341,6 +343,6 @@ const SettingsKey SETTINGS_VERSION_KEY     = { "settings_version" };
 const SettingsKey CERTIFICATE_KEY          = { "certificate" };
 const SettingsKey MUMBLE_QUIT_NORMALLY_KEY = { "mumble_has_quit_normally" };
 
-}; // namespace SettingsKeys
+} // namespace SettingsKeys
 
 #endif // MUMBLE_MUMBLE_SETTINGSKEYS_H_

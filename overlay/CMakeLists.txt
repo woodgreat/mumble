@@ -14,6 +14,7 @@ if(BUILD_OVERLAY_XCOMPILE)
 		LANGUAGES CXX
 	)
 
+	list(APPEND CMAKE_MODULE_PATH "${3RDPARTY_DIR}/cmake-compiler-flags")
 	include("${MUMBLE_SOURCE_ROOT}/cmake/compiler.cmake")
 endif()
 
@@ -149,16 +150,20 @@ endif()
 
 if(64_BIT AND MSVC)
 	include(ExternalProject)
+	
+	string(REPLACE "x64" "x86" XCOMPILE_TRIPLET "${VCPKG_TARGET_TRIPLET}")
+	message(STATUS "Using cross-compilation triplet '${XCOMPILE_TRIPLET}'")
 
 	if(CMAKE_GENERATOR MATCHES "Visual Studio")
 		ExternalProject_Add(overlay_xcompile
 			DOWNLOAD_COMMAND ""
 			CMAKE_GENERATOR ${CMAKE_GENERATOR}
 			CMAKE_ARGS -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
-				"-DVCPKG_TARGET_TRIPLET=x86-windows-static-md"
+				"-DVCPKG_TARGET_TRIPLET=${XCOMPILE_TRIPLET}"
 				"-DMUMBLE_SOURCE_ROOT=${CMAKE_SOURCE_DIR}"
 				"-DMUMBLE_BINARY_DIR=${CMAKE_BINARY_DIR}"
 				"-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
+				"-D3RDPARTY_DIR=${3RDPARTY_DIR}"
 				# Force MSVC, because CMake prioritizes MinGW over it.
 				"-DCMAKE_C_COMPILER=cl.exe"
 				"-DCMAKE_CXX_COMPILER=cl.exe"
@@ -177,10 +182,11 @@ if(64_BIT AND MSVC)
 			BUILD_COMMAND ${CMAKE_SOURCE_DIR}/overlay/scripts/build_overlay_xcompile.cmd
 				-G ${CMAKE_GENERATOR}
 				-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
-				"-DVCPKG_TARGET_TRIPLET=x86-windows-static-md"
+				"-DVCPKG_TARGET_TRIPLET=${XCOMPILE_TRIPLET}"
 				"-DMUMBLE_SOURCE_ROOT=${CMAKE_SOURCE_DIR}"
 				"-DMUMBLE_BINARY_DIR=${CMAKE_BINARY_DIR}"
 				"-DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}"
+				"-D3RDPARTY_DIR=${3RDPARTY_DIR}"
 				# Force MSVC, because CMake prioritizes MinGW over it.
 				"-DCMAKE_C_COMPILER=cl.exe"
 				"-DCMAKE_CXX_COMPILER=cl.exe"

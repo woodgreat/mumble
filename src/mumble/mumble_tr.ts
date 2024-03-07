@@ -2075,7 +2075,7 @@ Sinirli ya da coştuğunuz zamanlardaki gibi yüksek sesle konuşunuz. Kontrol p
         <translation>&lt;b&gt;Bu, ses için kullanılacak Çıktı metodudur.&lt;/b&gt;</translation>
     </message>
     <message>
-        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is the audio tuning wizard for Mumble. This will help you correctly set the input levels of your sound card, and also set the correct parameters for sound processing in Mumble. &lt;/p&gt;&lt;p&gt;Please be aware that as long as this wizard is active, audio will be looped locally to allow you to listen to it, and no audio will be sent to the server. &lt;/p&gt;&lt;p&gt;Note that you can cancel this wizard at any time without it having an effect on your current audio systems. The settings are only once this wizard has been completed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is the audio tuning wizard for Mumble. This will help you correctly set the input levels of your sound card, and also set the correct parameters for sound processing in Mumble. &lt;/p&gt;&lt;p&gt;Please be aware that as long as this wizard is active, audio will be looped locally to allow you to listen to it, and no audio will be sent to the server. &lt;/p&gt;&lt;p&gt;Note that you can cancel this wizard at any time without it having an effect on your current audio systems. The settings are only applied once this wizard has been completed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Bu, Mumble için ses ayarı sihirbazıdır. Ses kartınız için girdi seviyelerini doğru olarak seçmenizi ve Mumble&apos;ın ses işlemesi için doğru ayarları yapılandırmanıza yardımcı olacaktır.&lt;/p&gt;&lt;p&gt; Lütfen bu sihirbaz etkin olduğu sürece, dinleyebilmeniz için sesin yerel döngüde olacağını ve sunucuya hiçbir sesin gönderilmeyeceğini unutmayınız.&lt;/p&gt;&lt;p&gt; Bu sihirbazı herhangi bir zaman güncel ses sisteminizde hiçbir değişiklik olmadan kapatabileceğinizi unutmayınız. Ayarlar sadece bu sihirbaz tamamlandığında kaydedilecektir.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
@@ -4621,6 +4621,18 @@ Bu ayar sadece yeni mesajlara uygulanır, zaten görüntülenmiş olanlar öncek
         <source>Always Quit</source>
         <translation>Her Zaman Çık</translation>
     </message>
+    <message>
+        <source> seconds</source>
+        <translation> saniye</translation>
+    </message>
+    <message>
+        <source>If this is checked, users will always be visible in the TalkingUI (regardless of talking state).</source>
+        <translation>Şayet bu şık seçiliyse, kullanıcılar Konuşmq Arayüzü&apos;nde daime görünür olacaklardır (konuşma durumlarından bağımsız bir şekilde).</translation>
+    </message>
+    <message>
+        <source>Always keep users visible</source>
+        <translation>Kullanıcıları daima görünür yap</translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -6570,6 +6582,205 @@ Geçerli seçenekler şunlardır:
                 kaydedilecektir.
 </translation>
     </message>
+    <message>
+        <source>Connect to a server</source>
+        <comment>Global Shortcut</comment>
+        <translation>Bir sunucuya bağlan</translation>
+    </message>
+    <message>
+        <source>This will open the server connection dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>Bu, sunucuya bağlantı diyaloğunu açar</translation>
+    </message>
+    <message>
+        <source>Disconnect from server</source>
+        <comment>Global Shortcut</comment>
+        <translation>Sunucuyla bağlantıyı kes</translation>
+    </message>
+    <message>
+        <source>This will disconnect you from the server</source>
+        <comment>Global Shortcut</comment>
+        <translation>Bu, sunucuyla olan bağlantınızı keser</translation>
+    </message>
+    <message>
+        <source>Open server information</source>
+        <comment>Global Shortcut</comment>
+        <translation>Sunucu bilgilerini aç</translation>
+    </message>
+    <message>
+        <source>This will show information about the server connection</source>
+        <comment>Global Shortcut</comment>
+        <translation>Bu, sunucu bağlantısına dair bilgi gösterecektir</translation>
+    </message>
+    <message>
+        <source>Open server tokens</source>
+        <comment>Global Shortcut</comment>
+        <translation>Sunucu jetonlarını aç</translation>
+    </message>
+    <message>
+        <source>This will open the server tokens dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>Bu, sunucu jetonları diyaloğunu açacaktır</translation>
+    </message>
+    <message>
+        <source>Open server user list</source>
+        <comment>Global Shortcut</comment>
+        <translation>Sunucu kullanıcı listesini aç</translation>
+    </message>
+    <message>
+        <source>This will open the server user list dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>Bu, sunucu kullanıcı listesi diyaloğunu açacaktır</translation>
+    </message>
+    <message>
+        <source>Open server ban list</source>
+        <comment>Global Shortcut</comment>
+        <translation>Sunucu yasaklama listesini aç</translation>
+    </message>
+    <message>
+        <source>This will open the server ban list dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>Bu, sunucu yasaklama listesi diyaloğunu açacaktır</translation>
+    </message>
+    <message>
+        <source>Toggle priority speaker</source>
+        <comment>Global Shortcut</comment>
+        <translation>Öncelikli konuşmacı durumunu değiştir</translation>
+    </message>
+    <message>
+        <source>This will enable/disable the priority speaker</source>
+        <comment>Global Shortcut</comment>
+        <translation>Bu, öncelikli konuşmacı durumunu etkinleştirir/devre dışı bırakır</translation>
+    </message>
+    <message>
+        <source>Open recording dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>Kayıt diyaloğunu aç</translation>
+    </message>
+    <message>
+        <source>This will open the recording dialog</source>
+        <translation>Bu, kayıt diyaloğunu açacaktır</translation>
+    </message>
+    <message>
+        <source>Change comment</source>
+        <comment>Global Shortcut</comment>
+        <translation>Yorum değiştir</translation>
+    </message>
+    <message>
+        <source>This will open the change comment dialog</source>
+        <translation>Bu, yorum değiştirme diyaloğunu açacaktır</translation>
+    </message>
+    <message>
+        <source>Change avatar</source>
+        <comment>Global Shortcut</comment>
+        <translation>Havari değiştir</translation>
+    </message>
+    <message>
+        <source>This will open your file explorer to change your avatar image on this server</source>
+        <translation>Bu, bu sunucudaki havari resminizi değiştirmek için dosya tarayıcınızı açacaktır</translation>
+    </message>
+    <message>
+        <source>Remove avatar</source>
+        <comment>Global Shortcut</comment>
+        <translation>Havari kaldır</translation>
+    </message>
+    <message>
+        <source>This will reset your avatar on the server</source>
+        <translation>Bu, sunucudaki havarinizi sıfırlayacaktır</translation>
+    </message>
+    <message>
+        <source>Register on the server</source>
+        <comment>Global Shortcut</comment>
+        <translation>Sunucuya kaydol</translation>
+    </message>
+    <message>
+        <source>This will register you on the server</source>
+        <translation>Bu, sizi sunucuya kaydedecektir</translation>
+    </message>
+    <message>
+        <source>Audio statistics</source>
+        <comment>Global Shortcut</comment>
+        <translation>Ses istatistikleri</translation>
+    </message>
+    <message>
+        <source>This will open the audio statistics dialog</source>
+        <translation>Bu, ses istatistikleri diyaloğunu açacaktır</translation>
+    </message>
+    <message>
+        <source>Open settings</source>
+        <comment>Global Shortcut</comment>
+        <translation>Ayarları aç</translation>
+    </message>
+    <message>
+        <source>This will open the settings dialog</source>
+        <translation>Bu, ayarlar diyaloğunu açacaktır</translation>
+    </message>
+    <message>
+        <source>Start audio wizard</source>
+        <comment>Global Shortcut</comment>
+        <translation>Ses sihirbazını başlat</translation>
+    </message>
+    <message>
+        <source>This will open the audio wizard dialog</source>
+        <translation>Bu, ses sihirbazı diyaloğunu açacaktır</translation>
+    </message>
+    <message>
+        <source>Start certificate wizard</source>
+        <comment>Global Shortcut</comment>
+        <translation>Sertifika sihirbazını başlat</translation>
+    </message>
+    <message>
+        <source>This will open the certificate wizard dialog</source>
+        <translation>Bu, sertifika sihirbazı diyaloğunu açacaktır</translation>
+    </message>
+    <message>
+        <source>Toggle text to speech</source>
+        <comment>Global Shortcut</comment>
+        <translation>Konuşma sentezi durumunu değiştir</translation>
+    </message>
+    <message>
+        <source>This will enable/disable the text to speech</source>
+        <translation>Bu, konuşma sentezini etkinleştirecek/devre dışı bırakacaktır</translation>
+    </message>
+    <message>
+        <source>Open about dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>Hakkında diyaloğunu aç</translation>
+    </message>
+    <message>
+        <source>This will open the about dialog</source>
+        <translation>Bu, hakkında diyaloğunu açacaktır</translation>
+    </message>
+    <message>
+        <source>Open about Qt dialog</source>
+        <comment>Global Shortcut</comment>
+        <translation>Qt hakkında diyaloğunu aç</translation>
+    </message>
+    <message>
+        <source>This will open the about Qt dialog</source>
+        <translation>Bu, Qt hakkında diyaloğunu açacaktır</translation>
+    </message>
+    <message>
+        <source>Check for update</source>
+        <comment>Global Shortcut</comment>
+        <translation>Güncellemeleri kontrol et</translation>
+    </message>
+    <message>
+        <source>This will check if mumble is up to date</source>
+        <translation>Bu, mumble&apos;ın güncel olup olmadığını kontrol edecektir</translation>
+    </message>
+    <message>
+        <source>That sound was the mute cue. It activates when you speak while muted. Would you like to keep it enabled?</source>
+        <translation>Bu ses, susturulduğunuzun işaretiydi. Susturulduğunuzda konuşursanız etkinleşir. Bunu faal olarak muhafaza etmek ister misiniz?</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation>Evet</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>Hayır</translation>
+    </message>
 </context>
 <context>
     <name>Manual</name>
@@ -7580,7 +7791,7 @@ Bu dosyaları son sürümlerine güncellemek için aşağıdaki düğmeyi tıkla
     </message>
     <message>
         <source>Non-plugin found in plugin directory: &quot;%1&quot; (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Eklenti dizininde eklenti olmayan bir şey bulundu: &quot;%1&quot; (%2)</translation>
     </message>
 </context>
 <context>
@@ -8969,6 +9180,10 @@ Erişim jetonu bir metindir ve kanallara erişimin çok basit bir şekilde yöne
     <message>
         <source>.opus - Lossy compressed</source>
         <translation>.opus - Kayıplı sıkıştırılmış</translation>
+    </message>
+    <message>
+        <source>.mp3 - Lossy compressed</source>
+        <translation>.mp3 - Kayıplı sıkıştırılmış</translation>
     </message>
 </context>
 <context>

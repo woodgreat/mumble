@@ -22,32 +22,17 @@
 LogTextBrowser::LogTextBrowser(QWidget *p) : QTextBrowser(p) {
 }
 
-void LogTextBrowser::resizeEvent(QResizeEvent *e) {
-	scrollLogToBottom();
-	QTextBrowser::resizeEvent(e);
-}
-
-bool LogTextBrowser::event(QEvent *e) {
-	if (e->type() == LogDocumentResourceAddedEvent::Type) {
-		scrollLogToBottom();
-	}
-	return QTextBrowser::event(e);
-}
-
 int LogTextBrowser::getLogScroll() {
 	return verticalScrollBar()->value();
-}
-
-int LogTextBrowser::getLogScrollMaximum() {
-	return verticalScrollBar()->maximum();
 }
 
 void LogTextBrowser::setLogScroll(int scroll_pos) {
 	verticalScrollBar()->setValue(scroll_pos);
 }
 
-void LogTextBrowser::scrollLogToBottom() {
-	verticalScrollBar()->setValue(verticalScrollBar()->maximum());
+bool LogTextBrowser::isScrolledToBottom() {
+	const QScrollBar *scrollBar = verticalScrollBar();
+	return scrollBar->value() == scrollBar->maximum();
 }
 
 
@@ -87,7 +72,7 @@ void ChatbarTextEdit::contextMenuEvent(QContextMenuEvent *qcme) {
 	QMenu *menu = createStandardContextMenu();
 
 	QAction *action = new QAction(tr("Paste and &Send") + QLatin1Char('\t'), menu);
-	action->setShortcut(Qt::CTRL + Qt::Key_Shift + Qt::Key_V);
+	action->setShortcut(static_cast< int >(Qt::CTRL) | Qt::Key_Shift | Qt::Key_V);
 	action->setEnabled(!QApplication::clipboard()->text().isEmpty());
 	connect(action, SIGNAL(triggered()), this, SLOT(pasteAndSend_triggered()));
 	if (menu->actions().count() > 6)
@@ -137,7 +122,7 @@ QSize ChatbarTextEdit::minimumSizeHint() const {
 QSize ChatbarTextEdit::sizeHint() const {
 	QSize sh                 = QTextEdit::sizeHint();
 	const int minHeight      = minimumSizeHint().height();
-	const int documentHeight = document()->documentLayout()->documentSize().height();
+	const int documentHeight = static_cast< int >(document()->documentLayout()->documentSize().height());
 	sh.setHeight(std::max(minHeight, documentHeight));
 	const_cast< ChatbarTextEdit * >(this)->setMaximumHeight(sh.height());
 	return sh;
@@ -217,7 +202,7 @@ bool ChatbarTextEdit::sendImagesFromMimeData(const QMimeData *source) {
 }
 
 bool ChatbarTextEdit::emitPastedImage(QImage image) {
-	QString processedImage = Log::imageToImg(image, Global::get().uiImageLength);
+	QString processedImage = Log::imageToImg(image, static_cast< int >(Global::get().uiImageLength));
 	if (processedImage.length() > 0) {
 		QString imgHtml = QLatin1String("<br />") + processedImage;
 		emit pastedImage(imgHtml);
@@ -412,8 +397,9 @@ bool DockTitleBar::eventFilter(QObject *, QEvent *evt) {
 		case QEvent::MouseButtonRelease: {
 			newsize  = 0;
 			QPoint p = qdw->mapFromGlobal(QCursor::pos());
-			if ((p.x() >= iroundf(static_cast< float >(qdw->width()) * 0.1f + 0.5f))
-				&& (p.x() < iroundf(static_cast< float >(qdw->width()) * 0.9f + 0.5f)) && (p.y() >= 0) && (p.y() < 15))
+			if ((p.x() >= static_cast< int >(static_cast< float >(qdw->width()) * 0.1f + 0.5f))
+				&& (p.x() < static_cast< int >(static_cast< float >(qdw->width()) * 0.9f + 0.5f)) && (p.y() >= 0)
+				&& (p.y() < 15))
 				newsize = 15;
 			if (newsize > 0 && !qtTick->isActive())
 				qtTick->start(500);
