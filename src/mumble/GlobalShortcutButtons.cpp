@@ -8,13 +8,42 @@
 
 #include "GlobalShortcut.h"
 
+#include "MainWindow.h"
 #include "Global.h"
+
+#include <QRect>
+#include <QTimer>
 
 GlobalShortcutButtons::GlobalShortcutButtons(QWidget *parent) : QDialog(parent), m_ui(new Ui::GlobalShortcutButtons) {
 	m_ui->setupUi(this);
+	setModal(true);
 
 	connect(m_ui->addButton, &QPushButton::toggled, this, &GlobalShortcutButtons::toggleCapture);
 	connect(m_ui->removeButton, &QPushButton::clicked, this, &GlobalShortcutButtons::removeItem);
+
+	// Due to what appears to be a Qt bug, this dialog will not take
+	// the parent geometry into account when spawning.
+	// Therefore, we search for a different parent or even fallback to the
+	// MainWindow and move this dialog to its center.
+	QWidget *searchWidget = parent;
+	while (searchWidget && !qobject_cast< QDialog * >(searchWidget)) {
+		searchWidget = searchWidget->parentWidget();
+	}
+	QWidget *effectiveParent = qobject_cast< QDialog * >(searchWidget);
+	if (!effectiveParent && Global::get().mw && Global::get().mw->isVisible()) {
+		effectiveParent = Global::get().mw;
+	}
+
+	int32_t posx = geometry().x();
+	int32_t posy = geometry().y();
+
+	if (effectiveParent) {
+		QRect geometry = effectiveParent->geometry();
+		posx           = geometry.center().x() - (width() / 2);
+		posy           = geometry.center().y() - (height() / 2);
+	}
+
+	QTimer::singleShot(0, [this, posx, posy]() { move(posx, posy); });
 }
 
 GlobalShortcutButtons::~GlobalShortcutButtons() {
@@ -50,6 +79,16 @@ void GlobalShortcutButtons::setButtons(const QList< QVariant > &buttons) {
 	}
 
 	adjustSize();
+
+	// Without this the new dialog window will not be focused and the
+	// shortcut edit dialog is closed when TAB is pressed...
+	// Due to Qt action processing weirdness the timer is needed, otherwise
+	// the call has no effect.
+	if (buttons.isEmpty()) {
+		QTimer::singleShot(0, [&]() { m_ui->addButton->setFocus(Qt::TabFocusReason); });
+	} else {
+		QTimer::singleShot(0, [&]() { m_ui->buttonTree->setFocus(Qt::TabFocusReason); });
+	}
 }
 
 void GlobalShortcutButtons::addItem(const QVariant &button) {
@@ -93,10 +132,12 @@ void GlobalShortcutButtons::toggleCapture(const bool enabled) {
 		GlobalShortcutEngine::engine->resetMap();
 		connect(GlobalShortcutEngine::engine, &GlobalShortcutEngine::buttonPressed, this,
 				&GlobalShortcutButtons::updateButtons);
+		m_ui->addButton->setText(QObject::tr("Listening for input"));
 	} else {
 		disconnect(GlobalShortcutEngine::engine, &GlobalShortcutEngine::buttonPressed, this,
 				   &GlobalShortcutButtons::updateButtons);
 		removeEventFilter(this);
+		m_ui->addButton->setText(QObject::tr("Add"));
 	}
 }
 

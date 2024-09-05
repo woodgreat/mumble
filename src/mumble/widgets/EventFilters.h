@@ -47,4 +47,68 @@ private:
 	bool m_consume;
 };
 
+class MouseClickEventObserver : public QObject {
+	Q_OBJECT
+
+public:
+	MouseClickEventObserver(QObject *parent, bool consume);
+
+protected:
+	bool eventFilter(QObject *obj, QEvent *event) override;
+
+signals:
+	void clickEventObserved(Qt::MouseButtons buttons);
+
+private:
+	bool m_consume;
+};
+
+class UpDownKeyEventFilter : public QObject {
+	Q_OBJECT
+
+public:
+	UpDownKeyEventFilter(QObject *parent);
+
+protected:
+	bool eventFilter(QObject *obj, QEvent *event) override;
+};
+
+class OverrideTabOrderFilter : public QObject {
+	Q_OBJECT
+
+public:
+	OverrideTabOrderFilter(QObject *parent, QWidget *target);
+	QWidget *focusTarget;
+
+protected:
+	bool eventFilter(QObject *obj, QEvent *event) override;
+};
+
+class SkipFocusEventFilter : public QObject {
+	Q_OBJECT
+
+public:
+	SkipFocusEventFilter(QObject *parent);
+
+protected:
+	bool eventFilter(QObject *obj, QEvent *event) override;
+};
+
+class FocusEventObserver : public QObject {
+	Q_OBJECT
+
+public:
+	FocusEventObserver(QObject *parent, bool consume);
+
+protected:
+	bool eventFilter(QObject *obj, QEvent *event) override;
+
+signals:
+	void focusInObserved(Qt::FocusReason reason);
+	void focusOutObserved(Qt::FocusReason reason);
+
+private:
+	bool m_consume;
+};
+
 #endif

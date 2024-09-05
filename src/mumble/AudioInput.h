@@ -33,7 +33,7 @@
 
 class AudioInput;
 struct OpusEncoder;
-struct DenoiseState;
+struct ReNameNoiseDenoiseState;
 typedef boost::shared_ptr< AudioInput > AudioInputPtr;
 
 /**
@@ -189,7 +189,9 @@ private:
 	void resetAudioProcessor();
 
 	OpusEncoder *opusState;
-	DenoiseState *denoiseState;
+#ifdef USE_RENAMENOISE
+	ReNameNoiseDenoiseState *denoiseState;
+#endif
 	bool selectCodec();
 	void selectNoiseCancel();
 
@@ -264,6 +266,9 @@ protected:
 	void initializeMixer();
 
 	static void adjustBandwidth(int bitspersec, int &bitrate, int &frames, bool &allowLowDelay);
+
+	bool bUserIsMuted;
+
 signals:
 	void doDeaf();
 	void doMute();
@@ -308,6 +313,14 @@ public:
 	void run() Q_DECL_OVERRIDE = 0;
 	virtual bool isAlive() const;
 	bool isTransmitting() const;
+
+	void updateUserMuteDeafState(const ClientUser *user);
+
+protected:
+	virtual void onUserMutedChanged();
+
+public slots:
+	void onUserMuteDeafStateChanged();
 };
 
 #endif

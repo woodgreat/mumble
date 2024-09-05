@@ -21,8 +21,8 @@ option(translations "Include languages other than English." ON)
 option(bundle-qt-translations "Bundle Qt's translations as well" ${static}) 
 
 option(bundled-speex "Build the included version of Speex instead of looking for one on the system." ON)
-option(rnnoise "Use RNNoise for machine learning noise reduction." OFF)
-option(bundled-rnnoise "Build the included version of RNNoise instead of looking for one on the system." ${rnnoise})
+option(renamenoise "Use ReNameNoise for machine learning noise reduction." ON)
+option(bundled-renamenoise "Build the included version of ReNameNoise instead of looking for one on the system." ${renamenoise})
 option(bundled-json "Build the included version of nlohmann_json instead of looking for one on the system" ON)
 
 option(manual-plugin "Include the built-in \"manual\" positional audio plugin." ON)
@@ -85,6 +85,8 @@ find_pkg(Qt5
 set(MUMBLE_SOURCES
 	"About.cpp"
 	"About.h"
+	"Accessibility.cpp"
+	"Accessibility.h"
 	"ACLEditor.cpp"
 	"ACLEditor.h"
 	"ACLEditor.ui"
@@ -287,6 +289,8 @@ set(MUMBLE_SOURCES
 	"XMLTools.cpp"
 	"XMLTools.h"
 
+	"widgets/AccessibleQGroupBox.cpp"
+	"widgets/AccessibleQGroupBox.h"
 	"widgets/CompletablePage.cpp"
 	"widgets/CompletablePage.h"
 	"widgets/EventFilters.cpp"
@@ -295,12 +299,16 @@ set(MUMBLE_SOURCES
 	"widgets/MUComboBox.h"
 	"widgets/MultiStyleWidgetWrapper.cpp"
 	"widgets/MultiStyleWidgetWrapper.h"
+	"widgets/MultiColumnTreeWidget.cpp"
+	"widgets/MultiColumnTreeWidget.h"
 	"widgets/RichTextItemDelegate.cpp"
 	"widgets/RichTextItemDelegate.h"
 	"widgets/SearchDialogItemDelegate.cpp"
 	"widgets/SearchDialogItemDelegate.h"
 	"widgets/SearchDialogTree.cpp"
 	"widgets/SearchDialogTree.h"
+	"widgets/SemanticSlider.cpp"
+	"widgets/SemanticSlider.h"
 
 
 	"${SHARED_SOURCE_DIR}/ACL.cpp"
@@ -328,7 +336,7 @@ target_disable_warnings(smallft)
 add_custom_command(
 	OUTPUT "${CMAKE_BINARY_DIR}/mumble_flags.qrc"
 	COMMAND ${PYTHON_INTERPRETER}
-	ARGS "${CMAKE_SOURCE_DIR}/scripts/generate_flag_qrc.py" --flag-dir "${CMAKE_SOURCE_DIR}/icons/flags" --output "${CMAKE_BINARY_DIR}/mumble_flags.qrc"
+	ARGS "${CMAKE_SOURCE_DIR}/scripts/generate_flag_qrc.py" --flag-dir "${CMAKE_SOURCE_DIR}/3rdparty/flag-icons/flags/4x3" --output "${CMAKE_BINARY_DIR}/mumble_flags.qrc"
 	COMMENT "Generating mumble_flags.qrc"
 )
 list(APPEND MUMBLE_SOURCES "${CMAKE_BINARY_DIR}/mumble_flags.qrc")
@@ -532,6 +540,7 @@ endif()
 target_link_libraries(mumble_client_object_lib
 	PUBLIC
 		shared
+		utfcpp
 		Qt5::Concurrent
 		Qt5::Sql
 		Qt5::Svg
@@ -730,31 +739,32 @@ else()
 	)
 endif()
 
-if(rnnoise)
-	message(WARNING "Using RNNoise is discouraged and can lead to unforeseen behavior, including crashes at runtime due to the RNNoise library exposing Opus/CELT symbols")
-	target_compile_definitions(mumble_client_object_lib PRIVATE "USE_RNNOISE")
+if(renamenoise)
+	target_compile_definitions(mumble_client_object_lib PRIVATE "USE_RENAMENOISE")
 
-	if(bundled-rnnoise)
-		add_subdirectory("${3RDPARTY_DIR}/rnnoise-build" "${CMAKE_CURRENT_BINARY_DIR}/rnnoise" EXCLUDE_FROM_ALL)
+	if(bundled-renamenoise)
+		set(RENAMENOISE_DEMO_EXECUTABLE OFF CACHE INTERNAL "")
 
-		# Disable all warnings that the RNNoise code may emit
-		disable_warnings_for_all_targets_in("${3RDPARTY_DIR}/rnnoise-build")
+		add_subdirectory("${3RDPARTY_DIR}/renamenoise" "${CMAKE_CURRENT_BINARY_DIR}/renamenoise" EXCLUDE_FROM_ALL)
 
-		target_link_libraries(mumble_client_object_lib PRIVATE rnnoise)
+		# Disable all warnings that the ReNameNoise code may emit
+		disable_warnings_for_all_targets_in("${3RDPARTY_DIR}/renamenoise")
+
+		target_link_libraries(mumble_client_object_lib PRIVATE renamenoise)
 
 		if(WIN32)
 			# Shared library on Windows (e.g. ".dll")
-			set_target_properties(rnnoise PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+			set_target_properties(renamenoise PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 		else()
 			# Shared library on UNIX (e.g. ".so")
-			set_target_properties(rnnoise PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+			set_target_properties(renamenoise PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 		endif()
 
-		install_library(rnnoise mumble_client)
+		install_library(renamenoise mumble_client)
 	else()
-		find_pkg(rnnoise REQUIRED)
+		find_pkg(renamenoise REQUIRED)
 
-		target_link_libraries(mumble_client_object_lib PRIVATE ${rnnoise_LIBRARIES})
+		target_link_libraries(mumble_client_object_lib PRIVATE ${renamenoise_LIBRARIES})
 	endif()
 endif()
 
@@ -1168,12 +1178,6 @@ if(packaging AND WIN32)
 	if(g15)
 		list(APPEND installer_vars
 			"--g15"
-		)
-	endif()
-
-	if(rnnoise)
-		list(APPEND installer_vars
-			"--rnnoise"
 		)
 	endif()
 

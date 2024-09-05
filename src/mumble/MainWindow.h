@@ -125,7 +125,6 @@ public:
 	bool forceQuit;
 	/// Restart the client after shutdown
 	bool restartOnQuit;
-	bool bAutoUnmute;
 
 	/// Contains the cursor whose position is immediately before the image to
 	/// save when activating the "Save Image As..." context menu item.
@@ -219,6 +218,8 @@ protected:
 	ClientUser *getContextMenuUser();
 	ContextMenuTarget getContextMenuTargets();
 
+	void autocompleteUsername();
+
 public slots:
 	void on_qmServer_aboutToShow();
 	void on_qaServerConnect_triggered(bool autoconnect = false);
@@ -258,6 +259,7 @@ public slots:
 	void qmChannel_aboutToShow();
 	void on_qaChannelJoin_triggered();
 	void on_qaUserJoin_triggered();
+	void on_qaUserMove_triggered();
 	void on_qaChannelListen_triggered();
 	void on_qaChannelAdd_triggered();
 	void on_qaChannelRemove_triggered();
